@@ -1,0 +1,15 @@
+{
+  "name": "cypress-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "md5": "^2.2.1",
+    "uuid": "^3.3.2"
+  },
+  "scripts": {
+    "dev": "nodemon --experimental-modules ."
+  }
+}
