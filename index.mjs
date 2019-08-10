@@ -1,6 +1,6 @@
 import { app } from "./app";
 
-const PORT = 1234;
+const PORT = process.env.PORT || 1234;
 
 async function main() {
   app.on("error", error => {
