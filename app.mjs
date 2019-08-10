@@ -7,6 +7,8 @@ export const app = express();
 const runs = {};
 app.use(bodyParser.json());
 
+app.get("/", (_, res) => res.send(`Served ${Object.keys(runs).length} runs`));
+
 app.use("*", (req, _, next) => {
   console.log(req.baseUrl);
   next();
