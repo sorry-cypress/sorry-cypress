@@ -2,7 +2,13 @@
 
 This is an alternative dashboard service that allows to run tests in parallel w/o Cypress subscription.
 
-Currently it does not handle screenshots or any smart specs distribution.
+It is very naive, quick and dirty POC.
+
+## TL;DR
+
+1. Set https://sorry-cypress.herokuapp.com/ as `api_url` of `...cypress.../packages/server/config/app.yml` (see below how to find file)
+2. Run multiple instances of `cypress run --parallel --record --key xxx --ci-build-id <buildId>`
+3. See the the tests running in parallel 🚀
 
 ## Why?
 
@@ -57,7 +63,7 @@ cd sorry-cypress
 yarn && yarn start
 ```
 
-### 3. Run multuple instances of cypress
+### 3. Run multiple instances of cypress
 
 Run multuple instances of cypress. Make sure that they use the modified URL. Note that you don't have to provide a real `key`.
 
