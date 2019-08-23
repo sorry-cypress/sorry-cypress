@@ -10,7 +10,7 @@
     "uuid": "^3.3.2"
   },
   "scripts": {
-    "dev": "nodemon --experimental-modules .",
+    "dev": "nodemon --inspect --experimental-modules .",
     "start": "node --experimental-modules ."
   }
 }
