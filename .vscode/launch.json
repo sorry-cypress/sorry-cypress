@@ -7,6 +7,12 @@
     {
       "type": "node",
       "request": "attach",
+      "name": "Docker: Attach to Node",
+      "remoteRoot": "/app"
+    },
+    {
+      "type": "node",
+      "request": "attach",
       "name": "Attach",
       "port": 9229
     },

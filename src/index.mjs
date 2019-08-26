@@ -1,8 +1,10 @@
-import { app } from './src/app';
+import { app } from './app';
+import { init } from './storage/mongo';
 
 const PORT = process.env.PORT || 1234;
 
 async function main() {
+  await init();
   app.on('error', error => {
     throw new Error(error);
   });

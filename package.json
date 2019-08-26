@@ -7,10 +7,14 @@
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "md5": "^2.2.1",
+    "mongodb": "^3.3.0",
     "uuid": "^3.3.2"
   },
   "scripts": {
-    "dev": "nodemon --inspect --experimental-modules .",
+    "dev": "nodemon --inspect=0.0.0.0:9229 --experimental-modules .",
     "start": "node --experimental-modules ."
+  },
+  "devDependencies": {
+    "jest": "^24.9.0"
   }
 }

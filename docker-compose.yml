@@ -1,0 +1,19 @@
+version: '3.6'
+
+services:
+  mongo:
+    image: mongo:4.0
+    ports:
+      - 27017:27017
+
+  server:
+    build: .
+    environment:
+      PORT: 1234
+    ports:
+      - 9229:9229
+      - 1234:1234
+    volumes:
+      - $PWD/src:/app/src
+    depends_on:
+      - mongo

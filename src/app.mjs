@@ -1,14 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import {
-  getById,
-  isRunComplete,
-  createOrGetRun,
-  getAllInstances,
-  setInstanceClaimed,
-  getClaimedInstances,
-  getFirstUnclaimedInstance
-} from './runs/run.mjs';
+import { createRun, getNextTask } from './runs/run.mjs';
+
 export const app = express();
 
 app.use(bodyParser.json());
@@ -41,8 +34,7 @@ runUrl: '...'
 
 app.post('/runs', async (req, res) => {
   const { ciBuildId, commit, platform, projectId, specs } = req.body;
-
-  const response = await createOrGetRun({
+  const response = await createRun({
     ciBuildId,
     commit,
     platform,
@@ -74,47 +66,39 @@ app.post('/runs/:runId/instances', async (req, res) => {
   const { groupId, machineId } = req.body;
   const { runId } = req.params;
 
-  console.log(`* Machine's requesting a new task`, {
+  console.log(`* Machine is requesting a new task`, {
     runId,
     machineId,
     groupId
   });
 
-  let run = await getById(runId);
+  try {
+    const { instance, claimedInstances, totalInstances } = await getNextTask(
+      runId
+    );
+    if (instance === null) {
+      console.log(`* All tasks claimed`, { runId, machineId });
+      return res.json({
+        spec: null,
+        instanceId: null,
+        claimedInstances,
+        totalInstances
+      });
+    }
 
-  if (!run) {
-    console.log(`* Machine's requesting unknown task`, {
-      runId,
-      machineId,
-      groupId
-    });
-    return res.sendStatus(404);
-  }
-
-  if (await isRunComplete(run)) {
-    console.log(`* All tasks completed`, { runId, machineId });
+    console.log(`* Sending a new task to machine`, instance);
     return res.json({
-      spec: null,
-      instanceId: null,
-      claimedInstances: getClaimedInstances(run).length,
-      totalInstances: getAllInstances(run).length,
-      estimatedWallClockDuration: null
+      spec: instance.spec,
+      instance: instance.instanceId,
+      claimedInstances,
+      totalInstances
     });
+  } catch (error) {
+    if (error.code && error.code === RUN_NOT_EXIST) {
+      return res.sendStatus(404);
+    }
+    throw error;
   }
-
-  const instance = getFirstUnclaimedInstance(run);
-  run = await setInstanceClaimed(runId, instance.instanceId);
-
-  const response = {
-    spec: instance.spec,
-    instanceId: instance.instanceId,
-    claimedInstances: getClaimedInstances(run).length,
-    totalInstances: getAllInstances(run).length,
-    estimatedWallClockDuration: null
-  };
-
-  console.log(`* Sending a new task to machine`, response);
-  return res.json(response);
 });
 
 /*

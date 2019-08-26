@@ -1,26 +1,52 @@
-import uuid from 'uuid/v4';
+import { getMongoDB } from './mongo.mjs';
+import { AppError, RUN_EXISTS, CLAIM_FAILED } from '../lib/errors.mjs';
 
-const runs = {};
-export const getRunById = async id => {
-  return runs[id];
-};
+export const getRunById = async id =>
+  await getMongoDB()
+    .collection('runs')
+    .findOne({ runId: id });
 
-export const createRun = async (id, specs = []) => {
-  if (runs[id]) {
-    throw new Error('Cannot create already existing run');
+export const createRun = async run => {
+  try {
+    const { result } = await getMongoDB()
+      .collection('runs')
+      .insertOne(run);
+    return result;
+  } catch (error) {
+    if (error.code && error.code === 11000) {
+      throw new AppError(RUN_EXISTS);
+    }
+    throw error;
   }
-  runs[id] = [];
-  specs.forEach(spec =>
-    runs[id].push({
-      spec,
-      instanceId: uuid(),
-      claimed: false
-    })
-  );
-  return runs[id];
 };
 
-export const updateRun = async (id, run) => {
-  runs[id] = run;
-  return runs[id];
+// atomic operation to avoid concurrency issues
+// filter document prevents concurrent writes
+export const setInstanceClaimed = async (runId, instanceId) => {
+  const { acknowledged, matchedCount, modifiedCount } = await getMongoDB()
+    .collection('runs')
+    .updateOne(
+      {
+        runId,
+        specs: {
+          $elemMatch: {
+            instanceId,
+            claimed: false
+          }
+        }
+      },
+      {
+        $set: { 'specs.$[spec].claimed': true }
+      },
+      {
+        arrayFilters: [{ 'spec.instanceId': instanceId }]
+      }
+    );
+
+  console.log({ acknowledged, matchedCount, modifiedCount });
+  if (matchedCount && modifiedCount) {
+    return;
+  } else {
+    throw new AppError(CLAIM_FAILED);
+  }
 };
