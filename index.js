@@ -1,9 +1,9 @@
-import { app } from "./app";
+const { app } = require('./app.js');
 
 const PORT = process.env.PORT || 1234;
 
 async function main() {
-  app.on("error", error => {
+  app.on('error', error => {
     throw new Error(error);
   });
   app.listen(PORT, () => {

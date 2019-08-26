@@ -1,15 +1,18 @@
-import md5 from "md5";
-import uuid from "uuid/v4";
-import express from "express";
-import bodyParser from "body-parser";
-export const app = express();
+const md5 = require('md5');
+const uuid = require('uuid/v4');
+const express = require('express');
+const bodyParser = require('body-parser');
+
+const app = express();
+
+exports.app = app;
 
 const runs = {};
 app.use(bodyParser.json());
 
-app.get("/", (_, res) => res.send(`Served ${Object.keys(runs).length} runs`));
+app.get('/', (_, res) => res.send(`Served ${Object.keys(runs).length} runs`));
 
-app.use("*", (req, _, next) => {
+app.use('*', (req, _, next) => {
   console.log(req.baseUrl);
   next();
 });
@@ -33,7 +36,7 @@ machineId: 'c43f621a-31bb-4c77-a85c-6416f2ec6df0',
 runUrl: '...'
 */
 
-app.post("/runs", (req, res) => {
+app.post('/runs', (req, res) => {
   const { ciBuildId, commit, platform, projectId, specs } = req.body;
 
   console.log(`New machine joins the party!`, {
@@ -46,7 +49,7 @@ app.post("/runs", (req, res) => {
   const machineId = uuid();
 
   // generate run id - multiple machines that run the same task should have the same runId
-  const runId = md5(ciBuildId + commit.sha + projectId + specs.join(" "));
+  const runId = md5(ciBuildId + commit.sha + projectId + specs.join(' '));
 
   // not sure how specific that should be
   const groupId = `${platform.osName}-${platform.osVersion}-${ciBuildId}`;
@@ -70,7 +73,7 @@ app.post("/runs", (req, res) => {
     groupId,
     machineId,
     runId,
-    runUrl: "https://sorry.cypress.io/",
+    runUrl: 'https://sorry.cypress.io/',
     warnings: []
   };
 
@@ -95,7 +98,7 @@ platform: {}
 }
 */
 
-app.post("/runs/:runId/instances", (req, res) => {
+app.post('/runs/:runId/instances', (req, res) => {
   const { groupId, machineId } = req.body;
   const { runId } = req.params;
 
@@ -145,7 +148,7 @@ app.post("/runs/:runId/instances", (req, res) => {
 3. PUT https://api.cypress.io/instances/<instanceId>
 >> { screenshotUploadUrls: [] }
 */
-app.put("/instances/:instanceId", (req, res) => {
+app.put('/instances/:instanceId', (req, res) => {
   const { instanceId } = req.params;
   console.log(`Received result of a task`, { instanceId });
   return res.json({ screenshotUploadUrls: [] });
@@ -155,7 +158,7 @@ app.put("/instances/:instanceId", (req, res) => {
 4. PUT https://api.cypress.io/instances/<instanceId>/stdout
 >> response 'OK'
 */
-app.put("/instances/:instanceId/stdout", (req, res) => {
+app.put('/instances/:instanceId/stdout', (req, res) => {
   const { instanceId } = req.params;
   console.log(`Received stdout for instance`, { instanceId });
   return res.sendStatus(200);

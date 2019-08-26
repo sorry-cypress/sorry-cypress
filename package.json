@@ -1,4 +1,12 @@
 {
+  "author": {
+    "name": "Andrew Goldis",
+    "email": "agoldis@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agoldis/sorry-cypress.git"
+  },
   "name": "cypress-api",
   "version": "1.0.0",
   "main": "index.js",
@@ -10,7 +18,7 @@
     "uuid": "^3.3.2"
   },
   "scripts": {
-    "dev": "nodemon --experimental-modules .",
-    "start": "node --experimental-modules ."
+    "dev": "nodemon .",
+    "start": "node  ."
   }
 }
