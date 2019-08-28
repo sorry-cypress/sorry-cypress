@@ -18,6 +18,7 @@ export const init = async () => {
 
   // avoid creation of duplicate runs
   db.collection('runs').createIndex({ runId: 1 }, { unique: true });
+  db.collection('instances').createIndex({ instanceId: 1 }, { unique: true });
 };
 
 export const getMongoDB = () => db;

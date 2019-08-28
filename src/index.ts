@@ -1,5 +1,5 @@
 import { app } from './app';
-import { init } from './storage/mongo';
+import { init } from './lib/mongo';
 
 const PORT = process.env.PORT || 1234;
 

@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "aws-sdk": "^2.518.0",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "md5": "^2.2.1",

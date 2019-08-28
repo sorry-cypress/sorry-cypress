@@ -1,17 +1,16 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import { createRun, getNextTask } from './runs/run';
+import { createRun, getNextTask, getAllInstances } from './runs/run.controller';
 import { RUN_NOT_EXIST } from './lib/errors';
+import {
+  createInstance,
+  getScreenshotsUploadURLs
+} from './instances/instance.controller';
+import md5 = require('md5');
+import { InstanceResult } from './instances/instance.types';
 export const app = express();
 
 app.use(bodyParser.json());
-
-// app.get('/', (_, res) => res.send(`Served ${Object.keys(runs).length} runs`));
-
-app.use('*', (req, _, next) => {
-  console.log(req.baseUrl);
-  next();
-});
 
 /* 1. /run
 >> {
@@ -34,6 +33,8 @@ runUrl: '...'
 
 app.post('/runs', async (req, res) => {
   const { ciBuildId, commit, platform, projectId, specs } = req.body;
+  console.log(`>> Machine is joining a run`, { ciBuildId });
+
   const response = await createRun({
     ciBuildId,
     commit,
@@ -42,7 +43,7 @@ app.post('/runs', async (req, res) => {
     specs
   });
 
-  console.log(`Responding to machine`, response);
+  console.log(`<< Responding to machine`, response);
   return res.json(response);
 });
 
@@ -66,7 +67,7 @@ app.post('/runs/:runId/instances', async (req, res) => {
   const { groupId, machineId } = req.body;
   const { runId } = req.params;
 
-  console.log(`* Machine is requesting a new task`, {
+  console.log(`>> Machine is requesting a new task`, {
     runId,
     machineId,
     groupId
@@ -77,7 +78,7 @@ app.post('/runs/:runId/instances', async (req, res) => {
       runId
     );
     if (instance === null) {
-      console.log(`* All tasks claimed`, { runId, machineId });
+      console.log(`<< All tasks claimed`, { runId, machineId });
       return res.json({
         spec: null,
         instanceId: null,
@@ -86,10 +87,10 @@ app.post('/runs/:runId/instances', async (req, res) => {
       });
     }
 
-    console.log(`* Sending a new task to machine`, instance);
+    console.log(`<< Sending a new task to machine`, instance);
     return res.json({
       spec: instance.spec,
-      instance: instance.instanceId,
+      instanceId: instance.instanceId,
       claimedInstances,
       totalInstances
     });
@@ -104,11 +105,37 @@ app.post('/runs/:runId/instances', async (req, res) => {
 /*
 3. PUT https://api.cypress.io/instances/<instanceId>
 >> { screenshotUploadUrls: [] }
+
+from: https://github.com/cypress-io/cypress/blob/a7dfda986531f9176468de4156e3f1215869c342/packages/server/lib/modes/record.coffee#L134
+  if screenshotUploadUrls
+    screenshotUploadUrls.forEach (obj) ->
+      screenshot = _.find(screenshots, { screenshotId: obj.screenshotId })
+
+      send(screenshot.path, obj.uploadUrl) 
+      ...
+      send = (pathToFile, url) ->
+      ...
+      https://github.com/cypress-io/cypress/blob/a7dfda986531f9176468de4156e3f1215869c342/packages/server/lib/upload.coffee
+      rp({
+        url: url
+        method: "PUT"
+        body: buf
+      })
+      
+object shape {
+  screenshotId,
+  uploadUrl
+}
 */
-app.put('/instances/:instanceId', (req, res) => {
+app.put('/instances/:instanceId', async (req, res) => {
   const { instanceId } = req.params;
-  console.log(`* Received result of a task`, { instanceId });
-  return res.json({ screenshotUploadUrls: [] });
+
+  const result: InstanceResult = req.body;
+  await createInstance(instanceId, result);
+  const upload = await getScreenshotsUploadURLs(instanceId, result);
+  return res.json({
+    screenshotUploadUrls: upload
+  });
 });
 
 /*
