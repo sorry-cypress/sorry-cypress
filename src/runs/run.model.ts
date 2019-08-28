@@ -1,6 +1,6 @@
-import { getMongoDB } from './mongo';
+import { getMongoDB } from '../lib/mongo';
 import { AppError, RUN_EXISTS, CLAIM_FAILED } from '../lib/errors';
-import { Run } from '../runs/run';
+import { Run } from './run.types';
 
 export const getRunById = async (id: string) =>
   await getMongoDB()
@@ -44,7 +44,6 @@ export const setInstanceClaimed = async (runId: string, instanceId: string) => {
       }
     );
 
-  console.log({ matchedCount, modifiedCount });
   if (matchedCount && modifiedCount) {
     return;
   } else {

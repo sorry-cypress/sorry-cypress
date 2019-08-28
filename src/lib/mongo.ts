@@ -12,7 +12,7 @@ export const init = async () => {
   }
 
   client = await mongodb.connect(url, { useNewUrlParser: true });
-  console.log('Connected successfully to MongoDB server');
+  console.log('Successfully connected to MongoDB server');
 
   db = client.db(dbName);
 
