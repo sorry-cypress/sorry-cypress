@@ -3,7 +3,7 @@
     "target": "esnext",
     "module": "commonjs",
     "moduleResolution": "node",
-    "outDir": "dist",
+    "outDir": "../dist",
     "pretty": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
@@ -11,5 +11,6 @@
     "noImplicitAny": true,
     "sourceMap": true
   },
-  "include": ["src"]
+  "include": ["../src"],
+  "exclude": ["../**/__tests__"]
 }

@@ -11,7 +11,7 @@
     "uuid": "^3.3.2"
   },
   "scripts": {
-    "dev": "nodemon --inspect=0.0.0.0:9229 --watch 'src/**/*.ts' -r ./ts-node.js -P . src/index.ts",
+    "dev": "nodemon --inspect=0.0.0.0:9229 --watch 'src/**/*.ts' -r ./config/ts-node.js src/index.ts",
     "build": "tsc -p .",
     "start": "node  ./dist/"
   },
