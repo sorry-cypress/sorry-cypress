@@ -1,12 +1,13 @@
-import { getMongoDB } from './mongo.mjs';
-import { AppError, RUN_EXISTS, CLAIM_FAILED } from '../lib/errors.mjs';
+import { getMongoDB } from './mongo';
+import { AppError, RUN_EXISTS, CLAIM_FAILED } from '../lib/errors';
+import { Run } from '../runs/run';
 
-export const getRunById = async id =>
+export const getRunById = async (id: string) =>
   await getMongoDB()
     .collection('runs')
     .findOne({ runId: id });
 
-export const createRun = async run => {
+export const createRun = async (run: Run) => {
   try {
     const { result } = await getMongoDB()
       .collection('runs')
@@ -22,8 +23,8 @@ export const createRun = async run => {
 
 // atomic operation to avoid concurrency issues
 // filter document prevents concurrent writes
-export const setInstanceClaimed = async (runId, instanceId) => {
-  const { acknowledged, matchedCount, modifiedCount } = await getMongoDB()
+export const setInstanceClaimed = async (runId: string, instanceId: string) => {
+  const { matchedCount, modifiedCount } = await getMongoDB()
     .collection('runs')
     .updateOne(
       {
@@ -43,7 +44,7 @@ export const setInstanceClaimed = async (runId, instanceId) => {
       }
     );
 
-  console.log({ acknowledged, matchedCount, modifiedCount });
+  console.log({ matchedCount, modifiedCount });
   if (matchedCount && modifiedCount) {
     return;
   } else {

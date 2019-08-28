@@ -11,10 +11,19 @@
     "uuid": "^3.3.2"
   },
   "scripts": {
-    "dev": "nodemon --inspect=0.0.0.0:9229 --experimental-modules .",
-    "start": "node --experimental-modules ."
+    "dev": "nodemon --inspect=0.0.0.0:9229 --watch 'src/**/*.ts' -r ./ts-node.js -P . src/index.ts",
+    "build": "tsc -p .",
+    "start": "node  ./dist/"
   },
   "devDependencies": {
-    "jest": "^24.9.0"
+    "@types/body-parser": "^1.17.1",
+    "@types/express": "^4.17.1",
+    "@types/md5": "^2.1.33",
+    "@types/mongodb": "^3.3.1",
+    "@types/node": "^12.7.2",
+    "@types/uuid": "^3.4.5",
+    "jest": "^24.9.0",
+    "ts-node": "^8.3.0",
+    "typescript": "^3.5.3"
   }
 }

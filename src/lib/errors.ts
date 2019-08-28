@@ -1,5 +1,6 @@
 export class AppError extends Error {
-  constructor(code) {
+  code: string;
+  constructor(code: string) {
     super('AppError');
     this.code = code;
   }

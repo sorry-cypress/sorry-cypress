@@ -3,8 +3,8 @@ import mongodb from 'mongodb';
 const url = 'mongodb://mongo:27017';
 const dbName = 'sorry-cypress';
 
-let db;
-let client;
+let db: mongodb.Db;
+let client: mongodb.MongoClient;
 
 export const init = async () => {
   if (db && client) {

@@ -6,7 +6,7 @@ const PORT = process.env.PORT || 1234;
 async function main() {
   await init();
   app.on('error', error => {
-    throw new Error(error);
+    throw error;
   });
   app.listen(PORT, () => {
     console.log(`Listening on ${PORT}...`);

@@ -4,19 +4,63 @@ import {
   getRunById,
   createRun as storageCreateRun,
   setInstanceClaimed as storageSetInstanceClaimed
-} from '../storage/';
-import { RUN_EXISTS, RUN_NOT_EXIST, CLAIM_FAILED } from '../lib/errors.mjs';
-import { AppError } from '../lib/errors.mjs';
+} from '../storage';
+import {
+  AppError,
+  RUN_EXISTS,
+  RUN_NOT_EXIST,
+  CLAIM_FAILED
+} from '../lib/errors';
 
 export const getById = getRunById;
 
+interface CommitData {
+  sha: string;
+}
+interface PlatformData {
+  osName: string;
+  osVersion: string;
+}
+export interface CreateRunParameters {
+  ciBuildId: string;
+  commit: CommitData;
+  projectId: string;
+  specs: string[];
+  platform: PlatformData;
+}
+
+export interface CreateRunResponse {
+  groupId: string;
+  machineId: string;
+  runId: string;
+  runUrl: string;
+  warnings?: string[];
+}
+
+interface RunMetaData {
+  groupId: string;
+  ciBuildId: string;
+  commit: CommitData;
+  projectId: string;
+  platform: PlatformData;
+}
+export interface RunSpec {
+  spec: string;
+  instanceId: string;
+  claimed: boolean;
+}
+export interface Run {
+  runId: string;
+  meta: RunMetaData;
+  specs: RunSpec[];
+}
 export const createRun = async ({
   ciBuildId,
   commit,
   projectId,
   specs,
   platform
-}) => {
+}: CreateRunParameters): Promise<CreateRunResponse> => {
   const runId = md5(ciBuildId + commit.sha + projectId + specs.join(' '));
   // not sure how specific that should be
   const groupId = `${platform.osName}-${platform.osVersion}-${ciBuildId}`;
@@ -26,7 +70,7 @@ export const createRun = async ({
     machineId: uuid(),
     runId,
     runUrl: 'https://sorry.cypress.io/',
-    warnings: []
+    warnings: [] as string[]
   };
 
   try {
@@ -56,11 +100,18 @@ export const createRun = async ({
   }
 };
 
-export const getClaimedInstances = run => run.specs.filter(s => s.claimed);
-export const getFirstUnclaimedInstance = run => run.specs.find(s => !s.claimed);
-export const getAllInstances = run => run.specs;
+export const getClaimedInstances = (run: Run) =>
+  run.specs.filter(s => s.claimed);
+export const getFirstUnclaimedInstance = (run: Run) =>
+  run.specs.find(s => !s.claimed);
+export const getAllInstances = (run: Run) => run.specs;
 
-export const getNextTask = async runId => {
+export interface Task {
+  instance: RunSpec | null;
+  claimedInstances: number;
+  totalInstances: number;
+}
+export const getNextTask = async (runId: string): Promise<Task> => {
   let run = await getById(runId);
   if (!run) {
     throw new AppError(RUN_NOT_EXIST);

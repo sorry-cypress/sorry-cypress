@@ -1,12 +1,12 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import { createRun, getNextTask } from './runs/run.mjs';
-
+import { createRun, getNextTask } from './runs/run';
+import { RUN_NOT_EXIST } from './lib/errors';
 export const app = express();
 
 app.use(bodyParser.json());
 
-app.get('/', (_, res) => res.send(`Served ${Object.keys(runs).length} runs`));
+// app.get('/', (_, res) => res.send(`Served ${Object.keys(runs).length} runs`));
 
 app.use('*', (req, _, next) => {
   console.log(req.baseUrl);
