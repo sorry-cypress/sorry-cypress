@@ -1,13 +1,11 @@
-import { insertInstance } from './instance.model';
+import md5 = require('md5');
 import {
+  ScreenshotsDriver,
   InstanceResult,
   ScreenshotUploadInstruction,
   Screenshot
-} from './instance.types';
-import { getUploadURL } from '../s3/';
-import md5 = require('md5');
-
-export const createInstance = insertInstance;
+} from 'types';
+import { getUploadURL } from './s3';
 
 const getScreenshotUploadInstruction = (namespace: string) => async (
   screenshot: Screenshot
@@ -30,4 +28,8 @@ export const getScreenshotsUploadURLs = async (
   return Promise.all(
     result.screenshots.map(getScreenshotUploadInstruction(instanceId))
   );
+};
+
+export const S3ScreenshotsDriver: ScreenshotsDriver = {
+  getScreenshotsUploadURLs
 };

@@ -1,63 +1,45 @@
-import md5 from 'md5';
-import uuid from 'uuid/v4';
 import {
   getRunById,
   createRun as storageCreateRun,
   setInstanceClaimed as storageSetInstanceClaimed
 } from './run.model';
-import {
-  AppError,
-  RUN_EXISTS,
-  RUN_NOT_EXIST,
-  CLAIM_FAILED
-} from '../lib/errors';
-import {
-  CreateRunParameters,
-  CreateRunResponse,
-  RunSpec,
-  Run,
-  Task
-} from './run.types';
+import { getDashboardRunURL } from 'lib/urls';
+import { AppError, RUN_EXISTS, RUN_NOT_EXIST, CLAIM_FAILED } from 'lib/errors';
+import { generateRunIdHash, generateGroupId, generateUUID } from 'lib/hash';
+import { CreateRunParameters, CreateRunResponse, Run, Task } from 'types';
 
 export const getById = getRunById;
 
-export const createRun = async ({
-  ciBuildId,
-  commit,
-  projectId,
-  specs,
-  platform
-}: CreateRunParameters): Promise<CreateRunResponse> => {
-  const runId = md5(ciBuildId + commit.sha + projectId + specs.join(' '));
-  // not sure how specific that should be
-  const groupId = `${platform.osName}-${platform.osVersion}-${ciBuildId}`;
+export const createRun = async (
+  params: CreateRunParameters
+): Promise<CreateRunResponse> => {
+  const runId = generateRunIdHash(params);
+  const groupId = generateGroupId(params.platform, params.ciBuildId);
 
   const response = {
     groupId,
-    machineId: uuid(),
+    machineId: generateUUID(),
     runId,
-    runUrl: 'https://sorry.cypress.io/',
+    runUrl: getDashboardRunURL(runId),
     warnings: [] as string[]
   };
 
   try {
-    const newRun = {
+    await storageCreateRun({
       runId,
       meta: {
         groupId,
-        ciBuildId,
-        commit,
-        projectId,
-        platform
+        ciBuildId: params.ciBuildId,
+        commit: params.commit,
+        projectId: params.projectId,
+        platform: params.platform
       },
-      specs: specs.map(spec => ({
+      specs: params.specs.map(spec => ({
         spec,
-        instanceId: uuid(),
+        instanceId: generateUUID(),
         claimed: false
       }))
-    };
-
-    await storageCreateRun(newRun);
+    });
     return response;
   } catch (error) {
     if (error.code && error.code === RUN_EXISTS) {
@@ -67,11 +49,9 @@ export const createRun = async ({
   }
 };
 
-export const getClaimedInstances = (run: Run) =>
-  run.specs.filter(s => s.claimed);
-export const getFirstUnclaimedInstance = (run: Run) =>
-  run.specs.find(s => !s.claimed);
-export const getAllInstances = (run: Run) => run.specs;
+const getClaimedInstances = (run: Run) => run.specs.filter(s => s.claimed);
+const getFirstUnclaimedInstance = (run: Run) => run.specs.find(s => !s.claimed);
+const getAllInstances = (run: Run) => run.specs;
 
 export const getNextTask = async (runId: string): Promise<Task> => {
   let run = await getById(runId);

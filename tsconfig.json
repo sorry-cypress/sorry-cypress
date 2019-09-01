@@ -4,13 +4,17 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "outDir": "../dist",
+    "baseUrl": "./src/",
     "pretty": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
     "sourceMap": true
+    // "paths": {
+    //   "*": ["../src/*", "../node_modules/*"]
+    // }
   },
-  "include": ["../src"],
-  "exclude": ["../**/__tests__"]
+  "include": ["./src"],
+  "exclude": ["./**/__tests__"]
 }
