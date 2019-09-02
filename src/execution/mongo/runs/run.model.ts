@@ -1,6 +1,6 @@
-import { Run } from 'types';
-import { getMongoDB } from 'lib/mongo';
-import { AppError, RUN_EXISTS, CLAIM_FAILED } from 'lib/errors';
+import { Run } from '@src/types';
+import { getMongoDB } from '@src/lib/mongo';
+import { AppError, RUN_EXISTS, CLAIM_FAILED } from '@src/lib/errors';
 
 export const getRunById = async (id: string) =>
   await getMongoDB()

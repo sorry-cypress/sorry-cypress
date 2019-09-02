@@ -1,8 +1,8 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import { InstanceResult } from 'types';
-import { RUN_NOT_EXIST } from 'lib/errors';
-import { executionDriver, screenshotsDriver } from 'drivers';
+import { InstanceResult } from '@src/types';
+import { RUN_NOT_EXIST } from '@src/lib/errors';
+import { executionDriver, screenshotsDriver } from '@src/drivers';
 export const app = express();
 
 app.use(bodyParser.json());

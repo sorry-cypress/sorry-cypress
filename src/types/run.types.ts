@@ -1,7 +1,7 @@
-interface CommitData {
+export interface CommitData {
   sha: string;
 }
-interface PlatformData {
+export interface PlatformData {
   osName: string;
   osVersion: string;
 }
@@ -21,7 +21,7 @@ export interface CreateRunResponse {
   warnings?: string[];
 }
 
-interface RunMetaData {
+export interface RunMetaData {
   groupId: string;
   ciBuildId: string;
   commit: CommitData;

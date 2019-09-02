@@ -1,10 +1,10 @@
-import md5 = require('md5');
+import md5 from 'md5';
 import {
   ScreenshotsDriver,
   InstanceResult,
   ScreenshotUploadInstruction,
   Screenshot
-} from 'types';
+} from '@src/types';
 import { getUploadURL } from './s3';
 
 const getScreenshotUploadInstruction = (namespace: string) => async (

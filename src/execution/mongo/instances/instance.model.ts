@@ -1,6 +1,6 @@
-import { InstanceResult } from 'types';
-import { getMongoDB } from 'lib/mongo';
-import { AppError, INSTANCE_EXISTS } from 'lib/errors';
+import { InstanceResult } from '@src/types';
+import { getMongoDB } from '@src/lib/mongo';
+import { AppError, INSTANCE_EXISTS } from '@src/lib/errors';
 
 export const insertInstance = async (
   instanceId: string,

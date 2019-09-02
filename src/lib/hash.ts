@@ -1,6 +1,6 @@
-import md5 = require('md5');
-import uuid = require('uuid');
-import { CreateRunParameters, PlatformData } from 'types/run.types';
+import md5 from 'md5';
+import uuid from 'uuid/v4';
+import { CreateRunParameters, PlatformData } from '@src/types';
 
 export const generateRunIdHash = ({
   ciBuildId,

@@ -1,4 +1,4 @@
-import { ExecutionDriver } from 'types';
+import { ExecutionDriver } from '@src/types';
 import * as mongoRunController from './runs/run.controller';
 import * as mongoInstanceController from './instances/instance.controller';
 

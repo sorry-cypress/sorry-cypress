@@ -6,10 +6,14 @@ import {
   ExecutionDriver,
   CreateRunResponse,
   CreateRunParameters
-} from 'types';
-import { getDashboardRunURL } from 'lib/urls';
-import { AppError, RUN_NOT_EXIST, INSTANCE_EXISTS } from 'lib/errors';
-import { generateRunIdHash, generateGroupId, generateUUID } from 'lib/hash';
+} from '@src/types';
+import { getDashboardRunURL } from '@src/lib/urls';
+import { AppError, RUN_NOT_EXIST, INSTANCE_EXISTS } from '@src/lib/errors';
+import {
+  generateRunIdHash,
+  generateGroupId,
+  generateUUID
+} from '@src/lib/hash';
 
 const runs: { [key: string]: Run } = {};
 const instances: { [key: string]: InstanceResult } = {};
