@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "typings": "dist/typings",
   "scripts": {
-    "dev": "nodemon --inspect=0.0.0.0:9229 --watch 'src/**/*.ts' -r ./config/ts-dev.js src/index.ts",
+    "dev": "nodemon --inspect=0.0.0.0:9229 -e ts --watch 'src/**/*.ts' -r ./config/ts-dev.js src/index.ts",
     "build": "npm run build:types && npm run build:js",
     "build:types": "tsc --emitDeclarationOnly",
     "build:js": "babel src --out-dir dist --extensions \".ts\" --source-maps inline",
