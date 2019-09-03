@@ -6,12 +6,18 @@
     "type-check": "tsc --noEmit",
     "type-check:watch": "npm run type-check -- --watch",
     "dev:app": "webpack-dev-server",
-    "dev": "run-p type-check dev:app",
+    "dev": "run-p dev:app",
     "build": "npm run build:webpack",
     "build:types": "tsc --emitDeclarationOnly",
     "build:webpack": "webpack --mode production"
   },
   "dependencies": {
+    "@apollo/react-hooks": "^3.0.1",
+    "apollo-cache-inmemory": "^1.6.3",
+    "apollo-client": "^2.6.4",
+    "apollo-link-http": "^1.5.15",
+    "graphql": "^14.5.4",
+    "graphql-tag": "^2.10.1",
     "react": "^16.9.0",
     "react-dom": "^16.9.0"
   },

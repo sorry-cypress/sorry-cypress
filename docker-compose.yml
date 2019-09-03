@@ -6,17 +6,17 @@ services:
     ports:
       - 27017:27017
 
-  dashboard:
-    build: $PWD/packages/dashboard
-    environment:
-      PORT: 8080
-    ports:
-      - 8080:8080
-    volumes:
-      - $PWD/packages/dashboard/src:/app/src
-    depends_on:
-      - director
-      - api
+  # dashboard:
+  #   build: $PWD/packages/dashboard
+  #   environment:
+  #     PORT: 8080
+  #   ports:
+  #     - 8080:8080
+  #   volumes:
+  #     - $PWD/packages/dashboard/src:/app/src
+  #   depends_on:
+  #     - director
+  #     - api
 
   api:
     build: $PWD/packages/api

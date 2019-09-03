@@ -5,7 +5,6 @@ const runReducer = mongoRun => mongoRun;
 
 export class RunsAPI extends DataSource {
   async initialize() {
-    console.log('init');
     await init();
   }
 
