@@ -1,5 +1,5 @@
 {
-  "name": "dashboard",
+  "name": "@sorry-cypress/dashboard",
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {

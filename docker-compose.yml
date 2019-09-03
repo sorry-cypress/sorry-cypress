@@ -21,10 +21,10 @@ services:
   api:
     build: $PWD/packages/api
     environment:
-      PORT: 1234
+      PORT: 4000
     ports:
       - 9230:9230
-      - 4444:4444
+      - 4000:4000
     volumes:
       - $PWD/packages/api/src:/app/src
       - $PWD/packages/api/config:/app/config

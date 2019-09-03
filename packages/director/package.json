@@ -1,5 +1,5 @@
 {
-  "name": "director",
+  "name": "@sorry-cypress/director",
   "version": "1.0.0",
   "license": "MIT",
   "main": "dist/index.js",

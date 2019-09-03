@@ -1,6 +1,7 @@
 import { app } from './app';
 import { getExecutionDriver, getScreenshotsDriver } from '@src/drivers';
 import { PORT } from './config';
+export * from './types';
 
 async function main() {
   const executionDriver = await getExecutionDriver();
