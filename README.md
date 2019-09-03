@@ -1,8 +1,6 @@
 # sorry-cypress
 
-This is an alternative dashboard service that allows to run tests in parallel w/o Cypress subscription.
-
-It is very naive, quick and dirty POC.
+An open-source alternative to Cypress dashboard service - run your tests in parallel in your own environment
 
 ## TL;DR
 
