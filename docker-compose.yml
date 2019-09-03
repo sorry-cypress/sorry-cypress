@@ -16,6 +16,20 @@ services:
       - $PWD/packages/dashboard/src:/app/src
     depends_on:
       - director
+      - api
+
+  api:
+    build: $PWD/packages/api
+    environment:
+      PORT: 1234
+    ports:
+      - 9230:9230
+      - 4444:4444
+    volumes:
+      - $PWD/packages/api/src:/app/src
+      - $PWD/packages/api/config:/app/config
+    depends_on:
+      - mongo
 
   director:
     build: $PWD/packages/director

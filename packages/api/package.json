@@ -1,0 +1,27 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "typings": "dist/typings",
+  "scripts": {
+    "dev": "nodemon --inspect=0.0.0.0:9230 -e ts --watch 'src/**/*.ts' -r ./config/ts-dev.js src/index.ts",
+    "build": "npm run build:types && npm run build:js",
+    "build:types": "tsc --emitDeclarationOnly",
+    "build:js": "babel src --out-dir dist --extensions \".ts\" --source-maps inline",
+    "start": "node ./dist/",
+    "clean": "rimraf ./dist"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/preset-typescript": "^7.3.3",
+    "@types/node": "^12.7.2",
+    "babel-plugin-module-resolver": "^3.2.0",
+    "rimraf": "^3.0.0",
+    "ts-node": "^8.3.0",
+    "tsconfig-paths": "^3.8.0",
+    "typescript": "^3.5.3"
+  }
+}
