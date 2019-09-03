@@ -2,22 +2,16 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import { InstanceResult } from '@src/types';
 import { RUN_NOT_EXIST } from '@src/lib/errors';
-import { executionDriver, screenshotsDriver } from '@src/drivers';
+
 export const app = express();
 
 app.use(bodyParser.json());
 
 app.post('/runs', async (req, res) => {
-  const { ciBuildId, commit, platform, projectId, specs } = req.body;
+  const { ciBuildId } = req.body;
   console.log(`>> Machine is joining a run`, { ciBuildId });
 
-  const response = await executionDriver.createRun({
-    ciBuildId,
-    commit,
-    platform,
-    projectId,
-    specs
-  });
+  const response = await app.get('executionDriver').createRun(req.body);
 
   console.log(`<< Responding to machine`, response);
   return res.json(response);
@@ -34,11 +28,9 @@ app.post('/runs/:runId/instances', async (req, res) => {
   });
 
   try {
-    const {
-      instance,
-      claimedInstances,
-      totalInstances
-    } = await executionDriver.getNextTask(runId);
+    const { instance, claimedInstances, totalInstances } = await app
+      .get('executionDriver')
+      .getNextTask(runId);
     if (instance === null) {
       console.log(`<< All tasks claimed`, { runId, machineId });
       return res.json({
@@ -68,14 +60,13 @@ app.put('/instances/:instanceId', async (req, res) => {
   const { instanceId } = req.params;
   const result: InstanceResult = req.body;
   console.log(`>> Received instance result`, { instanceId });
-  await executionDriver.createInstance(instanceId, result);
+  await app.get('executionDriver').createInstance(instanceId, result);
 
   console.log(`<< Sending screenshots upload URLs`, { instanceId });
   return res.json({
-    screenshotUploadUrls: await screenshotsDriver.getScreenshotsUploadURLs(
-      instanceId,
-      result
-    )
+    screenshotUploadUrls: await app
+      .get('screenshotsDriver')
+      .getScreenshotsUploadURLs(instanceId, result)
   });
 });
 

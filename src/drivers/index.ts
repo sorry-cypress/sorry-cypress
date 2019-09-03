@@ -1,7 +1,8 @@
-import { statefulMongoExecutionDriver } from '@src/execution/mongo/driver';
-import { inMemoryExecutionDriver } from '@src/execution/in-memory';
+import { ExecutionDriver } from '@src/types';
+import { EXECUTION_DRIVER, SCREENSHOTS_DRIVER } from '@src/config';
 
-import { S3ScreenshotsDriver } from '@src/screenshots/s3.driver';
+export const getScreenshotsDriver = async (): Promise<ExecutionDriver> =>
+  import(SCREENSHOTS_DRIVER).then(module => module.driver);
 
-export const executionDriver = inMemoryExecutionDriver;
-export const screenshotsDriver = S3ScreenshotsDriver;
+export const getExecutionDriver = async (): Promise<ExecutionDriver> =>
+  import(EXECUTION_DRIVER).then(module => module.driver);

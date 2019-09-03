@@ -1,10 +1,18 @@
 import { app } from './app';
-import { init } from '@src/lib/mongo';
-
-const PORT = process.env.PORT || 1234;
+import { getExecutionDriver, getScreenshotsDriver } from '@src/drivers';
+import { PORT } from './config';
 
 async function main() {
-  await init();
+  const executionDriver = await getExecutionDriver();
+  console.log(`Initializing "${executionDriver.id}" execution driver...`);
+  await executionDriver.init();
+
+  const screenshotsDriver = await getScreenshotsDriver();
+  console.log(`Initializing "${screenshotsDriver.id}" screenshots driver...`);
+  await screenshotsDriver.init();
+
+  app.set('executionDriver', executionDriver);
+  app.set('screenshotsDriver', screenshotsDriver);
   app.on('error', error => {
     throw error;
   });

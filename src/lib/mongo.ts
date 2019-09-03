@@ -1,7 +1,5 @@
 import mongodb from 'mongodb';
-
-const url = 'mongodb://mongo:27017';
-const dbName = 'sorry-cypress';
+import { MONGODB_URI, MONGODB_DATABASE } from '@src/config';
 
 let db: mongodb.Db;
 let client: mongodb.MongoClient;
@@ -11,12 +9,11 @@ export const init = async () => {
     return;
   }
 
-  client = await mongodb.connect(url, { useNewUrlParser: true });
+  client = await mongodb.connect(MONGODB_URI, { useNewUrlParser: true });
   console.log('Successfully connected to MongoDB server');
 
-  db = client.db(dbName);
+  db = client.db(MONGODB_DATABASE);
 
-  // avoid creation of duplicate runs
   db.collection('runs').createIndex({ runId: 1 }, { unique: true });
   db.collection('instances').createIndex({ instanceId: 1 }, { unique: true });
 };

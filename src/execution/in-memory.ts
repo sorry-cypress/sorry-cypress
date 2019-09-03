@@ -79,7 +79,9 @@ const createInstance = async (instanceId: string, instance: InstanceResult) => {
   instances[instanceId] = instance;
 };
 
-export const inMemoryExecutionDriver: ExecutionDriver = {
+export const driver: ExecutionDriver = {
+  id: 'in-memory',
+  init: () => Promise.resolve(),
   createRun,
   getNextTask,
   createInstance

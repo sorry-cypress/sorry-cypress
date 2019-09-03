@@ -30,6 +30,8 @@ export const getScreenshotsUploadURLs = async (
   );
 };
 
-export const S3ScreenshotsDriver: ScreenshotsDriver = {
+export const driver: ScreenshotsDriver = {
+  id: 's3',
+  init: () => Promise.resolve(),
   getScreenshotsUploadURLs
 };
