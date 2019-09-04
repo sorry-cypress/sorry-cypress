@@ -39,7 +39,7 @@ export function InstanceDetailsView({
   });
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :( </p>;
-  console.log(data.instance);
+
   return (
     <div>
       <div>
