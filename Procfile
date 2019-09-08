@@ -1,0 +1,1 @@
+web: yarn workspace @sorry-cypress/director start
