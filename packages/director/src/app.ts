@@ -7,6 +7,10 @@ export const app = express();
 
 app.use(bodyParser.json());
 
+app.get('/', (_, res) =>
+  res.redirect('https://github.com/agoldis/sorry-cypress')
+);
+
 app.post('/runs', async (req, res) => {
   const { ciBuildId } = req.body;
   console.log(`>> Machine is joining a run`, { ciBuildId });
