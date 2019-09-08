@@ -3,6 +3,9 @@
   "workspaces": [
     "packages/*"
   ],
+  "scripts": {
+    "build": "yarn workspace @sorry-cypress/director build"
+  },
   "name": "sorry-cypress",
   "version": "1.0.0",
   "license": "MIT"
