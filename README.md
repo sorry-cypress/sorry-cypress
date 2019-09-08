@@ -98,7 +98,7 @@ Keeps the state of runs `in-memory`, restarting the service wipes everything.
 
 That's the simplest and most naive implementation.
 
-If you just want to be able to run the tests in parallel and don't worry about storing test results.
+If you just want to run the tests in parallel and not worry about storing test results.
 
 ##### MongoDB persisted
 
