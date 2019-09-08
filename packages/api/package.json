@@ -1,6 +1,14 @@
 {
   "name": "@sorry-cypress/api",
-  "version": "1.0.0",
+  "version": "1.0.0-beta",
+  "author": {
+    "name": "Andrew Goldis",
+    "email": "agoldis@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agoldis/sorry-cypress.git"
+  },
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/typings",

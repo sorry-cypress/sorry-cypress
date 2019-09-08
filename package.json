@@ -1,12 +1,20 @@
 {
+  "name": "sorry-cypress",
+  "version": "1.0.0-beta",
+  "author": {
+    "name": "Andrew Goldis",
+    "email": "agoldis@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agoldis/sorry-cypress.git"
+  },
   "private": true,
+  "license": "MIT",
   "workspaces": [
     "packages/*"
   ],
   "scripts": {
     "build": "yarn workspace @sorry-cypress/director build"
-  },
-  "name": "sorry-cypress",
-  "version": "1.0.0",
-  "license": "MIT"
+  }
 }
