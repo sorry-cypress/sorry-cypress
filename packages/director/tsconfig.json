@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "dist",
+    "baseUrl": "./",
+    "pretty": true,
+    "sourceMap": true,
+    "declaration": true,
+    "declarationDir": "dist/typings",
+    "noImplicitAny": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "paths": {
+      "@src/*": ["./src/*"]
+    }
+  },
+  "include": ["./src"],
+  "exclude": ["./**/__tests__"]
+}

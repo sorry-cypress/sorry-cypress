@@ -1,4 +1,6 @@
 {
+  "name": "sorry-cypress",
+  "version": "1.0.0-beta",
   "author": {
     "name": "Andrew Goldis",
     "email": "agoldis@gmail.com"
@@ -7,18 +9,12 @@
     "type": "git",
     "url": "https://github.com/agoldis/sorry-cypress.git"
   },
-  "name": "cypress-api",
-  "version": "1.0.0",
-  "main": "index.js",
+  "private": true,
   "license": "MIT",
-  "dependencies": {
-    "body-parser": "^1.19.0",
-    "express": "^4.17.1",
-    "md5": "^2.2.1",
-    "uuid": "^3.3.2"
-  },
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "nodemon .",
-    "start": "node  ."
+    "build": "yarn workspace @sorry-cypress/director build"
   }
 }

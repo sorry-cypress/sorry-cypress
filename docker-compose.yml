@@ -1,0 +1,45 @@
+version: '3.6'
+
+services:
+  mongo:
+    image: mongo:4.0
+    ports:
+      - 27017:27017
+
+  # dashboard:
+  #   build: $PWD/packages/dashboard
+  #   environment:
+  #     PORT: 8080
+  #   ports:
+  #     - 8080:8080
+  #   volumes:
+  #     - $PWD/packages/dashboard/src:/app/src
+  #   depends_on:
+  #     - director
+  #     - api
+
+  api:
+    build: $PWD/packages/api
+    environment:
+      PORT: 4000
+    ports:
+      - 9230:9230
+      - 4000:4000
+    volumes:
+      - $PWD/packages/api/src:/app/src
+      - $PWD/packages/api/config:/app/config
+    depends_on:
+      - mongo
+
+  director:
+    build: $PWD/packages/director
+    environment:
+      PORT: 1234
+    ports:
+      - 9229:9229
+      - 1234:1234
+    volumes:
+      - $PWD/packages/director/src:/app/src
+      - $PWD/packages/director/config:/app/config
+    depends_on:
+      - mongo
