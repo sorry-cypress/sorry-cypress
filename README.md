@@ -9,9 +9,13 @@ An open-source alternative to Cypress dashboard.
 
 ## TL;DR
 
-1. [Point Cypress to your service](#pointing-cypress-to-your-service) - set https://sorry-cypress.herokuapp.com/ as `api_url` of `<cypress-root>/packages/server/config/app.yml`
+1. [Point Cypress to your service](#pointing-cypress-to-your-service) - set `https://sorry-cypress.herokuapp.com/` as `api_url` of `<cypress-root>/packages/server/config/app.yml`
 2. Run multiple instances of `cypress run --parallel --record --key xxx --ci-build-id <buildId>`
 3. See the the tests running in parallel 🚀
+
+![Running Cypress test in parallel demo](https://s3.amazonaws.com/agoldis.dev/images/sorry-cypress/cypress.parallel.x2.3mb.gif)
+
+> Look into "example" directory
 
 ## Start here
 
@@ -164,7 +168,7 @@ Is a web-dashboard implemented in ReactJS, basically it just connects the the AP
 
 4. The service looks at the list of specs and returns next available test.
 
-> Original Cypress dashboard claims to implement different strategies for picking the next test.
+> Original Cypress dashboard implements different "smart" strategies for picking the next test
 
 5. When there're no more available tasks for a run, the services send an "empty" response - client reports it is finished.
 
@@ -254,7 +258,7 @@ Yes, Cypress is an [open source software](https://github.com/cypress-io/cypress/
 
 ### Is it production-ready?
 
-The `director` service - yes. I have been using `https://sorry-cypress.herokuapp.com/` to run 500+ parallelized tests, each with ±90 spec files and overall 200+ tests.
+The `director` service - yes. I have been using `https://sorry-cypress.herokuapp.com/` to run 500+ parallelized tests, each with ±90 spec files and 200+ tests.
 
 The other services are still very naive
 
