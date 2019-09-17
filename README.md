@@ -3,7 +3,7 @@
 An open-source alternative to Cypress dashboard.
 
 - run cypress tests in parallel
-- upload failure screenshots to S3 buckets
+- upload failure screenshots to S3 bucket
 - browse test results and failures screenshots
 - host on your own infrastructure
 
@@ -34,7 +34,7 @@ The director service is responsible for:
 - saving tests results
 - saving failed tests screenshots
 
-When you launch Cypress with on a CI environment with multiple machines, each instance first contacts a service to ask what specific test to run.
+When you launch Cypress on a CI environment with multiple machines, each machine first contacts the dashboard to get the next test to run.
 
 The dashboard coordinates the requests from differents machines and assigns tests to each.
 
@@ -56,9 +56,9 @@ Initializing "dummy" screenshots driver...
 Listening on 1234...
 ```
 
-By default, the service will start on port `1234` with `in-memory` execution driver and `dummy` snapshots driver.
+By default, the service will start on port `1234` with in-memory execution driver and `dummy` snapshots driver.
 
-That what is running on `https://sorry-cypress.herokuapp.com` - it is a stateless execution, that parallelizes tests, but does not persist test results and does not uploads screenshots for failed tests.
+That is what running on `https://sorry-cypress.herokuapp.com` - it is a stateless execution, that just parallelizes tests, but does not persist test results and does not uploads screenshots of failed tests.
 
 ### Configuration
 
@@ -84,7 +84,7 @@ SCREENSHOTS_DRIVER="../screenshots/dummy.driver"
 
 ### Drivers
 
-The `director` uses "drivers" for different aspects of its functionality.
+The `director` uses "drivers" that define different aspects of its functionality.
 
 #### Execution driver
 
@@ -94,7 +94,7 @@ There're 2 "execution drivers" implemented:
 
 ##### Stateless
 
-Keeps the state of runs `in-memory`, restarting the service wipes everything.
+Keeps the state of runs in-memory. That means that restarting the service wipes everything.
 
 That's the simplest and most naive implementation.
 
@@ -112,17 +112,17 @@ MONGODB_URI="monodgb://your-DB-URI"
 MONGODB_DATABASE="your-DB-name"
 ```
 
-With MongoDB driver you can use the other services - `api` and `dashboard` to see the results of your runs
+With MongoDB driver you can use the other services - `api` and `dashboard` to see the results of your runs.
 
 #### Snapshots driver
 
-...is what allows to save the snapshots of failed tests.
+...is what allows you to save the snapshots of failed tests.
 
 It provides the client (Cypress runner) a URL for uploading the screenshots.
 
 ##### Dummy
 
-Is the default driver and it does nothing - snapshots won't be saved
+Is the default driver and it does nothing - snapshots won't be saved.
 
 You can set it explicity in `.env`:
 
@@ -132,7 +132,7 @@ SCREENSHOTS_DRIVER="../screenshots/dummy.driver"
 
 ##### S3 Driver
 
-The driver generates upload URLs for S3 buckets. To enable it, set in `.env`:
+The driver generates upload URLs for S3 bucket. To enable it, set in `.env`:
 
 ```
 SCREENSHOTS_DRIVER="../screenshots/s3.driver"
@@ -141,17 +141,15 @@ S3_BUCKET="your_bucket_name"
 
 Please make sure that [AWS credentials](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html) with proper access to invoke [`s3.getSignedUrl`](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html) are available in the environment.
 
-Let's say we have 5 machines that are about to start running your tests.
-
 ### The `api` service
 
-Is a simple GraphQL services that allows to query the data persisted by MongoDB.
+...is a simple GraphQL service, that allows to query the data persisted by MongoDB.
 
 More details to come...
 
 ### The `dashboard` service
 
-Is a web-dashboard implemented in ReactJS, basically it just connects the the API and presents the data (still not) nicely.
+Is a web dashboard implemented in ReactJS, the idea is to connect to the API and presents the data nicely (it is in very early development stage).
 
 ## Behind the scenes
 
@@ -164,13 +162,13 @@ Is a web-dashboard implemented in ReactJS, basically it just connects the the AP
 
 2. The `director` creates or fetches an existing `run`, based on the parameters and responds with a randomly generated `machineId` and the allocated `runId`
 
-3. Each cypress client requests a next available task for the `runId` which was returned previously.
+3. Each cypress client requests a next available task for the `runId` which was returned previously
 
-4. The service looks at the list of specs and returns next available test.
+4. The service looks at the list of specs and returns next available test
 
 > Original Cypress dashboard implements different "smart" strategies for picking the next test
 
-5. When there're no more available tasks for a run, the services send an "empty" response - client reports it is finished.
+5. When there're no more available tests for a run, the service sends an "empty" response - client reports that it is finished
 
 ---
 
@@ -260,7 +258,7 @@ Yes, Cypress is an [open source software](https://github.com/cypress-io/cypress/
 
 The `director` service - yes. I have been using `https://sorry-cypress.herokuapp.com/` to run 500+ parallelized tests, each with ±90 spec files and 200+ tests.
 
-The other services are still very naive
+The other services are still very naive.
 
 ### What Cypress clients does it support?
 
