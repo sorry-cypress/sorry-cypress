@@ -82,6 +82,7 @@ const createInstance = async (instanceId: string, instance: InstanceResult) => {
 export const driver: ExecutionDriver = {
   id: 'in-memory',
   init: () => Promise.resolve(),
+  setScreenshotURL: () => Promise.resolve(),
   createRun,
   getNextTask,
   createInstance

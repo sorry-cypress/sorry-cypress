@@ -16,4 +16,9 @@ export interface ExecutionDriver extends Driver {
   createRun: (params: CreateRunParameters) => Promise<CreateRunResponse>;
   getNextTask: (runId: string) => Promise<Task>;
   createInstance: (instanceId: string, result: InstanceResult) => Promise<void>;
+  setScreenshotURL: (
+    instanceId: string,
+    screenshotId: string,
+    screenshotURL: string
+  ) => Promise<void>;
 }

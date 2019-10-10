@@ -1,3 +1,8 @@
+export interface Instance {
+  instanceId: string;
+  results: InstanceResult;
+}
+
 export interface Screenshot {
   screenshotId: string;
   name: string | null;
@@ -5,6 +10,7 @@ export interface Screenshot {
   takenAt: string;
   height: number;
   width: number;
+  screenshotURL?: string;
 }
 
 export interface InstanceResultStats {
@@ -18,6 +24,7 @@ export interface InstanceResultStats {
   wallClockEndedAt: Date;
   wallClockDuration: number;
 }
+
 export interface InstanceResult {
   stats: InstanceResultStats;
   tests: object[];

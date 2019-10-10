@@ -8,5 +8,5 @@ export const EXECUTION_DRIVER =
 export const SCREENSHOTS_DRIVER =
   process.env.SCREENSHOTS_DRIVER || `../screenshots/dummy.driver`;
 
-export const MONGODB_URI = process.env.MONGODB_URI;
-export const MONGODB_DATABASE = process.env.MONGODB_DATABASE;
+export const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://mongo:27017';
+export const MONGODB_DATABASE = process.env.MONGODB_DATABASE || 'sorry-cypress';
