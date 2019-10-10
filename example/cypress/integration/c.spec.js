@@ -2,13 +2,13 @@ describe('Suite C', function() {
   it('Welcomes you', function() {
     cy.visit('/');
     cy.wait(10000);
-    cy.contains('Hello and sorry Cypress');
+    cy.contains('This should fail');
   });
 
   it('Shows 404', function() {
     cy.visit('/non-existing', {
       failOnStatusCode: false
     });
-    cy.contains('404');
+    cy.contains('405');
   });
 });

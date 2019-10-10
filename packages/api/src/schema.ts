@@ -53,6 +53,7 @@ export const typeDefs = gql`
     takenAt: String!
     height: Int!
     width: Int!
+    screenshotURL: String
   }
 
   type ReporterStats {
