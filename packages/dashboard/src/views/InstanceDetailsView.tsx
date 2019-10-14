@@ -50,7 +50,9 @@ export function InstanceDetailsView({
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :( </p>;
-
+  if (!data.instance) {
+    return 'No data reported so far';
+  }
   const tests = data.instance.results.tests;
   const screenshots = data.instance.results.screenshots;
   return (

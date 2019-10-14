@@ -4,7 +4,7 @@ import { useQuery } from '@apollo/react-hooks';
 import { RunSummary } from '../components/run/summary';
 
 const GET_ALL_RUNS = gql`
-  {
+  query getRunsSummary {
     runs {
       runId
       meta {
@@ -22,6 +22,20 @@ const GET_ALL_RUNS = gql`
         spec
         instanceId
         claimed
+        results {
+          tests {
+            title
+            state
+          }
+          stats {
+            tests
+            pending
+            passes
+            failures
+            skipped
+            suites
+          }
+        }
       }
     }
   }

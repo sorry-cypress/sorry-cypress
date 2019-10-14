@@ -71,13 +71,20 @@ export const typeDefs = gql`
   type Run {
     runId: ID!
     meta: RunMeta
-    specs: [RunSpec]
+    specs: [FullRunSpec]!
   }
 
   type RunSpec {
     spec: String!
     instanceId: String!
     claimed: Boolean!
+  }
+
+  type FullRunSpec {
+    spec: String!
+    instanceId: String!
+    claimed: Boolean!
+    results: InstanceResults
   }
 
   type RunMeta {
