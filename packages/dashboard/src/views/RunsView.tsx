@@ -7,6 +7,7 @@ const GET_ALL_RUNS = gql`
   query getRunsSummary {
     runs {
       runId
+      createdAt
       meta {
         ciBuildId
         projectId

@@ -1,8 +1,15 @@
 import { gql } from 'apollo-server';
 
 export const typeDefs = gql`
+  scalar DateTime
+
+  enum OrderingOptions {
+    DESC
+    ASC
+  }
+
   type Query {
-    runs: [Run]!
+    runs(orderDirection: OrderingOptions = DESC): [Run]!
     run(id: ID!): Run
     instance(id: ID!): Instance
   }
@@ -70,6 +77,7 @@ export const typeDefs = gql`
   # Runs and subtypes
   type Run {
     runId: ID!
+    createdAt: DateTime!
     meta: RunMeta
     specs: [FullRunSpec]!
   }

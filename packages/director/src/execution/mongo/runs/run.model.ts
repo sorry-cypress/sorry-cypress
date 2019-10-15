@@ -37,7 +37,9 @@ export const setInstanceClaimed = async (runId: string, instanceId: string) => {
         }
       },
       {
-        $set: { 'specs.$[spec].claimed': true }
+        $set: {
+          'specs.$[spec].claimed': true
+        }
       },
       {
         arrayFilters: [{ 'spec.instanceId': instanceId }]
