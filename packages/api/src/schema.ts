@@ -9,11 +9,16 @@ export const typeDefs = gql`
   }
 
   type Query {
-    runs(orderDirection: OrderingOptions = DESC): [Run]!
+    runs(orderDirection: OrderingOptions = DESC, cursor: String = null): [Run]!
+    runFeed(cursor: String): RunFeed
     run(id: ID!): Run
     instance(id: ID!): Instance
   }
 
+  type RunFeed {
+    cursor: String!
+    runs: [Run]!
+  }
   type Instance {
     instanceId: ID!
     results: InstanceResults!

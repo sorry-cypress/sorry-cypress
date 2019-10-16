@@ -1,6 +1,8 @@
 import mongodb from 'mongodb';
 import { MONGODB_URI, MONGODB_DATABASE } from '@src/config';
 
+export { ObjectID } from 'mongodb';
+
 let db: mongodb.Db;
 let client: mongodb.MongoClient;
 
