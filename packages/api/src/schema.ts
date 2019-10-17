@@ -1,12 +1,25 @@
 import { gql } from 'apollo-server';
 
 export const typeDefs = gql`
+  scalar DateTime
+
+  enum OrderingOptions {
+    DESC
+    ASC
+  }
+
   type Query {
-    runs: [Run]!
+    runs(orderDirection: OrderingOptions = DESC, cursor: String = null): [Run]!
+    runFeed(cursor: String): RunFeed
     run(id: ID!): Run
     instance(id: ID!): Instance
   }
 
+  type RunFeed {
+    cursor: String!
+    hasMore: Boolean!
+    runs: [Run]!
+  }
   type Instance {
     instanceId: ID!
     results: InstanceResults!
@@ -53,6 +66,7 @@ export const typeDefs = gql`
     takenAt: String!
     height: Int!
     width: Int!
+    screenshotURL: String
   }
 
   type ReporterStats {
@@ -69,14 +83,22 @@ export const typeDefs = gql`
   # Runs and subtypes
   type Run {
     runId: ID!
+    createdAt: DateTime!
     meta: RunMeta
-    specs: [RunSpec]
+    specs: [FullRunSpec]!
   }
 
   type RunSpec {
     spec: String!
     instanceId: String!
     claimed: Boolean!
+  }
+
+  type FullRunSpec {
+    spec: String!
+    instanceId: String!
+    claimed: Boolean!
+    results: InstanceResults
   }
 
   type RunMeta {

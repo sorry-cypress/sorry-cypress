@@ -1,6 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import { InstanceResult } from '@src/types';
+import { InstanceResult, ScreenshotUploadInstruction } from '@src/types';
 import { RUN_NOT_EXIST } from '@src/lib/errors';
 
 export const app = express();
@@ -63,14 +63,33 @@ app.post('/runs/:runId/instances', async (req, res) => {
 app.put('/instances/:instanceId', async (req, res) => {
   const { instanceId } = req.params;
   const result: InstanceResult = req.body;
+
   console.log(`>> Received instance result`, { instanceId });
   await app.get('executionDriver').createInstance(instanceId, result);
 
-  console.log(`<< Sending screenshots upload URLs`, { instanceId });
+  const screenshotUploadUrls = await app
+    .get('screenshotsDriver')
+    .getScreenshotsUploadURLs(instanceId, result);
+
+  if (screenshotUploadUrls.length > 0) {
+    screenshotUploadUrls.forEach((screenshot: ScreenshotUploadInstruction) => {
+      app
+        .get('executionDriver')
+        .setScreenshotURL(
+          instanceId,
+          screenshot.screenshotId,
+          screenshot.readUrl
+        );
+    });
+  }
+
+  console.log(`<< Sending screenshot upload URLs`, {
+    instanceId,
+    screenshotUploadUrls
+  });
+
   return res.json({
-    screenshotUploadUrls: await app
-      .get('screenshotsDriver')
-      .getScreenshotsUploadURLs(instanceId, result)
+    screenshotUploadUrls
   });
 });
 

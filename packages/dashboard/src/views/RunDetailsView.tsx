@@ -1,7 +1,8 @@
 import React from 'react';
-import { RunSummary } from '../components/run/summary';
+import { RunDetails } from '../components/run/details';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
+import { RunSummary } from '../components/run/summary';
 
 const GET_RUN = gql`
   query getRun($runId: ID!) {
@@ -22,6 +23,20 @@ const GET_RUN = gql`
         spec
         instanceId
         claimed
+        results {
+          tests {
+            title
+            state
+          }
+          stats {
+            tests
+            pending
+            passes
+            failures
+            skipped
+            suites
+          }
+        }
       }
     }
   }
@@ -38,5 +53,10 @@ export function RunDetailsView({
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :( </p>;
 
-  return <RunSummary run={data.run} />;
+  return (
+    <>
+      <RunSummary run={data.run} />
+      <RunDetails run={data.run} />
+    </>
+  );
 }

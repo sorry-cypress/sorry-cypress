@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
 import { InstanceSummary } from '../components/instance/summary';
-import { Test } from '../components/test/';
+import { Test, TestDetails } from '../components/test/';
 
 const GET_INSTANCE = gql`
   query getInstance($instanceId: ID!) {
@@ -19,10 +19,18 @@ const GET_INSTANCE = gql`
           wallClockDuration
         }
         tests {
+          testId
           wallClockDuration
           state
           error
           title
+        }
+        screenshots {
+          testId
+          screenshotId
+          height
+          width
+          screenshotURL
         }
       }
     }
@@ -37,9 +45,16 @@ export function InstanceDetailsView({
   const { loading, error, data } = useQuery(GET_INSTANCE, {
     variables: { instanceId: id }
   });
+
+  const [detailedTestId, setDetailedTestId] = useState(null);
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :( </p>;
-
+  if (!data.instance) {
+    return 'No data reported so far';
+  }
+  const tests = data.instance.results.tests;
+  const screenshots = data.instance.results.screenshots;
   return (
     <div>
       <div>
@@ -47,14 +62,22 @@ export function InstanceDetailsView({
       </div>
       <InstanceSummary instance={data.instance} />
       <div>
-        <strong>Tests: </strong>
+        <strong>Tests (click for details): </strong>
         <ul>
-          {data.instance.results.tests.map(t => (
+          {tests.map(t => (
             <li key={t.testId}>
-              <Test test={t} />
+              <Test test={t} onClick={setDetailedTestId} />
             </li>
           ))}
         </ul>
+
+        <strong>Details</strong>
+        {detailedTestId && (
+          <TestDetails
+            test={tests.find(t => t.testId === detailedTestId)}
+            screenshots={screenshots}
+          />
+        )}
       </div>
     </div>
   );

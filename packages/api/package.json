@@ -36,6 +36,7 @@
     "apollo-server": "^2.9.3",
     "dotenv": "^8.1.0",
     "graphql": "^14.5.4",
+    "graphql-iso-date": "^3.6.1",
     "mongodb": "^3.3.2"
   }
 }
