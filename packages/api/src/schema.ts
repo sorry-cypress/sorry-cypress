@@ -17,6 +17,7 @@ export const typeDefs = gql`
 
   type RunFeed {
     cursor: String!
+    hasMore: Boolean!
     runs: [Run]!
   }
   type Instance {

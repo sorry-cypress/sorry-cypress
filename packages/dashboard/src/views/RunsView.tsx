@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
 import { RunSummary } from '../components/run/summary';
@@ -7,6 +7,7 @@ const GET_ALL_RUNS = gql`
   query getRunsFeed($cursor: String) {
     runFeed(cursor: $cursor) {
       cursor
+      hasMore
       runs {
         runId
         createdAt
@@ -57,7 +58,8 @@ export function RunsView() {
     }
   });
 
-  const [showLoader, setShowLoader] = useState(true);
+  // const [showLoader, setShowLoader] = useState(true);
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
 
@@ -71,16 +73,14 @@ export function RunsView() {
         prev,
         {
           fetchMoreResult: {
-            runFeed: { cursor, runs }
+            runFeed: { cursor, hasMore, runs }
           }
         }
       ) => {
-        if (cursor === '0') {
-          setShowLoader(false);
-        }
         return {
           runFeed: {
             __typename: prev.runFeed.__typename,
+            hasMore,
             cursor,
             runs: [...prev.runFeed.runs, ...runs]
           }
@@ -96,7 +96,7 @@ export function RunsView() {
           <RunSummary run={run} />
         </div>
       ))}
-      {showLoader && <button onClick={loadMore}>load more</button>}
+      {runFeed.hasMore && <button onClick={loadMore}>load more</button>}
     </>
   );
 }
