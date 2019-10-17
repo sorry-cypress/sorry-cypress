@@ -149,7 +149,10 @@ More details to come...
 
 ### The `dashboard` service
 
-Is a web dashboard implemented in ReactJS, the idea is to connect to the API and presents the data nicely (it is in very early development stage).
+Is a web dashboard implemented in ReactJS, the idea is to connect to the API and presents the data. It is in very early development stages and is very naive - you can explore runs and specs details, failures and screenshots.
+
+![Web dashboard prototype](https://s3.amazonaws.com/agoldis.dev/images/sorry-cypress/sorry-cypress.dashboard.gif)
+
 
 ## Behind the scenes
 
