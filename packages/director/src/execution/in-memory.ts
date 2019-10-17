@@ -38,6 +38,7 @@ const createRun = async (
 
   runs[runId] = {
     runId,
+    createdAt: new Date(),
     meta: {} as RunMetaData,
     specs: params.specs.map(spec => ({
       spec,
