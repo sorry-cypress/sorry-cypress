@@ -10,7 +10,7 @@ export const typeDefs = gql`
 
   type Query {
     runs(orderDirection: OrderingOptions = DESC, cursor: String = null): [Run]!
-    runFeed(cursor: String): RunFeed
+    runFeed(cursor: String): RunFeed!
     run(id: ID!): Run
     instance(id: ID!): Instance
   }
@@ -18,7 +18,7 @@ export const typeDefs = gql`
   type RunFeed {
     cursor: String!
     hasMore: Boolean!
-    runs: [Run]!
+    runs: [Run!]!
   }
   type Instance {
     instanceId: ID!
@@ -30,7 +30,7 @@ export const typeDefs = gql`
     tests: [InstanceTest!]!
     error: String
     stdout: String
-    screenshots: [InstanceScreeshot]!
+    screenshots: [InstanceScreeshot!]!
     # cypressConfig: CypressConfig
     reporterStats: ReporterStats
   }
@@ -48,7 +48,7 @@ export const typeDefs = gql`
   }
 
   type InstanceTest {
-    testId: String
+    testId: String!
     title: [String]
     state: String # prob enum
     body: String

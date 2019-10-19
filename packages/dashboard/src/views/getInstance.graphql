@@ -1,0 +1,30 @@
+query getInstance($instanceId: ID!) {
+  instance(id: $instanceId) {
+    instanceId
+    results {
+      stats {
+        suites
+        tests
+        passes
+        pending
+        skipped
+        failures
+        wallClockDuration
+      }
+      tests {
+        testId
+        wallClockDuration
+        state
+        error
+        title
+      }
+      screenshots {
+        testId
+        screenshotId
+        height
+        width
+        screenshotURL
+      }
+    }
+  }
+}

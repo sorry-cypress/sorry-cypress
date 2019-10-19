@@ -1,88 +1,34 @@
 import React from 'react';
-import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
 import { RunSummary } from '../components/run/summary';
-
-const GET_ALL_RUNS = gql`
-  query getRunsFeed($cursor: String) {
-    runFeed(cursor: $cursor) {
-      cursor
-      hasMore
-      runs {
-        runId
-        createdAt
-        meta {
-          ciBuildId
-          projectId
-          commit {
-            branch
-            remoteOrigin
-            message
-            authorEmail
-            authorName
-          }
-        }
-        specs {
-          spec
-          instanceId
-          claimed
-          results {
-            tests {
-              title
-              state
-            }
-            stats {
-              tests
-              pending
-              passes
-              failures
-              skipped
-              suites
-            }
-          }
-        }
-      }
-    }
-  }
-`;
+import { useGetRunsFeedQuery } from '../generated/graphql';
 
 export function RunsView() {
-  const {
-    fetchMore,
-    loading,
-    error,
-    data: { runFeed }
-  } = useQuery(GET_ALL_RUNS, {
+  const { fetchMore, loading, error, data } = useGetRunsFeedQuery({
     variables: {
       cursor: ''
     }
   });
 
-  // const [showLoader, setShowLoader] = useState(true);
-
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
+  if (!data) {
+    return <p>No data</p>;
+  }
 
-  let cursor = runFeed.cursor;
+  const runFeed = data.runFeed!;
+
   function loadMore() {
     return fetchMore({
       variables: {
-        cursor
+        cursor: runFeed.cursor
       },
-      updateQuery: (
-        prev,
-        {
-          fetchMoreResult: {
-            runFeed: { cursor, hasMore, runs }
-          }
-        }
-      ) => {
+      updateQuery: (prev, { fetchMoreResult }) => {
         return {
           runFeed: {
             __typename: prev.runFeed.__typename,
-            hasMore,
-            cursor,
-            runs: [...prev.runFeed.runs, ...runs]
+            hasMore: fetchMoreResult!.runFeed.hasMore,
+            cursor: runFeed.cursor,
+            runs: [...prev.runFeed.runs, ...fetchMoreResult!.runFeed.runs]
           }
         };
       }
