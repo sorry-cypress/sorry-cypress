@@ -46,6 +46,7 @@ export type FullRunSpec = {
 
 export type Instance = {
    __typename?: 'Instance',
+  runId: Scalars['ID'],
   instanceId: Scalars['ID'],
   results: InstanceResults,
 };
@@ -182,7 +183,7 @@ export type GetInstanceQuery = (
   { __typename?: 'Query' }
   & { instance: Maybe<(
     { __typename?: 'Instance' }
-    & Pick<Instance, 'instanceId'>
+    & Pick<Instance, 'runId' | 'instanceId'>
     & { results: (
       { __typename?: 'InstanceResults' }
       & { stats: (
@@ -275,6 +276,7 @@ export type GetRunsFeedQuery = (
 export const GetInstanceDocument = gql`
     query getInstance($instanceId: ID!) {
   instance(id: $instanceId) {
+    runId
     instanceId
     results {
       stats {

@@ -20,7 +20,9 @@ export const typeDefs = gql`
     hasMore: Boolean!
     runs: [Run!]!
   }
+
   type Instance {
+    runId: ID!
     instanceId: ID!
     results: InstanceResults!
   }

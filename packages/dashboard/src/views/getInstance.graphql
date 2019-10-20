@@ -1,5 +1,6 @@
 query getInstance($instanceId: ID!) {
   instance(id: $instanceId) {
+    runId
     instanceId
     results {
       stats {
