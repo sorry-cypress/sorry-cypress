@@ -5,6 +5,7 @@ query getRun($runId: ID!) {
       ciBuildId
       projectId
       commit {
+        sha
         branch
         remoteOrigin
         message

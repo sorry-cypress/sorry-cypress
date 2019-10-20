@@ -235,7 +235,7 @@ export type GetRunQuery = (
       & Pick<RunMeta, 'ciBuildId' | 'projectId'>
       & { commit: Maybe<(
         { __typename?: 'Commit' }
-        & Pick<Commit, 'branch' | 'remoteOrigin' | 'message' | 'authorEmail' | 'authorName'>
+        & Pick<Commit, 'sha' | 'branch' | 'remoteOrigin' | 'message' | 'authorEmail' | 'authorName'>
       )> }
     )>, specs: Array<Maybe<(
       { __typename?: 'FullRunSpec' }
@@ -272,7 +272,7 @@ export type GetRunsFeedQuery = (
         & Pick<RunMeta, 'ciBuildId' | 'projectId'>
         & { commit: Maybe<(
           { __typename?: 'Commit' }
-          & Pick<Commit, 'branch' | 'remoteOrigin' | 'message' | 'authorEmail' | 'authorName'>
+          & Pick<Commit, 'sha' | 'branch' | 'remoteOrigin' | 'message' | 'authorEmail' | 'authorName'>
         )> }
       )>, specs: Array<Maybe<(
         { __typename?: 'FullRunSpec' }
@@ -374,6 +374,7 @@ export const GetRunDocument = gql`
       ciBuildId
       projectId
       commit {
+        sha
         branch
         remoteOrigin
         message
@@ -441,6 +442,7 @@ export const GetRunsFeedDocument = gql`
         ciBuildId
         projectId
         commit {
+          sha
           branch
           remoteOrigin
           message

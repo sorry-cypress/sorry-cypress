@@ -9,6 +9,7 @@ query getRunsFeed($cursor: String) {
         ciBuildId
         projectId
         commit {
+          sha
           branch
           remoteOrigin
           message
