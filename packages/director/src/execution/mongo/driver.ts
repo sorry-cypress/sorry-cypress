@@ -9,5 +9,5 @@ export const driver: ExecutionDriver = {
   createRun: mongoRunController.createRun,
   getNextTask: mongoRunController.getNextTask,
   setScreenshotURL: mongoInstanceController.setScreenshotURL,
-  createInstance: mongoInstanceController.createInstance
+  setInstanceResults: mongoInstanceController.setInstanceResults
 };

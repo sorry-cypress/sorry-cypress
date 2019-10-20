@@ -65,7 +65,7 @@ app.put('/instances/:instanceId', async (req, res) => {
   const result: InstanceResult = req.body;
 
   console.log(`>> Received instance result`, { instanceId });
-  await app.get('executionDriver').createInstance(instanceId, result);
+  await app.get('executionDriver').setInstanceResults(instanceId, result);
 
   const screenshotUploadUrls = await app
     .get('screenshotsDriver')
