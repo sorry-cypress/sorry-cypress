@@ -1,8 +1,18 @@
 import React from 'react';
 import { RunSummary } from '../components/run/summary';
 import { useGetRunsFeedQuery } from '../generated/graphql';
+import { Button } from 'bold-ui';
+import { useApolloClient } from '@apollo/react-hooks';
 
 export function RunsView() {
+  const apollo = useApolloClient();
+
+  apollo.writeData({
+    data: {
+      navStructure: []
+    }
+  });
+
   const { fetchMore, loading, error, data } = useGetRunsFeedQuery({
     variables: {
       cursor: ''
@@ -27,7 +37,7 @@ export function RunsView() {
           runFeed: {
             __typename: prev.runFeed.__typename,
             hasMore: fetchMoreResult!.runFeed.hasMore,
-            cursor: runFeed.cursor,
+            cursor: fetchMoreResult!.runFeed.cursor,
             runs: [...prev.runFeed.runs, ...fetchMoreResult!.runFeed.runs]
           }
         };
@@ -42,7 +52,7 @@ export function RunsView() {
           <RunSummary run={run} />
         </div>
       ))}
-      {runFeed.hasMore && <button onClick={loadMore}>load more</button>}
+      {runFeed.hasMore && <Button onClick={loadMore}>Load More</Button>}
     </>
   );
 }

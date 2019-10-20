@@ -23,6 +23,8 @@ export const typeDefs = gql`
 
   type Instance {
     runId: ID!
+    run: PartialRun!
+    spec: String!
     instanceId: ID!
     results: InstanceResults!
   }
@@ -83,6 +85,13 @@ export const typeDefs = gql`
   }
 
   # Runs and subtypes
+  type PartialRun {
+    runId: ID!
+    createdAt: DateTime!
+    meta: RunMeta
+    specs: [RunSpec]!
+  }
+
   type Run {
     runId: ID!
     createdAt: DateTime!

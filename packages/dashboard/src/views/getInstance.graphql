@@ -1,7 +1,21 @@
 query getInstance($instanceId: ID!) {
   instance(id: $instanceId) {
-    runId
     instanceId
+    runId
+    spec
+    run {
+      meta {
+        ciBuildId
+        commit {
+          sha
+          branch
+          authorName
+          authorEmail
+          remoteOrigin
+          message
+        }
+      }
+    }
     results {
       stats {
         suites

@@ -47,6 +47,8 @@ export type FullRunSpec = {
 export type Instance = {
    __typename?: 'Instance',
   runId: Scalars['ID'],
+  run: PartialRun,
+  spec: Scalars['String'],
   instanceId: Scalars['ID'],
   results: InstanceResults,
 };
@@ -101,6 +103,14 @@ export enum OrderingOptions {
   Desc = 'DESC',
   Asc = 'ASC'
 }
+
+export type PartialRun = {
+   __typename?: 'PartialRun',
+  runId: Scalars['ID'],
+  createdAt: Scalars['DateTime'],
+  meta?: Maybe<RunMeta>,
+  specs: Array<Maybe<RunSpec>>,
+};
 
 export type Query = {
    __typename?: 'Query',
@@ -183,8 +193,18 @@ export type GetInstanceQuery = (
   { __typename?: 'Query' }
   & { instance: Maybe<(
     { __typename?: 'Instance' }
-    & Pick<Instance, 'runId' | 'instanceId'>
-    & { results: (
+    & Pick<Instance, 'instanceId' | 'runId' | 'spec'>
+    & { run: (
+      { __typename?: 'PartialRun' }
+      & { meta: Maybe<(
+        { __typename?: 'RunMeta' }
+        & Pick<RunMeta, 'ciBuildId'>
+        & { commit: Maybe<(
+          { __typename?: 'Commit' }
+          & Pick<Commit, 'sha' | 'branch' | 'authorName' | 'authorEmail' | 'remoteOrigin' | 'message'>
+        )> }
+      )> }
+    ), results: (
       { __typename?: 'InstanceResults' }
       & { stats: (
         { __typename?: 'InstanceStats' }
@@ -276,8 +296,22 @@ export type GetRunsFeedQuery = (
 export const GetInstanceDocument = gql`
     query getInstance($instanceId: ID!) {
   instance(id: $instanceId) {
-    runId
     instanceId
+    runId
+    spec
+    run {
+      meta {
+        ciBuildId
+        commit {
+          sha
+          branch
+          authorName
+          authorEmail
+          remoteOrigin
+          message
+        }
+      }
+    }
     results {
       stats {
         suites

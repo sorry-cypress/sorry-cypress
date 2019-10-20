@@ -1,13 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { getRunTestsOverall } from '../../lib/run';
+import { Run } from '../../generated/graphql';
+import { Paper } from 'bold-ui';
 
-export function RunSummary({ run }) {
+export function RunSummary({ run }: { run: Run }) {
   const { meta, runId, specs } = run;
   const { commit } = meta;
   const overalll = getRunTestsOverall(run);
   return (
-    <div>
+    <Paper style={{ padding: 12, margin: '12px 0' }}>
       <div>
         <span>
           <strong>Build: </strong>
@@ -48,6 +50,6 @@ export function RunSummary({ run }) {
           <li>Skipped: {overalll.skipped}</li>
         </ul>
       </div>
-    </div>
+    </Paper>
   );
 }

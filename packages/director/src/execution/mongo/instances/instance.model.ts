@@ -9,11 +9,20 @@ import {
 
 const COLLECTION_NAME = 'instances';
 
-export const insertInstance = async (runId: string, instanceId: string) => {
+export const insertInstance = async ({
+  runId,
+  instanceId,
+  spec
+}: {
+  runId: string;
+  instanceId: string;
+  spec: string;
+}) => {
   try {
     await getMongoDB()
       .collection(COLLECTION_NAME)
       .insertOne({
+        spec,
         runId,
         instanceId
       });

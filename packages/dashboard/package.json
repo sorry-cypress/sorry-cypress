@@ -25,6 +25,7 @@
     "apollo-cache-inmemory": "^1.6.3",
     "apollo-client": "^2.6.4",
     "apollo-link-http": "^1.5.15",
+    "bold-ui": "^1.0.0-beta.19",
     "graphql": "^14.5.4",
     "graphql-tag": "^2.10.1",
     "react": "^16.9.0",

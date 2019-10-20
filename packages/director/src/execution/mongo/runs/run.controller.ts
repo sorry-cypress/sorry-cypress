@@ -80,12 +80,16 @@ export const getNextTask = async (runId: string): Promise<Task> => {
     };
   }
 
-  const instance = getFirstUnclaimedSpec(run);
+  const spec = getFirstUnclaimedSpec(run);
   try {
-    await setSpecClaimed(runId, instance.instanceId);
-    await createInstance(runId, instance.instanceId);
+    await setSpecClaimed(runId, spec.instanceId);
+    await createInstance({
+      runId,
+      instanceId: spec.instanceId,
+      spec: spec.spec
+    });
     return {
-      instance,
+      instance: spec,
       claimedInstances: getClaimedSpecs(run).length + 1,
       totalInstances: getAllSpecs(run).length
     };

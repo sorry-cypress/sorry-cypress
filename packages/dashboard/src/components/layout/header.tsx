@@ -1,0 +1,36 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { useCss, Breadcrumbs, Link as UILink } from 'bold-ui';
+import { useQuery } from '@apollo/react-hooks';
+import gql from 'graphql-tag';
+
+const GET_NAV_STRUCTURE = gql`
+  {
+    navStructure @client {
+      label
+      link
+    }
+  }
+`;
+
+export const Header: React.FC = () => {
+  const { css, theme } = useCss();
+  const { data } = useQuery(GET_NAV_STRUCTURE);
+  return (
+    <nav
+      className={css`
+        padding: 32px;
+        background-color: ${theme.pallete.gray.c90};
+      `}
+    >
+      <Breadcrumbs>
+        <Link to="/">🤷🏻‍♂️ Sorry Cypress</Link>
+        {data.navStructure.map(navItem => (
+          <Link key={navItem.link} to={`/${navItem.link}`}>
+            {navItem.label}
+          </Link>
+        ))}
+      </Breadcrumbs>
+    </nav>
+  );
+};
