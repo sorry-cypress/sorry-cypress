@@ -1,6 +1,7 @@
 import React from 'react';
+import truncate from 'lodash.truncate';
 import { Link } from 'react-router-dom';
-import { useCss, Breadcrumbs, Link as UILink } from 'bold-ui';
+import { useCss, Breadcrumbs } from 'bold-ui';
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
@@ -17,7 +18,7 @@ export const Header: React.FC = () => {
   const { css, theme } = useCss();
   const { data } = useQuery(GET_NAV_STRUCTURE);
   return (
-    <nav
+    <header
       className={css`
         padding: 32px;
         background-color: ${theme.pallete.gray.c90};
@@ -27,10 +28,10 @@ export const Header: React.FC = () => {
         <Link to="/">🤷🏻‍♂️ Sorry Cypress</Link>
         {data.navStructure.map(navItem => (
           <Link key={navItem.link} to={`/${navItem.link}`}>
-            {navItem.label}
+            {truncate(navItem.label)}
           </Link>
         ))}
       </Breadcrumbs>
-    </nav>
+    </header>
   );
 };

@@ -12,6 +12,7 @@ import { Content } from './components/layout/content';
 import { RunsView } from './views/RunsView';
 import { RunDetailsView } from './views/RunDetailsView';
 import { InstanceDetailsView } from './views/InstanceDetailsView';
+import { TestDetailsView } from './views/TestDetailsView';
 
 export const Root = () => {
   return (
@@ -22,7 +23,11 @@ export const Root = () => {
           <Content>
             <Route path="/" exact component={RunsView} />
             <Route path="/run/:id" component={RunDetailsView} />
-            <Route path="/instance/:id" component={InstanceDetailsView} />
+            <Route path="/instance/:id" component={InstanceDetailsView} exact />
+            <Route
+              path="/instance/:instanceId/test/:testId"
+              component={TestDetailsView}
+            />
           </Content>
         </Router>
       </ThemeProvider>

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { InstanceSummary } from '../components/instance/summary';
-import { Test, TestDetails } from '../components/test/';
+import { InstanceDetails } from '../components/instance/details';
 import { useGetInstanceQuery } from '../generated/graphql';
 import { useApolloClient } from '@apollo/react-hooks';
 
@@ -12,10 +12,7 @@ export function InstanceDetailsView({
   const { loading, error, data } = useGetInstanceQuery({
     variables: { instanceId: id }
   });
-
   const apollo = useApolloClient();
-
-  const [detailedTestId, setDetailedTestId] = useState(null);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error.toString()}</p>;
@@ -41,33 +38,18 @@ export function InstanceDetailsView({
       ]
     }
   });
+  if (!data.instance.results) {
+    return (
+      <div>
+        The instance <strong>{data.instance.spec}</strong> has no results yet
+      </div>
+    );
+  }
 
-  const tests = data.instance.results.tests;
-  const screenshots = data.instance.results.screenshots;
   return (
-    <div>
-      <div>
-        <strong>ID:</strong> {data.instance.instanceId}
-      </div>
+    <>
       <InstanceSummary instance={data.instance} />
-      <div>
-        <strong>Tests (click for details): </strong>
-        <ul>
-          {tests.map(t => (
-            <li key={t.testId}>
-              <Test test={t} onClick={setDetailedTestId} />
-            </li>
-          ))}
-        </ul>
-
-        <strong>Details</strong>
-        {detailedTestId && (
-          <TestDetails
-            test={tests.find(t => t.testId === detailedTestId)}
-            screenshots={screenshots}
-          />
-        )}
-      </div>
-    </div>
+      <InstanceDetails instance={data.instance} />
+    </>
   );
 }

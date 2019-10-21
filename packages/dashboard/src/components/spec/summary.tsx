@@ -1,21 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Tag } from 'bold-ui';
+import { HFlow } from 'bold-ui';
+import { TestState } from '../common';
+import { getSpecState } from '../../lib/spec';
+import { FullRunSpec } from '../../generated/graphql';
 
-function SpecResultsSummary({ results }) {
-  const suiteFailed = results.tests.find(t => t.state !== 'passed');
-  return suiteFailed ? (
-    <Tag type="danger">Failure</Tag>
-  ) : (
-    <Tag type="success">OK</Tag>
-  );
-}
-export function SpecSummary({ spec }) {
+export const SpecSummary: React.FC<{ spec: FullRunSpec }> = ({ spec }) => {
+  console.log(spec);
   return (
-    <div>
-      <Tag>{spec.claimed ? 'claimed' : 'unclaimed'}</Tag>
+    <HFlow>
+      <TestState state={getSpecState(spec)} />
       <Link to={`/instance/${spec.instanceId}`}>{spec.spec}</Link>{' '}
-      {spec.results && <SpecResultsSummary results={spec.results} />}
-    </div>
+    </HFlow>
   );
-}
+};

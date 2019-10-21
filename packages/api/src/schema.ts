@@ -26,7 +26,7 @@ export const typeDefs = gql`
     run: PartialRun!
     spec: String!
     instanceId: ID!
-    results: InstanceResults!
+    results: InstanceResults
   }
 
   type InstanceResults {
@@ -120,11 +120,11 @@ export const typeDefs = gql`
   }
 
   type Commit {
-    sha: String
-    branch: String
-    authorName: String
-    authorEmail: String
-    message: String
-    remoteOrigin: String
+    sha: String!
+    branch: String!
+    authorName: String!
+    authorEmail: String!
+    message: String!
+    remoteOrigin: String!
   }
 `;

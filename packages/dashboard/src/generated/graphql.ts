@@ -27,12 +27,12 @@ export enum CacheControlScope {
 
 export type Commit = {
    __typename?: 'Commit',
-  sha?: Maybe<Scalars['String']>,
-  branch?: Maybe<Scalars['String']>,
-  authorName?: Maybe<Scalars['String']>,
-  authorEmail?: Maybe<Scalars['String']>,
-  message?: Maybe<Scalars['String']>,
-  remoteOrigin?: Maybe<Scalars['String']>,
+  sha: Scalars['String'],
+  branch: Scalars['String'],
+  authorName: Scalars['String'],
+  authorEmail: Scalars['String'],
+  message: Scalars['String'],
+  remoteOrigin: Scalars['String'],
 };
 
 
@@ -50,7 +50,7 @@ export type Instance = {
   run: PartialRun,
   spec: Scalars['String'],
   instanceId: Scalars['ID'],
-  results: InstanceResults,
+  results?: Maybe<InstanceResults>,
 };
 
 export type InstanceResults = {
@@ -204,7 +204,7 @@ export type GetInstanceQuery = (
           & Pick<Commit, 'sha' | 'branch' | 'authorName' | 'authorEmail' | 'remoteOrigin' | 'message'>
         )> }
       )> }
-    ), results: (
+    ), results: Maybe<(
       { __typename?: 'InstanceResults' }
       & { stats: (
         { __typename?: 'InstanceStats' }
@@ -216,7 +216,7 @@ export type GetInstanceQuery = (
         { __typename?: 'InstanceScreeshot' }
         & Pick<InstanceScreeshot, 'testId' | 'screenshotId' | 'height' | 'width' | 'screenshotURL'>
       )> }
-    ) }
+    )> }
   )> }
 );
 

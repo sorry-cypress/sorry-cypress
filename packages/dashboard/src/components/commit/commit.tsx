@@ -1,7 +1,8 @@
 import React from 'react';
 import { getGithubCommitURL, getGithubBranchURL } from '../../lib/github';
+import { Commit as CommitDef } from '../../generated/graphql';
 
-export const Commit: React.FC = ({ commit }) => (
+export const Commit: React.FC<{ commit: CommitDef }> = ({ commit }) => (
   <div>
     <strong>Commit details</strong>
     <ul>
