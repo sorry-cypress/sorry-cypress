@@ -7,6 +7,11 @@ An open-source alternative to Cypress dashboard.
 - browse test results and failures screenshots
 - host on your own infrastructure
 
+## Demo
+
+Want to explore? Go to https://sorry-cypress-demo.herokuapp.com/ and see the (alpha version) dashboard in action.
+[Reconfigure Cypress](#pointing-cypress-to-your-service) to use `api_url: "https://sorry-cypress-demo-director.herokuapp.com/"`, run your tests and see them appear in the dashboard. 
+
 ## TL;DR
 
 1. [Point Cypress to your service](#pointing-cypress-to-your-service) - set `https://sorry-cypress.herokuapp.com/` as `api_url` of `<cypress-root>/packages/server/config/app.yml`
@@ -151,8 +156,7 @@ More details to come...
 
 Is a web dashboard implemented in ReactJS, the idea is to connect to the API and presents the data. It is in very early development stages and is very naive - you can explore runs and specs details, failures and screenshots.
 
-![Web dashboard prototype](https://s3.amazonaws.com/agoldis.dev/images/sorry-cypress/sorry-cypress.dashboard.gif)
-
+You can explore currently available features at https://sorry-cypress-demo.herokuapp.com/. 
 
 ## Behind the scenes
 
