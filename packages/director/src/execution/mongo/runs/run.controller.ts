@@ -1,9 +1,10 @@
 import {
   getRunById,
   createRun as storageCreateRun,
-  setInstanceClaimed as storageSetInstanceClaimed
+  setSpecClaimed
 } from './run.model';
 
+import { createInstance } from '../instances/instance.controller';
 import { getDashboardRunURL } from '@src/lib/urls';
 
 import {
@@ -62,30 +63,35 @@ export const createRun = async (
   }
 };
 
-const getClaimedInstances = (run: Run) => run.specs.filter(s => s.claimed);
-const getFirstUnclaimedInstance = (run: Run) => run.specs.find(s => !s.claimed);
-const getAllInstances = (run: Run) => run.specs;
+const getClaimedSpecs = (run: Run) => run.specs.filter(s => s.claimed);
+const getFirstUnclaimedSpec = (run: Run) => run.specs.find(s => !s.claimed);
+const getAllSpecs = (run: Run) => run.specs;
 
 export const getNextTask = async (runId: string): Promise<Task> => {
   let run = await getById(runId);
   if (!run) {
     throw new AppError(RUN_NOT_EXIST);
   }
-  if (!getFirstUnclaimedInstance(run)) {
+  if (!getFirstUnclaimedSpec(run)) {
     return {
       instance: null,
-      claimedInstances: getClaimedInstances(run).length,
-      totalInstances: getAllInstances(run).length
+      claimedInstances: getClaimedSpecs(run).length,
+      totalInstances: getAllSpecs(run).length
     };
   }
 
-  const instance = getFirstUnclaimedInstance(run);
+  const spec = getFirstUnclaimedSpec(run);
   try {
-    await storageSetInstanceClaimed(runId, instance.instanceId);
+    await setSpecClaimed(runId, spec.instanceId);
+    await createInstance({
+      runId,
+      instanceId: spec.instanceId,
+      spec: spec.spec
+    });
     return {
-      instance,
-      claimedInstances: getClaimedInstances(run).length + 1,
-      totalInstances: getAllInstances(run).length
+      instance: spec,
+      claimedInstances: getClaimedSpecs(run).length + 1,
+      totalInstances: getAllSpecs(run).length
     };
   } catch (error) {
     if (error.code && error.code === CLAIM_FAILED) {

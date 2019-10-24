@@ -8,7 +8,12 @@ import {
   CreateRunParameters
 } from '@src/types';
 import { getDashboardRunURL } from '@src/lib/urls';
-import { AppError, RUN_NOT_EXIST, INSTANCE_EXISTS } from '@src/lib/errors';
+import {
+  AppError,
+  RUN_NOT_EXIST,
+  INSTANCE_EXISTS,
+  INSTANCE_NOT_EXIST
+} from '@src/lib/errors';
 import {
   generateRunIdHash,
   generateGroupId,
@@ -16,7 +21,12 @@ import {
 } from '@src/lib/hash';
 
 const runs: { [key: string]: Run } = {};
-const instances: { [key: string]: InstanceResult } = {};
+const instances: {
+  [key: string]: {
+    runId: string;
+    results?: InstanceResult;
+  };
+} = {};
 
 const createRun = async (
   params: CreateRunParameters
@@ -64,7 +74,10 @@ const getNextTask = async (runId: string): Promise<Task> => {
     };
   }
 
-  runs[runId].specs[unclaimedSpecIndex].claimed = true;
+  const spec = runs[runId].specs[unclaimedSpecIndex];
+
+  spec.claimed = true;
+  instances[spec.instanceId] = { runId };
 
   return {
     instance: runs[runId].specs[unclaimedSpecIndex],
@@ -73,18 +86,20 @@ const getNextTask = async (runId: string): Promise<Task> => {
   };
 };
 
-const createInstance = async (instanceId: string, instance: InstanceResult) => {
-  if (instances[instanceId]) {
-    throw new AppError(INSTANCE_EXISTS);
+const setInstanceResults = async (
+  instanceId: string,
+  results: InstanceResult
+) => {
+  if (!instances[instanceId]) {
+    throw new AppError(INSTANCE_NOT_EXIST);
   }
-  instances[instanceId] = instance;
+  instances[instanceId] = { ...instances[instanceId], results };
 };
-
 export const driver: ExecutionDriver = {
   id: 'in-memory',
   init: () => Promise.resolve(),
   setScreenshotURL: () => Promise.resolve(),
   createRun,
   getNextTask,
-  createInstance
+  setInstanceResults
 };

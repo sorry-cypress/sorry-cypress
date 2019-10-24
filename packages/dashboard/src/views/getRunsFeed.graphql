@@ -1,0 +1,41 @@
+query getRunsFeed($cursor: String) {
+  runFeed(cursor: $cursor) {
+    cursor
+    hasMore
+    runs {
+      runId
+      createdAt
+      meta {
+        ciBuildId
+        projectId
+        commit {
+          sha
+          branch
+          remoteOrigin
+          message
+          authorEmail
+          authorName
+        }
+      }
+      specs {
+        spec
+        instanceId
+        claimed
+        results {
+          tests {
+            title
+            state
+          }
+          stats {
+            tests
+            pending
+            passes
+            failures
+            skipped
+            suites
+          }
+        }
+      }
+    }
+  }
+}

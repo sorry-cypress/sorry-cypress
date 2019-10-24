@@ -1,0 +1,45 @@
+query getInstance($instanceId: ID!) {
+  instance(id: $instanceId) {
+    instanceId
+    runId
+    spec
+    run {
+      meta {
+        ciBuildId
+        commit {
+          sha
+          branch
+          authorName
+          authorEmail
+          remoteOrigin
+          message
+        }
+      }
+    }
+    results {
+      stats {
+        suites
+        tests
+        passes
+        pending
+        skipped
+        failures
+        wallClockDuration
+      }
+      tests {
+        testId
+        wallClockDuration
+        state
+        error
+        title
+      }
+      screenshots {
+        testId
+        screenshotId
+        height
+        width
+        screenshotURL
+      }
+    }
+  }
+}

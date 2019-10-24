@@ -1,84 +1,55 @@
-import React, { useState } from 'react';
-import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
+import React from 'react';
 import { InstanceSummary } from '../components/instance/summary';
-import { Test, TestDetails } from '../components/test/';
-
-const GET_INSTANCE = gql`
-  query getInstance($instanceId: ID!) {
-    instance(id: $instanceId) {
-      instanceId
-      results {
-        stats {
-          suites
-          tests
-          passes
-          pending
-          skipped
-          failures
-          wallClockDuration
-        }
-        tests {
-          testId
-          wallClockDuration
-          state
-          error
-          title
-        }
-        screenshots {
-          testId
-          screenshotId
-          height
-          width
-          screenshotURL
-        }
-      }
-    }
-  }
-`;
+import { InstanceDetails } from '../components/instance/details';
+import { useGetInstanceQuery } from '../generated/graphql';
+import { useApolloClient } from '@apollo/react-hooks';
 
 export function InstanceDetailsView({
   match: {
     params: { id }
   }
 }) {
-  const { loading, error, data } = useQuery(GET_INSTANCE, {
+  const { loading, error, data } = useGetInstanceQuery({
     variables: { instanceId: id }
   });
-
-  const [detailedTestId, setDetailedTestId] = useState(null);
+  const apollo = useApolloClient();
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :( </p>;
-  if (!data.instance) {
-    return 'No data reported so far';
-  }
-  const tests = data.instance.results.tests;
-  const screenshots = data.instance.results.screenshots;
-  return (
-    <div>
-      <div>
-        <strong>ID:</strong> {data.instance.instanceId}
-      </div>
-      <InstanceSummary instance={data.instance} />
-      <div>
-        <strong>Tests (click for details): </strong>
-        <ul>
-          {tests.map(t => (
-            <li key={t.testId}>
-              <Test test={t} onClick={setDetailedTestId} />
-            </li>
-          ))}
-        </ul>
+  if (error) return <p>{error.toString()}</p>;
+  if (!data) return <p>No Data</p>;
 
-        <strong>Details</strong>
-        {detailedTestId && (
-          <TestDetails
-            test={tests.find(t => t.testId === detailedTestId)}
-            screenshots={screenshots}
-          />
-        )}
+  if (!data.instance) {
+    return <p>No data reported so far</p>;
+  }
+
+  apollo.writeData({
+    data: {
+      navStructure: [
+        {
+          __typename: 'NavStructureItem',
+          label: data.instance!.run!.meta!.ciBuildId,
+          link: `run/${data.instance!.runId}`
+        },
+        {
+          __typename: 'NavStructureItem',
+          label: data.instance.spec,
+          link: `instance/${data.instance.instanceId}`
+        }
+      ]
+    }
+  });
+  if (!data.instance.results) {
+    return (
+      <div>
+        The instance <strong>{data.instance.spec}</strong> has no results yet
       </div>
-    </div>
+    );
+  }
+
+  return (
+    <>
+      <InstanceSummary instance={data.instance} />
+      <InstanceDetails instance={data.instance} />
+    </>
   );
 }

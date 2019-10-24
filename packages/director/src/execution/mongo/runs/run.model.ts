@@ -23,7 +23,7 @@ export const createRun = async (run: Run) => {
 
 // atomic operation to avoid concurrency issues
 // filter document prevents concurrent writes
-export const setInstanceClaimed = async (runId: string, instanceId: string) => {
+export const setSpecClaimed = async (runId: string, instanceId: string) => {
   const { matchedCount, modifiedCount } = await getMongoDB()
     .collection('runs')
     .updateOne(

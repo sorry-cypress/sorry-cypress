@@ -10,7 +10,7 @@ export const typeDefs = gql`
 
   type Query {
     runs(orderDirection: OrderingOptions = DESC, cursor: String = null): [Run]!
-    runFeed(cursor: String): RunFeed
+    runFeed(cursor: String): RunFeed!
     run(id: ID!): Run
     instance(id: ID!): Instance
   }
@@ -18,11 +18,15 @@ export const typeDefs = gql`
   type RunFeed {
     cursor: String!
     hasMore: Boolean!
-    runs: [Run]!
+    runs: [Run!]!
   }
+
   type Instance {
+    runId: ID!
+    run: PartialRun!
+    spec: String!
     instanceId: ID!
-    results: InstanceResults!
+    results: InstanceResults
   }
 
   type InstanceResults {
@@ -30,7 +34,7 @@ export const typeDefs = gql`
     tests: [InstanceTest!]!
     error: String
     stdout: String
-    screenshots: [InstanceScreeshot]!
+    screenshots: [InstanceScreeshot!]!
     # cypressConfig: CypressConfig
     reporterStats: ReporterStats
   }
@@ -48,7 +52,7 @@ export const typeDefs = gql`
   }
 
   type InstanceTest {
-    testId: String
+    testId: String!
     title: [String]
     state: String # prob enum
     body: String
@@ -81,6 +85,13 @@ export const typeDefs = gql`
   }
 
   # Runs and subtypes
+  type PartialRun {
+    runId: ID!
+    createdAt: DateTime!
+    meta: RunMeta
+    specs: [RunSpec]!
+  }
+
   type Run {
     runId: ID!
     createdAt: DateTime!
@@ -109,11 +120,11 @@ export const typeDefs = gql`
   }
 
   type Commit {
-    sha: String
-    branch: String
-    authorName: String
-    authorEmail: String
-    message: String
-    remoteOrigin: String
+    sha: String!
+    branch: String!
+    authorName: String!
+    authorEmail: String!
+    message: String!
+    remoteOrigin: String!
   }
 `;
