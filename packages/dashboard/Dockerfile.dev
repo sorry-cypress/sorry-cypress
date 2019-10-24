@@ -1,18 +1,14 @@
 FROM node:10
 WORKDIR /app
 
+RUN npm i -g npm-run-all
+
 COPY package*.json ./
 RUN npm install
 
-COPY codegen.yml ./
 COPY tsconfig.json ./
 COPY webpack.config.js ./
 COPY .babelrc ./
-COPY server ./server
-COPY src ./src
-
-RUN ls -la
-RUN npm run build
 
 EXPOSE 8080
-CMD [ "npm", "run", "start" ]
+CMD [ "npm", "run", "dev" ]

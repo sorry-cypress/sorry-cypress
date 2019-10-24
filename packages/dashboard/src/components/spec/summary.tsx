@@ -6,7 +6,6 @@ import { getSpecState } from '../../lib/spec';
 import { FullRunSpec } from '../../generated/graphql';
 
 export const SpecSummary: React.FC<{ spec: FullRunSpec }> = ({ spec }) => {
-  console.log(spec);
   return (
     <HFlow>
       <TestState state={getSpecState(spec)} />

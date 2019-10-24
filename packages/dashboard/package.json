@@ -15,7 +15,8 @@
     "type-check:watch": "npm run type-check -- --watch",
     "dev:app": "webpack-dev-server",
     "dev": "run-p dev:app",
-    "build": "npm run build:webpack",
+    "start": "node ./server",
+    "build": "npm run gql-codegen && npm run build:webpack",
     "build:types": "tsc --emitDeclarationOnly",
     "build:webpack": "webpack --mode production",
     "gql-codegen": "graphql-codegen --config codegen.yml"
@@ -26,6 +27,7 @@
     "apollo-client": "^2.6.4",
     "apollo-link-http": "^1.5.15",
     "bold-ui": "^1.0.0-beta.19",
+    "express": "^4.17.1",
     "graphql": "^14.5.4",
     "graphql-tag": "^2.10.1",
     "lodash.capitalize": "^4.2.1",

@@ -1,5 +1,6 @@
 overwrite: true
-schema: 'http://localhost:4000'
+# schema: 'http://localhost:4000'
+schema: 'https://sorry-cypress-demo-api.herokuapp.com/'
 documents: 'src/**/*.graphql'
 generates:
   src/generated/graphql.ts:

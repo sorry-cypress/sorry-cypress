@@ -9,7 +9,8 @@ cache.writeData({
 });
 
 const link = new HttpLink({
-  uri: 'http://0.0.0.0:4000/'
+  // uri: 'http://0.0.0.0:4000/'
+  uri: 'https://sorry-cypress-demo-api.herokuapp.com/'
 });
 
 export const client = new ApolloClient({

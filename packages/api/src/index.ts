@@ -5,6 +5,8 @@ import { RunsAPI } from './datasources/runs';
 import { InstancesAPI } from './datasources/instances';
 import { resolvers } from './resolvers';
 
+import { PORT } from './config';
+
 const server = new ApolloServer({
   typeDefs,
   resolvers,
@@ -14,6 +16,6 @@ const server = new ApolloServer({
   })
 });
 
-server.listen().then(({ url }) => {
+server.listen({ port: PORT }).then(({ url }) => {
   console.log(`🚀 Apollo server ready at ${url}`);
 });

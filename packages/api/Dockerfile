@@ -1,12 +1,16 @@
 FROM node:10
 WORKDIR /app
-RUN npm i -g nodemon
+
 
 COPY package*.json ./
 RUN npm install
 
-COPY .env ./
+COPY src ./src
+COPY config ./config
+COPY .babelrc ./
 COPY tsconfig.json ./
 
+RUN npm run build
+
 EXPOSE 4000
-CMD [ "npm", "run", "dev" ]
+CMD [ "npm", "run", "start" ]
