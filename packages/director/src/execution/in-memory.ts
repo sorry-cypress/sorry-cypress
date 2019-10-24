@@ -74,20 +74,16 @@ const getNextTask = async (runId: string): Promise<Task> => {
     };
   }
 
-  runs[runId].specs[unclaimedSpecIndex].claimed = true;
+  const spec = runs[runId].specs[unclaimedSpecIndex];
+
+  spec.claimed = true;
+  instances[spec.instanceId] = { runId };
 
   return {
     instance: runs[runId].specs[unclaimedSpecIndex],
     claimedInstances: runs[runId].specs.filter(s => s.claimed).length,
     totalInstances: runs[runId].specs.length
   };
-};
-
-const createInstance = async (instanceId: string, runId: string) => {
-  if (instances[instanceId]) {
-    throw new AppError(INSTANCE_EXISTS);
-  }
-  instances[instanceId] = { runId };
 };
 
 const setInstanceResults = async (
