@@ -20,8 +20,7 @@ services:
 
   api:
     build: $PWD/packages/api
-    environment:
-      PORT: 4000
+    dockerfile: Docker.dev
     ports:
       - 9230:9230
       - 4000:4000
@@ -33,8 +32,11 @@ services:
 
   director:
     build: $PWD/packages/director
+    dockerfile: Dockerfile.dev
     environment:
-      PORT: 1234
+      EXECUTION_DRIVER: '../execution/mongo/driver'
+      SCREENSHOTS_DRIVER: '../screenshots/s3.driver'
+      S3_BUCKET: sorry-cypress
     ports:
       - 9229:9229
       - 1234:1234
