@@ -12,6 +12,8 @@ An open-source alternative to Cypress dashboard.
 Want to explore? Go to https://sorry-cypress-demo.herokuapp.com/ and see the (alpha version) dashboard in action.
 [Reconfigure Cypress](#pointing-cypress-to-your-service) to use `api_url: "https://sorry-cypress-demo-director.herokuapp.com/"`, run your tests and see them appear in the dashboard. 
 
+> The demo is a free heroku instance, when you navigate it takes few seconds to spin up. 
+
 ## TL;DR
 
 1. [Point Cypress to your service](#pointing-cypress-to-your-service) - set `https://sorry-cypress.herokuapp.com/` as `api_url` of `<cypress-root>/packages/server/config/app.yml`
@@ -24,8 +26,7 @@ Want to explore? Go to https://sorry-cypress-demo.herokuapp.com/ and see the (al
 
 ## Start here
 
-The repository consists of 3 packages -
-you can deploy them on your own infrastructure:
+The repository consists of 3 packages - you can deploy them on your own infrastructure:
 
 - [`packages/director`](#the-director) - is a service that's responsibe for parallelization and saving test results
 - [`packages/api`](#the-api-service) - is a GraphQL server that allows to read test run details and results
@@ -156,6 +157,32 @@ More details to come...
 
 Is a web dashboard implemented in ReactJS, the idea is to connect to the API and presents the data. It is in very early development stages and is very naive - you can explore runs and specs details, failures and screenshots.
 
+![Web dashboard prototype](https://s3.amazonaws.com/agoldis.dev/images/sorry-cypress/sorry-cypress.dashboard.gif)
+
+## Development
+
+The project uses [yarn workspaces](https://yarnpkg.com/lang/en/docs/workspaces/), bootstrap everything by running `yarn` in the root directory.
+
+Run each package in development mode: `yarn dev`.
+
+It is recommended to use `docker-compose` to run the backend services (`director` and `api`) and to run the `dashboard` on host machine.
+
+### Using docker-compose for backend services
+
+The project uses `docker-compose` to conviniently run backend services in dockerized containers.
+
+Run `docker-compose build` from the project's root directory
+Run `docker-compose up` to start the services.
+
+The latter command will create 3 services:
+
+- MongoDB instance on port `27017`
+- `director` service on port `1234`
+- `api` service on `4000`
+
+You can change the configuration using the environment variables defined in `docker-compose.yml` file.
+
+Read more about configuration options.
 You can explore currently available features at https://sorry-cypress-demo.herokuapp.com/. 
 
 ## Behind the scenes
@@ -270,12 +297,6 @@ The other services are still very naive.
 ### What Cypress clients does it support?
 
 Tested with Cypress `3.4.1` and `3.2.0`
-
-## Development
-
-You can use the attached `docker-compose` to run all the services conveniently together.
-
-The project uses [yarn workspaces](https://yarnpkg.com/lang/en/docs/workspaces/), bootstrap everything by running `yarn` in the root directory.
 
 ## License
 

@@ -30,12 +30,13 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: './src/index.ejs',
-      inject: true
+      filename: 'views/index.ejs',
+      inject: true,
+      hash: true
     })
   ],
   devServer: {
-    host: '0.0.0.0',
-    historyApiFallback: true,
-    contentBase: [path.join(__dirname, 'static')]
+    writeToDisk: true,
+    host: '0.0.0.0'
   }
 };

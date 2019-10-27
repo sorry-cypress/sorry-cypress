@@ -1,0 +1,13 @@
+FROM node:10
+WORKDIR /app
+RUN npm i -g nodemon
+
+COPY package*.json ./
+RUN npm install
+
+COPY ts-dev.js ./
+COPY codegen.yml ./
+COPY tsconfig.json ./
+
+EXPOSE 4000
+CMD [ "npm", "run", "dev" ]
