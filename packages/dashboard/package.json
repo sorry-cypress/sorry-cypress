@@ -13,7 +13,7 @@
   "scripts": {
     "type-check": "tsc --noEmit",
     "type-check:watch": "npm run type-check -- --watch",
-    "dev:app": "webpack-dev-server",
+    "dev:app": "NODE_ENV=development nodemon --watch ./server ./server/",
     "dev": "run-p dev:app generate:watch",
     "start": "node ./server",
     "build": "npm run generate && npm run build:webpack",
