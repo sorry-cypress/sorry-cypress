@@ -1,5 +1,3 @@
-# sorry-cypress
-
 An open-source alternative to Cypress dashboard.
 
 - run cypress tests in parallel
@@ -7,24 +5,54 @@ An open-source alternative to Cypress dashboard.
 - browse test results and failures screenshots
 - host on your own infrastructure
 
-## Demo
+**Table of contents**
 
-Want to explore? Go to https://sorry-cypress-demo.herokuapp.com/ and see the (alpha version) dashboard in action.
-[Reconfigure Cypress](#pointing-cypress-to-your-service) to use `api_url: "https://sorry-cypress-demo-director.herokuapp.com/"`, run your tests and see them appear in the dashboard. 
+- [TL;DR Setup](#tl;dr-setup)
+- [Demo & example](#demo-&-example)
+- [On-premise installation instructions](#on-premise-installation-instructions)
+- [Documentation](#documentation)
+- [Development](#development)
+- [Behind the scenes](#behind-the-scenes)
+- [Reconfiguring Cypress](#Reconfiguring-Cypress)
+- [FAQ](#faq)
+- [License](#license)
 
-> The demo is a free heroku instance, when you navigate it takes few seconds to spin up. 
+# TL;DR Setup
 
-## TL;DR
-
-1. [Point Cypress to your service](#pointing-cypress-to-your-service) - set `https://sorry-cypress.herokuapp.com/` as `api_url` of `<cypress-root>/packages/server/config/app.yml`
+1. [Point Cypress to your service](#Reconfiguring-Cypress) - set `https://sorry-cypress-demo-director.herokuapp.com/` as `api_url` of `<cypress-root>/packages/server/config/app.yml`
 2. Run multiple instances of `cypress run --parallel --record --key xxx --ci-build-id <buildId>`
 3. See the the tests running in parallel 🚀
 
 ![Running Cypress test in parallel demo](https://s3.amazonaws.com/agoldis.dev/images/sorry-cypress/cypress.parallel.x2.3mb.gif)
 
-> Look into "example" directory
+# Demo & Example
 
-## Start here
+Visit https://sorry-cypress-demo.herokuapp.com/ and see the alpha version of the web dashboard in action.
+
+> This demo is a free heroku instance, it takes a minute to spin it up when you first navigate.
+
+You can [reconfigure Cypress](#Reconfiguring-Cypress) to use `api_url: "https://sorry-cypress-demo-director.herokuapp.com/"`, run your tests and see the results appear in the dashboard.
+
+Also consider the [example](https://github.com/agoldis/sorry-cypress/tree/master/example) with detailed example of parallelization.
+
+The results of tests from the example app:
+![Web dashboard prototype](https://s3.amazonaws.com/agoldis.dev/images/sorry-cypress/sorry-cypress-demo.gif)
+
+# On-premise installation instructions
+
+## Docker images
+
+Each package has a Dockerfile - use it to build your own images.
+
+There're also pre-built Docker images available at https://hub.docker.com/u/agoldis.
+
+> As soon as https://github.com/agoldis/sorry-cypress/issues/12 is resolved, those will be updated automatically.
+
+## Others
+
+... more to come ...
+
+# Documentation
 
 The repository consists of 3 packages - you can deploy them on your own infrastructure:
 
@@ -32,9 +60,9 @@ The repository consists of 3 packages - you can deploy them on your own infrastr
 - [`packages/api`](#the-api-service) - is a GraphQL server that allows to read test run details and results
 - [`packages/dashboard`](#the-dashboard-service) - is a web dashboard (ReactJS)
 
-### The `director`
+## The `director` service
 
-The director service is responsible for:
+The `director` service is responsible for:
 
 - paralellization and coordination of test runs
 - saving tests results
@@ -46,7 +74,7 @@ The dashboard coordinates the requests from differents machines and assigns test
 
 That is what `director` service does 👆
 
-#### Starting `director` service
+### Starting the service
 
 ```sh
 cd packages/director
@@ -147,19 +175,32 @@ S3_BUCKET="your_bucket_name"
 
 Please make sure that [AWS credentials](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html) with proper access to invoke [`s3.getSignedUrl`](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html) are available in the environment.
 
-### The `api` service
+## The `api` service
 
 ...is a simple GraphQL service, that allows to query the data persisted by MongoDB.
 
-More details to come...
+Create a `.env` file and define MongoDB connection details:
 
-### The `dashboard` service
+```
+MONGODB_URI='mongodb://mongo:27017'
+MONGODB_DATABASE='sorry-cypress'
+```
 
-Is a web dashboard implemented in ReactJS, the idea is to connect to the API and presents the data. It is in very early development stages and is very naive - you can explore runs and specs details, failures and screenshots.
+## The `dashboard` service
 
-![Web dashboard prototype](https://s3.amazonaws.com/agoldis.dev/images/sorry-cypress/sorry-cypress.dashboard.gif)
+...is a web dashboard implemented in ReactJS. It is in alpha stage and still very naive - you can explore test details, failures and see screenshots.
 
-## Development
+In production mode you will need to provide environment variable `GRAPHQL_SCHEMA_URL` - graphql client will use the URL to download the schema.
+
+E.g. in `.env` file:
+
+```
+GRAPHQL_SCHEMA_URL=https://sorry-cypress-demo-api.herokuapp.com
+```
+
+You can explore currently available features at https://sorry-cypress-demo.herokuapp.com/.
+
+# Development
 
 The project uses [yarn workspaces](https://yarnpkg.com/lang/en/docs/workspaces/), bootstrap everything by running `yarn` in the root directory.
 
@@ -167,7 +208,7 @@ Run each package in development mode: `yarn dev`.
 
 It is recommended to use `docker-compose` to run the backend services (`director` and `api`) and to run the `dashboard` on host machine.
 
-### Using docker-compose for backend services
+## Using docker-compose for backend services
 
 The project uses `docker-compose` to conviniently run backend services in dockerized containers.
 
@@ -182,10 +223,7 @@ The latter command will create 3 services:
 
 You can change the configuration using the environment variables defined in `docker-compose.yml` file.
 
-Read more about configuration options.
-You can explore currently available features at https://sorry-cypress-demo.herokuapp.com/. 
-
-## Behind the scenes
+# Behind the scenes
 
 1. Each machine sends the same initial request with:
 
@@ -208,7 +246,7 @@ You can explore currently available features at https://sorry-cypress-demo.herok
 
 The official guide on [Cypress parallelization](https://docs.cypress.io/guides/guides/parallelization.html).
 
-## Pointing Cypress to your service
+# Reconfiguring Cypress
 
 Find cypress installation path
 
@@ -275,7 +313,7 @@ Running 4 instances of cypress in parallel: `cypress run --parallel --record --k
 - Instance 3 runs only `C.spec.js`
 - Instance4 runs `D.spec.js` and `E.spec.js` -->
 
-## FAQ
+# FAQ
 
 ### Why?
 
