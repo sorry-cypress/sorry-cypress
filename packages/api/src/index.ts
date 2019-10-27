@@ -1,5 +1,5 @@
 import { ApolloServer } from 'apollo-server';
-import { typeDefs } from './schema';
+import { typeDefs } from './schema/schema';
 
 import { RunsAPI } from './datasources/runs';
 import { InstancesAPI } from './datasources/instances';

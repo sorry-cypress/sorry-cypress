@@ -4,14 +4,12 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
-COPY codegen.yml ./
 COPY tsconfig.json ./
 COPY webpack.config.js ./
 COPY .babelrc ./
 COPY server ./server
 COPY src ./src
 
-RUN ls -la
 RUN npm run build
 
 EXPOSE 8080

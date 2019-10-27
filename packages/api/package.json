@@ -14,10 +14,11 @@
   "typings": "dist/typings",
   "scripts": {
     "dev": "run-p generate:watch dev:watch",
-    "dev:watch": "nodemon --inspect=0.0.0.0:9230 -e ts --watch 'src/**/*.ts' -r ./config/ts-dev.js src/index.ts",
+    "dev:watch": "nodemon --inspect=0.0.0.0:9230 -e ts --watch 'src/**/*.ts' -r ./ts-dev.js src/index.ts",
+    "copy-schema": "cp ./src/schema/*.graphql ./dist/schema",
     "generate": "graphql-codegen",
     "generate:watch": "graphql-codegen --watch",
-    "build": "npm run generate && npm run build:types && npm run build:js",
+    "build": "npm run generate && npm run build:types && npm run build:js && npm run copy-schema",
     "build:types": "tsc --emitDeclarationOnly",
     "build:js": "babel src --out-dir dist --extensions \".ts\" --source-maps inline",
     "start": "node ./dist/",
