@@ -19,11 +19,11 @@
 
 ## Features
 
-- run cypress tests in parallel
+- run cypress tests in parallel without any limitation
 - upload failure screenshots to S3 bucket
 - browse test results, failures and screenshots
-- host on your own infrastructure
-- no run limitations
+- run in light mode w/o persistency or with MongoDB storage attached
+- on-premise cypress dashboard by design - use your own infrastructure, own your data
 
 ## Setup
 
