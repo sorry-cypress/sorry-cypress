@@ -6,6 +6,7 @@ RUN npm i -g npm-run-all
 COPY package*.json ./
 RUN npm install
 
+COPY codegen.yml ./
 COPY tsconfig.json ./
 COPY webpack.config.js ./
 COPY .babelrc ./

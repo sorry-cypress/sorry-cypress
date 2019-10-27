@@ -1,6 +1,8 @@
+require('dotenv').config();
 const { app } = require('./app');
 
 const PORT = process.env.PORT || 3333;
+
 async function main() {
   app.on('error', error => {
     throw error;

@@ -19,8 +19,9 @@ services:
   #     - api
 
   api:
-    build: $PWD/packages/api
-    dockerfile: Docker.dev
+    build:
+      context: $PWD/packages/api
+      dockerfile: Dockerfile.dev
     ports:
       - 9230:9230
       - 4000:4000
@@ -31,10 +32,12 @@ services:
       - mongo
 
   director:
-    build: $PWD/packages/director
-    dockerfile: Dockerfile.dev
+    build:
+      context: $PWD/packages/director
+      dockerfile: Dockerfile.dev
     environment:
-      EXECUTION_DRIVER: '../execution/mongo/driver'
+      DASHBOARD_URL: http://localhost:3000/
+      EXECUTION_DRIVER: '../execution/in-memory'
       SCREENSHOTS_DRIVER: '../screenshots/s3.driver'
       S3_BUCKET: sorry-cypress
     ports:

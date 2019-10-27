@@ -14,12 +14,13 @@
     "type-check": "tsc --noEmit",
     "type-check:watch": "npm run type-check -- --watch",
     "dev:app": "webpack-dev-server",
-    "dev": "run-p dev:app",
+    "dev": "run-p dev:app generate:watch",
     "start": "node ./server",
-    "build": "npm run gql-codegen && npm run build:webpack",
+    "build": "npm run generate && npm run build:webpack",
     "build:types": "tsc --emitDeclarationOnly",
     "build:webpack": "webpack --mode production",
-    "gql-codegen": "graphql-codegen --config codegen.yml"
+    "generate": "graphql-codegen --config codegen.yml",
+    "generate:watch": "graphql-codegen --config codegen.yml --watch"
   },
   "dependencies": {
     "@apollo/react-hooks": "^3.0.1",
@@ -27,6 +28,7 @@
     "apollo-client": "^2.6.4",
     "apollo-link-http": "^1.5.15",
     "bold-ui": "^1.0.0-beta.19",
+    "ejs": "^2.7.1",
     "express": "^4.17.1",
     "graphql": "^14.5.4",
     "graphql-tag": "^2.10.1",
@@ -63,6 +65,7 @@
     "typescript": "^3.5.1",
     "webpack": "^4.33.0",
     "webpack-cli": "^3.3.3",
+    "webpack-dev-middleware": "^3.7.2",
     "webpack-dev-server": "^3.7.1"
   }
 }
