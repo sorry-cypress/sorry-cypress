@@ -7,6 +7,13 @@ An open-source alternative to Cypress dashboard.
 - browse test results and failures screenshots
 - host on your own infrastructure
 
+## Demo
+
+Want to explore? Go to https://sorry-cypress-demo.herokuapp.com/ and see the (alpha version) dashboard in action.
+[Reconfigure Cypress](#pointing-cypress-to-your-service) to use `api_url: "https://sorry-cypress-demo-director.herokuapp.com/"`, run your tests and see them appear in the dashboard. 
+
+> The demo is a free heroku instance, when you navigate it takes few seconds to spin up. 
+
 ## TL;DR
 
 1. [Point Cypress to your service](#pointing-cypress-to-your-service) - set `https://sorry-cypress.herokuapp.com/` as `api_url` of `<cypress-root>/packages/server/config/app.yml`
@@ -176,6 +183,7 @@ The latter command will create 3 services:
 You can change the configuration using the environment variables defined in `docker-compose.yml` file.
 
 Read more about configuration options.
+You can explore currently available features at https://sorry-cypress-demo.herokuapp.com/. 
 
 ## Behind the scenes
 
