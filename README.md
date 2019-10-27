@@ -1,23 +1,31 @@
-An open-source alternative to Cypress dashboard.
+<div align="center">:heart: An open-source alternative to Cypress dashboard :unicorn:</div>
 
-- run cypress tests in parallel
-- upload failure screenshots to S3 bucket
-- browse test results and failures screenshots
-- host on your own infrastructure
+## Table of contents
 
-**Table of contents**
-
-- [TL;DR Setup](#tl;dr-setup)
+- [Features](#features)
+- [Setup](#setup)
 - [Demo & example](#demo-&-example)
 - [On-premise installation instructions](#on-premise-installation-instructions)
 - [Documentation](#documentation)
+  - [Reconfiguring Cypress](#Reconfiguring-Cypress)
+  - [Project structure](#project-structure)
+  - [`director` service](#director-service)
+  - [`api` service](#api-service)
+  - [`dashboard` service](#dashboard-service)
 - [Development](#development)
 - [Behind the scenes](#behind-the-scenes)
-- [Reconfiguring Cypress](#Reconfiguring-Cypress)
 - [FAQ](#faq)
 - [License](#license)
 
-# TL;DR Setup
+## Features
+
+- run cypress tests in parallel
+- upload failure screenshots to S3 bucket
+- browse test results, failures and screenshots
+- host on your own infrastructure
+- no run limitations
+
+## Setup
 
 1. [Point Cypress to your service](#Reconfiguring-Cypress) - set `https://sorry-cypress-demo-director.herokuapp.com/` as `api_url` of `<cypress-root>/packages/server/config/app.yml`
 2. Run multiple instances of `cypress run --parallel --record --key xxx --ci-build-id <buildId>`
@@ -25,7 +33,7 @@ An open-source alternative to Cypress dashboard.
 
 ![Running Cypress test in parallel demo](https://s3.amazonaws.com/agoldis.dev/images/sorry-cypress/cypress.parallel.x2.3mb.gif)
 
-# Demo & Example
+## Demo & Example
 
 Visit https://sorry-cypress-demo.herokuapp.com/ and see the alpha version of the web dashboard in action.
 
@@ -38,9 +46,9 @@ Also consider the [example](https://github.com/agoldis/sorry-cypress/tree/master
 The results of tests from the example app:
 ![Web dashboard prototype](https://s3.amazonaws.com/agoldis.dev/images/sorry-cypress/sorry-cypress-demo.gif)
 
-# On-premise installation instructions
+## On-premise installation instructions
 
-## Docker images
+### Docker images
 
 Each package has a Dockerfile - use it to build your own images.
 
@@ -48,205 +56,13 @@ There're also pre-built Docker images available at https://hub.docker.com/u/agol
 
 > As soon as https://github.com/agoldis/sorry-cypress/issues/12 is resolved, those will be updated automatically.
 
-## Others
+### Others
 
 ... more to come ...
 
-# Documentation
+## Documentation
 
-The repository consists of 3 packages - you can deploy them on your own infrastructure:
-
-- [`packages/director`](#the-director) - is a service that's responsibe for parallelization and saving test results
-- [`packages/api`](#the-api-service) - is a GraphQL server that allows to read test run details and results
-- [`packages/dashboard`](#the-dashboard-service) - is a web dashboard (ReactJS)
-
-## The `director` service
-
-The `director` service is responsible for:
-
-- paralellization and coordination of test runs
-- saving tests results
-- saving failed tests screenshots
-
-When you launch Cypress on a CI environment with multiple machines, each machine first contacts the dashboard to get the next test to run.
-
-The dashboard coordinates the requests from differents machines and assigns tests to each.
-
-That is what `director` service does 👆
-
-### Starting the service
-
-```sh
-cd packages/director
-
-npm install
-npm run build
-npm run start
-
-# ...
-
-Initializing "in-memory" execution driver...
-Initializing "dummy" screenshots driver...
-Listening on 1234...
-```
-
-By default, the service will start on port `1234` with in-memory execution driver and `dummy` snapshots driver.
-
-That is what running on `https://sorry-cypress.herokuapp.com` - it is a stateless execution, that just parallelizes tests, but does not persist test results and does not uploads screenshots of failed tests.
-
-### Configuration
-
-The service uses [`dotenv`](https://www.npmjs.com/package/dotenv) package - to change the default configuration, create `.env` file in service's root:
-
-```sh
-$ pwd
-/Users/agoldis/sorry-cypress/packages/director
-
-$ cat .env
-
-PORT=1234
-
-# DASHBOARD_URL is what Cypress client shows as a "Run URL"
-DASHBOARD_URL="https://sorry-cypress.herokuapp.com"
-
-# Read more about execution drivers below
-EXECUTION_DRIVER="../execution/in-memory"
-
-# Read more about screenshot drivers below
-SCREENSHOTS_DRIVER="../screenshots/dummy.driver"
-```
-
-### Drivers
-
-The `director` uses "drivers" that define different aspects of its functionality.
-
-#### Execution driver
-
-...is what drives the execution flow.
-
-There're 2 "execution drivers" implemented:
-
-##### Stateless
-
-Keeps the state of runs in-memory. That means that restarting the service wipes everything.
-
-That's the simplest and most naive implementation.
-
-If you just want to run the tests in parallel and not worry about storing test results.
-
-##### MongoDB persisted
-
-The state - test runs and results - are persisted in MongoDB, thus, can be queried and displayed in a dashboard.
-
-To enable this driver, set the configuration of `.env` file:
-
-```
-EXECUTION_DRIVER="../execution/mongo/driver"
-MONGODB_URI="monodgb://your-DB-URI"
-MONGODB_DATABASE="your-DB-name"
-```
-
-With MongoDB driver you can use the other services - `api` and `dashboard` to see the results of your runs.
-
-#### Snapshots driver
-
-...is what allows you to save the snapshots of failed tests.
-
-It provides the client (Cypress runner) a URL for uploading the screenshots.
-
-##### Dummy
-
-Is the default driver and it does nothing - snapshots won't be saved.
-
-You can set it explicity in `.env`:
-
-```
-SCREENSHOTS_DRIVER="../screenshots/dummy.driver"
-```
-
-##### S3 Driver
-
-The driver generates upload URLs for S3 bucket. To enable it, set in `.env`:
-
-```
-SCREENSHOTS_DRIVER="../screenshots/s3.driver"
-S3_BUCKET="your_bucket_name"
-```
-
-Please make sure that [AWS credentials](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html) with proper access to invoke [`s3.getSignedUrl`](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html) are available in the environment.
-
-## The `api` service
-
-...is a simple GraphQL service, that allows to query the data persisted by MongoDB.
-
-Create a `.env` file and define MongoDB connection details:
-
-```
-MONGODB_URI='mongodb://mongo:27017'
-MONGODB_DATABASE='sorry-cypress'
-```
-
-## The `dashboard` service
-
-...is a web dashboard implemented in ReactJS. It is in alpha stage and still very naive - you can explore test details, failures and see screenshots.
-
-In production mode you will need to provide environment variable `GRAPHQL_SCHEMA_URL` - graphql client will use the URL to download the schema.
-
-E.g. in `.env` file:
-
-```
-GRAPHQL_SCHEMA_URL=https://sorry-cypress-demo-api.herokuapp.com
-```
-
-You can explore currently available features at https://sorry-cypress-demo.herokuapp.com/.
-
-# Development
-
-The project uses [yarn workspaces](https://yarnpkg.com/lang/en/docs/workspaces/), bootstrap everything by running `yarn` in the root directory.
-
-Run each package in development mode: `yarn dev`.
-
-It is recommended to use `docker-compose` to run the backend services (`director` and `api`) and to run the `dashboard` on host machine.
-
-## Using docker-compose for backend services
-
-The project uses `docker-compose` to conviniently run backend services in dockerized containers.
-
-Run `docker-compose build` from the project's root directory
-Run `docker-compose up` to start the services.
-
-The latter command will create 3 services:
-
-- MongoDB instance on port `27017`
-- `director` service on port `1234`
-- `api` service on `4000`
-
-You can change the configuration using the environment variables defined in `docker-compose.yml` file.
-
-# Behind the scenes
-
-1. Each machine sends the same initial request with:
-
-- specs lists
-- machine hardware details
-- git commit details
-- `--ci-build-id` and other CLI parameters
-
-2. The `director` creates or fetches an existing `run`, based on the parameters and responds with a randomly generated `machineId` and the allocated `runId`
-
-3. Each cypress client requests a next available task for the `runId` which was returned previously
-
-4. The service looks at the list of specs and returns next available test
-
-> Original Cypress dashboard implements different "smart" strategies for picking the next test
-
-5. When there're no more available tests for a run, the service sends an "empty" response - client reports that it is finished
-
----
-
-The official guide on [Cypress parallelization](https://docs.cypress.io/guides/guides/parallelization.html).
-
-# Reconfiguring Cypress
+### Reconfiguring Cypress
 
 Find cypress installation path
 
@@ -313,7 +129,201 @@ Running 4 instances of cypress in parallel: `cypress run --parallel --record --k
 - Instance 3 runs only `C.spec.js`
 - Instance4 runs `D.spec.js` and `E.spec.js` -->
 
-# FAQ
+### Project structure
+
+The repository consists of 3 packages - you can deploy them on your own infrastructure:
+
+- [`packages/director`](#the-director) - is a service that's responsibe for parallelization and saving test results
+- [`packages/api`](#the-api-service) - is a GraphQL server that allows to read test run details and results
+- [`packages/dashboard`](#the-dashboard-service) - is a web dashboard (ReactJS)
+
+### `director` service
+
+The `director` service is responsible for:
+
+- paralellization and coordination of test runs
+- saving tests results
+- saving failed tests screenshots
+
+When you launch Cypress on a CI environment with multiple machines, each machine first contacts the dashboard to get the next test to run.
+
+The dashboard coordinates the requests from differents machines and assigns tests to each.
+
+That is what `director` service does 👆
+
+#### Starting the service
+
+```sh
+cd packages/director
+
+npm install
+npm run build
+npm run start
+
+# ...
+
+Initializing "in-memory" execution driver...
+Initializing "dummy" screenshots driver...
+Listening on 1234...
+```
+
+By default, the service will start on port `1234` with in-memory execution driver and `dummy` snapshots driver.
+
+That is what running on `https://sorry-cypress.herokuapp.com` - it is a stateless execution, that just parallelizes tests, but does not persist test results and does not uploads screenshots of failed tests.
+
+#### Configuration
+
+The service uses [`dotenv`](https://www.npmjs.com/package/dotenv) package - to change the default configuration, create `.env` file in service's root:
+
+```sh
+$ pwd
+/Users/agoldis/sorry-cypress/packages/director
+
+$ cat .env
+
+PORT=1234
+
+# DASHBOARD_URL is what Cypress client shows as a "Run URL"
+DASHBOARD_URL="https://sorry-cypress.herokuapp.com"
+
+# Read more about execution drivers below
+EXECUTION_DRIVER="../execution/in-memory"
+
+# Read more about screenshot drivers below
+SCREENSHOTS_DRIVER="../screenshots/dummy.driver"
+```
+
+#### Drivers
+
+The `director` uses "drivers" that define different aspects of its functionality.
+
+#### Execution driver
+
+...is what drives the execution flow.
+
+There're 2 "execution drivers" implemented:
+
+##### Stateless
+
+Keeps the state of runs in-memory. That means that restarting the service wipes everything.
+
+That's the simplest and most naive implementation.
+
+If you just want to run the tests in parallel and not worry about storing test results.
+
+##### MongoDB persisted
+
+The state - test runs and results - are persisted in MongoDB, thus, can be queried and displayed in a dashboard.
+
+To enable this driver, set the configuration of `.env` file:
+
+```
+EXECUTION_DRIVER="../execution/mongo/driver"
+MONGODB_URI="monodgb://your-DB-URI"
+MONGODB_DATABASE="your-DB-name"
+```
+
+With MongoDB driver you can use the other services - `api` and `dashboard` to see the results of your runs.
+
+#### Snapshots driver
+
+...is what allows you to save the snapshots of failed tests.
+
+It provides the client (Cypress runner) a URL for uploading the screenshots.
+
+##### Dummy
+
+Is the default driver and it does nothing - snapshots won't be saved.
+
+You can set it explicity in `.env`:
+
+```
+SCREENSHOTS_DRIVER="../screenshots/dummy.driver"
+```
+
+##### S3 Driver
+
+The driver generates upload URLs for S3 bucket. To enable it, set in `.env`:
+
+```
+SCREENSHOTS_DRIVER="../screenshots/s3.driver"
+S3_BUCKET="your_bucket_name"
+```
+
+Please make sure that [AWS credentials](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html) with proper access to invoke [`s3.getSignedUrl`](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html) are available in the environment.
+
+### `api` service
+
+...is a simple GraphQL service, that allows to query the data persisted by MongoDB.
+
+Create a `.env` file and define MongoDB connection details:
+
+```
+MONGODB_URI='mongodb://mongo:27017'
+MONGODB_DATABASE='sorry-cypress'
+```
+
+### `dashboard` service
+
+...is a web dashboard implemented in ReactJS. It is in alpha stage and still very naive - you can explore test details, failures and see screenshots.
+
+In production mode you will need to provide environment variable `GRAPHQL_SCHEMA_URL` - graphql client will use the URL to download the schema.
+
+E.g. in `.env` file:
+
+```
+GRAPHQL_SCHEMA_URL=https://sorry-cypress-demo-api.herokuapp.com
+```
+
+You can explore currently available features at https://sorry-cypress-demo.herokuapp.com/.
+
+## Development
+
+The project uses [yarn workspaces](https://yarnpkg.com/lang/en/docs/workspaces/), bootstrap everything by running `yarn` in the root directory.
+
+Run each package in development mode: `yarn dev`.
+
+It is recommended to use `docker-compose` to run the backend services (`director` and `api`) and to run the `dashboard` on host machine.
+
+### Using docker-compose for backend services
+
+The project uses `docker-compose` to conviniently run backend services in dockerized containers.
+
+Run `docker-compose build` from the project's root directory
+Run `docker-compose up` to start the services.
+
+The latter command will create 3 services:
+
+- MongoDB instance on port `27017`
+- `director` service on port `1234`
+- `api` service on `4000`
+
+You can change the configuration using the environment variables defined in `docker-compose.yml` file.
+
+## Behind the scenes
+
+1. Each machine sends the same initial request with:
+
+- specs lists
+- machine hardware details
+- git commit details
+- `--ci-build-id` and other CLI parameters
+
+2. The `director` creates or fetches an existing `run`, based on the parameters and responds with a randomly generated `machineId` and the allocated `runId`
+
+3. Each cypress client requests a next available task for the `runId` which was returned previously
+
+4. The service looks at the list of specs and returns next available test
+
+> Original Cypress dashboard implements different "smart" strategies for picking the next test
+
+5. When there're no more available tests for a run, the service sends an "empty" response - client reports that it is finished
+
+---
+
+The official guide on [Cypress parallelization](https://docs.cypress.io/guides/guides/parallelization.html).
+
+## FAQ
 
 ### Why?
 
