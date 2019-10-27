@@ -1,4 +1,4 @@
-<div align="center">:heart: An open-source alternative to Cypress dashboard :unicorn:</div>
+<div align="center">:heart: An open-source on-premise, self-hosted alternative to Cypress dashboard :unicorn:</div>
 
 ## Table of contents
 
@@ -23,7 +23,7 @@
 - upload failure screenshots to S3 bucket
 - browse test results, failures and screenshots
 - run in light mode w/o persistency or with MongoDB storage attached
-- on-premise cypress dashboard by design - use your own infrastructure, own your data
+- on-premise self-hosted cypress dashboard by design - use your own infrastructure, own your data
 
 ## Setup
 
