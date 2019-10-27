@@ -15,7 +15,6 @@ services:
       - 4000:4000
     volumes:
       - $PWD/packages/api/src:/app/src
-      - $PWD/packages/api/config:/app/config
     depends_on:
       - mongo
 
@@ -25,7 +24,7 @@ services:
       dockerfile: Dockerfile.dev
     environment:
       DASHBOARD_URL: http://localhost:3000/
-      EXECUTION_DRIVER: '../execution/in-memory'
+      EXECUTION_DRIVER: '../execution/mongo/driver'
       SCREENSHOTS_DRIVER: '../screenshots/s3.driver'
       S3_BUCKET: sorry-cypress
     ports:

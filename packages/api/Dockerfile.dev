@@ -5,6 +5,7 @@ RUN npm i -g nodemon
 COPY package*.json ./
 RUN npm install
 
+COPY ts-dev.js ./
 COPY codegen.yml ./
 COPY tsconfig.json ./
 

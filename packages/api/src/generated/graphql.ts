@@ -46,6 +46,7 @@ export type InstanceResults = {
   error?: Maybe<Scalars['String']>,
   stdout?: Maybe<Scalars['String']>,
   screenshots: Array<InstanceScreeshot>,
+  /** cypressConfig: CypressConfig */
   reporterStats?: Maybe<ReporterStats>,
 };
 
@@ -81,6 +82,7 @@ export type InstanceTest = {
   body?: Maybe<Scalars['String']>,
   stack?: Maybe<Scalars['String']>,
   error?: Maybe<Scalars['String']>,
+  /** timings: InstanceTestTimings */
   wallClockStartedAt?: Maybe<Scalars['String']>,
   wallClockDuration?: Maybe<Scalars['Int']>,
 };
@@ -90,6 +92,7 @@ export enum OrderingOptions {
   Asc = 'ASC'
 }
 
+/** Runs and subtypes */
 export type PartialRun = {
    __typename?: 'PartialRun',
   runId: Scalars['ID'],
