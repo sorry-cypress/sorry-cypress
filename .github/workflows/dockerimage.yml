@@ -2,16 +2,21 @@ name: Docker Image CI
 
 on:
   push:
-    tags: v*
-
+    tags:
+      - v*
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
-    - name: Build the Docker images
-      run: docker build . --file packages/director/Dockerfile --tag agoldis/sorry-cypress-director:$GITHUB_REF
+      - uses: actions/checkout@v1
+
+      - name: Build director Docker images
+        run: docker build packages/director/ --file packages/director/Dockerfile --tag agoldis/sorry-cypress-director:$(echo "$GITHUB_REF" | awk -F"/" '{ print $3 }')
+
+      - name: Build api Docker images
+        run: docker build packages/api/ --file packages/api/Dockerfile --tag agoldis/sorry-cypress-api:$(echo "$GITHUB_REF" | awk -F"/" '{ print $3 }')
+
+      - name: Build dashboard Docker images
+        run: docker build packages/dashboard/ --file packages/dashboard/Dockerfile --tag agoldis/sorry-cypress-dashboard:$(echo "$GITHUB_REF" | awk -F"/" '{ print $3 }')
