@@ -1,0 +1,17 @@
+name: Docker Image CI
+
+on:
+  push:
+    tags: v*
+
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build the Docker images
+      run: docker build . --file packages/director/Dockerfile --tag agoldis/sorry-cypress-director:$GITHUB_REF
