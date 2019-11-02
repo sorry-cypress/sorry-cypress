@@ -52,9 +52,7 @@ The results of tests from the example app:
 
 Each package has a Dockerfile - use it to build your own images.
 
-There're also pre-built Docker images available at https://hub.docker.com/u/agoldis.
-
-> As soon as https://github.com/agoldis/sorry-cypress/issues/12 is resolved, those will be updated automatically.
+Pre-built Docker images available at https://hub.docker.com/u/agoldis. Docker image tag corresponds to the git tag, while `latest` points to the `master` git branch.
 
 ### Others
 
