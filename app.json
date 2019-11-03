@@ -1,0 +1,16 @@
+{
+  "name": "Sorry Cypress",
+  "description": "Open source, self-hosted alternative to Cypress dashboard",
+  "keywords": ["cypress", "testing", "e2e", "UI test", "open source"],
+  "website": "https://github.com/agoldis/sorry-cypress",
+  "repository": "https://github.com/agoldis/sorry-cypress",
+  "logo": "https://github.com/agoldis/sorry-cypress",
+  "success_url": "/welcome",
+  "env": {
+    "SECRET_TOKEN": {
+      "description": "A secret key for verifying the integrity of signed cookies.",
+      "generator": "secret"
+    }
+  },
+  "image": "agoldis/sorry-cypress-director"
+}
