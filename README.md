@@ -58,6 +58,10 @@ There're also pre-built Docker images available at https://hub.docker.com/u/agol
 
 ### Others
 
+#### Heroku
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/agoldis/sorry-cypress/tree/deploy-to-heroku)
+
 ... more to come ...
 
 ## Documentation
