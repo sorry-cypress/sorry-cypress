@@ -1,4 +1,7 @@
-<div align="center">:heart: An open-source on-premise, self-hosted alternative to Cypress dashboard :unicorn:</div>
+<div align="center">
+<div><img src="https://s3.amazonaws.com/agoldis.dev/images/sorry-cypress/logo.svg" /></div>
+<div>:heart: An open-source on-premise, self-hosted alternative to Cypress dashboard :unicorn:</div>
+</div>
 
 ## Table of contents
 
