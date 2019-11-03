@@ -1,5 +1,5 @@
 <div align="center">
-<div><img src="https://s3.amazonaws.com/agoldis.dev/images/sorry-cypress/logo.svg" /></div>
+<div><img src="https://s3.amazonaws.com/agoldis.dev/images/sorry-cypress/logo.png" width="128" /></div>
 <div>:heart: An open-source on-premise, self-hosted alternative to Cypress dashboard :unicorn:</div>
 </div>
 
@@ -9,6 +9,8 @@
 - [Setup](#setup)
 - [Demo & example](#demo-&-example)
 - [On-premise installation instructions](#on-premise-installation-instructions)
+  - [Docker images](#docker-images)
+  - [Heroku](#heroku)
 - [Documentation](#documentation)
   - [Reconfiguring Cypress](#Reconfiguring-Cypress)
   - [Project structure](#project-structure)
@@ -55,9 +57,9 @@ The results of tests from the example app:
 
 Each package has a Dockerfile - use it to build your own images.
 
-There're also pre-built Docker images available at https://hub.docker.com/u/agoldis.
+Pre-built Docker images are available at https://hub.docker.com/u/agoldis.
 
-> As soon as https://github.com/agoldis/sorry-cypress/issues/12 is resolved, those will be updated automatically.
+Docker image tag corresponds to the git tag, while `latest` points to the `master` git branch.
 
 ### Heroku
 
