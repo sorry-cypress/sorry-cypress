@@ -1,4 +1,4 @@
-<div align="center">:heart: An open-source on-premise, self-hosted alternative to Cypress dashboard :unicorn:</div>
+<div align="center">:octocat: An open-source on-premise, self-hosted alternative to Cypress dashboard :evergreen_tree:</div>
 
 ## Table of contents
 
