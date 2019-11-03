@@ -1,0 +1,16 @@
+{
+  "name": "Sorry Cypress",
+  "description": "Open source, self-hosted alternative to Cypress dashboard",
+  "keywords": ["cypress", "testing", "e2e", "UI test", "open source"],
+  "website": "https://github.com/agoldis/sorry-cypress",
+  "repository": "https://github.com/agoldis/sorry-cypress",
+  "logo": "https://s3.amazonaws.com/agoldis.dev/images/sorry-cypress/logo.png",
+  "success_url": "/welcome",
+  "env": {
+    "DASHBOARD_URL": {
+      "description": "Web dashboard URL",
+      "value": "stateless-mode-not-set"
+    }
+  },
+  "image": "agoldis/sorry-cypress-director"
+}

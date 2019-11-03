@@ -15,6 +15,7 @@
     "packages/*"
   ],
   "scripts": {
+    "start": "yarn workspace @sorry-cypress/director start",
     "build": "yarn workspace @sorry-cypress/director build"
   }
 }
