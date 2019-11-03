@@ -1,4 +1,7 @@
-<div align="center">:heart: An open-source on-premise, self-hosted alternative to Cypress dashboard :unicorn:</div>
+<div align="center">
+<div><img src="https://s3.amazonaws.com/agoldis.dev/images/sorry-cypress/logo.png" width="128" /></div>
+<div>:heart: An open-source on-premise, self-hosted alternative to Cypress dashboard :unicorn:</div>
+</div>
 
 ## Table of contents
 
@@ -6,6 +9,8 @@
 - [Setup](#setup)
 - [Demo & example](#demo-&-example)
 - [On-premise installation instructions](#on-premise-installation-instructions)
+  - [Docker images](#docker-images)
+  - [Heroku](#heroku)
 - [Documentation](#documentation)
   - [Reconfiguring Cypress](#Reconfiguring-Cypress)
   - [Project structure](#project-structure)
@@ -52,11 +57,19 @@ The results of tests from the example app:
 
 Each package has a Dockerfile - use it to build your own images.
 
-Pre-built Docker images available at https://hub.docker.com/u/agoldis. Docker image tag corresponds to the git tag, while `latest` points to the `master` git branch.
+Pre-built Docker images are available at https://hub.docker.com/u/agoldis.
 
-### Others
+Docker image tag corresponds to the git tag, while `latest` points to the `master` git branch.
 
-... more to come ...
+### Heroku
+
+Click the button below to deploy the basic, in-memory configuration of `director` to Heroku:
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/agoldis/sorry-cypress/tree/deploy-to-heroku)
+
+If you need help deploying statefull version of the services, please file an issue!
+
+### More to come...
 
 ## Documentation
 
