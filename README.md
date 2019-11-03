@@ -59,13 +59,15 @@ There're also pre-built Docker images available at https://hub.docker.com/u/agol
 
 > As soon as https://github.com/agoldis/sorry-cypress/issues/12 is resolved, those will be updated automatically.
 
-### Others
+### Heroku
 
-#### Heroku
+Click the button below to deploy the basic, in-memory configuration of `director` to Heroku:
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/agoldis/sorry-cypress/tree/deploy-to-heroku)
 
-... more to come ...
+If you need help deploying statefull version of the services, please file an issue!
+
+### More to come...
 
 ## Documentation
 
