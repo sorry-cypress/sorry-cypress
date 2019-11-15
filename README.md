@@ -7,7 +7,7 @@
 
 - [Features](#features)
 - [Setup](#setup)
-- [Demo & example](#demo-&-example)
+- [Demo & example](#demo--example)
 - [On-premise installation instructions](#on-premise-installation-instructions)
   - [Docker images](#docker-images)
   - [Heroku](#heroku)
