@@ -8,6 +8,8 @@
 - [Features](#features)
 - [Setup](#setup)
 - [Demo & example](#demo--example)
+  - [Cloud-based demo](#Cloud-based-demo)
+  - [Run the demo locally (2 minutes)](#Run-the-demo-locally)
 - [On-premise installation instructions](#on-premise-installation-instructions)
   - [Docker images](#docker-images)
   - [Heroku](#heroku)
@@ -38,7 +40,11 @@
 
 ![Running Cypress test in parallel demo](https://s3.amazonaws.com/agoldis.dev/images/sorry-cypress/cypress.parallel.x2.3mb.gif)
 
+![Web dashboard prototype](https://s3.amazonaws.com/agoldis.dev/images/sorry-cypress/sorry-cypress-demo.gif)
+
 ## Demo & Example
+
+### Cloud-based demo
 
 Visit https://sorry-cypress-demo.herokuapp.com/ and see the alpha version of the web dashboard in action.
 
@@ -49,7 +55,19 @@ You can [reconfigure Cypress](#Reconfiguring-Cypress) to use `api_url: "https://
 Also consider the [example](https://github.com/agoldis/sorry-cypress/tree/master/example) with detailed example of parallelization.
 
 The results of tests from the example app:
-![Web dashboard prototype](https://s3.amazonaws.com/agoldis.dev/images/sorry-cypress/sorry-cypress-demo.gif)
+
+### Run the demo locally
+
+1. Run `docker-compose -f docker-compose.full.yml up`
+2. Open the browser at [http://localhost:8080/](http://localhost:8080/) to see the dashboard
+
+This will start all 3 services on your local machine.
+
+[Reconfigure Cypress](#Reconfiguring-Cypress) to use `api_url: "http://localhost:1234/"`,
+
+Run your tests `cypress run --parallel --record --key xxx --ci-build-id <buildId>` and you will see the results appear in the dashboard.
+
+> You will need to [setup S3](https://github.com/agoldis/sorry-cypress/wiki/S3-screenshot-bucket-setup-instructions) to be able to upload failed test screenshots. Replace the credentials in `docker-compose.full.yml` after you've set up S3 bucket.
 
 ## On-premise installation instructions
 
@@ -61,6 +79,8 @@ Pre-built Docker images are available at https://hub.docker.com/u/agoldis.
 
 Docker image tag corresponds to the git tag, while `latest` points to the `master` git branch.
 
+Refer to `docker-compose.full.yml` for example.
+
 ### Heroku
 
 Click the button below to deploy the basic, in-memory configuration of `director` to Heroku:
@@ -69,7 +89,7 @@ Click the button below to deploy the basic, in-memory configuration of `director
 
 If you need help deploying statefull version of the services, please file an issue!
 
-### More to come...
+#### More to come...
 
 ## Documentation
 
@@ -100,45 +120,6 @@ production:
   api_url: "http://localhost:1234/"
 ...
 ```
-
-<!-- ### 2. Start the alternative dashboard
-
-Run the service in cloud. For the demo, I am running it locally:
-
-```bash
-git clone https://github.com/agoldis/sorry-cypress
-cd sorry-cypress
-
-# default is http://localhost:1234/
-yarn && yarn start
-```
-
-### 3. Run multiple instances of cypress
-
-Run multuple instances of cypress. Make sure that they use the modified URL. Note that you don't have to provide a real `key`.
-
-```
-cypress run --record --key whatever --parallel --ci-build-id local-XXX
-```
-
-## For example
-
-My example project has 5 spec files:
-
-```
-cypress/integration/A.spec.js
-cypress/integration/B.spec.js
-cypress/integration/C.spec.js
-cypress/integration/D.spec.js
-cypress/integration/E.spec.js
-```
-
-Running 4 instances of cypress in parallel: `cypress run --parallel --record --key xx --ci-build-id local-000`
-
-- Instance 1 runs only `A.spec.js`
-- Instance 2 runs only `B.spec.js`
-- Instance 3 runs only `C.spec.js`
-- Instance4 runs `D.spec.js` and `E.spec.js` -->
 
 ### Project structure
 
@@ -184,7 +165,7 @@ That is what running on `https://sorry-cypress.herokuapp.com` - it is a stateles
 
 #### Configuration
 
-The service uses [`dotenv`](https://www.npmjs.com/package/dotenv) package - to change the default configuration, create `.env` file in service's root:
+The service uses [`dotenv`](https://www.npmjs.com/package/dotenv) package - to change the default configuration, create `.env` file in service's root to set the default environment variables:
 
 ```sh
 $ pwd
@@ -226,7 +207,7 @@ If you just want to run the tests in parallel and not worry about storing test r
 
 The state - test runs and results - are persisted in MongoDB, thus, can be queried and displayed in a dashboard.
 
-To enable this driver, set the configuration of `.env` file:
+To enable this driver, set the envrionment variables:
 
 ```
 EXECUTION_DRIVER="../execution/mongo/driver"
@@ -246,7 +227,7 @@ It provides the client (Cypress runner) a URL for uploading the screenshots.
 
 Is the default driver and it does nothing - snapshots won't be saved.
 
-You can set it explicity in `.env`:
+Set the environment variable to define the screenshots driver.
 
 ```
 SCREENSHOTS_DRIVER="../screenshots/dummy.driver"
@@ -254,7 +235,7 @@ SCREENSHOTS_DRIVER="../screenshots/dummy.driver"
 
 ##### S3 Driver
 
-The driver generates upload URLs for S3 bucket. To enable it, set in `.env`:
+The driver generates upload URLs for S3 bucket. Set the environment variables accordingly:
 
 ```
 SCREENSHOTS_DRIVER="../screenshots/s3.driver"
@@ -263,11 +244,13 @@ S3_BUCKET="your_bucket_name"
 
 Please make sure that [AWS credentials](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html) with proper access to invoke [`s3.getSignedUrl`](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html) are available in the environment.
 
+See the wiki page to help [setup S3 for uploading screenshots](https://github.com/agoldis/sorry-cypress/wiki/S3-screenshot-bucket-setup-instructions).
+
 ### `api` service
 
 ...is a simple GraphQL service, that allows to query the data persisted by MongoDB.
 
-Create a `.env` file and define MongoDB connection details:
+Set environment variables that define MongoDB connection details:
 
 ```
 MONGODB_URI='mongodb://mongo:27017'
@@ -280,7 +263,7 @@ MONGODB_DATABASE='sorry-cypress'
 
 In production mode you will need to provide environment variable `GRAPHQL_SCHEMA_URL` - graphql client will use the URL to download the schema.
 
-E.g. in `.env` file:
+Sett environment variable that defines the URL for getting the schema:
 
 ```
 GRAPHQL_SCHEMA_URL=https://sorry-cypress-demo-api.herokuapp.com
