@@ -240,6 +240,7 @@ The driver generates upload URLs for S3 bucket. Set the environment variables ac
 ```
 SCREENSHOTS_DRIVER="../screenshots/s3.driver"
 S3_BUCKET="your_bucket_name"
+S3_REGION="us-east-1"
 ```
 
 Please make sure that [AWS credentials](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html) with proper access to invoke [`s3.getSignedUrl`](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html) are available in the environment.
@@ -332,13 +333,9 @@ Yes, Cypress is an [open source software](https://github.com/cypress-io/cypress/
 
 ### Is it production-ready?
 
-The `director` service - yes. I have been using `https://sorry-cypress.herokuapp.com/` to run 500+ parallelized tests, each with ±90 spec files and 200+ tests.
+The `director` service - yes. I have been personally using it for my projects running thousands of parallelized test suites, each with ±90 spec files and overall 300+ tests.
 
-The other services are still very naive.
-
-### What Cypress clients does it support?
-
-Tested with Cypress `3.4.1` and `3.2.0`
+The other services are still very naive. Pull requests and enhancements are welcome.
 
 ## License
 

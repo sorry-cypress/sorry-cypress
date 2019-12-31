@@ -1,11 +1,12 @@
 import aws from 'aws-sdk';
-import { S3_BUCKET } from './config';
+import { S3_BUCKET, S3_REGION } from './config';
 import { S3SignedUploadResult } from './types';
 
 const BUCKET_URL = `https://${S3_BUCKET}.s3.amazonaws.com`;
 const ContentType = 'image/png';
 
 const s3 = new aws.S3({
+  region: S3_REGION,
   signatureVersion: 'v4'
 });
 
