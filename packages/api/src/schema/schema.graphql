@@ -117,10 +117,10 @@ type RunMeta {
 }
 
 type Commit {
-  sha: String!
-  branch: String!
-  authorName: String!
-  authorEmail: String!
-  message: String!
-  remoteOrigin: String!
+  sha: String
+  branch: String
+  authorName: String
+  authorEmail: String
+  message: String
+  remoteOrigin: String
 }

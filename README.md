@@ -54,8 +54,6 @@ You can [reconfigure Cypress](#Reconfiguring-Cypress) to use `api_url: "https://
 
 Also consider the [example](https://github.com/agoldis/sorry-cypress/tree/master/example) with detailed example of parallelization.
 
-The results of tests from the example app:
-
 ### Run the demo locally
 
 1. Run `docker-compose -f docker-compose.full.yml up`

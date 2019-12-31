@@ -25,7 +25,7 @@ export function RunsView() {
     return <p>No data</p>;
   }
 
-  const runFeed = data.runFeed!;
+  const runFeed = data.runFeed;
 
   function loadMore() {
     return fetchMore({
