@@ -14,12 +14,12 @@ export type Scalars = {
 
 export type Commit = {
    __typename?: 'Commit',
-  sha: Scalars['String'],
-  branch: Scalars['String'],
-  authorName: Scalars['String'],
-  authorEmail: Scalars['String'],
-  message: Scalars['String'],
-  remoteOrigin: Scalars['String'],
+  sha?: Maybe<Scalars['String']>,
+  branch?: Maybe<Scalars['String']>,
+  authorName?: Maybe<Scalars['String']>,
+  authorEmail?: Maybe<Scalars['String']>,
+  message?: Maybe<Scalars['String']>,
+  remoteOrigin?: Maybe<Scalars['String']>,
 };
 
 

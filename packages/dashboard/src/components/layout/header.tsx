@@ -25,7 +25,7 @@ export const Header: React.FC = () => {
       `}
     >
       <Breadcrumbs>
-        <Link to="/">🤷🏻‍♂️ Sorry Cypress</Link>
+        <Link to="/">All Runs</Link>
         {data.navStructure.map(navItem => (
           <Link key={navItem.link} to={`/${navItem.link}`}>
             {truncate(navItem.label)}

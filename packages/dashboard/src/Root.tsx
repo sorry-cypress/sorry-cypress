@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ErrorInfo } from 'react';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { ThemeProvider } from 'bold-ui';
@@ -14,21 +14,64 @@ import { RunDetailsView } from './views/RunDetailsView';
 import { InstanceDetailsView } from './views/InstanceDetailsView';
 import { TestDetailsView } from './views/TestDetailsView';
 
+class ErrorBoundary extends React.Component<
+  {},
+  {
+    hasError: boolean;
+    error: Error | null;
+  }
+> {
+  constructor(props: object) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ padding: '1rem' }}>
+          {this.state.error && <pre>{this.state.error.stack}</pre>}
+          <p>
+            Please report at{' '}
+            <a
+              href="https://github.com/agoldis/sorry-cypress/issues/new"
+              target="_blank"
+            >
+              Github Issues
+            </a>
+          </p>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
 export const Root = () => {
   return (
     <ApolloProvider client={client}>
       <ThemeProvider theme={theme}>
         <Router>
-          <Header />
-          <Content>
-            <Route path="/" exact component={RunsView} />
-            <Route path="/run/:id" component={RunDetailsView} />
-            <Route path="/instance/:id" component={InstanceDetailsView} exact />
-            <Route
-              path="/instance/:instanceId/test/:testId"
-              component={TestDetailsView}
-            />
-          </Content>
+          <ErrorBoundary>
+            <Header />
+            <Content>
+              <Route path="/" exact component={RunsView} />
+              <Route path="/run/:id" component={RunDetailsView} />
+              <Route
+                path="/instance/:id"
+                component={InstanceDetailsView}
+                exact
+              />
+              <Route
+                path="/instance/:instanceId/test/:testId"
+                component={TestDetailsView}
+              />
+            </Content>
+          </ErrorBoundary>
         </Router>
       </ThemeProvider>
     </ApolloProvider>

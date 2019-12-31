@@ -13,12 +13,12 @@ export type Scalars = {
 
 export type Commit = {
    __typename?: 'Commit',
-  sha: Scalars['String'],
-  branch: Scalars['String'],
-  authorName: Scalars['String'],
-  authorEmail: Scalars['String'],
-  message: Scalars['String'],
-  remoteOrigin: Scalars['String'],
+  sha?: Maybe<Scalars['String']>,
+  branch?: Maybe<Scalars['String']>,
+  authorName?: Maybe<Scalars['String']>,
+  authorEmail?: Maybe<Scalars['String']>,
+  message?: Maybe<Scalars['String']>,
+  remoteOrigin?: Maybe<Scalars['String']>,
 };
 
 
@@ -290,12 +290,12 @@ export type ResolversParentTypes = {
 };
 
 export type CommitResolvers<ContextType = any, ParentType extends ResolversParentTypes['Commit'] = ResolversParentTypes['Commit']> = {
-  sha?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  branch?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  authorName?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  authorEmail?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  remoteOrigin?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  sha?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  branch?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  authorName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  authorEmail?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  remoteOrigin?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
 };
 
 export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
