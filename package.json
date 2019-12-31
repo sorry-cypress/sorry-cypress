@@ -17,5 +17,8 @@
   "scripts": {
     "start": "yarn workspace @sorry-cypress/director start",
     "build": "yarn workspace @sorry-cypress/director build"
+  },
+  "resolutions": {
+    "es-abstract": "1.17.0"
   }
 }
