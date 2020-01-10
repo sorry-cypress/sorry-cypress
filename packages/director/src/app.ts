@@ -5,7 +5,9 @@ import { RUN_NOT_EXIST } from '@src/lib/errors';
 
 export const app = express();
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({
+  limit: '50mb'
+}));
 
 app.get('/', (_, res) =>
   res.redirect('https://github.com/agoldis/sorry-cypress')
