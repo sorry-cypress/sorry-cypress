@@ -3,7 +3,7 @@ import 'dotenv/config';
 export const PORT = process.env.PORT || 1234;
 
 export const DASHBOARD_URL =
-  process.env.DASHBOARD_URL || `http://localhost:3333`;
+  process.env.DASHBOARD_URL || `http://localhost:8080`;
 
 export const EXECUTION_DRIVER =
   process.env.EXECUTION_DRIVER || '../execution/in-memory';
