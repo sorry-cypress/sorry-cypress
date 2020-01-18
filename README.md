@@ -83,7 +83,7 @@ Refer to `docker-compose.full.yml` for example.
 
 Click the button below to deploy the basic, in-memory configuration of `director` to Heroku:
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/agoldis/sorry-cypress/tree/deploy-to-heroku)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/agoldis/sorry-cypress/tree/master)
 
 If you need help deploying statefull version of the services, please file an issue!
 
