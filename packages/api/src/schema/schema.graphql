@@ -32,8 +32,14 @@ type InstanceResults {
   error: String
   stdout: String
   screenshots: [InstanceScreeshot!]!
-  # cypressConfig: CypressConfig
+  cypressConfig: CypressConfig
   reporterStats: ReporterStats
+  videoUrl: String
+}
+
+type CypressConfig {
+  video: Boolean!
+  videoUploadOnPasses: Boolean!
 }
 
 type InstanceStats {

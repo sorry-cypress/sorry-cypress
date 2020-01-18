@@ -22,6 +22,12 @@ export type Commit = {
   remoteOrigin?: Maybe<Scalars['String']>,
 };
 
+export type CypressConfig = {
+   __typename?: 'CypressConfig',
+  video: Scalars['Boolean'],
+  videoUploadOnPasses: Scalars['Boolean'],
+};
+
 
 export type FullRunSpec = {
    __typename?: 'FullRunSpec',
@@ -47,7 +53,9 @@ export type InstanceResults = {
   error?: Maybe<Scalars['String']>,
   stdout?: Maybe<Scalars['String']>,
   screenshots: Array<InstanceScreeshot>,
+  cypressConfig?: Maybe<CypressConfig>,
   reporterStats?: Maybe<ReporterStats>,
+  videoUrl?: Maybe<Scalars['String']>,
 };
 
 export type InstanceScreeshot = {
