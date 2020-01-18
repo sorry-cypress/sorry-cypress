@@ -8,6 +8,7 @@ export const driver: ExecutionDriver = {
   init,
   createRun: mongoRunController.createRun,
   getNextTask: mongoRunController.getNextTask,
-  setScreenshotURL: mongoInstanceController.setScreenshotURL,
+  setVideoUrl: mongoInstanceController.setVideoUrl,
+  setScreenshotUrl: mongoInstanceController.setScreenshotUrl,
   setInstanceResults: mongoInstanceController.setInstanceResults
 };

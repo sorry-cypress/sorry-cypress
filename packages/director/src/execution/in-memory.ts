@@ -98,7 +98,8 @@ const setInstanceResults = async (
 export const driver: ExecutionDriver = {
   id: 'in-memory',
   init: () => Promise.resolve(),
-  setScreenshotURL: () => Promise.resolve(),
+  setScreenshotUrl: () => Promise.resolve(),
+  setVideoUrl: () => Promise.resolve(),
   createRun,
   getNextTask,
   setInstanceResults

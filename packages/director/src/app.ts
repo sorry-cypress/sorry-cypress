@@ -1,7 +1,14 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import { InstanceResult, ScreenshotUploadInstruction } from '@src/types';
+import {
+  InstanceResult,
+  ScreenshotUploadInstruction,
+  AssetUploadInstruction,
+  ExecutionDriver,
+  ScreenshotsDriver
+} from '@src/types';
 import { RUN_NOT_EXIST } from '@src/lib/errors';
+import { UpdateInstanseResponse } from './types/response.types';
 
 export const app = express();
 
@@ -64,38 +71,62 @@ app.post('/runs/:runId/instances', async (req, res) => {
   }
 });
 
-app.put('/instances/:instanceId', async (req, res) => {
-  const { instanceId } = req.params;
-  const result: InstanceResult = req.body;
+app.put(
+  '/instances/:instanceId',
+  async (req: express.Request, res: express.Response) => {
+    const { instanceId } = req.params;
+    const result: InstanceResult = req.body;
 
-  console.log(`>> Received instance result`, { instanceId });
-  await app.get('executionDriver').setInstanceResults(instanceId, result);
+    const executionDriver: ExecutionDriver = app.get('executionDriver');
+    const screenshotsDriver: ScreenshotsDriver = app.get('screenshotsDriver');
 
-  const screenshotUploadUrls = await app
-    .get('screenshotsDriver')
-    .getScreenshotsUploadURLs(instanceId, result);
+    console.log(`>> Received instance result`, { instanceId });
+    await executionDriver.setInstanceResults(instanceId, result);
 
-  if (screenshotUploadUrls.length > 0) {
-    screenshotUploadUrls.forEach((screenshot: ScreenshotUploadInstruction) => {
-      app
-        .get('executionDriver')
-        .setScreenshotURL(
-          instanceId,
-          screenshot.screenshotId,
-          screenshot.readUrl
-        );
+    const screenshotUploadUrls: ScreenshotUploadInstruction[] = await screenshotsDriver.getScreenshotsUploadUrls(
+      instanceId,
+      result
+    );
+
+    const videoUploadInstructions: AssetUploadInstruction | null = await screenshotsDriver.getVideoUploadUrl(
+      instanceId,
+      result
+    );
+
+    if (screenshotUploadUrls.length > 0) {
+      screenshotUploadUrls.forEach(
+        (screenshot: ScreenshotUploadInstruction) => {
+          executionDriver.setScreenshotUrl(
+            instanceId,
+            screenshot.screenshotId,
+            screenshot.readUrl
+          );
+        }
+      );
+    }
+
+    if (videoUploadInstructions) {
+      executionDriver.setVideoUrl({
+        instanceId,
+        videoUrl: videoUploadInstructions.readUrl
+      });
+    }
+
+    console.log(`<< Sending assets upload URLs`, {
+      instanceId,
+      screenshotUploadUrls,
+      videoUploadInstructions
     });
+
+    const responsePayload: UpdateInstanseResponse = {
+      screenshotUploadUrls
+    };
+    if (videoUploadInstructions) {
+      responsePayload.videoUploadUrl = videoUploadInstructions.uploadUrl;
+    }
+    return res.json(responsePayload);
   }
-
-  console.log(`<< Sending screenshot upload URLs`, {
-    instanceId,
-    screenshotUploadUrls
-  });
-
-  return res.json({
-    screenshotUploadUrls
-  });
-});
+);
 
 /*
 4. PUT https://api.cypress.io/instances/<instanceId>/stdout
