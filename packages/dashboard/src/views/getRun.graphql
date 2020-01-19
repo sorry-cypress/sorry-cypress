@@ -18,6 +18,11 @@ query getRun($runId: ID!) {
       instanceId
       claimed
       results {
+        cypressConfig {
+          video
+          videoUploadOnPasses
+        }
+        videoUrl
         tests {
           title
           state

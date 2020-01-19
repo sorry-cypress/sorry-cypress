@@ -17,6 +17,7 @@ const GET_NAV_STRUCTURE = gql`
 export const Header: React.FC = () => {
   const { css, theme } = useCss();
   const { data } = useQuery(GET_NAV_STRUCTURE);
+
   return (
     <header
       className={css`

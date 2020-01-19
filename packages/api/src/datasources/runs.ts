@@ -1,7 +1,7 @@
 import { DataSource } from 'apollo-datasource';
 import { init, getMongoDB, ObjectID } from '@src/lib/mongo';
 
-const PAGE_LIMIT = 3;
+const PAGE_LIMIT = 5;
 const mergeRunSpecs = run => {
   // merge fullspec into spec
   run.specs = run.specs.map(s => ({
@@ -79,9 +79,11 @@ export class RunsAPI extends DataSource {
       lookupAggregation
     ].filter(i => !!i);
 
-    const results = await (await getMongoDB()
-      .collection('runs')
-      .aggregate(aggregationPipeline)).toArray();
+    const results = await (
+      await getMongoDB()
+        .collection('runs')
+        .aggregate(aggregationPipeline)
+    ).toArray();
 
     return runFeedReducer(results);
   }

@@ -40,6 +40,11 @@ query getInstance($instanceId: ID!) {
         width
         screenshotURL
       }
+      cypressConfig {
+        video
+        videoUploadOnPasses
+      }
+      videoUrl
     }
   }
 }

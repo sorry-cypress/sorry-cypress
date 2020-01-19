@@ -200,6 +200,7 @@ export type GetInstanceQuery = (
       )> }
     ), results: Maybe<(
       { __typename?: 'InstanceResults' }
+      & Pick<InstanceResults, 'videoUrl'>
       & { stats: (
         { __typename?: 'InstanceStats' }
         & Pick<InstanceStats, 'suites' | 'tests' | 'passes' | 'pending' | 'skipped' | 'failures' | 'wallClockDuration'>
@@ -209,6 +210,9 @@ export type GetInstanceQuery = (
       )>, screenshots: Array<(
         { __typename?: 'InstanceScreeshot' }
         & Pick<InstanceScreeshot, 'testId' | 'screenshotId' | 'height' | 'width' | 'screenshotURL'>
+      )>, cypressConfig: Maybe<(
+        { __typename?: 'CypressConfig' }
+        & Pick<CypressConfig, 'video' | 'videoUploadOnPasses'>
       )> }
     )> }
   )> }
@@ -236,7 +240,11 @@ export type GetRunQuery = (
       & Pick<FullRunSpec, 'spec' | 'instanceId' | 'claimed'>
       & { results: Maybe<(
         { __typename?: 'InstanceResults' }
-        & { tests: Array<(
+        & Pick<InstanceResults, 'videoUrl'>
+        & { cypressConfig: Maybe<(
+          { __typename?: 'CypressConfig' }
+          & Pick<CypressConfig, 'video' | 'videoUploadOnPasses'>
+        )>, tests: Array<(
           { __typename?: 'InstanceTest' }
           & Pick<InstanceTest, 'title' | 'state'>
         )>, stats: (
@@ -273,7 +281,11 @@ export type GetRunsFeedQuery = (
         & Pick<FullRunSpec, 'spec' | 'instanceId' | 'claimed'>
         & { results: Maybe<(
           { __typename?: 'InstanceResults' }
-          & { tests: Array<(
+          & Pick<InstanceResults, 'videoUrl'>
+          & { cypressConfig: Maybe<(
+            { __typename?: 'CypressConfig' }
+            & Pick<CypressConfig, 'video' | 'videoUploadOnPasses'>
+          )>, tests: Array<(
             { __typename?: 'InstanceTest' }
             & Pick<InstanceTest, 'title' | 'state'>
           )>, stats: (
@@ -330,6 +342,11 @@ export const GetInstanceDocument = gql`
         width
         screenshotURL
       }
+      cypressConfig {
+        video
+        videoUploadOnPasses
+      }
+      videoUrl
     }
   }
 }
@@ -381,6 +398,11 @@ export const GetRunDocument = gql`
       instanceId
       claimed
       results {
+        cypressConfig {
+          video
+          videoUploadOnPasses
+        }
+        videoUrl
         tests {
           title
           state
@@ -449,6 +471,11 @@ export const GetRunsFeedDocument = gql`
         instanceId
         claimed
         results {
+          cypressConfig {
+            video
+            videoUploadOnPasses
+          }
+          videoUrl
           tests {
             title
             state

@@ -22,6 +22,11 @@ query getRunsFeed($cursor: String) {
         instanceId
         claimed
         results {
+          cypressConfig {
+            video
+            videoUploadOnPasses
+          }
+          videoUrl
           tests {
             title
             state
