@@ -21,6 +21,12 @@ export type Commit = {
   remoteOrigin?: Maybe<Scalars['String']>,
 };
 
+export type CypressConfig = {
+   __typename?: 'CypressConfig',
+  video: Scalars['Boolean'],
+  videoUploadOnPasses: Scalars['Boolean'],
+};
+
 
 export type FullRunSpec = {
    __typename?: 'FullRunSpec',
@@ -46,8 +52,9 @@ export type InstanceResults = {
   error?: Maybe<Scalars['String']>,
   stdout?: Maybe<Scalars['String']>,
   screenshots: Array<InstanceScreeshot>,
-  /** cypressConfig: CypressConfig */
+  cypressConfig?: Maybe<CypressConfig>,
   reporterStats?: Maybe<ReporterStats>,
+  videoUrl?: Maybe<Scalars['String']>,
 };
 
 export type InstanceScreeshot = {
@@ -258,6 +265,7 @@ export type ResolversTypes = {
   Int: ResolverTypeWrapper<Scalars['Int']>,
   InstanceTest: ResolverTypeWrapper<InstanceTest>,
   InstanceScreeshot: ResolverTypeWrapper<InstanceScreeshot>,
+  CypressConfig: ResolverTypeWrapper<CypressConfig>,
   ReporterStats: ResolverTypeWrapper<ReporterStats>,
   RunFeed: ResolverTypeWrapper<RunFeed>,
   Instance: ResolverTypeWrapper<Instance>,
@@ -282,6 +290,7 @@ export type ResolversParentTypes = {
   Int: Scalars['Int'],
   InstanceTest: InstanceTest,
   InstanceScreeshot: InstanceScreeshot,
+  CypressConfig: CypressConfig,
   ReporterStats: ReporterStats,
   RunFeed: RunFeed,
   Instance: Instance,
@@ -296,6 +305,11 @@ export type CommitResolvers<ContextType = any, ParentType extends ResolversParen
   authorEmail?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   remoteOrigin?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+};
+
+export type CypressConfigResolvers<ContextType = any, ParentType extends ResolversParentTypes['CypressConfig'] = ResolversParentTypes['CypressConfig']> = {
+  video?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
+  videoUploadOnPasses?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
 };
 
 export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
@@ -323,7 +337,9 @@ export type InstanceResultsResolvers<ContextType = any, ParentType extends Resol
   error?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   stdout?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   screenshots?: Resolver<Array<ResolversTypes['InstanceScreeshot']>, ParentType, ContextType>,
+  cypressConfig?: Resolver<Maybe<ResolversTypes['CypressConfig']>, ParentType, ContextType>,
   reporterStats?: Resolver<Maybe<ResolversTypes['ReporterStats']>, ParentType, ContextType>,
+  videoUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
 };
 
 export type InstanceScreeshotResolvers<ContextType = any, ParentType extends ResolversParentTypes['InstanceScreeshot'] = ResolversParentTypes['InstanceScreeshot']> = {
@@ -412,6 +428,7 @@ export type RunSpecResolvers<ContextType = any, ParentType extends ResolversPare
 
 export type Resolvers<ContextType = any> = {
   Commit?: CommitResolvers<ContextType>,
+  CypressConfig?: CypressConfigResolvers<ContextType>,
   DateTime?: GraphQLScalarType,
   FullRunSpec?: FullRunSpecResolvers<ContextType>,
   Instance?: InstanceResolvers<ContextType>,

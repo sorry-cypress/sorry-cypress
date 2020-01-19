@@ -27,10 +27,10 @@
 ## Features
 
 - run cypress tests in parallel without any limitation
-- upload failure screenshots to S3 bucket
-- browse test results, failures and screenshots
+- upload failure screenshots and videos to S3 bucket
+- browse test results, failures, screenshots and video recordings
 - run in light mode w/o persistency or with MongoDB storage attached
-- on-premise self-hosted cypress dashboard by design - use your own infrastructure, own your data
+- on-premise self-hosted cypress dashboard - use your own infrastructure, own your data
 
 ## Setup
 
@@ -217,9 +217,9 @@ With MongoDB driver you can use the other services - `api` and `dashboard` to se
 
 #### Snapshots driver
 
-...is what allows you to save the snapshots of failed tests.
+...is what allows you to save the snapshots and videos tests.
 
-It provides the client (Cypress runner) a URL for uploading the screenshots.
+It provides the client (Cypress runner) a URL for uploading the assets (videos and screenshots).
 
 ##### Dummy
 

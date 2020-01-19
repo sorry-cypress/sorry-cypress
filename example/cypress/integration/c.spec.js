@@ -1,7 +1,7 @@
 describe('Suite C', function() {
   it('Welcomes you', function() {
     cy.visit('/');
-    cy.wait(10000);
+    cy.wait(3000);
     cy.contains('This should fail');
   });
 

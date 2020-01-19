@@ -1,4 +1,8 @@
-import { InstanceResult, ScreenshotUploadInstruction } from './instance.types';
+import {
+  InstanceResult,
+  ScreenshotUploadInstruction,
+  AssetUploadInstruction
+} from './instance.types';
 import { CreateRunParameters, CreateRunResponse, Task } from './run.types';
 
 interface Driver {
@@ -6,7 +10,12 @@ interface Driver {
   init: () => Promise<void>;
 }
 export interface ScreenshotsDriver extends Driver {
-  getScreenshotsUploadURLs: (
+  getVideoUploadUrl: (
+    instanceId: string,
+    result: InstanceResult
+  ) => Promise<AssetUploadInstruction | null>;
+
+  getScreenshotsUploadUrls: (
     instanceId: string,
     result: InstanceResult
   ) => Promise<ScreenshotUploadInstruction[]>;
@@ -19,9 +28,13 @@ export interface ExecutionDriver extends Driver {
     instanceId: string,
     results: InstanceResult
   ) => Promise<void>;
-  setScreenshotURL: (
+  setScreenshotUrl: (
     instanceId: string,
     screenshotId: string,
-    screenshotURL: string
+    screenshotUrl: string
   ) => Promise<void>;
+  setVideoUrl: (params: {
+    instanceId: string;
+    videoUrl: string;
+  }) => Promise<void>;
 }

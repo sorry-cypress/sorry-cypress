@@ -1,3 +1,5 @@
+import { S3SignedUploadResult } from '@src/screenshots/s3/types';
+
 export interface Instance {
   instanceId: string;
   results: InstanceResult;
@@ -25,17 +27,28 @@ export interface InstanceResultStats {
   wallClockDuration: number;
 }
 
+export interface CypressConfig {
+  video: boolean;
+  videoUploadOnPasses: boolean;
+  [key: string]: any;
+}
+
 export interface InstanceResult {
   stats: InstanceResultStats;
   tests: object[];
   error: null | string;
   reporterStats: object;
-  cypressConfig: object;
+  cypressConfig: CypressConfig;
   screenshots: Screenshot[];
+  video: boolean;
+  videoUrl?: string;
 }
 
-export interface ScreenshotUploadInstruction {
-  screenshotId: string;
+export interface AssetUploadInstruction {
   uploadUrl: string;
   readUrl: string;
+}
+
+export interface ScreenshotUploadInstruction extends AssetUploadInstruction {
+  screenshotId: string;
 }

@@ -3,6 +3,7 @@ import { getMongoDB } from '@src/lib/mongo';
 import {
   AppError,
   INSTANCE_EXISTS,
+  VIDEO_URL_UPDATE_FAILED,
   SCREENSHOT_URL_UPDATE_FAILED,
   INSTANCE_RESULTS_UPDATE_FAILED
 } from '@src/lib/errors';
@@ -63,7 +64,7 @@ export const setInstanceResults = async (
   }
 };
 
-export const setScreenshotURL = async (
+export const setScreenshotUrl = async (
   instanceId: string,
   screenshotId: string,
   screenshotURL: string
@@ -88,5 +89,26 @@ export const setScreenshotURL = async (
     return;
   } else {
     throw new AppError(SCREENSHOT_URL_UPDATE_FAILED);
+  }
+};
+
+export const setvideoUrl = async (instanceId: string, videoUrl: string) => {
+  const { matchedCount, modifiedCount } = await getMongoDB()
+    .collection(COLLECTION_NAME)
+    .updateOne(
+      {
+        instanceId
+      },
+      {
+        $set: {
+          'results.videoUrl': videoUrl
+        }
+      }
+    );
+
+  if (matchedCount && modifiedCount) {
+    return;
+  } else {
+    throw new AppError(VIDEO_URL_UPDATE_FAILED);
   }
 };

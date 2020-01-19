@@ -19,6 +19,21 @@ export function RunDetailsView({
   if (error) return <p>Error :( </p>;
   if (!data) return <p>No data</p>;
 
+  if (!data.run) {
+    apollo.writeData({
+      data: {
+        navStructure: [
+          {
+            __typename: 'NavStructureItem',
+            label: 'Non-existing run',
+            link: `run/missing`
+          }
+        ]
+      }
+    });
+    return 'Cannot find this run does not exist';
+  }
+
   apollo.writeData({
     data: {
       navStructure: [

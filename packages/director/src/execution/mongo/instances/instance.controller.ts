@@ -1,7 +1,8 @@
 import {
   insertInstance,
-  setScreenshotURL as modelSetScreenshotURL,
-  setInstanceResults as modelSetInstanceResults
+  setScreenshotUrl as modelsetScreenshotUrl,
+  setInstanceResults as modelSetInstanceResults,
+  setvideoUrl as modelsetvideoUrl
 } from './instance.model';
 import { ExecutionDriver } from '@src/types';
 
@@ -11,14 +12,19 @@ export const createInstance = insertInstance;
 
 export const setInstanceResults = modelSetInstanceResults;
 
-export const setScreenshotURL: ExecutionDriver['setScreenshotURL'] = async (
+export const setScreenshotUrl: ExecutionDriver['setScreenshotUrl'] = async (
   instanceId,
   screenshotId,
   screenshotURL
 ) => {
   try {
-    await modelSetScreenshotURL(instanceId, screenshotId, screenshotURL);
+    await modelsetScreenshotUrl(instanceId, screenshotId, screenshotURL);
   } catch {
     throw new AppError(SCREENSHOT_URL_UPDATE_FAILED);
   }
 };
+
+export const setVideoUrl: ExecutionDriver['setVideoUrl'] = async ({
+  instanceId,
+  videoUrl
+}) => modelsetvideoUrl(instanceId, videoUrl);
