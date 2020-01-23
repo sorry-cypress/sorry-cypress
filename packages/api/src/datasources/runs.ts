@@ -1,7 +1,7 @@
 import { DataSource } from 'apollo-datasource';
 import { init, getMongoDB, ObjectID } from '@src/lib/mongo';
 
-const PAGE_LIMIT = 5;
+const PAGE_LIMIT = 2;
 const mergeRunSpecs = run => {
   // merge fullspec into spec
   run.specs = run.specs.map(s => ({
@@ -13,9 +13,21 @@ const mergeRunSpecs = run => {
 
 const fullRunReducer = fullMongoRun => fullMongoRun.map(mergeRunSpecs);
 
+const getCursor = runs => {
+  if (!runs.length) {
+    return 0;
+  }
+
+  if (runs.length > PAGE_LIMIT) {
+    return runs[runs.length - 2]._id;
+  }
+
+  return runs[runs.length - 1]._id;
+};
+
 const runFeedReducer = runs => ({
   runs: runs.slice(0, PAGE_LIMIT).map(mergeRunSpecs),
-  cursor: runs.length > 0 ? runs[runs.length - 1]._id : 0,
+  cursor: getCursor(runs),
   hasMore: runs.length > PAGE_LIMIT
 });
 
@@ -73,6 +85,7 @@ export class RunsAPI extends DataSource {
           }
         : null,
       {
+        // get one extra to know if there's more
         $limit: PAGE_LIMIT + 1
       },
       projectAggregation,
