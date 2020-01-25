@@ -3,6 +3,8 @@
 <div>:octocat: An open-source, on-premise, self-hosted alternative to Cypress dashboard :evergreen_tree:</div>
 </div>
 
+[![Gitter](https://badges.gitter.im/sorry-cypress/community.svg)](https://gitter.im/sorry-cypress/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
 ## Table of contents
 
 - [Features](#features)
