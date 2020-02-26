@@ -7,10 +7,13 @@ import {
   ExecutionDriver,
   ScreenshotsDriver
 } from '@src/types';
+import { ALLOWED_KEYS } from '@src/config';
 import { RUN_NOT_EXIST } from '@src/lib/errors';
 import { UpdateInstanseResponse } from './types/response.types';
 
 export const app = express();
+
+const isKeyAllowed = (recordKey: string) => ALLOWED_KEYS ? ALLOWED_KEYS.includes(recordKey) : true;
 
 app.use(
   bodyParser.json({
@@ -23,7 +26,16 @@ app.get('/', (_, res) =>
 );
 
 app.post('/runs', async (req, res) => {
-  const { ciBuildId } = req.body;
+  const { recordKey, ciBuildId } = req.body;
+
+  console.log(`>> Machine is asking to join a run`, { recordKey, ciBuildId });
+
+  if(!isKeyAllowed(recordKey)) {
+    console.log(`<< Record key is not allowed`, { recordKey })
+
+    return res.status(403).send(`Provided record key '${recordKey}' is not allowed`);
+  }
+
   console.log(`>> Machine is joining a run`, { ciBuildId });
 
   const response = await app.get('executionDriver').createRun(req.body);
