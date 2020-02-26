@@ -183,6 +183,9 @@ EXECUTION_DRIVER="../execution/in-memory"
 
 # Read more about screenshot drivers below
 SCREENSHOTS_DRIVER="../screenshots/dummy.driver"
+
+# Read more about record keys whitelist below
+ALLOWED_KEYS="my_secret_key,my_another_secret_key"
 ```
 
 #### Drivers
@@ -246,6 +249,16 @@ S3_REGION="us-east-1"
 Please make sure that [AWS credentials](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html) with proper access to invoke [`s3.getSignedUrl`](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html) are available in the environment.
 
 See the wiki page to help [setup S3 for uploading screenshots](https://github.com/agoldis/sorry-cypress/wiki/S3-screenshot-bucket-setup-instructions).
+
+#### Record keys whitelist
+
+Setting ALLOWED_KEYS variable allows you to define list of comma delimited record keys (provided to the Cypress Runner using `--key` option) which are accepted by the `director` service. This can be useful when Cypress is running on external CI servers and we need to expose `director` to the internet. 
+
+Empty or not provided variable means that all record keys are allowed.
+
+```
+ALLOWED_KEYS="my_secret_key"
+```
 
 ### `api` service
 
