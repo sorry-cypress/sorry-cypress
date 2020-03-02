@@ -15,6 +15,7 @@
 - [On-premise installation instructions](#on-premise-installation-instructions)
   - [Docker images](#docker-images)
   - [Heroku](#heroku)
+  - [🔥 Amazon AWS](#Amazon-AWS)
 - [Documentation](#documentation)
   - [Reconfiguring Cypress](#Reconfiguring-Cypress)
   - [Project structure](#project-structure)
@@ -83,13 +84,24 @@ Refer to `docker-compose.full.yml` for example.
 
 ### Heroku
 
-Click the button below to deploy the basic, in-memory configuration of `director` to Heroku:
+Moved to [Wiki - Heroku Tutorial](https://github.com/agoldis/sorry-cypress/wiki/Heroku-Tutorial)
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/agoldis/sorry-cypress/tree/master)
+### Amazon AWS
 
-If you need help deploying statefull version of the services, please file an issue!
+🎉 It takes just 5 minutes to deploy `sorry-cypress` on AWS using AWS CloudFormation template, you're getting a "full" version of the service with:
 
-#### More to come...
+- Parallelization
+- GraphQL API
+- Web Dashboard
+- S3 bucket preconfigured for storing screenshots and video recordings
+- MongoDB as a persistance layer
+- Secure network configuration via AWS VPC
+- Pre-configured log groups via AWS Cloudwatch
+- Convenient access via AWS Load Balancer
+
+Read more in [Wiki - AWS Tutorial](https://github.com/agoldis/sorry-cypress/wiki/AWS-Tutorial) or just hit the button 👇🏻
+
+[![Launch Stack](https://cdn.rawgit.com/buildkite/cloudformation-launch-stack-button-svg/master/launch-stack.svg)](https://console.aws.amazon.com/cloudformation/home#/stacks/new?stackName=sorry-cypress&templateURL=https://s3.amazonaws.com/agoldis.dev/sorry-cypress/sorry-cypress-stack.yml)
 
 ## Documentation
 
@@ -252,7 +264,7 @@ See the wiki page to help [setup S3 for uploading screenshots](https://github.co
 
 #### Record keys whitelist
 
-Setting ALLOWED_KEYS variable allows you to define list of comma delimited record keys (provided to the Cypress Runner using `--key` option) which are accepted by the `director` service. This can be useful when Cypress is running on external CI servers and we need to expose `director` to the internet. 
+Setting ALLOWED_KEYS variable allows you to define list of comma delimited record keys (provided to the Cypress Runner using `--key` option) which are accepted by the `director` service. This can be useful when Cypress is running on external CI servers and we need to expose `director` to the internet.
 
 Empty or not provided variable means that all record keys are allowed.
 
