@@ -29,11 +29,11 @@
 
 ## Features
 
-- run cypress tests in parallel without any limitation
+- run cypress tests in parallel without dashboard
 - upload failure screenshots and videos to S3 bucket
 - browse test results, failures, screenshots and video recordings
 - run in light mode w/o persistency or with MongoDB storage attached
-- on-premise self-hosted cypress dashboard - use your own infrastructure, own your data
+- on-premise self-hosted cypress dashboard - use your own infrastructure, own your data, no limitations
 
 ## Setup
 
@@ -62,11 +62,11 @@ Also consider the [example](https://github.com/agoldis/sorry-cypress/tree/master
 1. Run `docker-compose -f docker-compose.full.yml up`
 2. Open the browser at [http://localhost:8080/](http://localhost:8080/) to see the dashboard
 
-This will start all 3 services on your local machine.
+This will start all 3 services on your local machine,
 
 [Reconfigure Cypress](#Reconfiguring-Cypress) to use `api_url: "http://localhost:1234/"`,
 
-Run your tests `cypress run --parallel --record --key xxx --ci-build-id <buildId>` and you will see the results appear in the dashboard.
+Run your tests `cypress run --parallel --record --key xxx --ci-build-id <buildId>` and you will see the results appear in the dashboard. Those cypress tests will in parallel without connecting the official dashboard
 
 > You will need to [setup S3](https://github.com/agoldis/sorry-cypress/wiki/S3-screenshot-bucket-setup-instructions) to be able to upload failed test screenshots. Replace the credentials in `docker-compose.full.yml` after you've set up S3 bucket.
 
