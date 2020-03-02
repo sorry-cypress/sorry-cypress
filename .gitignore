@@ -64,4 +64,4 @@ typings/
 .next
 
 # AWS
-.aws
+*/**/.aws

@@ -15,7 +15,7 @@
 - [On-premise installation instructions](#on-premise-installation-instructions)
   - [Docker images](#docker-images)
   - [Heroku](#heroku)
-  - [🔥 Amazon AWS](#Amazon-AWS)
+  - [🔥<span style="color: white; background: orange; padding: 2px 4px">new!</span> Amazon AWS](#Amazon-AWS)
 - [Documentation](#documentation)
   - [Reconfiguring Cypress](#Reconfiguring-Cypress)
   - [Project structure](#project-structure)
