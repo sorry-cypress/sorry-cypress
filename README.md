@@ -14,7 +14,7 @@
   - [Run the demo locally (2 minutes)](#Run-the-demo-locally)
 - [On-premise installation instructions](#on-premise-installation-instructions)
   - [Docker images](#docker-images)
-  - [Heroku](#heroku)
+  - [🔥<span style="color: white; background: orange; padding: 2px 4px">new!</span> Heroku](#heroku)
   - [🔥<span style="color: white; background: orange; padding: 2px 4px">new!</span> Amazon AWS](#Amazon-AWS)
 - [Documentation](#documentation)
   - [Reconfiguring Cypress](#Reconfiguring-Cypress)
