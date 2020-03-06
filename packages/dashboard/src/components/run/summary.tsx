@@ -1,12 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Heading, Cell, Grid, Text, HFlow } from 'bold-ui';
+import { Heading, Cell, Grid, Text } from 'bold-ui';
 import { getRunTestsOverall } from '../../lib/run';
-import { Run } from '../../generated/graphql';
 import { Commit } from '../commit/commit';
 import { Paper } from '../common/';
 
-export const RunSummary: React.FC<{ run: Run }> = ({ run }) => {
+export const RunSummary = ({ run }) => {
   const { meta, runId, specs } = run;
   const { commit } = meta;
   const overall = getRunTestsOverall(run);
@@ -32,11 +31,8 @@ export const RunSummary: React.FC<{ run: Run }> = ({ run }) => {
               </Text>
             </li>
             <li>
-              <Text>Pending: {overall.pending}</Text>
-            </li>
-            <li>
-              <Text color={overall.skipped ? 'disabled' : 'normal'}>
-                Skipped: {overall.skipped}
+              <Text color={overall.pending ? 'disabled' : 'normal'}>
+                Skipped: {overall.pending}
               </Text>
             </li>
           </ul>

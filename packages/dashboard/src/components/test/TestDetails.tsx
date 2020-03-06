@@ -12,11 +12,11 @@ export function TestDetails({ test, screenshots }) {
         <TestState state={test.state} />
         <Heading level={1}>{title}</Heading>
       </HFlow>
-      <ul>
+      {test.wallClockDuration && <ul>
         <li>
           <span>Wall clock duration:</span> {test.wallClockDuration} msec
         </li>
-      </ul>
+      </ul>}
       {test.error && (
         <Alert
           type="danger"

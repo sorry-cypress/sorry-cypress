@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { SpecSummary } from '../spec/summary';
 import { useCss, Switch, HFlow } from 'bold-ui';
 import { getSpecState } from '../../lib/spec';
+import { Run } from '../../generated/graphql';
 
 export function RunDetails({ run }) {
   const { css } = useCss();

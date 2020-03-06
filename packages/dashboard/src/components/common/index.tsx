@@ -1,5 +1,6 @@
 import React from 'react';
 import { Paper as UIPaper, useStyles, Tag } from 'bold-ui';
+import { SpecStateType } from '../../lib/spec';
 
 export const Paper: React.FC = props => {
   const { css } = useStyles();
@@ -25,9 +26,22 @@ export const TestState: React.FC<{ state: TestStates }> = ({ state }) => {
     case 'passed':
       return <Tag type="success">Passed</Tag>;
     case 'pending':
-      return <Tag type="normal">Pending</Tag>;
+      return <Tag type="normal">Skipped</Tag>;
     case 'skipped':
       return <Tag type="alert">Skipped</Tag>;
+    default:
+      return <Tag type="normal">Unknown</Tag>;
+  }
+};
+
+export const SpecState: React.FC<{ state: SpecStateType }> = ({ state }) => {
+  switch (state) {
+    case 'failed':
+      return <Tag type="danger">Failed</Tag>;
+    case 'passed':
+      return <Tag type="success">Passed</Tag>;
+    case 'pending':
+      return <Tag type="normal">Pending</Tag>;
     default:
       return <Tag type="normal">Unknown</Tag>;
   }
