@@ -1,14 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { HFlow } from 'bold-ui';
-import { TestState } from '../common';
+import {  SpecState } from '../common';
 import { getSpecState } from '../../lib/spec';
-import { FullRunSpec } from '../../generated/graphql';
+import {  Instance } from '../../generated/graphql';
 
-export const SpecSummary: React.FC<{ spec: FullRunSpec }> = ({ spec }) => {
+export const SpecSummary: React.FC<{ spec: Instance }> = ({ spec }: { spec: Instance}) => {
   return (
     <HFlow>
-      <TestState state={getSpecState(spec)} />
+      <SpecState state={getSpecState(spec)} />
       <Link to={`/instance/${spec.instanceId}`}>{spec.spec}</Link>{' '}
     </HFlow>
   );

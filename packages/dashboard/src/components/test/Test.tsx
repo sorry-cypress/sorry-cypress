@@ -8,7 +8,7 @@ export function Test({ instanceId, test }) {
       <strong>
         <TestState state={test.state} />
       </strong>{' '}
-      [{test.wallClockDuration} msec]{' '}
+      {test.wallClockDuration && `[${test.wallClockDuration} msec]`}{' '}
       <Link to={`/instance/${instanceId}/test/${test.testId}`}>
         {test.title.join(' > ')}
       </Link>

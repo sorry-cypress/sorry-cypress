@@ -1,9 +1,11 @@
 import React from 'react';
 import capitalize from 'lodash.capitalize';
-import { Heading, Cell, Grid, HFlow } from 'bold-ui';
+import { Heading, Cell, Grid, HFlow, Text} from 'bold-ui';
 import { Paper, TestState } from '../common/';
 import { getSpecState } from '../../lib/spec';
-import { FullRunSpec } from '../../generated/graphql';
+import { FullRunSpec, InstanceStats } from '../../generated/graphql';
+
+const getInstanceStatLabel = (statusItem: keyof InstanceStats): string =>  statusItem === "pending" ? "skipped" : statusItem
 
 export const InstanceSummary: React.FC<{ instance: FullRunSpec }> = ({
   instance
@@ -11,7 +13,7 @@ export const InstanceSummary: React.FC<{ instance: FullRunSpec }> = ({
   if (!instance.results) {
     return <p>No results for the instance</p>;
   }
-  const stats = instance.results.stats;
+  const stats: InstanceStats = instance.results.stats;
 
   return (
     <Paper>
@@ -22,9 +24,12 @@ export const InstanceSummary: React.FC<{ instance: FullRunSpec }> = ({
             <Heading level={1}>{instance.spec}</Heading>
           </HFlow>
           <ul>
-            {['suites', 'tests', 'passes', 'pending', 'failures'].map(i => (
+            {(['suites', 'tests', 'passes',  'failures', 'pending'] as Array<keyof InstanceStats>).map(i  => (
               <li key={i}>
-                <span>{capitalize(i)}: </span> {stats[i]}
+                <Text color={i === "pending" ? 'disabled' : i === "failures" && stats[i] ? 'danger' : 'normal'}>
+                  {capitalize(getInstanceStatLabel(i))}:  {stats[i]}
+                </Text>
+                
               </li>
             ))}
           </ul>
