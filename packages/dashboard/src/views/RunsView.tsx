@@ -45,6 +45,16 @@ export function RunsView() {
     });
   }
 
+  if (!runFeed.runs.length) {
+    return (
+      <div>
+        Welcome to Sorry Cypress! Your tests runs will appears here.{' '}
+        <a href="https://github.com/agoldis/sorry-cypress" target="_blank">
+          Documentation
+        </a>
+      </div>
+    );
+  }
   return (
     <>
       {runFeed.runs.map(run => (
