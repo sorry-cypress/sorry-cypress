@@ -1,7 +1,7 @@
 describe('Suite B', function() {
   it('Welcomes you', function() {
     cy.visit('/');
-    cy.wait(10000);
+    cy.wait(1000);
     cy.contains('Hello and sorry Cypress');
   });
 
