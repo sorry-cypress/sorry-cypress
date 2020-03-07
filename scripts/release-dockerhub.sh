@@ -13,7 +13,7 @@ function isGitTag() {
 }
 
 function isOnMaster() {
-  [ "${BRANCH}" = "github-actions-build-docker" ]
+  [ "${BRANCH}" = "master" ]
 }
 
 function isSemver() {
