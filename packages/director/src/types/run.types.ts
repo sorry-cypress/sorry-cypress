@@ -35,7 +35,7 @@ export interface RunSpec {
 }
 export interface Run {
   runId: string;
-  createdAt: Date;
+  createdAt: string;
   meta: RunMetaData;
   specs: RunSpec[];
 }

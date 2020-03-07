@@ -1,6 +1,7 @@
 import { Run } from '@src/types';
 import { getMongoDB } from '@src/lib/mongo';
 import { AppError, RUN_EXISTS, CLAIM_FAILED } from '@src/lib/errors';
+import { getSanitizedMongoObject } from '@src/lib/results';
 
 export const getRunById = async (id: string) =>
   await getMongoDB()
@@ -11,7 +12,7 @@ export const createRun = async (run: Run) => {
   try {
     const { result } = await getMongoDB()
       .collection('runs')
-      .insertOne(run);
+      .insertOne(getSanitizedMongoObject(run));
     return result;
   } catch (error) {
     if (error.code && error.code === 11000) {

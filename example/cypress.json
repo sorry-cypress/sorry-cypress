@@ -1,4 +1,5 @@
 {
+  "$schema": "https://on.cypress.io/cypress.schema.json",
   "baseUrl": "http://localhost:3003",
   "projectId": "9v9it2",
   "video": true

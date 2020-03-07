@@ -7,6 +7,7 @@ import {
   SCREENSHOT_URL_UPDATE_FAILED,
   INSTANCE_RESULTS_UPDATE_FAILED
 } from '@src/lib/errors';
+import { getSanitizedMongoObject } from '@src/lib/results';
 
 const COLLECTION_NAME = 'instances';
 
@@ -52,7 +53,7 @@ export const setInstanceResults = async (
       },
       {
         $set: {
-          results
+          results: getSanitizedMongoObject(results)
         }
       }
     );

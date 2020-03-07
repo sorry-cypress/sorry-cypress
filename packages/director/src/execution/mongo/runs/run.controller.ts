@@ -40,7 +40,7 @@ export const createRun = async (
   try {
     await storageCreateRun({
       runId,
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
       meta: {
         groupId,
         ciBuildId: params.ciBuildId,
