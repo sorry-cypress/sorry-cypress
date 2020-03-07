@@ -1,7 +1,9 @@
-name: Docker Image CI
+name: Update Dockerhub Images
 
 on:
   push:
+    branches:
+      - github-actions-build-docker
     tags:
       - v*
 
@@ -10,13 +12,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@master
 
-      - name: Build director Docker images
-        run: docker build packages/director/ --file packages/director/Dockerfile --tag agoldis/sorry-cypress-director:$(echo "$GITHUB_REF" | awk -F"/" '{ print $3 }')
+      - name: Docker Login
+        uses: azure/docker-login@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      - name: Build api Docker images
-        run: docker build packages/api/ --file packages/api/Dockerfile --tag agoldis/sorry-cypress-api:$(echo "$GITHUB_REF" | awk -F"/" '{ print $3 }')
-
-      - name: Build dashboard Docker images
-        run: docker build packages/dashboard/ --file packages/dashboard/Dockerfile --tag agoldis/sorry-cypress-dashboard:$(echo "$GITHUB_REF" | awk -F"/" '{ print $3 }')
+      - name: Dockerhub Release
+        run: ./scripts/release-dockerhub.sh
+        # - name: Publish to Registry
+      # uses: elgohr/Publish-Docker-Github-Action@master
+      # id: docker-push
+      # with:
+      #   name: agoldis/test
+      #   username: ${{ secrets.DOCKERHUB_USERNAME }}
+      #   password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      #   workdir: packages/director/
+      #   buildoptions: --file packages/director/Dockerfile
+      #   tag_semver: true
+      # - name: Build director Docker images
+      #   run: docker build packages/director/ --file packages/director/Dockerfile --tag agoldis/sorry-cypress-director:$(echo "$GITHUB_REF" | awk -F"/" '{ print $3 }')
+      # - name: Build api Docker images
+      #   run: docker build packages/api/ --file packages/api/Dockerfile --tag agoldis/sorry-cypress-api:$(echo "$GITHUB_REF" | awk -F"/" '{ print $3 }')
+      # - name: Build dashboard Docker images
+      #   run: docker build packages/dashboard/ --file packages/dashboard/Dockerfile --tag agoldis/sorry-cypress-dashboard:$(echo "$GITHUB_REF" | awk -F"/" '{ print $3 }')
