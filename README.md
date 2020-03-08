@@ -3,7 +3,7 @@
 <div>:octocat: An open-source, on-premise, self-hosted alternative to Cypress dashboard :evergreen_tree:</div>
 </div>
 
-[![Gitter](https://badges.gitter.im/sorry-cypress/community.svg)](https://gitter.im/sorry-cypress/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+![Update Dockerhub Images](https://github.com/agoldis/sorry-cypress/workflows/Update%20Dockerhub%20Images/badge.svg?event=push)
 
 ## Table of contents
 
@@ -25,6 +25,7 @@
 - [Development](#development)
 - [Behind the scenes](#behind-the-scenes)
 - [FAQ](#faq)
+- [Additional Resources](#additional-resources)
 - [License](#license)
 
 ## Features
@@ -339,10 +340,6 @@ You can change the configuration using the environment variables defined in `doc
 
 5. When there're no more available tests for a run, the service sends an "empty" response - client reports that it is finished
 
----
-
-The official guide on [Cypress parallelization](https://docs.cypress.io/guides/guides/parallelization.html).
-
 ## FAQ
 
 ### Why?
@@ -358,9 +355,13 @@ Yes, Cypress is an [open source software](https://github.com/cypress-io/cypress/
 
 ### Is it production-ready?
 
-The `director` service - yes. I have been personally using it for my projects running thousands of parallelized test suites, each with ±90 spec files and overall 300+ tests.
+Yes.
 
-The other services are still very naive. Pull requests and enhancements are welcome.
+## Additional Resources
+
+- [Wiki](https://github.com/agoldis/sorry-cypress/wiki)
+- [The official guide on Cypress parallelization](https://docs.cypress.io/guides/guides/parallelization.html)
+- [Running Multiple Cypress Agents on AWS](https://github.com/agoldis/sorry-cypress/wiki/AWS-Multiple-Cypress-Agents) by [mlsad3](https://github.com/mlsad3)
 
 ## License
 
