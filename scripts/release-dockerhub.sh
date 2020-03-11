@@ -61,13 +61,13 @@ setDockerTags
 echo 🚀 Releasing tags: $TAGS
 echo ========================
 
-dockerBuild "packages/director" "agoldis/test-deploy-director"
-dockerBuild "packages/api" "agoldis/test-deploy-api"
-dockerBuild "packages/dashboard" "agoldis/test-deploy-dashboard"
+dockerBuild "packages/director" "agoldis/sorry-cypress-director"
+dockerBuild "packages/api" "agoldis/sorry-cypress-api"
+dockerBuild "packages/dashboard" "agoldis/sorry-cypress-dashboard"
 
-dockerPush "agoldis/test-deploy-director"
-dockerPush "agoldis/test-deploy-api"
-dockerPush "agoldis/test-deploy-dashboard"
+dockerPush "agoldis/sorry-cypress-director"
+dockerPush "agoldis/sorry-cypress-api"
+dockerPush "agoldis/sorry-cypress-dashboard"
 
 echo ========================
 echo 🎉 Released to Dockerhub: $TAGS
