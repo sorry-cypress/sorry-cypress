@@ -28,7 +28,7 @@ type Instance {
 
 type InstanceResults {
   stats: InstanceStats!
-  tests: [InstanceTest!]!
+  tests: [InstanceTest]!
   error: String
   stdout: String
   screenshots: [InstanceScreeshot!]!

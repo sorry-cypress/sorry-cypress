@@ -1,11 +1,27 @@
 import React from 'react';
-import { Test } from '../test';
+import { Test, CorruptedTest } from '../test';
 
 import { useCss } from 'bold-ui';
-import { Instance } from '../../generated/graphql';
 
+import { Instance, InstanceTest } from '../../generated/graphql';
+
+const TestItem = ({
+  test,
+  instanceId
+}: {
+  test: InstanceTest | null;
+  instanceId: string;
+}) => {
+  if (!test) {
+    return <CorruptedTest />;
+  }
+
+  return <Test instanceId={instanceId} test={test} />;
+};
 export const InstanceDetails: React.FC<{ instance: Instance }> = ({
   instance
+}: {
+  instance: Instance;
 }) => {
   const { css } = useCss();
   if (!instance.results) {
@@ -18,14 +34,14 @@ export const InstanceDetails: React.FC<{ instance: Instance }> = ({
       <ul>
         {tests.map(t => (
           <li
-            key={t.testId}
+            key={(t && t.testId) || ''}
             className={css`
                {
                 padding: 12px 0;
               }
             `}
           >
-            <Test instanceId={instance.instanceId} test={t} />
+            <TestItem test={t} instanceId={instance.instanceId} />
           </li>
         ))}
       </ul>
