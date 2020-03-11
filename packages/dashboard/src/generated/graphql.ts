@@ -49,7 +49,7 @@ export type Instance = {
 export type InstanceResults = {
    __typename?: 'InstanceResults',
   stats: InstanceStats,
-  tests: Array<InstanceTest>,
+  tests: Array<Maybe<InstanceTest>>,
   error?: Maybe<Scalars['String']>,
   stdout?: Maybe<Scalars['String']>,
   screenshots: Array<InstanceScreeshot>,
@@ -204,10 +204,10 @@ export type GetInstanceQuery = (
       & { stats: (
         { __typename?: 'InstanceStats' }
         & Pick<InstanceStats, 'suites' | 'tests' | 'passes' | 'pending' | 'skipped' | 'failures' | 'wallClockDuration'>
-      ), tests: Array<(
+      ), tests: Array<Maybe<(
         { __typename?: 'InstanceTest' }
         & Pick<InstanceTest, 'testId' | 'wallClockDuration' | 'state' | 'error' | 'title'>
-      )>, screenshots: Array<(
+      )>>, screenshots: Array<(
         { __typename?: 'InstanceScreeshot' }
         & Pick<InstanceScreeshot, 'testId' | 'screenshotId' | 'height' | 'width' | 'screenshotURL'>
       )>, cypressConfig: Maybe<(
@@ -244,10 +244,10 @@ export type GetRunQuery = (
         & { cypressConfig: Maybe<(
           { __typename?: 'CypressConfig' }
           & Pick<CypressConfig, 'video' | 'videoUploadOnPasses'>
-        )>, tests: Array<(
+        )>, tests: Array<Maybe<(
           { __typename?: 'InstanceTest' }
           & Pick<InstanceTest, 'title' | 'state'>
-        )>, stats: (
+        )>>, stats: (
           { __typename?: 'InstanceStats' }
           & Pick<InstanceStats, 'tests' | 'pending' | 'passes' | 'failures' | 'skipped' | 'suites'>
         ) }
@@ -285,10 +285,10 @@ export type GetRunsFeedQuery = (
           & { cypressConfig: Maybe<(
             { __typename?: 'CypressConfig' }
             & Pick<CypressConfig, 'video' | 'videoUploadOnPasses'>
-          )>, tests: Array<(
+          )>, tests: Array<Maybe<(
             { __typename?: 'InstanceTest' }
             & Pick<InstanceTest, 'title' | 'state'>
-          )>, stats: (
+          )>>, stats: (
             { __typename?: 'InstanceStats' }
             & Pick<InstanceStats, 'tests' | 'pending' | 'passes' | 'failures' | 'skipped' | 'suites'>
           ) }

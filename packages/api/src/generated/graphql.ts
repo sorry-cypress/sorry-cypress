@@ -3,95 +3,95 @@ export type Maybe<T> = T | null;
 export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: string,
-  String: string,
-  Boolean: boolean,
-  Int: number,
-  Float: number,
-  DateTime: any,
+  ID: string;
+  String: string;
+  Boolean: boolean;
+  Int: number;
+  Float: number;
+  DateTime: any;
 };
 
 export type Commit = {
-   __typename?: 'Commit',
-  sha?: Maybe<Scalars['String']>,
-  branch?: Maybe<Scalars['String']>,
-  authorName?: Maybe<Scalars['String']>,
-  authorEmail?: Maybe<Scalars['String']>,
-  message?: Maybe<Scalars['String']>,
-  remoteOrigin?: Maybe<Scalars['String']>,
+   __typename?: 'Commit';
+  sha?: Maybe<Scalars['String']>;
+  branch?: Maybe<Scalars['String']>;
+  authorName?: Maybe<Scalars['String']>;
+  authorEmail?: Maybe<Scalars['String']>;
+  message?: Maybe<Scalars['String']>;
+  remoteOrigin?: Maybe<Scalars['String']>;
 };
 
 export type CypressConfig = {
-   __typename?: 'CypressConfig',
-  video: Scalars['Boolean'],
-  videoUploadOnPasses: Scalars['Boolean'],
+   __typename?: 'CypressConfig';
+  video: Scalars['Boolean'];
+  videoUploadOnPasses: Scalars['Boolean'];
 };
 
 
 export type FullRunSpec = {
-   __typename?: 'FullRunSpec',
-  spec: Scalars['String'],
-  instanceId: Scalars['String'],
-  claimed: Scalars['Boolean'],
-  results?: Maybe<InstanceResults>,
+   __typename?: 'FullRunSpec';
+  spec: Scalars['String'];
+  instanceId: Scalars['String'];
+  claimed: Scalars['Boolean'];
+  results?: Maybe<InstanceResults>;
 };
 
 export type Instance = {
-   __typename?: 'Instance',
-  runId: Scalars['ID'],
-  run: PartialRun,
-  spec: Scalars['String'],
-  instanceId: Scalars['ID'],
-  results?: Maybe<InstanceResults>,
+   __typename?: 'Instance';
+  runId: Scalars['ID'];
+  run: PartialRun;
+  spec: Scalars['String'];
+  instanceId: Scalars['ID'];
+  results?: Maybe<InstanceResults>;
 };
 
 export type InstanceResults = {
-   __typename?: 'InstanceResults',
-  stats: InstanceStats,
-  tests: Array<InstanceTest>,
-  error?: Maybe<Scalars['String']>,
-  stdout?: Maybe<Scalars['String']>,
-  screenshots: Array<InstanceScreeshot>,
-  cypressConfig?: Maybe<CypressConfig>,
-  reporterStats?: Maybe<ReporterStats>,
-  videoUrl?: Maybe<Scalars['String']>,
+   __typename?: 'InstanceResults';
+  stats: InstanceStats;
+  tests: Array<Maybe<InstanceTest>>;
+  error?: Maybe<Scalars['String']>;
+  stdout?: Maybe<Scalars['String']>;
+  screenshots: Array<InstanceScreeshot>;
+  cypressConfig?: Maybe<CypressConfig>;
+  reporterStats?: Maybe<ReporterStats>;
+  videoUrl?: Maybe<Scalars['String']>;
 };
 
 export type InstanceScreeshot = {
-   __typename?: 'InstanceScreeshot',
-  screenshotId: Scalars['String'],
-  name?: Maybe<Scalars['String']>,
-  testId: Scalars['String'],
-  takenAt: Scalars['String'],
-  height: Scalars['Int'],
-  width: Scalars['Int'],
-  screenshotURL?: Maybe<Scalars['String']>,
+   __typename?: 'InstanceScreeshot';
+  screenshotId: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  testId: Scalars['String'];
+  takenAt: Scalars['String'];
+  height: Scalars['Int'];
+  width: Scalars['Int'];
+  screenshotURL?: Maybe<Scalars['String']>;
 };
 
 export type InstanceStats = {
-   __typename?: 'InstanceStats',
-  suites?: Maybe<Scalars['Int']>,
-  tests?: Maybe<Scalars['Int']>,
-  passes?: Maybe<Scalars['Int']>,
-  pending?: Maybe<Scalars['Int']>,
-  skipped?: Maybe<Scalars['Int']>,
-  failures?: Maybe<Scalars['Int']>,
-  wallClockStartedAt?: Maybe<Scalars['String']>,
-  wallClockEndedAt?: Maybe<Scalars['String']>,
-  wallClockDuration?: Maybe<Scalars['Int']>,
+   __typename?: 'InstanceStats';
+  suites?: Maybe<Scalars['Int']>;
+  tests?: Maybe<Scalars['Int']>;
+  passes?: Maybe<Scalars['Int']>;
+  pending?: Maybe<Scalars['Int']>;
+  skipped?: Maybe<Scalars['Int']>;
+  failures?: Maybe<Scalars['Int']>;
+  wallClockStartedAt?: Maybe<Scalars['String']>;
+  wallClockEndedAt?: Maybe<Scalars['String']>;
+  wallClockDuration?: Maybe<Scalars['Int']>;
 };
 
 export type InstanceTest = {
-   __typename?: 'InstanceTest',
-  testId: Scalars['String'],
-  title?: Maybe<Array<Maybe<Scalars['String']>>>,
-  state?: Maybe<Scalars['String']>,
-  body?: Maybe<Scalars['String']>,
-  stack?: Maybe<Scalars['String']>,
-  error?: Maybe<Scalars['String']>,
+   __typename?: 'InstanceTest';
+  testId: Scalars['String'];
+  title?: Maybe<Array<Maybe<Scalars['String']>>>;
+  state?: Maybe<Scalars['String']>;
+  body?: Maybe<Scalars['String']>;
+  stack?: Maybe<Scalars['String']>;
+  error?: Maybe<Scalars['String']>;
   /** timings: InstanceTestTimings */
-  wallClockStartedAt?: Maybe<Scalars['String']>,
-  wallClockDuration?: Maybe<Scalars['Int']>,
+  wallClockStartedAt?: Maybe<Scalars['String']>;
+  wallClockDuration?: Maybe<Scalars['Int']>;
 };
 
 export enum OrderingOptions {
@@ -101,94 +101,87 @@ export enum OrderingOptions {
 
 /** Runs and subtypes */
 export type PartialRun = {
-   __typename?: 'PartialRun',
-  runId: Scalars['ID'],
-  createdAt: Scalars['DateTime'],
-  meta?: Maybe<RunMeta>,
-  specs: Array<Maybe<RunSpec>>,
+   __typename?: 'PartialRun';
+  runId: Scalars['ID'];
+  createdAt: Scalars['DateTime'];
+  meta?: Maybe<RunMeta>;
+  specs: Array<Maybe<RunSpec>>;
 };
 
 export type Query = {
-   __typename?: 'Query',
-  runs: Array<Maybe<Run>>,
-  runFeed: RunFeed,
-  run?: Maybe<Run>,
-  instance?: Maybe<Instance>,
+   __typename?: 'Query';
+  runs: Array<Maybe<Run>>;
+  runFeed: RunFeed;
+  run?: Maybe<Run>;
+  instance?: Maybe<Instance>;
 };
 
 
 export type QueryRunsArgs = {
-  orderDirection?: Maybe<OrderingOptions>,
-  cursor?: Maybe<Scalars['String']>
+  orderDirection?: Maybe<OrderingOptions>;
+  cursor?: Maybe<Scalars['String']>;
 };
 
 
 export type QueryRunFeedArgs = {
-  cursor?: Maybe<Scalars['String']>
+  cursor?: Maybe<Scalars['String']>;
 };
 
 
 export type QueryRunArgs = {
-  id: Scalars['ID']
+  id: Scalars['ID'];
 };
 
 
 export type QueryInstanceArgs = {
-  id: Scalars['ID']
+  id: Scalars['ID'];
 };
 
 export type ReporterStats = {
-   __typename?: 'ReporterStats',
-  suites?: Maybe<Scalars['Int']>,
-  tests?: Maybe<Scalars['Int']>,
-  passes?: Maybe<Scalars['Int']>,
-  pending?: Maybe<Scalars['Int']>,
-  failures?: Maybe<Scalars['Int']>,
-  start?: Maybe<Scalars['String']>,
-  end?: Maybe<Scalars['String']>,
-  duration?: Maybe<Scalars['Int']>,
+   __typename?: 'ReporterStats';
+  suites?: Maybe<Scalars['Int']>;
+  tests?: Maybe<Scalars['Int']>;
+  passes?: Maybe<Scalars['Int']>;
+  pending?: Maybe<Scalars['Int']>;
+  failures?: Maybe<Scalars['Int']>;
+  start?: Maybe<Scalars['String']>;
+  end?: Maybe<Scalars['String']>;
+  duration?: Maybe<Scalars['Int']>;
 };
 
 export type Run = {
-   __typename?: 'Run',
-  runId: Scalars['ID'],
-  createdAt: Scalars['DateTime'],
-  meta?: Maybe<RunMeta>,
-  specs: Array<Maybe<FullRunSpec>>,
+   __typename?: 'Run';
+  runId: Scalars['ID'];
+  createdAt: Scalars['DateTime'];
+  meta?: Maybe<RunMeta>;
+  specs: Array<Maybe<FullRunSpec>>;
 };
 
 export type RunFeed = {
-   __typename?: 'RunFeed',
-  cursor: Scalars['String'],
-  hasMore: Scalars['Boolean'],
-  runs: Array<Run>,
+   __typename?: 'RunFeed';
+  cursor: Scalars['String'];
+  hasMore: Scalars['Boolean'];
+  runs: Array<Run>;
 };
 
 export type RunMeta = {
-   __typename?: 'RunMeta',
-  groupId?: Maybe<Scalars['String']>,
-  ciBuildId?: Maybe<Scalars['String']>,
-  projectId?: Maybe<Scalars['String']>,
-  commit?: Maybe<Commit>,
+   __typename?: 'RunMeta';
+  groupId?: Maybe<Scalars['String']>;
+  ciBuildId?: Maybe<Scalars['String']>;
+  projectId?: Maybe<Scalars['String']>;
+  commit?: Maybe<Commit>;
 };
 
 export type RunSpec = {
-   __typename?: 'RunSpec',
-  spec: Scalars['String'],
-  instanceId: Scalars['String'],
-  claimed: Scalars['Boolean'],
+   __typename?: 'RunSpec';
+  spec: Scalars['String'];
+  instanceId: Scalars['String'];
+  claimed: Scalars['Boolean'];
 };
 
 
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
-
-export type ResolverFn<TResult, TParent, TContext, TArgs> = (
-  parent: TParent,
-  args: TArgs,
-  context: TContext,
-  info: GraphQLResolveInfo
-) => Promise<TResult> | TResult;
 
 
 export type StitchingResolver<TResult, TParent, TContext, TArgs> = {
@@ -199,6 +192,13 @@ export type StitchingResolver<TResult, TParent, TContext, TArgs> = {
 export type Resolver<TResult, TParent = {}, TContext = {}, TArgs = {}> =
   | ResolverFn<TResult, TParent, TContext, TArgs>
   | StitchingResolver<TResult, TParent, TContext, TArgs>;
+
+export type ResolverFn<TResult, TParent, TContext, TArgs> = (
+  parent: TParent,
+  args: TArgs,
+  context: TContext,
+  info: GraphQLResolveInfo
+) => Promise<TResult> | TResult;
 
 export type SubscriptionSubscribeFn<TResult, TParent, TContext, TArgs> = (
   parent: TParent,
@@ -236,9 +236,9 @@ export type TypeResolveFn<TTypes, TParent = {}, TContext = {}> = (
   parent: TParent,
   context: TContext,
   info: GraphQLResolveInfo
-) => Maybe<TTypes>;
+) => Maybe<TTypes> | Promise<Maybe<TTypes>>;
 
-export type isTypeOfResolverFn<T = {}> = (obj: T, info: GraphQLResolveInfo) => boolean;
+export type isTypeOfResolverFn<T = {}> = (obj: T, info: GraphQLResolveInfo) => boolean | Promise<boolean>;
 
 export type NextResolverFn<T> = () => Promise<T>;
 
@@ -339,7 +339,7 @@ export type InstanceResolvers<ContextType = any, ParentType extends ResolversPar
 
 export type InstanceResultsResolvers<ContextType = any, ParentType extends ResolversParentTypes['InstanceResults'] = ResolversParentTypes['InstanceResults']> = {
   stats?: Resolver<ResolversTypes['InstanceStats'], ParentType, ContextType>,
-  tests?: Resolver<Array<ResolversTypes['InstanceTest']>, ParentType, ContextType>,
+  tests?: Resolver<Array<Maybe<ResolversTypes['InstanceTest']>>, ParentType, ContextType>,
   error?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   stdout?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   screenshots?: Resolver<Array<ResolversTypes['InstanceScreeshot']>, ParentType, ContextType>,
@@ -395,7 +395,7 @@ export type PartialRunResolvers<ContextType = any, ParentType extends ResolversP
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   runs?: Resolver<Array<Maybe<ResolversTypes['Run']>>, ParentType, ContextType, RequireFields<QueryRunsArgs, 'orderDirection' | 'cursor'>>,
-  runFeed?: Resolver<ResolversTypes['RunFeed'], ParentType, ContextType, QueryRunFeedArgs>,
+  runFeed?: Resolver<ResolversTypes['RunFeed'], ParentType, ContextType, RequireFields<QueryRunFeedArgs, never>>,
   run?: Resolver<Maybe<ResolversTypes['Run']>, ParentType, ContextType, RequireFields<QueryRunArgs, 'id'>>,
   instance?: Resolver<Maybe<ResolversTypes['Instance']>, ParentType, ContextType, RequireFields<QueryInstanceArgs, 'id'>>,
 };

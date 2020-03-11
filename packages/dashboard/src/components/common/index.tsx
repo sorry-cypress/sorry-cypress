@@ -17,7 +17,7 @@ export const Paper: React.FC = props => {
   );
 };
 
-type TestStates = 'failed' | 'passed' | 'pending' | 'skipped';
+type TestStates = 'failed' | 'passed' | 'pending' | 'skipped' | 'unknown';
 
 export const TestState: React.FC<{ state: TestStates }> = ({ state }) => {
   switch (state) {
