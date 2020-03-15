@@ -363,7 +363,8 @@ Yes.
 
 - [Wiki](https://github.com/agoldis/sorry-cypress/wiki)
 - [The official guide on Cypress parallelization](https://docs.cypress.io/guides/guides/parallelization.html)
-- [Running Multiple Cypress Agents on AWS](https://github.com/agoldis/sorry-cypress/wiki/AWS-Multiple-Cypress-Agents) by [mlsad3](https://github.com/mlsad3)
+- [CodeBuild configuration for running multiple Cypress Agents on AWS](https://github.com/agoldis/sorry-cypress/wiki/AWS-Multiple-Cypress-Agents-mlsad3) by [@mlsad3](https://github.com/mlsad3)
+- [CodeBuild configuration for running multiple Cypress Agents on AWS](https://github.com/agoldis/sorry-cypress/wiki/AWS-Multiple-Cypress-Agents-KyleThenTR) by [@KyleThenTR](https://github.com/KyleThenTR)
 
 ## License
 
