@@ -69,7 +69,7 @@ This will start all 3 services on your local machine,
 
 [Reconfigure Cypress](#Reconfiguring-Cypress) to use `api_url: "http://localhost:1234/"`,
 
-Run your tests `cypress run --parallel --record --key xxx --ci-build-id <buildId>` and you will see the results appear in the dashboard. Those cypress tests will in parallel without connecting the official dashboard
+Run your tests `cypress run --parallel --record --key xxx --ci-build-id <buildId>` and you will see the results appear in the dashboard. Those cypress tests will run in parallel without connecting to the official dashboard.
 
 > You will need to [setup S3](https://github.com/agoldis/sorry-cypress/wiki/S3-screenshot-bucket-setup-instructions) to be able to upload failed test screenshots. Replace the credentials in `docker-compose.full.yml` after you've set up S3 bucket.
 
@@ -154,7 +154,7 @@ The `director` service is responsible for:
 
 When you launch Cypress on a CI environment with multiple machines, each machine first contacts the dashboard to get the next test to run.
 
-The dashboard coordinates the requests from differents machines and assigns tests to each.
+The dashboard coordinates the requests from different machines and assigns tests to each.
 
 That is what `director` service does 👆
 
@@ -176,7 +176,7 @@ Listening on 1234...
 
 By default, the service will start on port `1234` with in-memory execution driver and `dummy` snapshots driver.
 
-That is what running on `https://sorry-cypress.herokuapp.com` - it is a stateless execution, that just parallelizes tests, but does not persist test results and does not uploads screenshots of failed tests.
+That is what running on `https://sorry-cypress.herokuapp.com` - it is a stateless execution, that just parallelizes tests, but does not persist test results and does not upload screenshots of failed tests.
 
 #### Configuration
 
@@ -292,7 +292,7 @@ MONGODB_DATABASE='sorry-cypress'
 
 In production mode you will need to provide environment variable `GRAPHQL_SCHEMA_URL` - graphql client will use the URL to download the schema.
 
-Sett environment variable that defines the URL for getting the schema:
+Set environment variable that defines the URL for getting the schema:
 
 ```
 GRAPHQL_SCHEMA_URL=https://sorry-cypress-demo-api.herokuapp.com
@@ -310,10 +310,10 @@ It is recommended to use `docker-compose` to run the backend services (`director
 
 ### Using docker-compose for backend services
 
-The project uses `docker-compose` to conviniently run backend services in dockerized containers.
+The project uses `docker-compose` to conveniently run backend services in dockerized containers.
 
 Run `docker-compose build` from the project's root directory
-Run `docker-compose up` to start the services.
+Run `docker-compose up` to start the services
 
 The latter command will create 3 services:
 
