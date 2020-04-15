@@ -253,17 +253,7 @@ SCREENSHOTS_DRIVER="../screenshots/dummy.driver"
 
 ##### S3 Driver
 
-The driver generates upload URLs for S3 bucket. Set the environment variables accordingly:
-
-```
-SCREENSHOTS_DRIVER="../screenshots/s3.driver"
-S3_BUCKET="your_bucket_name"
-S3_REGION="us-east-1"
-```
-
-Please make sure that [AWS credentials](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html) with proper access to invoke [`s3.getSignedUrl`](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html) are available in the environment.
-
-See the wiki page to help [setup S3 for uploading screenshots](https://github.com/agoldis/sorry-cypress/wiki/S3-screenshot-bucket-setup-instructions).
+S3 screenshots driver documentation has moved to [Wiki](https://github.com/agoldis/sorry-cypress/wiki/S3-screenshot-driver)
 
 #### Record keys whitelist
 

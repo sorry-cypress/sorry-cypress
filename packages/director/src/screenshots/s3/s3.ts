@@ -1,5 +1,5 @@
 import aws from 'aws-sdk';
-import { S3_BUCKET, S3_REGION } from './config';
+import { S3_BUCKET, S3_REGION, S3_ACL, S3_READ_URL_PREFIX } from './config';
 import { S3SignedUploadResult } from './types';
 import { AssetUploadInstruction } from '@src/types';
 
@@ -9,7 +9,7 @@ const VideoContentType = 'video/mp4';
 
 const s3 = new aws.S3({
   region: S3_REGION,
-  signatureVersion: 'v4'
+  signatureVersion: 'v4',
 });
 
 interface GetUploadURLParams {
@@ -20,14 +20,14 @@ interface GetUploadURLParams {
 export const getUploadUrl = async ({
   key,
   ContentType = ImageContentType,
-  Expires = 60
+  Expires = 60,
 }: GetUploadURLParams): Promise<S3SignedUploadResult> => {
   const s3Params = {
     Bucket: S3_BUCKET,
     Key: key,
     Expires,
     ContentType,
-    ACL: 'public-read'
+    ACL: S3_ACL,
   };
 
   return new Promise((resolve, reject) => {
@@ -39,8 +39,8 @@ export const getUploadUrl = async ({
           return reject(error);
         }
         return resolve({
-          readUrl: `${BUCKET_URL}/${key}`,
-          uploadUrl
+          readUrl: `${S3_READ_URL_PREFIX || BUCKET_URL}/${key}`,
+          uploadUrl,
         });
       }
     );
@@ -57,5 +57,5 @@ export const getVideoUploadUrl = async (
   getUploadUrl({
     key: `${key}.mp4`,
     ContentType: VideoContentType,
-    Expires: 90
+    Expires: 90,
   });
