@@ -31,6 +31,7 @@ query getInstance($instanceId: ID!) {
         wallClockDuration
         state
         error
+        stack
         title
       }
       screenshots {

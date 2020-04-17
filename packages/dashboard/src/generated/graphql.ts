@@ -206,7 +206,7 @@ export type GetInstanceQuery = (
         & Pick<InstanceStats, 'suites' | 'tests' | 'passes' | 'pending' | 'skipped' | 'failures' | 'wallClockDuration'>
       ), tests: Array<Maybe<(
         { __typename?: 'InstanceTest' }
-        & Pick<InstanceTest, 'testId' | 'wallClockDuration' | 'state' | 'error' | 'title'>
+        & Pick<InstanceTest, 'testId' | 'wallClockDuration' | 'state' | 'error' | 'stack' | 'title'>
       )>>, screenshots: Array<(
         { __typename?: 'InstanceScreeshot' }
         & Pick<InstanceScreeshot, 'testId' | 'screenshotId' | 'height' | 'width' | 'screenshotURL'>
@@ -333,6 +333,7 @@ export const GetInstanceDocument = gql`
         wallClockDuration
         state
         error
+        stack
         title
       }
       screenshots {
