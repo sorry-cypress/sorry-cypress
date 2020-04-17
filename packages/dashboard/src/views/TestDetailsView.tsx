@@ -4,11 +4,11 @@ import { useGetInstanceQuery } from '../generated/graphql';
 import { useApolloClient } from '@apollo/react-hooks';
 import { TestDetails } from '../components/test';
 
-export const TestDetailsView: React.FC = props => {
+export const TestDetailsView: React.FC = (props) => {
   const { instanceId, testId } = useParams();
 
   const { loading, error, data } = useGetInstanceQuery({
-    variables: { instanceId }
+    variables: { instanceId },
   });
 
   const apollo = useApolloClient();
@@ -18,7 +18,15 @@ export const TestDetailsView: React.FC = props => {
   if (!data || !data.instance) {
     return <p>No data</p>;
   }
-  const test = data.instance!.results!.tests.find(t => t.testId === testId);
+  if (!data.instance.results) {
+    return <p>Cannot find results for the spec</p>;
+  }
+
+  const test = data.instance.results.tests.find((t) => t.testId === testId);
+
+  if (!test) {
+    return <p>Cannot find the specified test</p>;
+  }
 
   apollo.writeData({
     data: {
@@ -26,20 +34,20 @@ export const TestDetailsView: React.FC = props => {
         {
           __typename: 'NavStructureItem',
           label: data.instance.run!.meta!.ciBuildId,
-          link: `run/${data.instance.runId}`
+          link: `run/${data.instance.runId}`,
         },
         {
           __typename: 'NavStructureItem',
           label: data.instance.spec,
-          link: `instance/${instanceId}`
+          link: `instance/${instanceId}`,
         },
         {
           __typename: 'NavStructureItem',
-          label: test.title.join(' | '),
-          link: `instance/${data.instance.instanceId}/test/${testId}`
-        }
-      ]
-    }
+          label: test.title && test.title.join(' | '),
+          link: `instance/${data.instance.instanceId}/test/${testId}`,
+        },
+      ],
+    },
   });
 
   if (!test) {
