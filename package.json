@@ -20,5 +20,8 @@
   },
   "resolutions": {
     "es-abstract": "1.17.0"
+  },
+  "bin": {
+    "sorry-cypress": "bin/sorry-cypress.js"
   }
 }
