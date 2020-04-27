@@ -113,7 +113,7 @@ export class RunsAPI extends DataSource {
       .aggregate(aggregationPipeline)
       .toArray();
 
-    return runFeedReducer(results);
+    return fullRunReducer(results);
   }
 
   async getRunById(id: string) {
