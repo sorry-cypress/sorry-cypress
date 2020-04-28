@@ -20,7 +20,7 @@ const cypressCommand = [
 
 // exit on windows
 if (process.platform === 'win32') {
-    console.error(wording.noWindows);
+    process.stdout.write(wording.noWindows + '\n');
     process.exit(1);
 }
 
@@ -31,7 +31,7 @@ if (process.platform === 'win32') {
     'SORRY_CYPRESS_BUILD_ID'
 ].forEach(key => {
     if (!process.env[key]) {
-        console.error(wording.envNotSet + key);
+        process.stdout.write(wording.envNotSet + key + '\n');
         process.exit(1);
     }
 });
@@ -39,10 +39,10 @@ if (process.platform === 'win32') {
 // add hosts redirect
 hostile.set(process.env.SORRY_CYPRESS_API_IP, 'api.cypress.io', error => {
     if (error) {
-        console.error(error);
+        process.stdout.write(error + '\n');
         process.exit(1);
     } else {
-        console.log(wording.hostileSet);
+        process.stdout.write(wording.hostileSet + '\n');
     }
 })
 
@@ -56,10 +56,10 @@ cypressProcess = spawn('cypress', cypressArray, {
 cypressProcess.on('close', code => {
     hostile.remove(process.env.SORRY_CYPRESS_API_IP, 'api.cypress.io', error => {
         if (error) {
-            console.error(error);
+            process.stdout.write(error + '\n');
             process.exit(1);
         } else {
-            console.log(wording.hostileRemove);
+            process.stdout.write(wording.hostileRemove + '\n');
         }
     });
 });
