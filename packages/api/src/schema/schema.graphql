@@ -130,3 +130,18 @@ type Commit {
   message: String
   remoteOrigin: String
 }
+
+type Mutation {
+  deleteRun(runId: ID!): DeleteRunResponse!
+  deleteRuns(runIds: [ID]!): DeleteRunResponse!
+  deleteRunsInDateRange(
+    startDate: DateTime!
+    endDate: DateTime!
+  ): DeleteRunResponse!
+}
+
+type DeleteRunResponse {
+  success: Boolean!
+  message: String!
+  runIds: [ID]!
+}

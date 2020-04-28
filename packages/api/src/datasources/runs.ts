@@ -1,5 +1,5 @@
+import { getMongoDB, init, ObjectID } from '@src/lib/mongo';
 import { DataSource } from 'apollo-datasource';
-import { init, getMongoDB, ObjectID } from '@src/lib/mongo';
 
 const PAGE_LIMIT = 5;
 const mergeRunSpecs = run => {
@@ -79,10 +79,10 @@ export class RunsAPI extends DataSource {
       getSortByAggregation(),
       cursor
         ? {
-            $match: {
-              _id: { $lt: new ObjectID(cursor) }
-            }
+          $match: {
+            _id: { $lt: new ObjectID(cursor) }
           }
+        }
         : null,
       {
         // get one extra to know if there's more
@@ -126,5 +126,40 @@ export class RunsAPI extends DataSource {
       ]);
 
     return fullRunReducer(await result.toArray()).pop();
+  }
+
+  async deleteRunsByIds(runIds: string[]) {
+    const result = await getMongoDB()
+      .collection('runs')
+      .deleteMany({
+        runId: {
+          $in: runIds
+        }
+      });
+    return {
+      success: result.result.ok === 1,
+      message: `${result.deletedCount} document${result.deletedCount > 1 ? 's' : ''} deleted`,
+      runIds: result.result.ok === 1 ? runIds : []
+    };
+  }
+
+  async deleteRunsInDateRange(startDate: Date, endDate: Date) {
+    if (startDate > endDate) {
+      return {
+        success: false,
+        message: `startDate: ${startDate.toISOString()} should be less than endDate: ${endDate.toISOString()}`,
+        runIds: []
+      };
+    }
+    const response = await getMongoDB()
+      .collection('runs')
+      .find({
+        createdAt: {
+          $lte: endDate.toISOString(),
+          $gte: startDate.toISOString()
+        }
+      }).toArray();
+    const runIds = response.map(x => x.runId) as string[];
+    return await this.deleteRunsByIds(runIds);
   }
 }
