@@ -10,7 +10,7 @@ const wording = {
     envNotSet: 'Please check your environment variable: '
 }
 
-const cypressArray = [
+const cypressCommand = [
     'run',
     '--record',
     '--parallel',
@@ -20,7 +20,8 @@ const cypressArray = [
 
 // exit on windows
 if (process.platform === 'win32') {
-    process.exit(wording.noWindows);
+    console.error(wording.noWindows);
+    process.exit(1);
 }
 
 // check env
@@ -30,14 +31,16 @@ if (process.platform === 'win32') {
     'SORRY_CYPRESS_BUILD_ID'
 ].forEach(key => {
     if (!process.env[key]) {
-        process.exit(wording.envNotSet + key);
+        console.error(wording.envNotSet + key);
+        process.exit(1);
     }
 });
 
 // add hosts redirect
 hostile.set(process.env.SORRY_CYPRESS_API_IP, 'api.cypress.io', error => {
     if (error) {
-        process.exit(error);
+        console.error(error);
+        process.exit(1);
     } else {
         console.log(wording.hostileSet);
     }
@@ -53,7 +56,8 @@ cypressProcess = spawn('cypress', cypressArray, {
 cypressProcess.on('close', code => {
     hostile.remove(process.env.SORRY_CYPRESS_API_IP, 'api.cypress.io', error => {
         if (error) {
-            process.exit(error);
+            console.error(error);
+            process.exit(1);
         } else {
             console.log(wording.hostileRemove);
         }
