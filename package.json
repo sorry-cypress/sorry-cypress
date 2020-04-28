@@ -23,5 +23,8 @@
   },
   "bin": {
     "sorry-cypress": "bin/sorry-cypress.js"
+  },
+  "dependencies": {
+    "hostile": "1.3.2"
   }
 }

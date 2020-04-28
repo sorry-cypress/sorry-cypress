@@ -3,14 +3,14 @@
 const spawn = require('child_process').spawn;
 const hostile = require('hostile');
 
-const wording = {
+const wordingObject = {
     noWindows: 'Sorry! Windows is not supported.',
     hostileSet: 'Updated /etc/hosts successfully.',
     hostileRemove: 'Removed ip from /etc/hosts successfully.',
     envNotSet: 'Please check your environment variable: '
 }
 
-const cypressCommand = [
+const cypressArray = [
     'run',
     '--record',
     '--parallel',
@@ -20,7 +20,7 @@ const cypressCommand = [
 
 // exit on windows
 if (process.platform === 'win32') {
-    process.stdout.write(wording.noWindows + '\n');
+    process.stderr.write(wordingObject.noWindows + '\n');
     process.exit(1);
 }
 
@@ -31,7 +31,7 @@ if (process.platform === 'win32') {
     'SORRY_CYPRESS_BUILD_ID'
 ].forEach(key => {
     if (!process.env[key]) {
-        process.stdout.write(wording.envNotSet + key + '\n');
+        process.stderr.write(wordingObject.envNotSet + key + '\n');
         process.exit(1);
     }
 });
@@ -39,10 +39,10 @@ if (process.platform === 'win32') {
 // add hosts redirect
 hostile.set(process.env.SORRY_CYPRESS_API_IP, 'api.cypress.io', error => {
     if (error) {
-        process.stdout.write(error + '\n');
+        process.stderr.write(error + '\n');
         process.exit(1);
     } else {
-        process.stdout.write(wording.hostileSet + '\n');
+        process.stdout.write(wordingObject.hostileSet + '\n');
     }
 })
 
@@ -56,10 +56,10 @@ cypressProcess = spawn('cypress', cypressArray, {
 cypressProcess.on('close', code => {
     hostile.remove(process.env.SORRY_CYPRESS_API_IP, 'api.cypress.io', error => {
         if (error) {
-            process.stdout.write(error + '\n');
+            process.stderr.write(error + '\n');
             process.exit(1);
         } else {
-            process.stdout.write(wording.hostileRemove + '\n');
+            process.stdout.write(wordingObject.hostileRemove + '\n');
         }
     });
 });
