@@ -296,7 +296,7 @@ Instead of changing the `api_url` in the cypress config, it's also possible to r
 Sorry-cypress includes an executable helper for this, to use it run `sudo sorry-cypress` (superuser rights are necessary for editing the hosts file). 
 This command will use hostile to change your hosts file and will start cypress in a child process.
 Once Cypress is done or killed the rerouting rule in your hosts file will be deleted.
-The command is only supported on linux and will need the following env variables:
+The command will need the following env variables:
 - `SORRY_CYPRESS_RECORD_KEY`
 - `SORRY_CYPRESS_API_IP`
 - `SORRY_CYPRESS_BUILD_ID` 

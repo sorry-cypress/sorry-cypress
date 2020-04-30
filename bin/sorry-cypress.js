@@ -4,7 +4,6 @@ const spawn = require('child_process').spawn;
 const hostile = require('hostile');
 
 const wordingObject = {
-    noWindows: 'Sorry! Windows is not supported.',
     hostileSet: 'Updated /etc/hosts successfully.',
     hostileRemove: 'Removed ip from /etc/hosts successfully.',
     envNotSet: 'Please check your environment variable: '
@@ -17,12 +16,6 @@ const cypressArray = [
     '--key=' + process.env.SORRY_CYPRESS_RECORD_KEY,
     '--ci-build-id=' + process.env.SORRY_CYPRESS_BUILD_ID
 ];
-
-// exit on windows
-if (process.platform === 'win32') {
-    process.stderr.write(wordingObject.noWindows + '\n');
-    process.exit(1);
-}
 
 // check env
 [
