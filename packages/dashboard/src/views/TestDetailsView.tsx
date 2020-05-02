@@ -1,8 +1,8 @@
-import React from "react";
-import { Link, useParams } from "react-router-dom";
-import { useGetInstanceQuery } from "../generated/graphql";
-import { useApolloClient } from "@apollo/react-hooks";
-import { TestDetails } from "../components/test";
+import React from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { useGetInstanceQuery } from '../generated/graphql';
+import { useApolloClient } from '@apollo/react-hooks';
+import { TestDetails } from '../components/test';
 
 export function TestDetailsView(): React.ReactNode {
   const { instanceId, testId } = useParams();
@@ -32,18 +32,18 @@ export function TestDetailsView(): React.ReactNode {
     data: {
       navStructure: [
         {
-          __typename: "NavStructureItem",
+          __typename: 'NavStructureItem',
           label: data.instance.run!.meta!.ciBuildId,
           link: `run/${data.instance.runId}`,
         },
         {
-          __typename: "NavStructureItem",
+          __typename: 'NavStructureItem',
           label: data.instance.spec,
           link: `instance/${instanceId}`,
         },
         {
-          __typename: "NavStructureItem",
-          label: test.title && test.title.join(" | "),
+          __typename: 'NavStructureItem',
+          label: test.title && test.title.join(' | '),
           link: `instance/${data.instance.instanceId}/test/${testId}`,
         },
       ],

@@ -3,17 +3,17 @@ module.exports = {
     browser: true,
     node: true,
   },
-  plugins: ["react"],
+  plugins: ['react'],
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
     },
   },
-  extends: ["plugin:react/recommended"],
+  extends: ['plugin:react/recommended'],
 
   settings: {
     react: {
-      version: "16.9.0",
+      version: '16.9.0',
     },
   },
 };

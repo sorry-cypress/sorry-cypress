@@ -1,10 +1,10 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { Heading, Cell, Grid, Text } from "bold-ui";
-import { getRunTestsOverall } from "../../lib/run";
-import { Commit } from "../commit/commit";
-import { Paper } from "../common/";
-import { Run } from "../../generated/graphql";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Heading, Cell, Grid, Text } from 'bold-ui';
+import { getRunTestsOverall } from '../../lib/run';
+import { Commit } from '../commit/commit';
+import { Paper } from '../common/';
+import { Run } from '../../generated/graphql';
 
 type RunSummaryProps = {
   run: Run;
@@ -30,12 +30,12 @@ export function RunSummary({ run }: RunSummaryProps): React.ReactNode {
               <Text>Passes: {overall.passes}</Text>
             </li>
             <li>
-              <Text color={overall.failures ? "danger" : "normal"}>
+              <Text color={overall.failures ? 'danger' : 'normal'}>
                 Failures: {overall.failures}
               </Text>
             </li>
             <li>
-              <Text color={overall.pending ? "disabled" : "normal"}>
+              <Text color={overall.pending ? 'disabled' : 'normal'}>
                 Skipped: {overall.pending}
               </Text>
             </li>

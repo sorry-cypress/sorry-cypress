@@ -1,8 +1,8 @@
-import React from "react";
-import { RunSummary } from "../components/run/summary";
-import { useGetRunsFeedQuery } from "../generated/graphql";
-import { Button } from "bold-ui";
-import { useApolloClient } from "@apollo/react-hooks";
+import React from 'react';
+import { RunSummary } from '../components/run/summary';
+import { useGetRunsFeedQuery } from '../generated/graphql';
+import { Button } from 'bold-ui';
+import { useApolloClient } from '@apollo/react-hooks';
 
 export function RunsView() {
   const apollo = useApolloClient();
@@ -15,7 +15,7 @@ export function RunsView() {
 
   const { fetchMore, loading, error, data } = useGetRunsFeedQuery({
     variables: {
-      cursor: "",
+      cursor: '',
     },
   });
 
@@ -48,7 +48,7 @@ export function RunsView() {
   if (!runFeed.runs.length) {
     return (
       <div>
-        Welcome to Sorry Cypress! Your tests runs will appears here.{" "}
+        Welcome to Sorry Cypress! Your tests runs will appears here.{' '}
         <a
           href="https://github.com/agoldis/sorry-cypress"
           target="_blank"

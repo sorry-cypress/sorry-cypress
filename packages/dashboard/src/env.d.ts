@@ -1,4 +1,4 @@
-import { Environment } from "./state/environment";
+import { Environment } from './state/environment';
 
 declare global {
   interface Window {

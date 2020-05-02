@@ -1,7 +1,7 @@
-import React from "react";
-import { Heading, useCss, Alert, HFlow } from "bold-ui";
-import { Paper, TestState } from "../common";
-import { InstanceTest, InstanceScreeshot } from "../../generated/graphql";
+import React from 'react';
+import { Heading, useCss, Alert, HFlow } from 'bold-ui';
+import { Paper, TestState } from '../common';
+import { InstanceTest, InstanceScreeshot } from '../../generated/graphql';
 
 type TestDetailsProps = {
   test: InstanceTest;
@@ -13,7 +13,7 @@ export function TestDetails({
 }: TestDetailsProps): React.ReactNode {
   const screenshot = screenshots.find((s) => s.testId === test.testId);
   const { css } = useCss();
-  const title = test.title.join(" > ");
+  const title = test.title.join(' > ');
   return (
     <>
       <HFlow>
@@ -31,7 +31,7 @@ export function TestDetails({
         <Alert
           type="danger"
           style={{
-            whiteSpace: "pre",
+            whiteSpace: 'pre',
             padding: 12,
           }}
         >

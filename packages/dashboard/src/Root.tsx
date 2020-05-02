@@ -1,18 +1,18 @@
-import React from "react";
-import { ApolloProvider } from "@apollo/react-hooks";
-import { BrowserRouter as Router, Route } from "react-router-dom";
-import { ThemeProvider } from "bold-ui";
+import React from 'react';
+import { ApolloProvider } from '@apollo/react-hooks';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { ThemeProvider } from 'bold-ui';
 
-import { client } from "./lib/apolloClient";
-import { theme } from "./theme/theme";
+import { client } from './lib/apolloClient';
+import { theme } from './theme/theme';
 
-import { Header } from "./components/layout/header";
-import { Content } from "./components/layout/content";
+import { Header } from './components/layout/header';
+import { Content } from './components/layout/content';
 
-import { RunsView } from "./views/RunsView";
-import { RunDetailsView } from "./views/RunDetailsView";
-import { InstanceDetailsView } from "./views/InstanceDetailsView";
-import { TestDetailsView } from "./views/TestDetailsView";
+import { RunsView } from './views/RunsView';
+import { RunDetailsView } from './views/RunDetailsView';
+import { InstanceDetailsView } from './views/InstanceDetailsView';
+import { TestDetailsView } from './views/TestDetailsView';
 
 class ErrorBoundary extends React.Component<
   {},
@@ -33,10 +33,10 @@ class ErrorBoundary extends React.Component<
   render() {
     if (this.state.hasError) {
       return (
-        <div style={{ padding: "1rem" }}>
+        <div style={{ padding: '1rem' }}>
           {this.state.error && <pre>{this.state.error.stack}</pre>}
           <p>
-            Please report at{" "}
+            Please report at{' '}
             <a
               href="https://github.com/agoldis/sorry-cypress/issues/new"
               target="_blank"

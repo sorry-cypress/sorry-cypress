@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { useCss, Switch, HFlow } from "bold-ui";
-import { SpecSummary } from "../spec/summary";
-import { getSpecState } from "../../lib/spec";
-import { Run } from "../../generated/graphql";
+import React, { useState } from 'react';
+import { useCss, Switch, HFlow } from 'bold-ui';
+import { SpecSummary } from '../spec/summary';
+import { getSpecState } from '../../lib/spec';
+import { Run } from '../../generated/graphql';
 
 type RunDetailsProps = {
   run: Run;
@@ -28,7 +28,7 @@ export function RunDetails({ run }: RunDetailsProps): React.ReactNode {
         {specs
           .filter((spec) => !!spec)
           .filter((spec) =>
-            isPassedHidden ? getSpecState(spec!) !== "passed" : true
+            isPassedHidden ? getSpecState(spec!) !== 'passed' : true
           )
           .map((spec) => (
             <li

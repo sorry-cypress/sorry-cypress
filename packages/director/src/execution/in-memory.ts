@@ -6,14 +6,14 @@ import {
   ExecutionDriver,
   CreateRunResponse,
   CreateRunParameters,
-} from "@src/types";
-import { getDashboardRunURL } from "@src/lib/urls";
-import { AppError, RUN_NOT_EXIST, INSTANCE_NOT_EXIST } from "@src/lib/errors";
+} from '@src/types';
+import { getDashboardRunURL } from '@src/lib/urls';
+import { AppError, RUN_NOT_EXIST, INSTANCE_NOT_EXIST } from '@src/lib/errors';
 import {
   generateRunIdHash,
   generateGroupId,
   generateUUID,
-} from "@src/lib/hash";
+} from '@src/lib/hash';
 
 const runs: { [key: string]: Run } = {};
 const instances: {
@@ -91,7 +91,7 @@ const setInstanceResults = async (
   instances[instanceId] = { ...instances[instanceId], results };
 };
 export const driver: ExecutionDriver = {
-  id: "in-memory",
+  id: 'in-memory',
   init: () => Promise.resolve(),
   setScreenshotUrl: () => Promise.resolve(),
   setVideoUrl: () => Promise.resolve(),

@@ -1,6 +1,6 @@
-import React from "react";
-import { getGithubCommitURL, getGithubBranchURL } from "../../lib/github";
-import { Commit as CommitDef } from "../../generated/graphql";
+import React from 'react';
+import { getGithubCommitURL, getGithubBranchURL } from '../../lib/github';
+import { Commit as CommitDef } from '../../generated/graphql';
 
 type CommitProps = {
   commit: CommitDef;
@@ -16,7 +16,7 @@ export const Commit: React.FunctionComponent<CommitProps> = ({
       <strong>Commit details</strong>
       <ul>
         <li>
-          Origin:{" "}
+          Origin:{' '}
           {commit.remoteOrigin && (
             <a
               target="_blank"
@@ -28,7 +28,7 @@ export const Commit: React.FunctionComponent<CommitProps> = ({
           )}
         </li>
         <li>
-          Commit:{" "}
+          Commit:{' '}
           {commit.remoteOrigin && (
             <a
               target="_blank"
@@ -40,7 +40,7 @@ export const Commit: React.FunctionComponent<CommitProps> = ({
           )}
         </li>
         <li>
-          Branch:{" "}
+          Branch:{' '}
           {commit.remoteOrigin && commit.branch && (
             <a
               target="_blank"

@@ -1,8 +1,8 @@
-import React from "react";
-import { InstanceSummary } from "../components/instance/summary";
-import { InstanceDetails } from "../components/instance/details";
-import { useGetInstanceQuery } from "../generated/graphql";
-import { useApolloClient } from "@apollo/react-hooks";
+import React from 'react';
+import { InstanceSummary } from '../components/instance/summary';
+import { InstanceDetails } from '../components/instance/details';
+import { useGetInstanceQuery } from '../generated/graphql';
+import { useApolloClient } from '@apollo/react-hooks';
 
 type InstanceDetailsViewProps = {
   match: {
@@ -33,12 +33,12 @@ export function InstanceDetailsView({
     data: {
       navStructure: [
         {
-          __typename: "NavStructureItem",
+          __typename: 'NavStructureItem',
           label: data.instance!.run!.meta!.ciBuildId,
           link: `run/${data.instance!.runId}`,
         },
         {
-          __typename: "NavStructureItem",
+          __typename: 'NavStructureItem',
           label: data.instance.spec,
           link: `instance/${data.instance.instanceId}`,
         },

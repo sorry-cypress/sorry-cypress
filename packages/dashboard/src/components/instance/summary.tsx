@@ -1,12 +1,12 @@
-import React from "react";
-import { capitalize } from "lodash";
-import { Heading, Cell, Grid, HFlow, Text } from "bold-ui";
-import { Paper, TestState } from "../common/";
-import { getSpecState } from "../../lib/spec";
-import { InstanceStats, Instance } from "../../generated/graphql";
+import React from 'react';
+import { capitalize } from 'lodash';
+import { Heading, Cell, Grid, HFlow, Text } from 'bold-ui';
+import { Paper, TestState } from '../common/';
+import { getSpecState } from '../../lib/spec';
+import { InstanceStats, Instance } from '../../generated/graphql';
 
 const getInstanceStatLabel = (statusItem: keyof InstanceStats): string =>
-  statusItem === "pending" ? "skipped" : statusItem;
+  statusItem === 'pending' ? 'skipped' : statusItem;
 
 type InstanceSummaryProps = {
   instance: Instance;
@@ -28,17 +28,17 @@ export function InstanceSummary({
             <Heading level={1}>{instance.spec}</Heading>
           </HFlow>
           <ul>
-            {(["suites", "tests", "passes", "failures", "pending"] as Array<
+            {(['suites', 'tests', 'passes', 'failures', 'pending'] as Array<
               keyof InstanceStats
             >).map((i) => (
               <li key={i}>
                 <Text
                   color={
-                    i === "pending"
-                      ? "disabled"
-                      : i === "failures" && stats[i]
-                      ? "danger"
-                      : "normal"
+                    i === 'pending'
+                      ? 'disabled'
+                      : i === 'failures' && stats[i]
+                      ? 'danger'
+                      : 'normal'
                   }
                 >
                   {capitalize(getInstanceStatLabel(i))}: {stats[i]}
