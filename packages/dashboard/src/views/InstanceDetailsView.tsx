@@ -4,13 +4,20 @@ import { InstanceDetails } from '../components/instance/details';
 import { useGetInstanceQuery } from '../generated/graphql';
 import { useApolloClient } from '@apollo/react-hooks';
 
+type InstanceDetailsViewProps = {
+  match: {
+    params: {
+      id: string;
+    };
+  };
+};
 export function InstanceDetailsView({
   match: {
-    params: { id }
-  }
-}) {
+    params: { id },
+  },
+}: InstanceDetailsViewProps): React.ReactNode {
   const { loading, error, data } = useGetInstanceQuery({
-    variables: { instanceId: id }
+    variables: { instanceId: id },
   });
   const apollo = useApolloClient();
 
@@ -28,15 +35,15 @@ export function InstanceDetailsView({
         {
           __typename: 'NavStructureItem',
           label: data.instance!.run!.meta!.ciBuildId,
-          link: `run/${data.instance!.runId}`
+          link: `run/${data.instance!.runId}`,
         },
         {
           __typename: 'NavStructureItem',
           label: data.instance.spec,
-          link: `instance/${data.instance.instanceId}`
-        }
-      ]
-    }
+          link: `instance/${data.instance.instanceId}`,
+        },
+      ],
+    },
   });
   if (!data.instance.results) {
     return (

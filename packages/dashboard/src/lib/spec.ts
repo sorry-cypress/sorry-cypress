@@ -6,7 +6,7 @@ export const getSpecState = (spec: Instance): SpecStateType => {
     return 'pending';
   }
   const nonPassedTestsFound = !!spec.results.tests.find(
-    t => t && t.state === 'failed'
+    (t) => t && t.state === 'failed'
   );
   if (nonPassedTestsFound) {
     return 'failed';

@@ -2,7 +2,12 @@ import React from 'react';
 import { getGithubCommitURL, getGithubBranchURL } from '../../lib/github';
 import { Commit as CommitDef } from '../../generated/graphql';
 
-export const Commit: React.FC<{ commit: CommitDef }> = ({ commit }) => {
+type CommitProps = {
+  commit: CommitDef;
+};
+export const Commit: React.FunctionComponent<CommitProps> = ({
+  commit,
+}: CommitProps) => {
   if (!commit.sha) {
     return null;
   }
@@ -13,7 +18,11 @@ export const Commit: React.FC<{ commit: CommitDef }> = ({ commit }) => {
         <li>
           Origin:{' '}
           {commit.remoteOrigin && (
-            <a target="_blank" href={commit.remoteOrigin}>
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href={commit.remoteOrigin}
+            >
               {commit.remoteOrigin}
             </a>
           )}
@@ -23,6 +32,7 @@ export const Commit: React.FC<{ commit: CommitDef }> = ({ commit }) => {
           {commit.remoteOrigin && (
             <a
               target="_blank"
+              rel="noopener noreferrer"
               href={getGithubCommitURL(commit.remoteOrigin, commit.sha)}
             >
               {commit.message}
@@ -34,6 +44,7 @@ export const Commit: React.FC<{ commit: CommitDef }> = ({ commit }) => {
           {commit.remoteOrigin && commit.branch && (
             <a
               target="_blank"
+              rel="noopener noreferrer"
               href={getGithubBranchURL(commit.remoteOrigin, commit.branch)}
             >
               {commit.branch}

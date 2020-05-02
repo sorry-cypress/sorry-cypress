@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { TestState } from '../common';
+import { InstanceTest } from '../../generated/graphql';
 
 export function CorruptedTest() {
   return (
@@ -13,7 +14,11 @@ export function CorruptedTest() {
   );
 }
 
-export function Test({ instanceId, test }) {
+type TestProps = {
+  instanceId: string;
+  test: InstanceTest;
+};
+export function Test({ instanceId, test }: TestProps): React.ReactNode {
   return (
     <div>
       <strong>

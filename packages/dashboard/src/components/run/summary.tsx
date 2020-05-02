@@ -4,8 +4,12 @@ import { Heading, Cell, Grid, Text } from 'bold-ui';
 import { getRunTestsOverall } from '../../lib/run';
 import { Commit } from '../commit/commit';
 import { Paper } from '../common/';
+import { Run } from '../../generated/graphql';
 
-export const RunSummary = ({ run }) => {
+type RunSummaryProps = {
+  run: Run;
+};
+export function RunSummary({ run }: RunSummaryProps): React.ReactNode {
   const { meta, runId, specs } = run;
   const { commit } = meta;
   const overall = getRunTestsOverall(run);
@@ -42,7 +46,7 @@ export const RunSummary = ({ run }) => {
             <strong>Spec files</strong>
             <ul>
               <li>Overall: {specs.length}</li>
-              <li>Claimed: {specs.filter(s => s.claimed).length}</li>
+              <li>Claimed: {specs.filter((s) => s.claimed).length}</li>
             </ul>
           </div>
           <Commit commit={commit} />
@@ -50,4 +54,4 @@ export const RunSummary = ({ run }) => {
       </Grid>
     </Paper>
   );
-};
+}
