@@ -6,6 +6,7 @@
 <br />
 
 ![Update Dockerhub Images](https://github.com/agoldis/sorry-cypress/workflows/Update%20Dockerhub%20Images/badge.svg?event=push)
+![Update Dockerhub Images](https://github.com/agoldis/sorry-cypress/workflows/Unit%20tests/badge.svg)
 
 ## Table of contents
 
