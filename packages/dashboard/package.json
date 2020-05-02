@@ -20,7 +20,8 @@
     "build:types": "tsc --emitDeclarationOnly",
     "build:webpack": "webpack --mode production",
     "generate": "graphql-codegen --config codegen.yml",
-    "generate:watch": "graphql-codegen --config codegen.yml --watch"
+    "generate:watch": "graphql-codegen --config codegen.yml --watch",
+    "test": "echo \"@sorry-cypress/dashboard\""
   },
   "dependencies": {
     "@apollo/react-hooks": "^3.0.1",

@@ -22,7 +22,8 @@
     "build:types": "tsc --emitDeclarationOnly",
     "build:js": "babel src --out-dir dist --extensions \".ts\" --source-maps inline",
     "start": "node ./dist/",
-    "clean": "rimraf ./dist"
+    "clean": "rimraf ./dist",
+    "test": "echo \"@sorry-cypress/api\""
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",
