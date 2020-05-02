@@ -59,7 +59,6 @@
     "@types/lodash": "^4.14.150",
     "@types/react": "^16.8.19",
     "@types/react-dom": "^16.8.4",
-    "@types/react-router-dom": "^5.1.5",
     "@types/react-tooltip": "^3.9.3",
     "babel-loader": "^8.0.6",
     "css-loader": "^3.2.0",
