@@ -21,6 +21,7 @@
     "build": "yarn workspace @sorry-cypress/director build"
   },
   "resolutions": {
+    "kind-of": "^6.0.3",
     "es-abstract": "1.17.0"
   },
   "husky": {
