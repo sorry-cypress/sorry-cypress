@@ -1,15 +1,20 @@
 import React, { useState } from 'react';
-import { SpecSummary } from '../spec/summary';
 import { useCss, Switch, HFlow } from 'bold-ui';
+import { SpecSummary } from '../spec/summary';
 import { getSpecState } from '../../lib/spec';
 import { Run } from '../../generated/graphql';
 
-export function RunDetails({ run }) {
+type RunDetailsProps = {
+  run: Run;
+};
+
+export function RunDetails({ run }: RunDetailsProps): React.ReactNode {
   const { css } = useCss();
   const { specs } = run;
 
   const [isPassedHidden, setHidePassedSpecs] = useState(false);
 
+  /* eslint-disable @typescript-eslint/no-non-null-assertion */
   return (
     <div>
       <HFlow justifyContent="space-between">
@@ -21,12 +26,13 @@ export function RunDetails({ run }) {
       </HFlow>
       <ul>
         {specs
-          .filter(spec =>
-            isPassedHidden ? getSpecState(spec) !== 'passed' : true
+          .filter((spec) => !!spec)
+          .filter((spec) =>
+            isPassedHidden ? getSpecState(spec!) !== 'passed' : true
           )
-          .map(spec => (
+          .map((spec) => (
             <li
-              key={spec.instanceId}
+              key={spec!.instanceId}
               className={css`
                  {
                   padding: 12px 0;

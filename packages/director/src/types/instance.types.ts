@@ -1,5 +1,3 @@
-import { S3SignedUploadResult } from '@src/screenshots/s3/types';
-
 export interface Instance {
   instanceId: string;
   results: InstanceResult;

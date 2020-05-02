@@ -1,4 +1,4 @@
-import React, { ErrorInfo } from 'react';
+import React from 'react';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { ThemeProvider } from 'bold-ui';
@@ -40,6 +40,7 @@ class ErrorBoundary extends React.Component<
             <a
               href="https://github.com/agoldis/sorry-cypress/issues/new"
               target="_blank"
+              rel="noopener noreferrer"
             >
               Github Issues
             </a>

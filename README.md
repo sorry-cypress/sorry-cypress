@@ -6,6 +6,7 @@
 <br />
 
 ![Update Dockerhub Images](https://github.com/agoldis/sorry-cypress/workflows/Update%20Dockerhub%20Images/badge.svg?event=push)
+![Update Dockerhub Images](https://github.com/agoldis/sorry-cypress/workflows/Lint%20and%20test/badge.svg)
 
 ## Table of contents
 
@@ -135,6 +136,8 @@ production:
   api_url: "http://localhost:1234/"
 ...
 ```
+
+Find more method to configure cypress wrapper [Configuring cypress agents](https://github.com/agoldis/sorry-cypress/wiki/Configuring-cypress-agents) wiki article
 
 ### Project structure
 

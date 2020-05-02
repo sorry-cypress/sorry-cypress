@@ -4,15 +4,22 @@ import { RunSummary } from '../components/run/summary';
 import { useGetRunQuery } from '../generated/graphql';
 import { useApolloClient } from '@apollo/react-hooks';
 
+type RunDetailsViewProps = {
+  match: {
+    params: {
+      id: string;
+    };
+  };
+};
 export function RunDetailsView({
   match: {
-    params: { id }
-  }
-}) {
+    params: { id },
+  },
+}: RunDetailsViewProps): React.ReactNode {
   const apollo = useApolloClient();
 
   const { loading, error, data } = useGetRunQuery({
-    variables: { runId: id }
+    variables: { runId: id },
   });
 
   if (loading) return <p>Loading...</p>;
@@ -26,10 +33,10 @@ export function RunDetailsView({
           {
             __typename: 'NavStructureItem',
             label: 'Non-existing run',
-            link: `run/missing`
-          }
-        ]
-      }
+            link: `run/missing`,
+          },
+        ],
+      },
     });
     return 'Cannot find this run does not exist';
   }
@@ -40,10 +47,10 @@ export function RunDetailsView({
         {
           __typename: 'NavStructureItem',
           label: data.run!.meta!.ciBuildId,
-          link: `run/${data.run!.runId}`
-        }
-      ]
-    }
+          link: `run/${data.run!.runId}`,
+        },
+      ],
+    },
   });
 
   return (
