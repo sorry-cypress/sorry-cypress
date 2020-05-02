@@ -137,6 +137,8 @@ production:
 ...
 ```
 
+Find more method to configure cypress wrapper [Configuring cypress agents](https://github.com/agoldis/sorry-cypress/wiki/Configuring-cypress-agents) wiki article
+
 ### Project structure
 
 The repository consists of 3 packages - you can deploy them on your own infrastructure:
