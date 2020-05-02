@@ -1,11 +1,19 @@
-import React from 'react';
-import { Heading, useCss, Alert, HFlow } from 'bold-ui';
-import { Paper, TestState } from '../common';
+import React from "react";
+import { Heading, useCss, Alert, HFlow } from "bold-ui";
+import { Paper, TestState } from "../common";
+import { InstanceTest, InstanceScreeshot } from "../../generated/graphql";
 
-export function TestDetails({ test, screenshots }: {}) {
+type TestDetailsProps = {
+  test: InstanceTest;
+  screenshots: InstanceScreeshot[];
+};
+export function TestDetails({
+  test,
+  screenshots,
+}: TestDetailsProps): React.ReactNode {
   const screenshot = screenshots.find((s) => s.testId === test.testId);
   const { css } = useCss();
-  const title = test.title.join(' > ');
+  const title = test.title.join(" > ");
   return (
     <>
       <HFlow>
@@ -23,7 +31,7 @@ export function TestDetails({ test, screenshots }: {}) {
         <Alert
           type="danger"
           style={{
-            whiteSpace: 'pre',
+            whiteSpace: "pre",
             padding: 12,
           }}
         >
@@ -34,7 +42,11 @@ export function TestDetails({ test, screenshots }: {}) {
 
       {screenshot && (
         <Paper>
-          <a target="_blank" href={screenshot.screenshotURL}>
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href={screenshot.screenshotURL}
+          >
             <img
               className={css`
                  {

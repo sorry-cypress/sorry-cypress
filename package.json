@@ -16,10 +16,27 @@
   ],
   "scripts": {
     "test": "yarn workspaces run test",
+    "lint": "yarn workspaces run lint",
     "start": "yarn workspace @sorry-cypress/director start",
     "build": "yarn workspace @sorry-cypress/director build"
   },
   "resolutions": {
     "es-abstract": "1.17.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn run lint && pretty-quick --staged"
+    }
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.30.0",
+    "@typescript-eslint/parser": "^2.30.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-jest": "^23.8.2",
+    "eslint-plugin-react": "^7.19.0",
+    "husky": "^4.2.5",
+    "prettier": "^2.0.5",
+    "pretty-quick": "^2.0.1"
   }
 }

@@ -18,6 +18,7 @@
     "build:types": "tsc --emitDeclarationOnly",
     "build:js": "babel src --out-dir dist --extensions \".ts\" --source-maps inline",
     "test": "jest",
+    "lint": "eslint ./ --ext ts",
     "start": "node ./dist/",
     "clean": "rimraf ./dist"
   },

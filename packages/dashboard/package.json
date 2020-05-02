@@ -21,7 +21,8 @@
     "build:webpack": "webpack --mode production",
     "generate": "graphql-codegen --config codegen.yml",
     "generate:watch": "graphql-codegen --config codegen.yml --watch",
-    "test": "echo \"@sorry-cypress/dashboard\""
+    "test": "echo \"@sorry-cypress/dashboard\"",
+    "lint": "eslint ./ --ext ts,tsx"
   },
   "dependencies": {
     "@apollo/react-hooks": "^3.0.1",
@@ -55,12 +56,14 @@
     "@graphql-codegen/typescript": "^1.8.1",
     "@graphql-codegen/typescript-operations": "^1.8.1",
     "@graphql-codegen/typescript-react-apollo": "^1.8.1",
+    "@types/lodash": "^4.14.150",
     "@types/react": "^16.8.19",
     "@types/react-dom": "^16.8.4",
-    "@types/react-router-dom": "^4.3.5",
+    "@types/react-router-dom": "^5.1.5",
     "@types/react-tooltip": "^3.9.3",
     "babel-loader": "^8.0.6",
     "css-loader": "^3.2.0",
+    "eslint-plugin-react": "^7.19.0",
     "html-webpack-plugin": "^4.0.0-beta.5",
     "npm-run-all": "^4.1.5",
     "style-loader": "^1.0.0",

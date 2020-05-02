@@ -5,20 +5,15 @@ import {
   InstanceResult,
   ExecutionDriver,
   CreateRunResponse,
-  CreateRunParameters
-} from '@src/types';
-import { getDashboardRunURL } from '@src/lib/urls';
-import {
-  AppError,
-  RUN_NOT_EXIST,
-  INSTANCE_EXISTS,
-  INSTANCE_NOT_EXIST
-} from '@src/lib/errors';
+  CreateRunParameters,
+} from "@src/types";
+import { getDashboardRunURL } from "@src/lib/urls";
+import { AppError, RUN_NOT_EXIST, INSTANCE_NOT_EXIST } from "@src/lib/errors";
 import {
   generateRunIdHash,
   generateGroupId,
-  generateUUID
-} from '@src/lib/hash';
+  generateUUID,
+} from "@src/lib/hash";
 
 const runs: { [key: string]: Run } = {};
 const instances: {
@@ -39,7 +34,7 @@ const createRun = async (
     machineId: generateUUID(),
     runId,
     runUrl: getDashboardRunURL(runId),
-    warnings: [] as string[]
+    warnings: [] as string[],
   };
 
   if (runs[runId]) {
@@ -50,11 +45,11 @@ const createRun = async (
     runId,
     createdAt: new Date().toUTCString(),
     meta: {} as RunMetaData,
-    specs: params.specs.map(spec => ({
+    specs: params.specs.map((spec) => ({
       spec,
       instanceId: generateUUID(),
-      claimed: false
-    }))
+      claimed: false,
+    })),
   };
 
   return response;
@@ -65,12 +60,12 @@ const getNextTask = async (runId: string): Promise<Task> => {
     throw new AppError(RUN_NOT_EXIST);
   }
 
-  const unclaimedSpecIndex = runs[runId].specs.findIndex(s => !s.claimed);
+  const unclaimedSpecIndex = runs[runId].specs.findIndex((s) => !s.claimed);
   if (unclaimedSpecIndex === -1) {
     return {
       instance: null,
       claimedInstances: runs[runId].specs.length,
-      totalInstances: runs[runId].specs.length
+      totalInstances: runs[runId].specs.length,
     };
   }
 
@@ -81,8 +76,8 @@ const getNextTask = async (runId: string): Promise<Task> => {
 
   return {
     instance: runs[runId].specs[unclaimedSpecIndex],
-    claimedInstances: runs[runId].specs.filter(s => s.claimed).length,
-    totalInstances: runs[runId].specs.length
+    claimedInstances: runs[runId].specs.filter((s) => s.claimed).length,
+    totalInstances: runs[runId].specs.length,
   };
 };
 
@@ -96,11 +91,11 @@ const setInstanceResults = async (
   instances[instanceId] = { ...instances[instanceId], results };
 };
 export const driver: ExecutionDriver = {
-  id: 'in-memory',
+  id: "in-memory",
   init: () => Promise.resolve(),
   setScreenshotUrl: () => Promise.resolve(),
   setVideoUrl: () => Promise.resolve(),
   createRun,
   getNextTask,
-  setInstanceResults
+  setInstanceResults,
 };

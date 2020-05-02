@@ -1,10 +1,10 @@
-import React from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { useGetInstanceQuery } from '../generated/graphql';
-import { useApolloClient } from '@apollo/react-hooks';
-import { TestDetails } from '../components/test';
+import React from "react";
+import { Link, useParams } from "react-router-dom";
+import { useGetInstanceQuery } from "../generated/graphql";
+import { useApolloClient } from "@apollo/react-hooks";
+import { TestDetails } from "../components/test";
 
-export const TestDetailsView: React.FC = (props) => {
+export function TestDetailsView(): React.ReactNode {
   const { instanceId, testId } = useParams();
 
   const { loading, error, data } = useGetInstanceQuery({
@@ -32,18 +32,18 @@ export const TestDetailsView: React.FC = (props) => {
     data: {
       navStructure: [
         {
-          __typename: 'NavStructureItem',
+          __typename: "NavStructureItem",
           label: data.instance.run!.meta!.ciBuildId,
           link: `run/${data.instance.runId}`,
         },
         {
-          __typename: 'NavStructureItem',
+          __typename: "NavStructureItem",
           label: data.instance.spec,
           link: `instance/${instanceId}`,
         },
         {
-          __typename: 'NavStructureItem',
-          label: test.title && test.title.join(' | '),
+          __typename: "NavStructureItem",
+          label: test.title && test.title.join(" | "),
           link: `instance/${data.instance.instanceId}/test/${testId}`,
         },
       ],
@@ -63,4 +63,4 @@ export const TestDetailsView: React.FC = (props) => {
     : [];
 
   return <TestDetails test={test} screenshots={screenshots} />;
-};
+}

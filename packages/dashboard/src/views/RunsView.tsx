@@ -1,22 +1,22 @@
-import React from 'react';
-import { RunSummary } from '../components/run/summary';
-import { useGetRunsFeedQuery } from '../generated/graphql';
-import { Button } from 'bold-ui';
-import { useApolloClient } from '@apollo/react-hooks';
+import React from "react";
+import { RunSummary } from "../components/run/summary";
+import { useGetRunsFeedQuery } from "../generated/graphql";
+import { Button } from "bold-ui";
+import { useApolloClient } from "@apollo/react-hooks";
 
 export function RunsView() {
   const apollo = useApolloClient();
 
   apollo.writeData({
     data: {
-      navStructure: []
-    }
+      navStructure: [],
+    },
   });
 
   const { fetchMore, loading, error, data } = useGetRunsFeedQuery({
     variables: {
-      cursor: ''
-    }
+      cursor: "",
+    },
   });
 
   if (loading) return <p>Loading...</p>;
@@ -30,7 +30,7 @@ export function RunsView() {
   function loadMore() {
     return fetchMore({
       variables: {
-        cursor: runFeed.cursor
+        cursor: runFeed.cursor,
       },
       updateQuery: (prev, { fetchMoreResult }) => {
         return {
@@ -38,18 +38,22 @@ export function RunsView() {
             __typename: prev.runFeed.__typename,
             hasMore: fetchMoreResult!.runFeed.hasMore,
             cursor: fetchMoreResult!.runFeed.cursor,
-            runs: [...prev.runFeed.runs, ...fetchMoreResult!.runFeed.runs]
-          }
+            runs: [...prev.runFeed.runs, ...fetchMoreResult!.runFeed.runs],
+          },
         };
-      }
+      },
     });
   }
 
   if (!runFeed.runs.length) {
     return (
       <div>
-        Welcome to Sorry Cypress! Your tests runs will appears here.{' '}
-        <a href="https://github.com/agoldis/sorry-cypress" target="_blank">
+        Welcome to Sorry Cypress! Your tests runs will appears here.{" "}
+        <a
+          href="https://github.com/agoldis/sorry-cypress"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           Documentation
         </a>
       </div>
@@ -57,7 +61,7 @@ export function RunsView() {
   }
   return (
     <>
-      {runFeed.runs.map(run => (
+      {runFeed.runs.map((run) => (
         <div key={run.runId}>
           <RunSummary run={run} />
         </div>
