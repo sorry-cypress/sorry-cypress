@@ -1,5 +1,5 @@
 import aws from 'aws-sdk';
-import { S3_BUCKET, S3_REGION, S3_ACL, S3_READ_URL_PREFIX } from './config';
+import { S3_BUCKET, S3_REGION, S3_ACL, S3_READ_URL_PREFIX, S3_IMAGE_KEY_PREFIX, S3_VIDEO_KEY_PREFIX } from './config';
 import { S3SignedUploadResult } from './types';
 import { AssetUploadInstruction } from '@src/types';
 
@@ -17,6 +17,22 @@ interface GetUploadURLParams {
   ContentType?: string;
   Expires?: number;
 }
+
+const sanitizeKeyPrefix = (prefix: string): string => {
+  if (prefix == null) {
+    return '';
+  }
+  let sanitizedPrefix = prefix.trim().replace(/(\/\/+)/g, '/');
+
+  if (sanitizedPrefix.startsWith('/')) {
+    sanitizedPrefix = sanitizedPrefix.substring(1);
+  }
+  if (sanitizedPrefix.endsWith('/')) {
+    return sanitizedPrefix;
+  }
+  return sanitizedPrefix + '/';
+}
+
 export const getUploadUrl = async ({
   key,
   ContentType = ImageContentType,
@@ -49,13 +65,13 @@ export const getUploadUrl = async ({
 
 export const getImageUploadUrl = async (
   key: string
-): Promise<AssetUploadInstruction> => getUploadUrl({ key: `${key}.png` });
+): Promise<AssetUploadInstruction> => getUploadUrl({ key: `${sanitizeKeyPrefix(S3_IMAGE_KEY_PREFIX)}${key}.png` });
 
 export const getVideoUploadUrl = async (
   key: string
 ): Promise<AssetUploadInstruction> =>
   getUploadUrl({
-    key: `${key}.mp4`,
+    key: `${sanitizeKeyPrefix(S3_VIDEO_KEY_PREFIX)}${key}.mp4`,
     ContentType: VideoContentType,
     Expires: 90,
   });
