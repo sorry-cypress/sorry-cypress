@@ -1,4 +1,4 @@
-name: Unit tests
+name: Lint and test
 
 on:
   push:
@@ -24,6 +24,9 @@ jobs:
 
       - name: Install dependencies
         run: yarn
+
+      - name: Run lint
+        run: yarn lint
 
       - name: Run unit tests
         run: yarn test
