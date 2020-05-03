@@ -21,7 +21,7 @@
   - [🔥<span style="color: white; background: orange; padding: 2px 4px">new!</span> Amazon AWS](#Amazon-AWS)
 - [Documentation](#documentation)
   - [Reconfiguring Cypress](#Reconfiguring-Cypress)
-  - [🔥<span style="color: white; background: orange; padding: 2px 4px">new!</span> Using sorry-cypress wrapper](#Using-`sorry-cypress`-wrapper)
+  - [🔥<span style="color: white; background: orange; padding: 2px 4px">new!</span> Using sorry-cypress wrapper](#Using-sorry-cypress-wrapper)
   - [Project structure](#project-structure)
   - [`director` service](#director-service)
   - [`api` service](#api-service)
@@ -138,7 +138,7 @@ production:
 ...
 ```
 
-## Using `sorry-cypress` wrapper
+## Using sorry-cypress wrapper
 
 Thanks @janineahn and @redaxmedia for this contribution!
 
