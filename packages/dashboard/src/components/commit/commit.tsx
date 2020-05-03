@@ -3,11 +3,14 @@ import { getGithubCommitURL, getGithubBranchURL } from '../../lib/github';
 import { Commit as CommitDef } from '../../generated/graphql';
 
 type CommitProps = {
-  commit: CommitDef;
+  commit: CommitDef | null | undefined;
 };
 export const Commit: React.FunctionComponent<CommitProps> = ({
   commit,
 }: CommitProps) => {
+  if (!commit) {
+    return null;
+  }
   if (!commit.sha) {
     return null;
   }
