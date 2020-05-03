@@ -21,6 +21,7 @@
   - [🔥<span style="color: white; background: orange; padding: 2px 4px">new!</span> Amazon AWS](#Amazon-AWS)
 - [Documentation](#documentation)
   - [Reconfiguring Cypress](#Reconfiguring-Cypress)
+  - [🔥<span style="color: white; background: orange; padding: 2px 4px">new!</span> Using sorry-cypress wrapper](#Using-`sorry-cypress`-wrapper)
   - [Project structure](#project-structure)
   - [`director` service](#director-service)
   - [`api` service](#api-service)
@@ -135,6 +136,36 @@ production:
   # api_url: "https://api.cypress.io/"
   api_url: "http://localhost:1234/"
 ...
+```
+
+## Using `sorry-cypress` wrapper
+
+Thanks @janineahn and @redaxmedia for this contribution!
+
+Instead of changing the `api_url` in the cypress config, it's also possible to reroute the cypress api IP in your `/etc/hosts` file.
+
+Sorry-cypress includes an executable helper for this, to use it run `sudo sorry-cypress` (superuser rights are necessary for editing the hosts file).
+
+This command will use [hostile](https://github.com/feross/hostile) to change your hosts file and will start cypress in a child process.
+Once Cypress is done or killed the rerouting rule in your hosts file will be deleted.
+
+Please be aware of the following limitation before using `sorry-cypress.js` script:
+
+- Only works with `etc/hosts` or `C:/Windows/System32/drivers/etc/hosts` present
+- Only works with HTTPS on and port 443 on the target machine
+- Has hard coded arguments for the cypress run
+- Missing output that CLI started/finished
+
+The command will need the following env variables:
+
+- `SORRY_CYPRESS_RECORD_KEY`
+- `SORRY_CYPRESS_API_IP`
+- `SORRY_CYPRESS_BUILD_ID`
+
+Example:
+
+```sh
+sudo SORRY_CYPRESS_BUILD_ID=build-001 SORRY_CYPRESS_RECORD_KEY=whateve SORRY_CYPRESS_API_IP=127.0.0.1 ./bin/sorry-cypress.js <other cypress arguments>
 ```
 
 Find more method to configure cypress wrapper [Configuring cypress agents](https://github.com/agoldis/sorry-cypress/wiki/Configuring-cypress-agents) wiki article
