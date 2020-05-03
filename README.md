@@ -140,7 +140,7 @@ production:
 
 ## Using sorry-cypress wrapper
 
-Thanks @janineahn and @redaxmedia for this contribution!
+Thanks [@janineahn](https://github.com/janineahn) and [@redaxmedia](https://github.com/redaxmedia) for this contribution!
 
 Instead of changing the `api_url` in the cypress config, it's also possible to reroute the cypress api IP in your `/etc/hosts` file.
 
