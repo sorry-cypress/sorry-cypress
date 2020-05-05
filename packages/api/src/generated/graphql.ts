@@ -102,7 +102,6 @@ export type InstanceTest = {
   body?: Maybe<Scalars['String']>;
   stack?: Maybe<Scalars['String']>;
   error?: Maybe<Scalars['String']>;
-  /** timings: InstanceTestTimings */
   wallClockStartedAt?: Maybe<Scalars['String']>;
   wallClockDuration?: Maybe<Scalars['Int']>;
 };
