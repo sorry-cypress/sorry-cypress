@@ -1,0 +1,7 @@
+mutation deleteRun($runId: ID!) {
+  deleteRun(runId: $runId) {
+    success
+    message
+    runIds
+  }
+}
