@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Heading,
@@ -22,23 +22,53 @@ type RunSummaryProps = {
 };
 export function RunSummary({ run }: RunSummaryProps): React.ReactNode {
   const { meta, runId, specs } = run;
-  const [startDeleteRunMutation, { loading: deleting }] = useDeleteRunMutation({
+  const [startDeleteRunMutation] = useDeleteRunMutation({
     variables: {
       runId,
     },
     update: updateCacheOnDeleteRun,
   });
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   const [shouldShowModal, setShowModal] = useState(false);
 
-  const overall = getRunTestsOverall(run);
+  useEffect(() => {
+    let mounted = true;
+    if (!deleting) {
+      return;
+    }
+    setDeleting(true);
+
+    startDeleteRunMutation()
+      .then((result) => {
+        if (!mounted) {
+          return;
+        }
+        if (result.errors) {
+          setDeleteError(result.errors[0].message);
+          setDeleting(false);
+        } else {
+          setDeleting(false);
+          setShowModal(false);
+        }
+      })
+      .catch((error) => {
+        if (!mounted) {
+          return;
+        }
+        setDeleting(false);
+        setDeleteError(error.toString());
+      });
+    return () => {
+      mounted = false;
+    };
+  }, [deleting]);
 
   function deleteRun() {
-    if (deleting) return;
-    startDeleteRunMutation().then(() => {
-      setShowModal(false);
-    });
+    setDeleting(true);
   }
 
+  const overall = getRunTestsOverall(run);
   return (
     <>
       <Modal
@@ -55,12 +85,13 @@ export function RunSummary({ run }: RunSummaryProps): React.ReactNode {
               fill="danger"
             />
             <div>
-              <Heading level={1}>Delete run</Heading>
+              <Heading level={1}>Delete run {run.meta?.ciBuildId}?</Heading>
               <Heading level={5}>
                 Deleting run will permanently delete the associated data (run,
                 instances, test results). Running tests associated with the run
                 will fail.
               </Heading>
+              {deleteError && <p>Delete error: {deleteError}</p>}
             </div>
           </HFlow>
         </ModalBody>
