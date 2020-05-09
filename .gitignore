@@ -65,3 +65,6 @@ typings/
 
 # AWS
 */**/.aws
+
+# Minio
+/data/data-minio-cypress
