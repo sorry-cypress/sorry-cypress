@@ -7,9 +7,10 @@ services:
       - 27017:27017
 
   api:
+    image: registry.padoa.fr/padoa/sorry-cypress-api:latest
     build:
       context: $PWD/packages/api
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     ports:
       - 9230:9230
       - 4000:4000
@@ -19,6 +20,7 @@ services:
       - mongo
 
   director:
+    image: registry.padoa.fr/padoa/sorry-cypress-director:latest
     build:
       context: $PWD/packages/director
       dockerfile: Dockerfile.dev
