@@ -12,7 +12,7 @@ import { S3SignedUploadResult } from './types';
 import { AssetUploadInstruction } from '@src/types';
 import { sanitizeS3KeyPrefix } from './utils';
 
-const BUCKET_URL = `https://${S3_BUCKET}.{S3_ENDPOINT}`;
+const BUCKET_URL = `https://${S3_BUCKET}.${S3_ENDPOINT}`;
 const ImageContentType = 'image/png';
 const VideoContentType = 'video/mp4';
 
@@ -35,9 +35,9 @@ export const getUploadUrl = async ({
   const s3Params = {
     Bucket: S3_BUCKET,
     Key: key,
-    Expires,
-    ContentType,
-    ACL: S3_ACL,
+    Expires: Expires,
+    ContentType: ContentType,
+    // ACL: S3_ACL,
   };
 
   return new Promise((resolve, reject) => {

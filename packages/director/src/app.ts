@@ -136,6 +136,9 @@ app.put(
     if (videoUploadInstructions) {
       responsePayload.videoUploadUrl = videoUploadInstructions.uploadUrl;
     }
+    console.log("---------------------")
+    console.log(responsePayload);
+    console.log("---------------------")
     return res.json(responsePayload);
   }
 );

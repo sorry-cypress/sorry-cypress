@@ -23,7 +23,7 @@ services:
     image: registry.padoa.fr/padoa/sorry-cypress-director:latest
     build:
       context: $PWD/packages/director
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     environment:
       DASHBOARD_URL: http://localhost:8080
       EXECUTION_DRIVER: '../execution/mongo/driver'
