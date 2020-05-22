@@ -37,7 +37,7 @@ export const getUploadUrl = async ({
     Key: key,
     Expires: Expires,
     ContentType: ContentType,
-    // ACL: S3_ACL,
+    ACL: S3_ACL,
   };
 
   return new Promise((resolve, reject) => {
