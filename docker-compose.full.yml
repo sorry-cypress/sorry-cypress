@@ -17,6 +17,10 @@ services:
       AWS_ACCESS_KEY_ID: "key"
       AWS_SECRET_ACCESS_KEY: "secret"
       S3_BUCKET: sorry-cypress
+      S3_REGION: 'eu-west-1'
+      S3_READ_URL_PREFIX: 'https://storage-eb4.cegedim.cloud'
+      AWS_ACCESS_KEY_ID: DUMMY
+      AWS_SECRET_ACCESS_KEY: DUMMY
     ports:
       - 1234:1234
     depends_on:
