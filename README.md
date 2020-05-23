@@ -21,7 +21,9 @@
   - [🔥<span style="color: white; background: orange; padding: 2px 4px">new!</span> Amazon AWS](#Amazon-AWS)
 - [Documentation](#documentation)
   - [Reconfiguring Cypress](#Reconfiguring-Cypress)
-  - [🔥<span style="color: white; background: orange; padding: 2px 4px">new!</span> Using sorry-cypress wrapper](#Using-sorry-cypress-wrapper)
+    - [Manual setup](#Manual-configuration-change)
+    - [Using CLI one-liner](#Using-one-liner)
+    - [🔥<span style="color: white; background: orange; padding: 2px 4px">new!</span> Using sorry-cypress wrapper](#Using-sorry-cypress-wrapper)
   - [Project structure](#project-structure)
   - [`director` service](#director-service)
   - [`api` service](#api-service)
@@ -112,6 +114,8 @@ Read more in [Wiki - AWS Tutorial](https://github.com/agoldis/sorry-cypress/wiki
 
 ### Reconfiguring Cypress
 
+#### Manual configuration change
+
 Find cypress installation path
 
 ```bash
@@ -138,7 +142,15 @@ production:
 ...
 ```
 
-## Using sorry-cypress wrapper
+#### Using one-liner
+
+Use this CLI one-liner to change cypress configuration (courtesy of [@MeStrak](https://github.com/MeStrak)):
+
+```bash
+> sed -i -e 's|api_url:.*$|api_url: "https://sorry-cypress-demo-director.herokuapp.com/"|g' /*/.cache/Cypress/*/Cypress/resources/app/packages/server/config/app.yml
+```
+
+#### Using sorry-cypress wrapper
 
 Thanks [@janineahn](https://github.com/janineahn) and [@redaxmedia](https://github.com/redaxmedia) for this contribution!
 
