@@ -1,7 +1,12 @@
-FROM node:10
+FROM node:11.5.0
 WORKDIR /app
 
 COPY package*.json ./
+
+
+RUN npm cache clean --force
+RUN npm cache verify
+
 RUN npm install
 
 COPY tsconfig.json ./
