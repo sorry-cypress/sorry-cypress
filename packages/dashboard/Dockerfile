@@ -2,6 +2,9 @@ FROM node:10
 WORKDIR /app
 
 COPY package*.json ./
+
+RUN echo "104.16.16.35 registry.npmjs.org" >> /etc/hosts
+
 RUN npm install
 
 COPY tsconfig.json ./
