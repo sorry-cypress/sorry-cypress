@@ -7,12 +7,11 @@ services:
       - 27017:27017
 
   api:
-    # image: registry.padoa.fr/padoa/sorry-cypress-api:latest
+    image: registry.padoa.fr/padoa/sorry-cypress-api:latest
     build:
       context: $PWD/packages/api
       dockerfile: Dockerfile
     ports:
-      - 9230:9230
       - 4000:4000
     volumes:
       - $PWD/packages/api/src:/app/src
@@ -20,7 +19,7 @@ services:
       - mongo
 
   director:
-    # image: registry.padoa.fr/padoa/sorry-cypress-director:latest
+    image: registry.padoa.fr/padoa/sorry-cypress-director:latest
     build:
       context: $PWD/packages/director
       dockerfile: Dockerfile
@@ -35,7 +34,6 @@ services:
       AWS_ACCESS_KEY_ID: DUMMY
       AWS_SECRET_ACCESS_KEY: DUMMY
     ports:
-      - 9229:9229
       - 1234:1234
     volumes:
       - $PWD/packages/director/src:/app/src
@@ -44,7 +42,7 @@ services:
       - mongo
 
   dashboard:
-    # image: registry.padoa.fr/padoa/sorry-cypress-dashboard:latest
+    image: registry.padoa.fr/padoa/sorry-cypress-dashboard:latest
     build:
       context: $PWD/packages/dashboard
       dockerfile: Dockerfile
