@@ -19,6 +19,7 @@ services:
       S3_BUCKET: sorry-cypress
       S3_REGION: 'eu-west-1'
       S3_READ_URL_PREFIX: 'https://storage-eb4.cegedim.cloud'
+      FILES_EXPIRATION: 604800
       AWS_ACCESS_KEY_ID: DUMMY
       AWS_SECRET_ACCESS_KEY: DUMMY
     ports:

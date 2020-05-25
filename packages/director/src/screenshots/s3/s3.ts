@@ -4,6 +4,7 @@ import {
   S3_IMAGE_KEY_PREFIX,
   S3_VIDEO_KEY_PREFIX,
   S3_BUCKET,
+  FILES_EXPIRATION
 } from './config';
 import { S3SignedUploadResult } from './types';
 import { AssetUploadInstruction } from '@src/types';
@@ -28,7 +29,7 @@ interface GetUploadURLParams {
 export const getUploadUrl = async ({
   key,
   ContentType = ImageContentType,
-  Expires = 60,
+  Expires = FILES_EXPIRATION,
 }: GetUploadURLParams): Promise<S3SignedUploadResult> => {
   const s3ParamsRead = {
     Bucket: S3_BUCKET,
