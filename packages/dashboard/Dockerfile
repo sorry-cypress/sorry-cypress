@@ -1,9 +1,11 @@
-FROM node:10
+FROM node:11.5.0
 WORKDIR /app
 
 COPY package*.json ./
 
-RUN echo "104.16.16.35 registry.npmjs.org" >> /etc/hosts
+
+RUN npm cache clean --force
+RUN npm cache verify
 
 RUN npm install
 

@@ -37,6 +37,7 @@
     "graphql-tag": "^2.10.1",
     "lodash.capitalize": "^4.2.1",
     "lodash.truncate": "^4.4.2",
+    "popper.js": "^1.16.1",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-router": "^5.1.2",
