@@ -12,12 +12,22 @@
 
 ## Demo & Example
 
-1. Run `docker-compose -f docker-compose.full.yml up`
+1. Run `docker-compose -f docker-compose.yml up`
 2. Open the browser at [http://localhost:8080/](http://localhost:8080/) to see the dashboard
 
 This will start all 3 services on your local machine,
 
-[Reconfigure Cypress](#Reconfiguring-Cypress) to use `api_url: "http://localhost:1234/"`,
+Reconfigure Cypress to use `api_url: "http://localhost:1234/"`:
+
+```bash
+cd ~/padoa/haw-doctor-web
+# replace /root in tools/sorry_cypress.sh with your home folder
+sed -i 's/root/home\/lg/g' tools/sorry_cypress.sh   # ici mon $HOME=/home/lg
+sed -i 's/https:\/\/api.sorry-cypress.padoa.fr/http:\/\/localhost:1234/g' tools/sorry_cypress.sh
+./tools/sorry_cypress.sh
+```
+
+
 
 Run your tests `cypress run --parallel --record --key xxx --ci-build-id <buildId>` and you will see the results appear in the dashboard. Those cypress tests will run in parallel without connecting to the official dashboard.
 
@@ -29,11 +39,7 @@ Replace the s3 driver in compose file by dummy if you don't have access to s3 se
 
 Each package has a Dockerfile - use it to build your own images.
 
-Pre-built Docker images are available at https://hub.docker.com/u/agoldis.
-
-Docker image tag corresponds to the git tag, while `latest` points to the `master` git branch.
-
-Refer to `docker-compose.full.yml` for example.
+`docker-compose build` does build all images to the Padoa registry, but you still need to push them afterwards.
 
 ### Is it legal?
 
