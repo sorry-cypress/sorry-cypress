@@ -53,6 +53,8 @@ export const SpecState: React.FC<SpecStateProps> = ({
       return <Tag type="success">Passed</Tag>;
     case 'pending':
       return <Tag type="normal">Pending</Tag>;
+    case 'running':
+      return <Tag type="info">Running</Tag>;
     default:
       return <Tag type="normal">Unknown</Tag>;
   }

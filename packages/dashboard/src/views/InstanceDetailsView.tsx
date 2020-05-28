@@ -48,7 +48,7 @@ export function InstanceDetailsView({
   if (!data.instance.results) {
     return (
       <div>
-        The instance <strong>{data.instance.spec}</strong> has no results yet
+        No results yet for spec <strong>{data.instance.spec}</strong>
       </div>
     );
   }

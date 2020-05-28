@@ -55,7 +55,7 @@ export type Instance = {
 export type InstanceResults = {
   __typename?: 'InstanceResults';
   stats: InstanceStats;
-  tests: Array<Maybe<InstanceTest>>;
+  tests?: Maybe<Array<Maybe<InstanceTest>>>;
   error?: Maybe<Scalars['String']>;
   stdout?: Maybe<Scalars['String']>;
   screenshots: Array<InstanceScreeshot>;
@@ -267,16 +267,18 @@ export type GetInstanceQuery = { __typename?: 'Query' } & {
                 | 'failures'
                 | 'wallClockDuration'
               >;
-              tests: Array<
-                Maybe<
-                  { __typename?: 'InstanceTest' } & Pick<
-                    InstanceTest,
-                    | 'testId'
-                    | 'wallClockDuration'
-                    | 'state'
-                    | 'error'
-                    | 'stack'
-                    | 'title'
+              tests?: Maybe<
+                Array<
+                  Maybe<
+                    { __typename?: 'InstanceTest' } & Pick<
+                      InstanceTest,
+                      | 'testId'
+                      | 'wallClockDuration'
+                      | 'state'
+                      | 'error'
+                      | 'stack'
+                      | 'title'
+                    >
                   >
                 >
               >;
@@ -308,10 +310,14 @@ export type GetRunQueryVariables = {
 
 export type GetRunQuery = { __typename?: 'Query' } & {
   run?: Maybe<
+<<<<<<< HEAD
     { __typename?: 'Run' } & Pick<
       Run,
       'tests' | 'failures' | 'passes' | 'pending' | 'skipped' | 'runId'
     > & {
+=======
+    { __typename?: 'Run' } & Pick<Run, 'runId'> & {
+>>>>>>> a3a1026... Handle no tests case. Closes #42
         meta?: Maybe<
           { __typename?: 'RunMeta' } & Pick<
             RunMeta,
@@ -330,6 +336,7 @@ export type GetRunQuery = { __typename?: 'Query' } & {
               >;
             }
         >;
+<<<<<<< HEAD
         specs?: Maybe<
           Array<
             Maybe<
@@ -346,6 +353,32 @@ export type GetRunQuery = { __typename?: 'Query' } & {
                           { __typename?: 'CypressConfig' } & Pick<
                             CypressConfig,
                             'video' | 'videoUploadOnPasses'
+=======
+        specs: Array<
+          Maybe<
+            { __typename?: 'FullRunSpec' } & Pick<
+              FullRunSpec,
+              'spec' | 'instanceId' | 'claimed'
+            > & {
+                results?: Maybe<
+                  { __typename?: 'InstanceResults' } & Pick<
+                    InstanceResults,
+                    'videoUrl'
+                  > & {
+                      cypressConfig?: Maybe<
+                        { __typename?: 'CypressConfig' } & Pick<
+                          CypressConfig,
+                          'video' | 'videoUploadOnPasses'
+                        >
+                      >;
+                      tests?: Maybe<
+                        Array<
+                          Maybe<
+                            { __typename?: 'InstanceTest' } & Pick<
+                              InstanceTest,
+                              'title' | 'state'
+                            >
+>>>>>>> a3a1026... Handle no tests case. Closes #42
                           >
                         >;
                         tests: Array<
@@ -383,6 +416,7 @@ export type GetRunsFeedQueryVariables = {
 export type GetRunsFeedQuery = { __typename?: 'Query' } & {
   runFeed: { __typename?: 'RunFeed' } & Pick<RunFeed, 'cursor' | 'hasMore'> & {
       runs: Array<
+<<<<<<< HEAD
         { __typename?: 'Run' } & Pick<
           Run,
           | 'tests'
@@ -393,6 +427,9 @@ export type GetRunsFeedQuery = { __typename?: 'Query' } & {
           | 'runId'
           | 'createdAt'
         > & {
+=======
+        { __typename?: 'Run' } & Pick<Run, 'runId' | 'createdAt'> & {
+>>>>>>> a3a1026... Handle no tests case. Closes #42
             meta?: Maybe<
               { __typename?: 'RunMeta' } & Pick<
                 RunMeta,
@@ -411,6 +448,7 @@ export type GetRunsFeedQuery = { __typename?: 'Query' } & {
                   >;
                 }
             >;
+<<<<<<< HEAD
             specs?: Maybe<
               Array<
                 Maybe<
@@ -419,6 +457,47 @@ export type GetRunsFeedQuery = { __typename?: 'Query' } & {
                     'spec' | 'instanceId' | 'claimed'
                   >
                 >
+=======
+            specs: Array<
+              Maybe<
+                { __typename?: 'FullRunSpec' } & Pick<
+                  FullRunSpec,
+                  'spec' | 'instanceId' | 'claimed'
+                > & {
+                    results?: Maybe<
+                      { __typename?: 'InstanceResults' } & Pick<
+                        InstanceResults,
+                        'videoUrl'
+                      > & {
+                          cypressConfig?: Maybe<
+                            { __typename?: 'CypressConfig' } & Pick<
+                              CypressConfig,
+                              'video' | 'videoUploadOnPasses'
+                            >
+                          >;
+                          tests?: Maybe<
+                            Array<
+                              Maybe<
+                                { __typename?: 'InstanceTest' } & Pick<
+                                  InstanceTest,
+                                  'title' | 'state'
+                                >
+                              >
+                            >
+                          >;
+                          stats: { __typename?: 'InstanceStats' } & Pick<
+                            InstanceStats,
+                            | 'tests'
+                            | 'pending'
+                            | 'passes'
+                            | 'failures'
+                            | 'skipped'
+                            | 'suites'
+                          >;
+                        }
+                    >;
+                  }
+>>>>>>> a3a1026... Handle no tests case. Closes #42
               >
             >;
           }

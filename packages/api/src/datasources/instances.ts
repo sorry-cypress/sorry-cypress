@@ -1,7 +1,7 @@
 import { DataSource } from 'apollo-datasource';
 import { init, getMongoDB } from '@src/lib/mongo';
 
-const reducer = (mongoRuns) => {
+const getInstanceReducer = (mongoRuns) => {
   if (mongoRuns.length === 0) {
     return null;
   }
@@ -35,7 +35,7 @@ export class InstancesAPI extends DataSource {
       ])
       .toArray();
 
-    return reducer(response);
+    return getInstanceReducer(response);
   }
 
   async deleteInstancesByRunIds(runIds: string[]) {
