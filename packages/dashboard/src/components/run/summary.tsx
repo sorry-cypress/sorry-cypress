@@ -12,16 +12,17 @@ import {
   ModalBody,
   ModalFooter,
 } from 'bold-ui';
+import { getRunTestsOverall, updateCacheOnDeleteRun } from '@src/lib/run';
+import { Commit } from '@src/components/commit/commit';
+import { Paper } from '../common/';
 import {
-  getRunTestsOverall,
-  updateCacheOnDeleteRun,
-  getRunMetaData,
-} from '@src/lib/run';
-import { Run, useDeleteRunMutation } from '../../generated/graphql';
-import './summary.css';
+  Run,
+  useDeleteRunMutation,
+  FullRunSpec,
+} from '../../generated/graphql';
 
 type RunSummaryProps = {
-  run: Run;
+  run: Partial<Run> & { runId: string; specs: Array<FullRunSpec> };
 };
 
 export function RunSummary({ run }: RunSummaryProps): React.ReactNode {
