@@ -55,7 +55,7 @@ export type Instance = {
 export type InstanceResults = {
   __typename?: 'InstanceResults';
   stats: InstanceStats;
-  tests: Array<Maybe<InstanceTest>>;
+  tests?: Maybe<Array<Maybe<InstanceTest>>>;
   error?: Maybe<Scalars['String']>;
   stdout?: Maybe<Scalars['String']>;
   screenshots: Array<InstanceScreeshot>;
@@ -216,15 +216,15 @@ export type GetInstanceQueryVariables = {
 };
 
 export type GetInstanceQuery = { __typename?: 'Query' } & {
-  instance: Maybe<
+  instance?: Maybe<
     { __typename?: 'Instance' } & Pick<
       Instance,
       'instanceId' | 'runId' | 'spec'
     > & {
         run: { __typename?: 'PartialRun' } & {
-          meta: Maybe<
+          meta?: Maybe<
             { __typename?: 'RunMeta' } & Pick<RunMeta, 'ciBuildId'> & {
-                commit: Maybe<
+                commit?: Maybe<
                   { __typename?: 'Commit' } & Pick<
                     Commit,
                     | 'sha'
@@ -238,7 +238,7 @@ export type GetInstanceQuery = { __typename?: 'Query' } & {
               }
           >;
         };
-        results: Maybe<
+        results?: Maybe<
           { __typename?: 'InstanceResults' } & Pick<
             InstanceResults,
             'videoUrl'
@@ -253,16 +253,18 @@ export type GetInstanceQuery = { __typename?: 'Query' } & {
                 | 'failures'
                 | 'wallClockDuration'
               >;
-              tests: Array<
-                Maybe<
-                  { __typename?: 'InstanceTest' } & Pick<
-                    InstanceTest,
-                    | 'testId'
-                    | 'wallClockDuration'
-                    | 'state'
-                    | 'error'
-                    | 'stack'
-                    | 'title'
+              tests?: Maybe<
+                Array<
+                  Maybe<
+                    { __typename?: 'InstanceTest' } & Pick<
+                      InstanceTest,
+                      | 'testId'
+                      | 'wallClockDuration'
+                      | 'state'
+                      | 'error'
+                      | 'stack'
+                      | 'title'
+                    >
                   >
                 >
               >;
@@ -276,7 +278,7 @@ export type GetInstanceQuery = { __typename?: 'Query' } & {
                   | 'screenshotURL'
                 >
               >;
-              cypressConfig: Maybe<
+              cypressConfig?: Maybe<
                 { __typename?: 'CypressConfig' } & Pick<
                   CypressConfig,
                   'video' | 'videoUploadOnPasses'
@@ -293,14 +295,14 @@ export type GetRunQueryVariables = {
 };
 
 export type GetRunQuery = { __typename?: 'Query' } & {
-  run: Maybe<
+  run?: Maybe<
     { __typename?: 'Run' } & Pick<Run, 'runId'> & {
-        meta: Maybe<
+        meta?: Maybe<
           { __typename?: 'RunMeta' } & Pick<
             RunMeta,
             'ciBuildId' | 'projectId'
           > & {
-              commit: Maybe<
+              commit?: Maybe<
                 { __typename?: 'Commit' } & Pick<
                   Commit,
                   | 'sha'
@@ -319,22 +321,24 @@ export type GetRunQuery = { __typename?: 'Query' } & {
               FullRunSpec,
               'spec' | 'instanceId' | 'claimed'
             > & {
-                results: Maybe<
+                results?: Maybe<
                   { __typename?: 'InstanceResults' } & Pick<
                     InstanceResults,
                     'videoUrl'
                   > & {
-                      cypressConfig: Maybe<
+                      cypressConfig?: Maybe<
                         { __typename?: 'CypressConfig' } & Pick<
                           CypressConfig,
                           'video' | 'videoUploadOnPasses'
                         >
                       >;
-                      tests: Array<
-                        Maybe<
-                          { __typename?: 'InstanceTest' } & Pick<
-                            InstanceTest,
-                            'title' | 'state'
+                      tests?: Maybe<
+                        Array<
+                          Maybe<
+                            { __typename?: 'InstanceTest' } & Pick<
+                              InstanceTest,
+                              'title' | 'state'
+                            >
                           >
                         >
                       >;
@@ -364,12 +368,12 @@ export type GetRunsFeedQuery = { __typename?: 'Query' } & {
   runFeed: { __typename?: 'RunFeed' } & Pick<RunFeed, 'cursor' | 'hasMore'> & {
       runs: Array<
         { __typename?: 'Run' } & Pick<Run, 'runId' | 'createdAt'> & {
-            meta: Maybe<
+            meta?: Maybe<
               { __typename?: 'RunMeta' } & Pick<
                 RunMeta,
                 'ciBuildId' | 'projectId'
               > & {
-                  commit: Maybe<
+                  commit?: Maybe<
                     { __typename?: 'Commit' } & Pick<
                       Commit,
                       | 'sha'
@@ -388,22 +392,24 @@ export type GetRunsFeedQuery = { __typename?: 'Query' } & {
                   FullRunSpec,
                   'spec' | 'instanceId' | 'claimed'
                 > & {
-                    results: Maybe<
+                    results?: Maybe<
                       { __typename?: 'InstanceResults' } & Pick<
                         InstanceResults,
                         'videoUrl'
                       > & {
-                          cypressConfig: Maybe<
+                          cypressConfig?: Maybe<
                             { __typename?: 'CypressConfig' } & Pick<
                               CypressConfig,
                               'video' | 'videoUploadOnPasses'
                             >
                           >;
-                          tests: Array<
-                            Maybe<
-                              { __typename?: 'InstanceTest' } & Pick<
-                                InstanceTest,
-                                'title' | 'state'
+                          tests?: Maybe<
+                            Array<
+                              Maybe<
+                                { __typename?: 'InstanceTest' } & Pick<
+                                  InstanceTest,
+                                  'title' | 'state'
+                                >
                               >
                             >
                           >;

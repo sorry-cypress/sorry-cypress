@@ -15,10 +15,14 @@ import {
 import { getRunTestsOverall, updateCacheOnDeleteRun } from '@src/lib/run';
 import { Commit } from '@src/components/commit/commit';
 import { Paper } from '../common/';
-import { Run, useDeleteRunMutation } from '../../generated/graphql';
+import {
+  Run,
+  useDeleteRunMutation,
+  FullRunSpec,
+} from '../../generated/graphql';
 
 type RunSummaryProps = {
-  run: Run;
+  run: Partial<Run> & { runId: string; specs: Array<FullRunSpec> };
 };
 export function RunSummary({ run }: RunSummaryProps): React.ReactNode {
   const { meta, runId, specs } = run;

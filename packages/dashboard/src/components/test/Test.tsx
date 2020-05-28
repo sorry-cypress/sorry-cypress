@@ -18,7 +18,7 @@ type TestProps = {
   instanceId: string;
   test: InstanceTest;
 };
-export function Test({ instanceId, test }: TestProps): React.ReactNode {
+export function Test({ instanceId, test }: TestProps) {
   return (
     <div>
       <strong>
