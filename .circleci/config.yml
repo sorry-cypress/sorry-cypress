@@ -1,0 +1,101 @@
+version: 2.1
+
+aliases:
+ - &checkout # Custom checkout because circle doesnt use -depth 1 and our repo is 200Mo, went from 45s to 3s checkout
+    name: checkout
+    command: |
+      git clone -n ${CIRCLE_REPOSITORY_URL} ~/project/
+      cd ~/project/
+      git checkout ${CIRCLE_SHA1}
+
+jobs:
+  build-director-and-push:
+    machine:
+      image: ubuntu-1604:201903-01
+      docker_layer_caching: true
+    environment:
+      DOCKER_BUILDKIT: "1"
+    working_directory: ~/project
+    steps:
+      - run: *checkout
+      - run:
+          name: build docker image
+          no_output_timeout: 1h
+          command: |
+            TAG=${CIRCLE_SHA1%"${CIRCLE_SHA1#??????????}"}
+            SHORT_TAG=${CIRCLE_SHA1%"${CIRCLE_SHA1#???????}"}
+            docker login ${DOCKER_REGISTRY_HOSTNAME} -u ${DOCKER_REGISTRY_USER} -p ${DOCKER_REGISTRY_PASSWORD}
+            # Build and push DIRECTOR
+            cd ~/project/packages/director/
+            if ! docker image pull ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-director:$TAG ; then
+              docker build --progress plain -t ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-director:$TAG .
+              docker tag ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-director:$TAG ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-director:$SHORT_TAG
+              docker push ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-director:$TAG
+              docker push ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-director:$SHORT_TAG
+            fi
+            docker tag ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-director:$TAG ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-director:$CIRCLE_BRANCH
+            docker push ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-director:$CIRCLE_BRANCH
+
+  build-api-and-push:
+    machine:
+      image: ubuntu-1604:201903-01
+      docker_layer_caching: true
+    environment:
+      DOCKER_BUILDKIT: "1"
+    working_directory: ~/project
+    steps:
+      - run: *checkout
+      - run:
+          name: build docker image
+          no_output_timeout: 1h
+          command: |
+            TAG=${CIRCLE_SHA1%"${CIRCLE_SHA1#??????????}"}
+            SHORT_TAG=${CIRCLE_SHA1%"${CIRCLE_SHA1#???????}"}
+            docker login ${DOCKER_REGISTRY_HOSTNAME} -u ${DOCKER_REGISTRY_USER} -p ${DOCKER_REGISTRY_PASSWORD}
+
+            # Build and push API
+            cd ~/project/packages/api/
+            if ! docker image pull ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-api:$TAG ; then
+              docker build --progress plain -t ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-api:$TAG .
+              
+              docker tag ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-api:$TAG ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-api:$SHORT_TAG
+              docker push ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-api:$TAG
+              docker push ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-api:$SHORT_TAG
+            fi
+            docker tag ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-api:$TAG ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-api:$CIRCLE_BRANCH
+            docker push ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-api:$CIRCLE_BRANCH
+            
+  build-dashboard-and-push:
+    machine:
+      image: ubuntu-1604:201903-01
+      docker_layer_caching: true
+    environment:
+      DOCKER_BUILDKIT: "1"
+    working_directory: ~/project
+    steps:
+      - run: *checkout
+      - run:
+          name: build docker image
+          no_output_timeout: 1h
+          command: |
+            TAG=${CIRCLE_SHA1%"${CIRCLE_SHA1#??????????}"}
+            SHORT_TAG=${CIRCLE_SHA1%"${CIRCLE_SHA1#???????}"}
+            docker login ${DOCKER_REGISTRY_HOSTNAME} -u ${DOCKER_REGISTRY_USER} -p ${DOCKER_REGISTRY_PASSWORD}
+            
+            # Build and push DASHBOARD
+            cd ~/project/packages/dashboard/
+            if ! docker image pull ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-dashboard:$TAG ; then
+              docker build --progress plain -t ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-dashboard:$TAG .
+              
+              docker tag ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-dashboard:$TAG ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-dashboard:$SHORT_TAG
+              docker push ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-dashboard:$TAG
+              docker push ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-dashboard:$SHORT_TAG
+            fi
+            docker tag ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-dashboard:$TAG ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-dashboard:$CIRCLE_BRANCH
+            docker push ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-dashboard:$CIRCLE_BRANCH
+workflows:
+    build-and-push:
+      jobs:
+        - build-director-and-push 
+        - build-api-and-push 
+        - build-dashboard-and-push 
