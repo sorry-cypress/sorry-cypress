@@ -73,5 +73,5 @@ export const getVideoUploadUrl = async (
   getUploadUrl({
     key: `${sanitizeS3KeyPrefix(S3_VIDEO_KEY_PREFIX)}${key}.mp4`,
     ContentType: VideoContentType,
-    Expires: 90,
+    Expires: FILES_EXPIRATION,
   });
