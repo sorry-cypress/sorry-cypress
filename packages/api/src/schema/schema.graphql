@@ -7,7 +7,7 @@ enum OrderingOptions {
 
 type Query {
   runs(orderDirection: OrderingOptions = DESC, cursor: String = null): [Run]!
-  runFeed(cursor: String): RunFeed!
+  runFeed(cursor: String, branch: String): RunFeed!
   run(id: ID!): Run
   instance(id: ID!): Instance
 }

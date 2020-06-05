@@ -11,9 +11,9 @@ export const resolvers = {
     ) => dataSources.runsAPI.getAllRuns({ orderDirection }),
     runFeed: (
       _,
-      { cursor }: { cursor?: string },
+      { cursor, branch }: { cursor?: string; branch?: string },
       { dataSources }: { dataSources: AppDatasources }
-    ) => dataSources.runsAPI.getRunFeed({ cursor: cursor || false }),
+    ) => dataSources.runsAPI.getRunFeed({ cursor: cursor || false, branch: branch || null }),
     run: (
       _,
       { id }: { id: string },

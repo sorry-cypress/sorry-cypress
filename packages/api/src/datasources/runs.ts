@@ -37,6 +37,12 @@ const matchRunAggregation = (runId: string) => ({
   },
 });
 
+const matchBranchAggregation = (branch: string) => ({
+  $match: {
+    'meta.commit.branch': branch,
+  },
+});
+
 const getSortByAggregation = (direction = 'DESC') => ({
   $sort: {
     _id: direction === 'DESC' ? -1 : 1,
@@ -74,7 +80,7 @@ export class RunsAPI extends DataSource {
     await init();
   }
 
-  async getRunFeed({ cursor }) {
+  async getRunFeed({ cursor, branch }) {
     const aggregationPipeline = [
       getSortByAggregation(),
       cursor
@@ -83,6 +89,9 @@ export class RunsAPI extends DataSource {
               _id: { $lt: new ObjectID(cursor) },
             },
           }
+        : null,
+      branch
+        ? matchBranchAggregation(branch)
         : null,
       {
         // get one extra to know if there's more

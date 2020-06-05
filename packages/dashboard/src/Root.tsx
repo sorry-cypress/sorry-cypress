@@ -8,6 +8,7 @@ import { theme } from './theme/theme';
 
 import { Header } from './components/layout/header';
 import { Content } from './components/layout/content';
+import Filter from "./components/layout/filter";
 
 import { RunsView } from './views/RunsView';
 import { RunDetailsView } from './views/RunDetailsView';
@@ -60,6 +61,7 @@ export const Root = () => {
           <ErrorBoundary>
             <Header />
             <Content>
+              <Filter />
               <Route path="/" exact component={RunsView} />
               <Route path="/run/:id" component={RunDetailsView} />
               <Route

@@ -3,6 +3,7 @@ import { RunSummary } from '../components/run/summary';
 import { useGetRunsFeedQuery } from '../generated/graphql';
 import { Button } from 'bold-ui';
 import { useApolloClient } from '@apollo/react-hooks';
+import { useLocation } from 'react-router-dom';
 
 export function RunsView() {
   const apollo = useApolloClient();
@@ -13,9 +14,13 @@ export function RunsView() {
     },
   });
 
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search?.substring(1));
+
   const { fetchMore, loading, error, data } = useGetRunsFeedQuery({
     variables: {
       cursor: '',
+      branch: searchParams.get('branch')
     },
   });
 
@@ -48,14 +53,12 @@ export function RunsView() {
   if (!runFeed.runs.length) {
     return (
       <div>
-        Welcome to Sorry Cypress! Your tests runs will appears here.{' '}
+        Pas de résultats.{' '}
         <a
-          href="https://github.com/agoldis/sorry-cypress"
+          href="https://github.com/padoa/sorry-cypress"
           target="_blank"
           rel="noopener noreferrer"
-        >
-          Documentation
-        </a>
+        >Documentation</a>
       </div>
     );
   }
