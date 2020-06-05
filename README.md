@@ -151,6 +151,13 @@ Use this CLI one-liner to change cypress configuration (courtesy of [@MeStrak](h
 > sed -i -e 's|api_url:.*$|api_url: "https://sorry-cypress-demo-director.herokuapp.com/"|g' /*/.cache/Cypress/*/Cypress/resources/app/packages/server/config/app.yml
 ```
 
+Or for windows (by [@nickcox](https://github.com/nickcox)): 
+
+```powershell
+ls $env:LOCALAPPDATA/Cypress/Cache -Recurse -Filter app.yml |
+% { (Get-Content $_ -Raw) -replace "https://api.cypress.io/", "https://sorry-cypress-demo-director.herokuapp.com/" | Out-File $_ }
+```
+
 #### Using sorry-cypress wrapper
 
 Thanks [@janineahn](https://github.com/janineahn) and [@redaxmedia](https://github.com/redaxmedia) for this contribution!
