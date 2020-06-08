@@ -65,6 +65,7 @@ export const getImageUploadUrl = async (
 ): Promise<AssetUploadInstruction> =>
   getUploadUrl({
     key: `${sanitizeS3KeyPrefix(S3_IMAGE_KEY_PREFIX)}${key}.png`,
+    Expires: FILES_EXPIRATION,
   });
 
 export const getVideoUploadUrl = async (
