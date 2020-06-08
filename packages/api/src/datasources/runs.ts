@@ -1,7 +1,7 @@
 import { getMongoDB, init, ObjectID } from '@src/lib/mongo';
 import { DataSource } from 'apollo-datasource';
 
-const PAGE_LIMIT = 5;
+const PAGE_LIMIT = 50;
 const mergeRunSpecs = (run) => {
   // merge fullspec into spec
   run.specs = run.specs.map((s) => ({
