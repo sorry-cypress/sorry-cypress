@@ -33,6 +33,7 @@ export const getUploadUrl = async ({
 }: GetUploadURLParams): Promise<S3SignedUploadResult> => {
   const s3ParamsRead = {
     Bucket: S3_BUCKET,
+    Expires,
     Key: key,
   };
 
