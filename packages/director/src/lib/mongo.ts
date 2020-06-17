@@ -1,4 +1,4 @@
-import mongodb from 'mongodb';
+import mongodb, { MongoClient } from 'mongodb';
 import { MONGODB_URI, MONGODB_DATABASE } from '@src/config';
 
 let db: mongodb.Db;
@@ -9,7 +9,10 @@ export const init = async () => {
     return;
   }
 
-  client = await mongodb.connect(MONGODB_URI, { useNewUrlParser: true });
+  client = new MongoClient(
+    `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@mongodb_sorry_cypress:27017/`
+  );
+  await client.connect();
   console.log('Successfully connected to MongoDB server');
 
   db = client.db(MONGODB_DATABASE);
