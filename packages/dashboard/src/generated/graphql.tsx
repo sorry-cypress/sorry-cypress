@@ -1,7 +1,10 @@
 import gql from 'graphql-tag';
 import * as ApolloReactCommon from '@apollo/react-common';
+import * as React from 'react';
+import * as ApolloReactComponents from '@apollo/react-components';
 import * as ApolloReactHooks from '@apollo/react-hooks';
 export type Maybe<T> = T | null;
+export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -436,6 +439,20 @@ export type DeleteRunMutationFn = ApolloReactCommon.MutationFunction<
   DeleteRunMutation,
   DeleteRunMutationVariables
 >;
+export type DeleteRunComponentProps = Omit<
+  ApolloReactComponents.MutationComponentOptions<
+    DeleteRunMutation,
+    DeleteRunMutationVariables
+  >,
+  'mutation'
+>;
+
+export const DeleteRunComponent = (props: DeleteRunComponentProps) => (
+  <ApolloReactComponents.Mutation<DeleteRunMutation, DeleteRunMutationVariables>
+    mutation={DeleteRunDocument}
+    {...props}
+  />
+);
 
 /**
  * __useDeleteRunMutation__
@@ -480,6 +497,20 @@ export const GetBranchesDocument = gql`
     branches
   }
 `;
+export type GetBranchesComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    GetBranchesQuery,
+    GetBranchesQueryVariables
+  >,
+  'query'
+>;
+
+export const GetBranchesComponent = (props: GetBranchesComponentProps) => (
+  <ApolloReactComponents.Query<GetBranchesQuery, GetBranchesQueryVariables>
+    query={GetBranchesDocument}
+    {...props}
+  />
+);
 
 /**
  * __useGetBranchesQuery__
@@ -579,6 +610,24 @@ export const GetInstanceDocument = gql`
     }
   }
 `;
+export type GetInstanceComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    GetInstanceQuery,
+    GetInstanceQueryVariables
+  >,
+  'query'
+> &
+  (
+    | { variables: GetInstanceQueryVariables; skip?: boolean }
+    | { skip: boolean }
+  );
+
+export const GetInstanceComponent = (props: GetInstanceComponentProps) => (
+  <ApolloReactComponents.Query<GetInstanceQuery, GetInstanceQueryVariables>
+    query={GetInstanceDocument}
+    {...props}
+  />
+);
 
 /**
  * __useGetInstanceQuery__
@@ -669,6 +718,21 @@ export const GetRunDocument = gql`
     }
   }
 `;
+export type GetRunComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    GetRunQuery,
+    GetRunQueryVariables
+  >,
+  'query'
+> &
+  ({ variables: GetRunQueryVariables; skip?: boolean } | { skip: boolean });
+
+export const GetRunComponent = (props: GetRunComponentProps) => (
+  <ApolloReactComponents.Query<GetRunQuery, GetRunQueryVariables>
+    query={GetRunDocument}
+    {...props}
+  />
+);
 
 /**
  * __useGetRunQuery__
@@ -748,6 +812,20 @@ export const GetRunsFeedDocument = gql`
     }
   }
 `;
+export type GetRunsFeedComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    GetRunsFeedQuery,
+    GetRunsFeedQueryVariables
+  >,
+  'query'
+>;
+
+export const GetRunsFeedComponent = (props: GetRunsFeedComponentProps) => (
+  <ApolloReactComponents.Query<GetRunsFeedQuery, GetRunsFeedQueryVariables>
+    query={GetRunsFeedDocument}
+    {...props}
+  />
+);
 
 /**
  * __useGetRunsFeedQuery__

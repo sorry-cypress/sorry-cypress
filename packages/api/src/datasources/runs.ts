@@ -136,6 +136,19 @@ export class RunsAPI extends DataSource {
     return runFeedReducer(results);
   }
 
+  async getBranches() {
+    const result = await (
+      await getMongoDB()
+        .collection('runs')
+        .aggregate([
+          { $group: { _id: '$meta.commit.branch' } },
+          { $project: { _id: true } },
+        ])
+    ).toArray();
+
+    return result.map((item) => item._id);
+  }
+
   async getAllRuns({ orderDirection }) {
     const aggregationPipeline = [
       getSortByAggregation(orderDirection),

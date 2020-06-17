@@ -66,6 +66,9 @@ export const resolvers = {
       { id }: { id: string },
       { dataSources }: { dataSources: AppDatasources }
     ) => dataSources.instancesAPI.getInstanceById(id),
+
+    branches: (_, args, { dataSources }: { dataSources: AppDatasources }) =>
+      dataSources.runsAPI.getBranches(),
   },
   Mutation: {
     deleteRun: async (
