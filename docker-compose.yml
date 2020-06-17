@@ -2,9 +2,15 @@ version: '3.6'
 
 services:
   mongo:
+    container_name: mongodb_sorry_cypress
     image: mongo:4.0
     ports:
       - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: DUMMY
+      MONGO_INITDB_ROOT_PASSWORD: DUMMY
+    volumes:
+      - mongodbdata:/data/db
 
   api:
     image: registry.padoa.fr/padoa/sorry-cypress-api:latest
@@ -33,6 +39,8 @@ services:
       FILES_EXPIRATION: 604800
       AWS_ACCESS_KEY_ID: DUMMY
       AWS_SECRET_ACCESS_KEY: DUMMY
+      MONGO_USERNAME: DUMMY
+      MONGO_PASSWORD: DUMMY
     ports:
       - 1234:1234
     volumes:
@@ -53,3 +61,5 @@ services:
     depends_on:
       - mongo
       - api
+volumes:
+  mongodbdata:
