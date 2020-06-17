@@ -2,8 +2,14 @@ query getRunsFeed($cursor: String, $branch: String) {
   runFeed(cursor: $cursor, branch: $branch) {
     cursor
     hasMore
-    builds {
-      buildId
+    runs {
+      tests
+      failures
+      passes
+      pending
+      skipped
+      runId
+      createdAt
       meta {
         ciBuildId
         projectId
@@ -16,33 +22,10 @@ query getRunsFeed($cursor: String, $branch: String) {
           authorName
         }
       }
-      runs {
-        runId
-        createdAt
-        specs {
-          spec
-          instanceId
-          claimed
-          results {
-            cypressConfig {
-              video
-              videoUploadOnPasses
-            }
-            videoUrl
-            tests {
-              title
-              state
-            }
-            stats {
-              tests
-              pending
-              passes
-              failures
-              skipped
-              suites
-            }
-          }
-        }
+      specs {
+        spec
+        instanceId
+        claimed
       }
     }
   }

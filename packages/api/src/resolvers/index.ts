@@ -3,12 +3,38 @@ import { AppDatasources } from '@src/datasources/types';
 
 export const resolvers = {
   DateTime: GraphQLDateTime,
-  Build: {
-    buildId: (parent) => parent._id,
-    meta: (parent) => parent.runs.length &&  parent.runs[0].meta,
-  },
-  RunFeed: {
-    builds: (parent) => parent.runs,
+  Run: {
+    runId: (parent) => parent._id,
+    tests: (parent) => {
+      return parent.specs.reduce((acc, spec) => {
+        if (!spec.results) return acc;
+        return acc + (spec.results.stats.tests || 0);
+      }, 0);
+    },
+    failures: (parent) => {
+      return parent.specs.reduce((acc, spec) => {
+        if (!spec.results) return acc;
+        return acc + (spec.results.stats.failures || 0);
+      }, 0);
+    },
+    passes: (parent) => {
+      return parent.specs.reduce((acc, spec) => {
+        if (!spec.results) return acc;
+        return acc + (spec.results.stats.passes || 0);
+      }, 0);
+    },
+    pending: (parent) => {
+      return parent.specs.reduce((acc, spec) => {
+        if (!spec.results) return acc;
+        return acc + (spec.results.stats.pending || 0);
+      }, 0);
+    },
+    skipped: (parent) => {
+      return parent.specs.reduce((acc, spec) => {
+        if (!spec.results) return acc;
+        return acc + (spec.results.stats.skipped || 0);
+      }, 0);
+    },
   },
   Query: {
     runs: (
@@ -21,15 +47,20 @@ export const resolvers = {
       { cursor, branch }: { cursor?: string; branch?: string },
       { dataSources }: { dataSources: AppDatasources }
     ) => {
-      const res = await dataSources.runsAPI.getRunFeed({ cursor: cursor || false, branch: branch || null })
-      console.log(JSON.stringify(res, null, 2));
+      const res = await dataSources.runsAPI.getRunFeed({
+        cursor: cursor || false,
+        branch: branch || null,
+      });
       return res;
     },
-    run: (
+    run: async (
       _,
       { id }: { id: string },
       { dataSources }: { dataSources: AppDatasources }
-    ) => dataSources.runsAPI.getRunById(id),
+    ) => {
+      const res = await dataSources.runsAPI.getRunById(id);
+      return res;
+    },
     instance: (
       _,
       { id }: { id: string },

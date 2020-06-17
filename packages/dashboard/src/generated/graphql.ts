@@ -12,14 +12,6 @@ export type Scalars = {
   DateTime: any;
 };
 
-export type Build = {
-  __typename?: 'Build';
-  buildId: Scalars['ID'];
-  agents: Scalars['Int'];
-  meta?: Maybe<RunMeta>;
-  runs: Array<Run>;
-};
-
 export type Commit = {
   __typename?: 'Commit';
   sha?: Maybe<Scalars['String']>;
@@ -184,14 +176,19 @@ export type Run = {
   runId: Scalars['ID'];
   createdAt: Scalars['DateTime'];
   meta?: Maybe<RunMeta>;
-  specs: Array<Maybe<FullRunSpec>>;
+  specs?: Maybe<Array<Maybe<FullRunSpec>>>;
+  tests: Scalars['Int'];
+  failures: Scalars['Int'];
+  passes: Scalars['Int'];
+  pending: Scalars['Int'];
+  skipped: Scalars['Int'];
 };
 
 export type RunFeed = {
   __typename?: 'RunFeed';
   cursor: Scalars['String'];
   hasMore: Scalars['Boolean'];
-  builds: Array<Build>;
+  runs: Array<Run>;
 };
 
 export type RunMeta = {
@@ -322,43 +319,45 @@ export type GetRunQuery = { __typename?: 'Query' } & {
               >;
             }
         >;
-        specs: Array<
-          Maybe<
-            { __typename?: 'FullRunSpec' } & Pick<
-              FullRunSpec,
-              'spec' | 'instanceId' | 'claimed'
-            > & {
-                results?: Maybe<
-                  { __typename?: 'InstanceResults' } & Pick<
-                    InstanceResults,
-                    'videoUrl'
-                  > & {
-                      cypressConfig?: Maybe<
-                        { __typename?: 'CypressConfig' } & Pick<
-                          CypressConfig,
-                          'video' | 'videoUploadOnPasses'
-                        >
-                      >;
-                      tests: Array<
-                        Maybe<
-                          { __typename?: 'InstanceTest' } & Pick<
-                            InstanceTest,
-                            'title' | 'state'
+        specs?: Maybe<
+          Array<
+            Maybe<
+              { __typename?: 'FullRunSpec' } & Pick<
+                FullRunSpec,
+                'spec' | 'instanceId' | 'claimed'
+              > & {
+                  results?: Maybe<
+                    { __typename?: 'InstanceResults' } & Pick<
+                      InstanceResults,
+                      'videoUrl'
+                    > & {
+                        cypressConfig?: Maybe<
+                          { __typename?: 'CypressConfig' } & Pick<
+                            CypressConfig,
+                            'video' | 'videoUploadOnPasses'
                           >
-                        >
-                      >;
-                      stats: { __typename?: 'InstanceStats' } & Pick<
-                        InstanceStats,
-                        | 'tests'
-                        | 'pending'
-                        | 'passes'
-                        | 'failures'
-                        | 'skipped'
-                        | 'suites'
-                      >;
-                    }
-                >;
-              }
+                        >;
+                        tests: Array<
+                          Maybe<
+                            { __typename?: 'InstanceTest' } & Pick<
+                              InstanceTest,
+                              'title' | 'state'
+                            >
+                          >
+                        >;
+                        stats: { __typename?: 'InstanceStats' } & Pick<
+                          InstanceStats,
+                          | 'tests'
+                          | 'pending'
+                          | 'passes'
+                          | 'failures'
+                          | 'skipped'
+                          | 'suites'
+                        >;
+                      }
+                  >;
+                }
+            >
           >
         >;
       }
@@ -372,8 +371,17 @@ export type GetRunsFeedQueryVariables = {
 
 export type GetRunsFeedQuery = { __typename?: 'Query' } & {
   runFeed: { __typename?: 'RunFeed' } & Pick<RunFeed, 'cursor' | 'hasMore'> & {
-      builds: Array<
-        { __typename?: 'Build' } & Pick<Build, 'buildId'> & {
+      runs: Array<
+        { __typename?: 'Run' } & Pick<
+          Run,
+          | 'tests'
+          | 'failures'
+          | 'passes'
+          | 'pending'
+          | 'skipped'
+          | 'runId'
+          | 'createdAt'
+        > & {
             meta?: Maybe<
               { __typename?: 'RunMeta' } & Pick<
                 RunMeta,
@@ -392,48 +400,15 @@ export type GetRunsFeedQuery = { __typename?: 'Query' } & {
                   >;
                 }
             >;
-            runs: Array<
-              { __typename?: 'Run' } & Pick<Run, 'runId' | 'createdAt'> & {
-                  specs: Array<
-                    Maybe<
-                      { __typename?: 'FullRunSpec' } & Pick<
-                        FullRunSpec,
-                        'spec' | 'instanceId' | 'claimed'
-                      > & {
-                          results?: Maybe<
-                            { __typename?: 'InstanceResults' } & Pick<
-                              InstanceResults,
-                              'videoUrl'
-                            > & {
-                                cypressConfig?: Maybe<
-                                  { __typename?: 'CypressConfig' } & Pick<
-                                    CypressConfig,
-                                    'video' | 'videoUploadOnPasses'
-                                  >
-                                >;
-                                tests: Array<
-                                  Maybe<
-                                    { __typename?: 'InstanceTest' } & Pick<
-                                      InstanceTest,
-                                      'title' | 'state'
-                                    >
-                                  >
-                                >;
-                                stats: { __typename?: 'InstanceStats' } & Pick<
-                                  InstanceStats,
-                                  | 'tests'
-                                  | 'pending'
-                                  | 'passes'
-                                  | 'failures'
-                                  | 'skipped'
-                                  | 'suites'
-                                >;
-                              }
-                          >;
-                        }
-                    >
-                  >;
-                }
+            specs?: Maybe<
+              Array<
+                Maybe<
+                  { __typename?: 'FullRunSpec' } & Pick<
+                    FullRunSpec,
+                    'spec' | 'instanceId' | 'claimed'
+                  >
+                >
+              >
             >;
           }
       >;
@@ -685,8 +660,14 @@ export const GetRunsFeedDocument = gql`
     runFeed(cursor: $cursor, branch: $branch) {
       cursor
       hasMore
-      builds {
-        buildId
+      runs {
+        tests
+        failures
+        passes
+        pending
+        skipped
+        runId
+        createdAt
         meta {
           ciBuildId
           projectId
@@ -699,33 +680,10 @@ export const GetRunsFeedDocument = gql`
             authorName
           }
         }
-        runs {
-          runId
-          createdAt
-          specs {
-            spec
-            instanceId
-            claimed
-            results {
-              cypressConfig {
-                video
-                videoUploadOnPasses
-              }
-              videoUrl
-              tests {
-                title
-                state
-              }
-              stats {
-                tests
-                pending
-                passes
-                failures
-                skipped
-                suites
-              }
-            }
-          }
+        specs {
+          spec
+          instanceId
+          claimed
         }
       }
     }

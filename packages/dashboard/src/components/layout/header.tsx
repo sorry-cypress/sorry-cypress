@@ -26,8 +26,8 @@ export const Header: React.FC = () => {
       `}
     >
       <Breadcrumbs>
-        <Link to="/">All Runs</Link>
-        {data.navStructure.map(navItem => (
+        <Link to="/?branch=">All Runs</Link>
+        {data.navStructure.map((navItem) => (
           <Link key={navItem.link} to={`/${navItem.link}`}>
             {truncate(navItem.label)}
           </Link>

@@ -43,17 +43,14 @@ export function RunsView() {
             __typename: prev.runFeed.__typename,
             hasMore: fetchMoreResult!.runFeed.hasMore,
             cursor: fetchMoreResult!.runFeed.cursor,
-            builds: [
-              ...prev.runFeed.builds,
-              ...fetchMoreResult!.runFeed.builds,
-            ],
+            runs: [...prev.runFeed.runs, ...fetchMoreResult!.runFeed.runs],
           },
         };
       },
     });
   }
 
-  if (!runFeed.builds.length) {
+  if (!runFeed.runs.length) {
     return (
       <div>
         Pas de résultats.{' '}
@@ -69,14 +66,9 @@ export function RunsView() {
   }
   return (
     <>
-      {runFeed.builds.map((build) => (
-        <div key={build.buildId}>
-          Display meta here
-          {build.runs.map((run) => (
-            <>
-              <RunSummary key={run.runId} run={run} />
-            </>
-          ))}
+      {runFeed.runs.map((run) => (
+        <div key={run.runId}>
+          <RunSummary run={run} />
         </div>
       ))}
       {runFeed.hasMore && <Button onClick={loadMore}>Load More</Button>}
