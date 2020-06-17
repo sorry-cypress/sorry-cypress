@@ -98,9 +98,9 @@ type PartialRun {
 type Build {
   buildId: ID!
   agents: Int!
-#  createdAt: DateTime!
+  #  createdAt: DateTime!
   meta: RunMeta
-  runs: [Run]!
+  runs: [Run!]!
 }
 
 type Run {

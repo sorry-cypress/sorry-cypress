@@ -20,7 +20,7 @@ export function RunsView() {
   const { fetchMore, loading, error, data } = useGetRunsFeedQuery({
     variables: {
       cursor: '',
-      branch: searchParams.get('branch')
+      branch: searchParams.get('branch'),
     },
   });
 
@@ -43,14 +43,17 @@ export function RunsView() {
             __typename: prev.runFeed.__typename,
             hasMore: fetchMoreResult!.runFeed.hasMore,
             cursor: fetchMoreResult!.runFeed.cursor,
-            runs: [...prev.runFeed.runs, ...fetchMoreResult!.runFeed.runs],
+            builds: [
+              ...prev.runFeed.builds,
+              ...fetchMoreResult!.runFeed.builds,
+            ],
           },
         };
       },
     });
   }
 
-  if (!runFeed.runs.length) {
+  if (!runFeed.builds.length) {
     return (
       <div>
         Pas de résultats.{' '}
@@ -58,15 +61,22 @@ export function RunsView() {
           href="https://github.com/padoa/sorry-cypress"
           target="_blank"
           rel="noopener noreferrer"
-        >Documentation</a>
+        >
+          Documentation
+        </a>
       </div>
     );
   }
   return (
     <>
-      {runFeed.runs.map((run) => (
-        <div key={run.runId}>
-          <RunSummary run={run} />
+      {runFeed.builds.map((build) => (
+        <div key={build.buildId}>
+          Display meta here
+          {build.runs.map((run) => (
+            <>
+              <RunSummary key={run.runId} run={run} />
+            </>
+          ))}
         </div>
       ))}
       {runFeed.hasMore && <Button onClick={loadMore}>Load More</Button>}

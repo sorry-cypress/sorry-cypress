@@ -6,17 +6,17 @@ services:
     ports:
       - 27017:27017
 
-  api:
-    image: registry.padoa.fr/padoa/sorry-cypress-api:latest
-    build:
-      context: $PWD/packages/api
-      dockerfile: Dockerfile
-    ports:
-      - 4000:4000
-    volumes:
-      - $PWD/packages/api/src:/app/src
-    depends_on:
-      - mongo
+  # api:
+  # image: registry.padoa.fr/padoa/sorry-cypress-api:latest
+  # build:
+  #   context: $PWD/packages/api
+  #   dockerfile: Dockerfile
+  # ports:
+  #   - 4000:4000
+  # volumes:
+  #   - $PWD/packages/api/src:/app/src
+  # depends_on:
+  #   - mongo
 
   director:
     image: registry.padoa.fr/padoa/sorry-cypress-director:latest
@@ -40,16 +40,15 @@ services:
       - $PWD/packages/director/config:/app/config
     depends_on:
       - mongo
-
-  dashboard:
-    image: registry.padoa.fr/padoa/sorry-cypress-dashboard:latest
-    build:
-      context: $PWD/packages/dashboard
-      dockerfile: Dockerfile
-    environment:
-      GRAPHQL_SCHEMA_URL: http://localhost:4000
-    ports:
-      - 8080:8080
-    depends_on:
-      - mongo
-      - api
+  # dashboard:
+  #   image: registry.padoa.fr/padoa/sorry-cypress-dashboard:latest
+  #   build:
+  #     context: $PWD/packages/dashboard
+  #     dockerfile: Dockerfile
+  #   environment:
+  #     GRAPHQL_SCHEMA_URL: http://localhost:4000
+  #   ports:
+  #     - 8080:8080
+  #   depends_on:
+  #     - mongo
+  #     # - api
