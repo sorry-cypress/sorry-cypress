@@ -3,17 +3,28 @@ import { AppDatasources } from '@src/datasources/types';
 
 export const resolvers = {
   DateTime: GraphQLDateTime,
+  Build: {
+    buildId: (parent) => parent._id,
+    meta: (parent) => parent.runs.length &&  parent.runs[0].meta,
+  },
+  RunFeed: {
+    builds: (parent) => parent.runs,
+  },
   Query: {
     runs: (
       _,
       { orderDirection }: { orderDirection: any },
       { dataSources }: { dataSources: AppDatasources }
     ) => dataSources.runsAPI.getAllRuns({ orderDirection }),
-    runFeed: (
+    runFeed: async (
       _,
       { cursor, branch }: { cursor?: string; branch?: string },
       { dataSources }: { dataSources: AppDatasources }
-    ) => dataSources.runsAPI.getRunFeed({ cursor: cursor || false, branch: branch || null }),
+    ) => {
+      const res = await dataSources.runsAPI.getRunFeed({ cursor: cursor || false, branch: branch || null })
+      console.log(JSON.stringify(res, null, 2));
+      return res;
+    },
     run: (
       _,
       { id }: { id: string },

@@ -12,6 +12,14 @@ export type Scalars = {
   DateTime: any;
 };
 
+export type Build = {
+   __typename?: 'Build';
+  buildId: Scalars['ID'];
+  createdAt: Scalars['DateTime'];
+  meta?: Maybe<RunMeta>;
+  runs: Array<Maybe<Run>>;
+};
+
 export type Commit = {
    __typename?: 'Commit';
   sha?: Maybe<Scalars['String']>;

@@ -15,7 +15,7 @@ type Query {
 type RunFeed {
   cursor: String!
   hasMore: Boolean!
-  runs: [Run!]!
+  builds: [Build!]!
 }
 
 type Instance {
@@ -93,6 +93,14 @@ type PartialRun {
   createdAt: DateTime!
   meta: RunMeta
   specs: [RunSpec]!
+}
+
+type Build {
+  buildId: ID!
+  agents: Int!
+#  createdAt: DateTime!
+  meta: RunMeta
+  runs: [Run]!
 }
 
 type Run {

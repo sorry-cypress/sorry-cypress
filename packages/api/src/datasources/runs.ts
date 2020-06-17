@@ -1,13 +1,13 @@
 import { getMongoDB, init, ObjectID } from '@src/lib/mongo';
 import { DataSource } from 'apollo-datasource';
 
-const PAGE_LIMIT = 50;
+const PAGE_LIMIT = 2;
 const mergeRunSpecs = (run) => {
   // merge fullspec into spec
-  run.specs = run.specs.map((s) => ({
-    ...s,
-    ...(run.specsFull.find((full) => full.instanceId === s.instanceId) || {}),
-  }));
+  // run.specs = run.specs.map((s) => ({
+  //   ...s,
+  //   ...(run.specsFull.find((full) => full.instanceId === s.instanceId) || {}),
+  // }));
   return run;
 };
 
@@ -66,6 +66,22 @@ const projectAggregation = {
   },
 };
 
+const groupAggregation = {
+  $group: {
+    _id: '$meta.ciBuildId',
+    agents: {$sum: 1},
+    runs: {
+      $push: {
+        _id: '$_id',
+        runId: '$runId',
+        meta: '$meta',
+        specs: '$specs',
+        createdAt: '$createdAt',
+      }
+    }
+  },
+};
+
 const lookupAggregation = {
   $lookup: {
     from: 'instances',
@@ -82,6 +98,7 @@ export class RunsAPI extends DataSource {
 
   async getRunFeed({ cursor, branch }) {
     const aggregationPipeline = [
+      groupAggregation,
       getSortByAggregation(),
       cursor
         ? {
@@ -97,8 +114,8 @@ export class RunsAPI extends DataSource {
         // get one extra to know if there's more
         $limit: PAGE_LIMIT + 1,
       },
-      projectAggregation,
-      lookupAggregation,
+      // projectAggregation,
+      // lookupAggregation,
     ].filter((i) => !!i);
 
     const results = await (

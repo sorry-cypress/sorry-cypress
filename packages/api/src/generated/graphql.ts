@@ -11,6 +11,14 @@ export type Scalars = {
   DateTime: any;
 };
 
+export type Build = {
+   __typename?: 'Build';
+  buildId: Scalars['ID'];
+  agents: Scalars['Int'];
+  meta?: Maybe<RunMeta>;
+  runs: Array<Maybe<Run>>;
+};
+
 export type Commit = {
    __typename?: 'Commit';
   sha?: Maybe<Scalars['String']>;
@@ -190,7 +198,7 @@ export type RunFeed = {
    __typename?: 'RunFeed';
   cursor: Scalars['String'];
   hasMore: Scalars['Boolean'];
-  runs: Array<Run>;
+  builds: Array<Build>;
 };
 
 export type RunMeta = {
@@ -299,6 +307,7 @@ export type ResolversTypes = {
   CypressConfig: ResolverTypeWrapper<CypressConfig>,
   ReporterStats: ResolverTypeWrapper<ReporterStats>,
   RunFeed: ResolverTypeWrapper<RunFeed>,
+  Build: ResolverTypeWrapper<Build>,
   Instance: ResolverTypeWrapper<Instance>,
   PartialRun: ResolverTypeWrapper<PartialRun>,
   RunSpec: ResolverTypeWrapper<RunSpec>,
@@ -326,11 +335,20 @@ export type ResolversParentTypes = {
   CypressConfig: CypressConfig,
   ReporterStats: ReporterStats,
   RunFeed: RunFeed,
+  Build: Build,
   Instance: Instance,
   PartialRun: PartialRun,
   RunSpec: RunSpec,
   Mutation: {},
   DeleteRunResponse: DeleteRunResponse,
+};
+
+export type BuildResolvers<ContextType = any, ParentType extends ResolversParentTypes['Build'] = ResolversParentTypes['Build']> = {
+  buildId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
+  agents?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
+  meta?: Resolver<Maybe<ResolversTypes['RunMeta']>, ParentType, ContextType>,
+  runs?: Resolver<Array<Maybe<ResolversTypes['Run']>>, ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
 export type CommitResolvers<ContextType = any, ParentType extends ResolversParentTypes['Commit'] = ResolversParentTypes['Commit']> = {
@@ -469,7 +487,7 @@ export type RunResolvers<ContextType = any, ParentType extends ResolversParentTy
 export type RunFeedResolvers<ContextType = any, ParentType extends ResolversParentTypes['RunFeed'] = ResolversParentTypes['RunFeed']> = {
   cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   hasMore?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
-  runs?: Resolver<Array<ResolversTypes['Run']>, ParentType, ContextType>,
+  builds?: Resolver<Array<ResolversTypes['Build']>, ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
@@ -489,6 +507,7 @@ export type RunSpecResolvers<ContextType = any, ParentType extends ResolversPare
 };
 
 export type Resolvers<ContextType = any> = {
+  Build?: BuildResolvers<ContextType>,
   Commit?: CommitResolvers<ContextType>,
   CypressConfig?: CypressConfigResolvers<ContextType>,
   DateTime?: GraphQLScalarType,
