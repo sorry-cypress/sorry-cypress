@@ -20,7 +20,7 @@ export function RunsView() {
   const { fetchMore, loading, error, data } = useGetRunsFeedQuery({
     variables: {
       cursor: '',
-      branch: searchParams.get('branch')
+      branch: searchParams.get('branch'),
     },
   });
 
@@ -58,7 +58,9 @@ export function RunsView() {
           href="https://github.com/padoa/sorry-cypress"
           target="_blank"
           rel="noopener noreferrer"
-        >Documentation</a>
+        >
+          Documentation
+        </a>
       </div>
     );
   }

@@ -1,0 +1,30 @@
+version: '3.6'
+
+services:
+  mongo:
+    image: mongo:4.0
+    ports:
+      - 27017:27017
+
+  director:
+    image: registry.padoa.fr/padoa/sorry-cypress-director:latest
+    build:
+      context: $PWD/packages/director
+      dockerfile: Dockerfile
+    environment:
+      DASHBOARD_URL: http://localhost:8080
+      EXECUTION_DRIVER: '../execution/mongo/driver'
+      SCREENSHOTS_DRIVER: '../screenshots/s3.driver'
+      S3_BUCKET: sorry-cypress
+      S3_REGION: 'eu-west-1'
+      S3_READ_URL_PREFIX: 'https://storage-eb4.cegedim.cloud'
+      FILES_EXPIRATION: 604800
+      AWS_ACCESS_KEY_ID: DUMMY
+      AWS_SECRET_ACCESS_KEY: DUMMY
+    ports:
+      - 1234:1234
+    volumes:
+      - $PWD/packages/director/src:/app/src
+      - $PWD/packages/director/config:/app/config
+    depends_on:
+      - mongo

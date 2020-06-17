@@ -20,7 +20,7 @@ export function RunDetails({ run }: RunDetailsProps): React.ReactNode {
       <HFlow justifyContent="space-between">
         <strong>Spec files</strong>
         <Switch
-          label="Hide successful specs"
+          label="Show successful specs"
           onChange={() => setHidePassedSpecs(!isPassedHidden)}
         />
       </HFlow>
@@ -28,7 +28,7 @@ export function RunDetails({ run }: RunDetailsProps): React.ReactNode {
         {specs
           .filter((spec) => !!spec)
           .filter((spec) =>
-            isPassedHidden ? getSpecState(spec!) !== 'passed' : true
+            !isPassedHidden ? getSpecState(spec!) !== 'passed' : true
           )
           .map((spec) => (
             <li

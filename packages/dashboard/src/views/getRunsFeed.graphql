@@ -3,6 +3,11 @@ query getRunsFeed($cursor: String, $branch: String) {
     cursor
     hasMore
     runs {
+      tests
+      failures
+      passes
+      pending
+      skipped
       runId
       createdAt
       meta {
@@ -21,25 +26,6 @@ query getRunsFeed($cursor: String, $branch: String) {
         spec
         instanceId
         claimed
-        results {
-          cypressConfig {
-            video
-            videoUploadOnPasses
-          }
-          videoUrl
-          tests {
-            title
-            state
-          }
-          stats {
-            tests
-            pending
-            passes
-            failures
-            skipped
-            suites
-          }
-        }
       }
     }
   }

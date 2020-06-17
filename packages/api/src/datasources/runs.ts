@@ -1,9 +1,12 @@
 import { getMongoDB, init, ObjectID } from '@src/lib/mongo';
 import { DataSource } from 'apollo-datasource';
 
-const PAGE_LIMIT = 50;
+const PAGE_LIMIT = 5;
+const NB_RUNNER = 25;
+
 const mergeRunSpecs = (run) => {
   // merge fullspec into spec
+  console.log(run);
   run.specs = run.specs.map((s) => ({
     ...s,
     ...(run.specsFull.find((full) => full.instanceId === s.instanceId) || {}),
@@ -19,10 +22,10 @@ const getCursor = (runs) => {
   }
 
   if (runs.length > PAGE_LIMIT) {
-    return runs[runs.length - 2]._id;
+    return runs[runs.length - 2].lastRunId;
   }
 
-  return runs[runs.length - 1]._id;
+  return runs[runs.length - 1].lastRunId;
 };
 
 const runFeedReducer = (runs) => ({
@@ -33,7 +36,7 @@ const runFeedReducer = (runs) => ({
 
 const matchRunAggregation = (runId: string) => ({
   $match: {
-    runId,
+    'meta.ciBuildId': runId,
   },
 });
 
@@ -55,12 +58,34 @@ const projectAggregation = {
     runId: 1,
     meta: 1,
     specs: 1,
+    agents: 1,
     createdAt: 1,
+    lastRunId: 1,
     specsFull: {
       $map: {
         input: '$specs',
         as: 'spec',
         in: '$$spec.instanceId',
+      },
+    },
+  },
+};
+
+const unwindAggregation = { $unwind: '$specs' };
+
+const groupAggregation = {
+  $group: {
+    _id: '$meta.ciBuildId',
+    agents: { $sum: 1 },
+    meta: { $first: '$meta' },
+    specs: { $push: '$specs' },
+    createdAt: { $first: '$createdAt' },
+    instanceId: { $push: '$instanceId' },
+    lastRunId: { $last: '$_id' },
+    runs: {
+      $push: {
+        _id: '$_id',
+        runId: '$runId',
       },
     },
   },
@@ -83,6 +108,7 @@ export class RunsAPI extends DataSource {
   async getRunFeed({ cursor, branch }) {
     const aggregationPipeline = [
       getSortByAggregation(),
+      branch ? matchBranchAggregation(branch) : null,
       cursor
         ? {
             $match: {
@@ -90,9 +116,11 @@ export class RunsAPI extends DataSource {
             },
           }
         : null,
-      branch
-        ? matchBranchAggregation(branch)
-        : null,
+      {
+        $limit: PAGE_LIMIT * (NB_RUNNER + 1), // First selection
+      },
+      unwindAggregation,
+      groupAggregation,
       {
         // get one extra to know if there's more
         $limit: PAGE_LIMIT + 1,
@@ -106,6 +134,19 @@ export class RunsAPI extends DataSource {
     ).toArray();
 
     return runFeedReducer(results);
+  }
+
+  async getBranches() {
+    const result = await (
+      await getMongoDB()
+        .collection('runs')
+        .aggregate([
+          { $group: { _id: '$meta.commit.branch' } },
+          { $project: { _id: true } },
+        ])
+    ).toArray();
+
+    return result.map((item) => item._id);
   }
 
   async getAllRuns({ orderDirection }) {
@@ -128,6 +169,8 @@ export class RunsAPI extends DataSource {
       .collection('runs')
       .aggregate([
         matchRunAggregation(id),
+        unwindAggregation,
+        groupAggregation,
         projectAggregation,
         lookupAggregation,
       ]);
