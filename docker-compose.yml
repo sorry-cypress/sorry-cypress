@@ -2,7 +2,6 @@ version: '3.6'
 
 services:
   mongo:
-    container_name: mongodb_sorry_cypress
     image: mongo:4.0
     ports:
       - 27017:27017
