@@ -29,7 +29,7 @@ export const BranchesField = ({
       value={value}
       name="branches"
       openOnFocus={true}
-      onChange={onChange}
+      onChange={(value) => onChange(value ?? '')}
       placeholder="Select a value..."
     />
   );

@@ -41,7 +41,8 @@
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-router": "^5.1.2",
-    "react-router-dom": "^5.1.2"
+    "react-router-dom": "^5.1.2",
+    "react-infinite-scroller": "^1.2.4"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.3",
