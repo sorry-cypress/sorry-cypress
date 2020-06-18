@@ -1,5 +1,10 @@
 query getRun($runId: ID!) {
   run(id: $runId) {
+    tests
+    failures
+    passes
+    pending
+    skipped
     runId
     meta {
       ciBuildId

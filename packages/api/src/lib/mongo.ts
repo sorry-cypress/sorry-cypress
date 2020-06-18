@@ -10,9 +10,9 @@ export const init = async () => {
   if (db && client) {
     return;
   }
-  client = new MongoClient(
-    `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@mongo:27017/`
-  );
+  console.log({ MONGODB_URI });
+  client = new MongoClient(MONGODB_URI);
+  console.log();
   await client.connect();
   console.log('Successfully connected to MongoDB server');
 

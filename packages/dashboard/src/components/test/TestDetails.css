@@ -1,0 +1,3 @@
+.test-details div[role='alert'] > div {
+  overflow-x: auto;
+}
