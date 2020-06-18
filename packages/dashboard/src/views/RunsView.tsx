@@ -71,6 +71,7 @@ export function RunsView() {
         pageStart={0}
         loadMore={loadMore}
         hasMore={runFeed.hasMore}
+        threshold={500}
         loader={<div style={{ textAlign: 'center' }}>loading more 🚀</div>}
       >
         {runFeed.runs.map((run) => (

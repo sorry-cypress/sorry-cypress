@@ -99,6 +99,24 @@ const lookupAggregation = {
   },
 };
 
+const projectRestrictedAggregation = {
+  $project: {
+    _id: 1,
+    runId: 1,
+    meta: 1,
+    specs: 1,
+    agents: 1,
+    createdAt: 1,
+    lastRunId: 1,
+    specsFull: {
+      instanceId: 1,
+      results: {
+        stats: 1,
+      },
+    },
+  },
+};
+
 export class RunsAPI extends DataSource {
   async initialize() {
     await init();
@@ -126,6 +144,7 @@ export class RunsAPI extends DataSource {
       },
       projectAggregation,
       lookupAggregation,
+      projectRestrictedAggregation,
     ].filter((i) => !!i);
 
     const results = await (
