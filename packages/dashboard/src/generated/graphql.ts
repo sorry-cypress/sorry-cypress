@@ -308,7 +308,10 @@ export type GetRunQueryVariables = {
 
 export type GetRunQuery = { __typename?: 'Query' } & {
   run?: Maybe<
-    { __typename?: 'Run' } & Pick<Run, 'runId'> & {
+    { __typename?: 'Run' } & Pick<
+      Run,
+      'tests' | 'failures' | 'passes' | 'pending' | 'skipped' | 'runId'
+    > & {
         meta?: Maybe<
           { __typename?: 'RunMeta' } & Pick<
             RunMeta,
@@ -629,6 +632,11 @@ export type GetInstanceQueryResult = ApolloReactCommon.QueryResult<
 export const GetRunDocument = gql`
   query getRun($runId: ID!) {
     run(id: $runId) {
+      tests
+      failures
+      passes
+      pending
+      skipped
       runId
       meta {
         ciBuildId

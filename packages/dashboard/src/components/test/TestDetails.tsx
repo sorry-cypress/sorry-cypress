@@ -2,6 +2,7 @@ import React from 'react';
 import { Heading, useCss, Alert, HFlow } from 'bold-ui';
 import { Paper, TestState } from '../common';
 import { InstanceTest, InstanceScreeshot } from '../../generated/graphql';
+import './TestDetails.css';
 
 type TestDetailsProps = {
   test: InstanceTest;
@@ -15,7 +16,7 @@ export function TestDetails({
   const { css } = useCss();
   const title = test.title.join(' > ');
   return (
-    <>
+    <div className="test-details">
       <HFlow>
         <TestState state={test.state} />
         <Heading level={1}>{title}</Heading>
@@ -58,6 +59,6 @@ export function TestDetails({
           </a>
         </Paper>
       )}
-    </>
+    </div>
   );
 }

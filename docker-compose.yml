@@ -23,6 +23,8 @@ services:
       - $PWD/packages/api/src:/app/src
     depends_on:
       - mongo
+    environment:
+      MONGODB_URI: mongodb://DUMMY:DUMMY@mongo:27017
 
   director:
     image: registry.padoa.fr/padoa/sorry-cypress-director:latest

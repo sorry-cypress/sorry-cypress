@@ -6,7 +6,6 @@ const NB_RUNNER = 25;
 
 const mergeRunSpecs = (run) => {
   // merge fullspec into spec
-  console.log(run);
   run.specs = run.specs.map((s) => ({
     ...s,
     ...(run.specsFull.find((full) => full.instanceId === s.instanceId) || {}),

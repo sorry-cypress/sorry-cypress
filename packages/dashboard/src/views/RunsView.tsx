@@ -4,6 +4,7 @@ import { useGetRunsFeedQuery } from '../generated/graphql';
 import { Button } from 'bold-ui';
 import { useApolloClient } from '@apollo/react-hooks';
 import { useLocation } from 'react-router-dom';
+import InfiniteScroll from 'react-infinite-scroller';
 
 export function RunsView() {
   const apollo = useApolloClient();
@@ -66,12 +67,18 @@ export function RunsView() {
   }
   return (
     <>
-      {runFeed.runs.map((run) => (
-        <div key={run.runId}>
-          <RunSummary run={run} />
-        </div>
-      ))}
-      {runFeed.hasMore && <Button onClick={loadMore}>Load More</Button>}
+      <InfiniteScroll
+        pageStart={0}
+        loadMore={loadMore}
+        hasMore={runFeed.hasMore}
+        loader={<div style={{ textAlign: 'center' }}>loading more 🚀</div>}
+      >
+        {runFeed.runs.map((run) => (
+          <div key={run.runId}>
+            <RunSummary run={run} />
+          </div>
+        ))}
+      </InfiniteScroll>
     </>
   );
 }
