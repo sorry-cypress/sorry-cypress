@@ -71,11 +71,11 @@ export function RunsView() {
         pageStart={0}
         loadMore={loadMore}
         hasMore={runFeed.hasMore}
-        threshold={500}
+        threshold={0.7 * window.innerHeight}
         loader={<div style={{ textAlign: 'center' }}>loading more 🚀</div>}
       >
         {runFeed.runs.map((run) => (
-          <div key={run.runId}>
+          <div key={run.meta?.ciBuildId}>
             <RunSummary run={run} />
           </div>
         ))}

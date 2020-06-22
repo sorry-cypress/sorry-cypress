@@ -156,6 +156,7 @@ export function RunSummary({ run }: RunSummaryProps): React.ReactNode {
             </a>
           </h4>
           <h4>Author: {metaData.commitAuthor}</h4>
+          <h4>created at: {new Date(run.createdAt).toLocaleString()}</h4>
         </HFlow>
         <Grid>
           <Cell xs={12} md={6}>
