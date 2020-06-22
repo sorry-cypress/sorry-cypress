@@ -21,7 +21,7 @@ export function RunsView() {
   const { fetchMore, loading, error, data } = useGetRunsFeedQuery({
     variables: {
       cursor: '',
-      branch: searchParams.get('branch'),
+      branch: searchParams.get('branch') || 'master',
     },
   });
 

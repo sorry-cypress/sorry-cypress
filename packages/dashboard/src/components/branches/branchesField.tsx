@@ -24,12 +24,13 @@ export const BranchesField = ({
     <Select
       width="500px"
       error=""
+      clearable={false}
       items={branches}
       label={label}
       value={value}
       name="branches"
       openOnFocus={true}
-      onChange={(value) => onChange(value ?? '')}
+      onChange={(value) => onChange(value ?? 'master')}
       placeholder="Select a value..."
     />
   );

@@ -6,7 +6,7 @@ class Filter extends React.Component {
   constructor(props) {
     super(props);
     const searchParams = new URLSearchParams(props?.location?.search);
-    this.state = { branch: searchParams.get('branch') || '' };
+    this.state = { branch: searchParams.get('branch') || 'master' };
   }
 
   render() {
