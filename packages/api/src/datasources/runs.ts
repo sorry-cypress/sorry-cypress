@@ -1,8 +1,7 @@
-import { getMongoDB, init, ObjectID } from '@src/lib/mongo';
+import { getMongoDB, init } from '@src/lib/mongo';
 import { DataSource } from 'apollo-datasource';
 
-const PAGE_LIMIT = 5;
-const NB_RUNNER = 25;
+const PAGE_LIMIT = 10;
 
 const mergeRunSpecs = (run) => {
   // merge fullspec into spec
@@ -21,10 +20,10 @@ const getCursor = (runs) => {
   }
 
   if (runs.length > PAGE_LIMIT) {
-    return runs[runs.length - 2].lastRunId;
+    return runs[runs.length - 2].createdAt;
   }
 
-  return runs[runs.length - 1].lastRunId;
+  return runs[runs.length - 1].createdAt;
 };
 
 const runFeedReducer = (runs) => ({
@@ -47,7 +46,7 @@ const matchBranchAggregation = (branch: string) => ({
 
 const getSortByAggregation = (direction = 'DESC') => ({
   $sort: {
-    _id: direction === 'DESC' ? -1 : 1,
+    createdAt: direction === 'DESC' ? -1 : 1,
   },
 });
 
@@ -75,6 +74,7 @@ const unwindAggregation = { $unwind: '$specs' };
 const groupAggregation = {
   $group: {
     _id: '$meta.ciBuildId',
+    ciBuildId: { $first: '$meta.ciBuildId' },
     agents: { $sum: 1 },
     meta: { $first: '$meta' },
     specs: { $push: '$specs' },
@@ -123,32 +123,31 @@ export class RunsAPI extends DataSource {
   }
 
   async getRunFeed({ cursor, branch }) {
-    const aggregationPipeline = [
-      getSortByAggregation(),
-      branch ? matchBranchAggregation(branch) : null,
-      cursor
-        ? {
-            $match: {
-              _id: { $lt: new ObjectID(cursor) },
-            },
-          }
-        : null,
-      {
-        $limit: PAGE_LIMIT * (NB_RUNNER + 1), // First selection
-      },
-      unwindAggregation,
-      groupAggregation,
-      {
-        // get one extra to know if there's more
-        $limit: PAGE_LIMIT + 1,
-      },
-      projectAggregation,
-      lookupAggregation,
-      projectRestrictedAggregation,
-    ].filter((i) => !!i);
-
     const results = await (
-      await getMongoDB().collection('runs').aggregate(aggregationPipeline)
+      await getMongoDB()
+        .collection('runs')
+        .aggregate(
+          [
+            branch ? matchBranchAggregation(branch) : null,
+            unwindAggregation,
+            groupAggregation,
+            getSortByAggregation(),
+            cursor
+              ? {
+                  $match: {
+                    createdAt: { $lt: cursor },
+                  },
+                }
+              : null,
+            {
+              // get one extra to know if there's more
+              $limit: PAGE_LIMIT + 1,
+            },
+            projectAggregation,
+            lookupAggregation,
+            projectRestrictedAggregation,
+          ].filter((i) => !!i)
+        )
     ).toArray();
 
     return runFeedReducer(results);
