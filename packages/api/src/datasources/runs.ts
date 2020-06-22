@@ -2,6 +2,7 @@ import { getMongoDB, init } from '@src/lib/mongo';
 import { DataSource } from 'apollo-datasource';
 
 const PAGE_LIMIT = 10;
+const NB_RUNNER = 25;
 
 const mergeRunSpecs = (run) => {
   // merge fullspec into spec
@@ -123,15 +124,36 @@ export class RunsAPI extends DataSource {
   }
 
   async getRunFeed({ cursor, branch }) {
+    const cursorDate = new Date(cursor || Date.now());
+
     const results = await (
       await getMongoDB()
         .collection('runs')
         .aggregate(
           [
             branch ? matchBranchAggregation(branch) : null,
+            getSortByAggregation(),
+            // Preselect items
+            cursor
+              ? {
+                  $match: {
+                    createdAt: {
+                      $lt: new Date(
+                        cursorDate.setDate(cursorDate.getDate() + 1)
+                      ).toISOString(),
+                      $gt: new Date(
+                        cursorDate.setDate(cursorDate.getDate() - 6)
+                      ).toISOString(), // One week from cursor.
+                    },
+                  },
+                }
+              : null,
+            // Aggregation
             unwindAggregation,
             groupAggregation,
             getSortByAggregation(),
+
+            // Cursor
             cursor
               ? {
                   $match: {
