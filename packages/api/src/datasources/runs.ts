@@ -132,7 +132,6 @@ export class RunsAPI extends DataSource {
         .aggregate(
           [
             branch ? matchBranchAggregation(branch) : null,
-            getSortByAggregation(),
             // Preselect items
             cursor
               ? {
@@ -148,6 +147,7 @@ export class RunsAPI extends DataSource {
                   },
                 }
               : null,
+            getSortByAggregation(),
             // Aggregation
             unwindAggregation,
             groupAggregation,
