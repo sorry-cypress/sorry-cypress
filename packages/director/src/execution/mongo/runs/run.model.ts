@@ -39,7 +39,8 @@ export const setSpecClaimed = async (runId: string, instanceId: string) => {
       },
       {
         $set: {
-          'specs.$[spec].claimed': true
+          'specs.$[spec].claimed': true,
+          'specs.$[spec].claimedAt': new Date().toISOString()
         }
       },
       {

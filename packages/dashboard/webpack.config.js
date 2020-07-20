@@ -5,6 +5,7 @@ module.exports = {
   entry: {
     main: ['./src/index.tsx'],
   },
+  devtool: 'source-map',
   output: {
     publicPath: '/',
     jsonpScriptType: 'module',

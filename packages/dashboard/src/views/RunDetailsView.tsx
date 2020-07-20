@@ -20,6 +20,7 @@ export function RunDetailsView({
 
   const { loading, error, data } = useGetRunQuery({
     variables: { runId: id },
+    pollInterval: 1500,
   });
 
   if (loading) return <p>Loading...</p>;

@@ -17,6 +17,7 @@ export function RunsView() {
     variables: {
       cursor: '',
     },
+    pollInterval: 1500,
   });
 
   if (loading) return <p>Loading...</p>;
