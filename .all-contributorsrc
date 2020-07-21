@@ -23,9 +23,9 @@
       "contributions": [
         "code",
         "doc"
-
       ]
-      },{
+    },
+    {
       "login": "xtroncode",
       "name": "Meet Shah",
       "avatar_url": "https://avatars2.githubusercontent.com/u/3901381?v=4",
@@ -33,6 +33,7 @@
       "contributions": [
         "code",
         "doc"
+      ]
     },
     {
       "login": "abhidp",
@@ -42,8 +43,8 @@
       "contributions": [
         "code"
       ]
-  },
-  {
+    },
+    {
       "login": "TomaszG",
       "name": "TomaszG",
       "avatar_url": "https://avatars0.githubusercontent.com/u/873114?v=4",
@@ -51,10 +52,10 @@
       "contributions": [
         "code",
         "doc"
-       ]
+      ]
     },
     {
-     "login": "coreyshirk",
+      "login": "coreyshirk",
       "name": "Corey Shirk",
       "avatar_url": "https://avatars1.githubusercontent.com/u/9434322?v=4",
       "profile": "https://www.linkedin.com/in/coreyshirk/",
