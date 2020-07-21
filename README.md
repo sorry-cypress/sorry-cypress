@@ -432,6 +432,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tr>
     <td align="center"><a href="http://jeffhicken.com"><img src="https://avatars3.githubusercontent.com/u/5297942?v=4" width="100px;" alt=""/><br /><sub><b>Jeff Hicken</b></sub></a><br /><a href="https://github.com/agoldis/sorry-cypress/commits?author=jhicken" title="Code">💻</a> <a href="#ideas-jhicken" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/xtroncode"><img src="https://avatars2.githubusercontent.com/u/3901381?v=4" width="100px;" alt=""/><br /><sub><b>Meet Shah</b></sub></a><br /><a href="https://github.com/agoldis/sorry-cypress/commits?author=xtroncode" title="Code">💻</a> <a href="https://github.com/agoldis/sorry-cypress/commits?author=xtroncode" title="Documentation">📖</a></td>
   </tr>
 </table>
 
