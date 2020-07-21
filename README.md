@@ -444,6 +444,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/mlsad3"><img src="https://avatars2.githubusercontent.com/u/15711477?v=4" width="100px;" alt=""/><br /><sub><b>mlsad3</b></sub></a><br /><a href="https://github.com/agoldis/sorry-cypress/commits?author=mlsad3" title="Documentation">📖</a> <a href="https://github.com/agoldis/sorry-cypress/commits?author=mlsad3" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/KyleThenTR"><img src="https://avatars3.githubusercontent.com/u/52414395?v=4" width="100px;" alt=""/><br /><sub><b>Kyle Then</b></sub></a><br /><a href="https://github.com/agoldis/sorry-cypress/commits?author=KyleThenTR" title="Documentation">📖</a></td>
     <td align="center"><a href="https://redaxmedia.com"><img src="https://avatars3.githubusercontent.com/u/1835397?v=4" width="100px;" alt=""/><br /><sub><b>Henry Ruhs</b></sub></a><br /><a href="#ideas-redaxmedia" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/adityatr"><img src="https://avatars0.githubusercontent.com/u/9066230?v=4" width="100px;" alt=""/><br /><sub><b>Aditya Trivedi</b></sub></a><br /><a href="#content-adityatr" title="Content">🖋</a></td>
   </tr>
 </table>
 
