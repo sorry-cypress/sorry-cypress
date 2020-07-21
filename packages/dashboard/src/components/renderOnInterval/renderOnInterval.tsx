@@ -1,37 +1,43 @@
+import React from 'react';
 
-import React from 'react'
+interface RenderOnIntervalProps {
+  live?: boolean;
+  refreshIntervalInSeconds: number;
+  renderChild: () => React.ReactNode;
+}
 
-class renderOnInterval extends React.PureComponent {
+class RenderOnInterval extends React.PureComponent<
+  React.PropsWithChildren<RenderOnIntervalProps>
+> {
+  private timeoutId: NodeJS.Timeout | undefined = undefined;
+  static defaultProps = {
+    live: true,
+    refreshIntervalInSeconds: 60,
+  };
   tick = () => {
-
-    const { live, refreshIntervalInSeconds } = this.props
+    const { live, refreshIntervalInSeconds } = this.props;
 
     if (live) {
-      clearTimeout(this.timeoutId);
-      const timeoutId = setTimeout(this.tick, 1000 * refreshIntervalInSeconds)
-      this.timeoutId = timeoutId
+      this.timeoutId && clearTimeout(this.timeoutId);
+      const timeoutId = setTimeout(this.tick, 1000 * refreshIntervalInSeconds);
+      this.timeoutId = timeoutId;
     }
 
     this.forceUpdate();
-  }
+  };
 
-  componentDidMount () {
+  componentDidMount() {
     this.tick();
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     if (this.timeoutId) {
-      clearTimeout(this.timeoutId)
+      clearTimeout(this.timeoutId);
     }
   }
-  render () {
+  render() {
     return this.props.renderChild();
   }
 }
 
-renderOnInterval.defaultProps = {
-  live: true,
-  refreshIntervalInSeconds: 60
-}
-
-export default renderOnInterval
+export default RenderOnInterval;

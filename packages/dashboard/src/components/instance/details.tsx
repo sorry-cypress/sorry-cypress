@@ -1,26 +1,9 @@
+import { DataTable, Link, Text, Tooltip, useCss } from 'bold-ui';
 import React from 'react';
 import { generatePath } from 'react-router-dom';
-import { Test, CorruptedTest } from '../test';
-
-import { useCss, DataTable, Link, Text, Tooltip} from 'bold-ui';
-import { TestState } from '../common';
-import { shortEnglishHumanizerWithMsIfNeeded,miniutesAndSecondsOptions } from '../../lib/utis'; 
-
 import { Instance, InstanceTest } from '../../generated/graphql';
-
-const TestItem = ({
-  test,
-  instanceId,
-}: {
-  test: InstanceTest | null;
-  instanceId: string;
-}) => {
-  if (!test) {
-    return <CorruptedTest />;
-  }
-
-  return <Test instanceId={instanceId} test={test} />;
-};
+import { shortEnglishHumanizerWithMsIfNeeded } from '../../lib/utis';
+import { TestState } from '../common';
 
 export const InstanceDetails: React.FC<{ instance: Instance }> = ({
   instance,
@@ -40,11 +23,13 @@ export const InstanceDetails: React.FC<{ instance: Instance }> = ({
   return (
     <div>
       <strong>Tests</strong>
-      <div className={css`
-        {
-          margin: 12px 0;
-        }
-      `}>
+      <div
+        className={css`
+           {
+            margin: 12px 0;
+          }
+        `}
+      >
         <DataTable
           rows={tests}
           loading={false}
@@ -53,19 +38,23 @@ export const InstanceDetails: React.FC<{ instance: Instance }> = ({
               name: 'status',
               header: 'Status',
               sortable: false,
-              render: test => <TestState state={test.state} />,
+              render: (test: InstanceTest) => <TestState state={test.state} />,
             },
             {
-              name: 'durration',
-              header: 'Durration',
+              name: 'duration',
+              header: 'Duration',
               sortable: false,
-              render: test => {
+              render: (test: InstanceTest) => {
                 if (test?.wallClockDuration) {
                   return (
                     <Tooltip text={`Started at ${test.wallClockStartedAt}`}>
-                      <Text>{shortEnglishHumanizerWithMsIfNeeded(test.wallClockDuration, miniutesAndSecondsOptions)}</Text>
+                      <Text>
+                        {shortEnglishHumanizerWithMsIfNeeded(
+                          test.wallClockDuration
+                        )}
+                      </Text>
                     </Tooltip>
-                  )
+                  );
                 } else {
                   return '';
                 }
@@ -75,12 +64,16 @@ export const InstanceDetails: React.FC<{ instance: Instance }> = ({
               name: 'link',
               header: '',
               sortable: false,
-              render: test => (
-                <Link href={generatePath(`/instance/${instance?.instanceId}/test/${test.testId}`)}>
-                  {test.title.join(' > ')}
+              render: (test: InstanceTest) => (
+                <Link
+                  href={generatePath(
+                    `/instance/${instance?.instanceId}/test/${test.testId}`
+                  )}
+                >
+                  {test.title?.join(' > ')}
                 </Link>
               ),
-            }
+            },
           ]}
         />
       </div>
