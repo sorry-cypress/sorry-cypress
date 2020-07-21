@@ -1,30 +1,40 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Commit } from '@src/components/commit/commit';
+import { getRunTestsOverall, updateCacheOnDeleteRun } from '@src/lib/run';
 import {
-  Heading,
+  Button,
   Cell,
   Grid,
-  Text,
-  Button,
+  Heading,
   HFlow,
   Icon,
   Modal,
   ModalBody,
   ModalFooter,
+  Text,
+  Tooltip,
+  useCss,
 } from 'bold-ui';
-import { getRunTestsOverall, updateCacheOnDeleteRun } from '@src/lib/run';
-import { Commit } from '@src/components/commit/commit';
-import { Paper } from '../common/';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
+  FullRunSpec,
   Run,
   useDeleteRunMutation,
-  FullRunSpec,
 } from '../../generated/graphql';
+import { shortEnglishHumanizerWithMsIfNeeded } from '../../lib/utis';
+import { Paper } from '../common/';
+import RenderOnInterval from '../renderOnInterval/renderOnInterval';
 
 type RunSummaryProps = {
   run: Partial<Run> & { runId: string; specs: Array<FullRunSpec> };
 };
+
 export function RunSummary({ run }: RunSummaryProps): React.ReactNode {
+  const { css } = useCss();
+  const centeredIconClassName = css(`{
+    display: flex;
+    align-items: center;
+  }`);
   const { meta, runId, specs } = run;
   const [startDeleteRunMutation] = useDeleteRunMutation({
     variables: {
@@ -132,24 +142,77 @@ export function RunSummary({ run }: RunSummaryProps): React.ReactNode {
         </HFlow>
         <Grid>
           <Cell xs={12} md={6}>
-            <ul>
-              <li>
-                <Text>Tests: {overall.tests}</Text>
-              </li>
-              <li>
-                <Text>Passes: {overall.passes}</Text>
-              </li>
-              <li>
-                <Text color={overall.failures ? 'danger' : 'normal'}>
-                  Failures: {overall.failures}
-                </Text>
-              </li>
-              <li>
-                <Text color={overall.pending ? 'disabled' : 'normal'}>
-                  Skipped: {overall.pending}
-                </Text>
-              </li>
-            </ul>
+            <div>
+              <Text>
+                Started At: {overall.wallClockStartedAt.toUTCString()}
+              </Text>
+            </div>
+            <div>
+              <Text>
+                Duration:{' '}
+                {overall?.wallClockDuration ? (
+                  <Text>
+                    {shortEnglishHumanizerWithMsIfNeeded(
+                      overall?.wallClockDuration
+                    )}
+                  </Text>
+                ) : null}
+                {!overall?.wallClockDuration && overall.wallClockStartedAt ? (
+                  <Text>
+                    <RenderOnInterval
+                      live
+                      refreshIntervalInSeconds={1}
+                      renderChild={() => {
+                        return `${shortEnglishHumanizerWithMsIfNeeded(
+                          Date.now() -
+                            new Date(overall.wallClockStartedAt).getTime()
+                        )}`;
+                      }}
+                    />
+                  </Text>
+                ) : null}
+              </Text>
+            </div>
+            <div style={{ display: 'flex' }}>
+              <Text style={{ marginRight: '10px' }}>
+                <Tooltip text="Total Tests">
+                  <span className={centeredIconClassName}>
+                    <Icon icon="fileWithItensOutline" size={1} />
+                    {overall.tests}
+                  </span>
+                </Tooltip>
+              </Text>
+              <Text color="success" style={{ marginRight: '10px' }}>
+                <Tooltip text="Successful">
+                  <span className={centeredIconClassName}>
+                    <Icon icon="checkCircleOutline" size={1} />
+                    {overall.passes}
+                  </span>
+                </Tooltip>
+              </Text>
+              <Text
+                color={overall.failures ? 'danger' : 'normal'}
+                style={{ marginRight: '10px' }}
+              >
+                <Tooltip text="Failed">
+                  <span className={centeredIconClassName}>
+                    <Icon icon="exclamationTriangleOutline" size={1} />
+                    {overall.failures}
+                  </span>
+                </Tooltip>
+              </Text>
+              <Text
+                color={overall.pending ? 'disabled' : 'normal'}
+                style={{ marginRight: '10px' }}
+              >
+                <Tooltip text="Skipped Tests">
+                  <span className={centeredIconClassName}>
+                    <Icon icon="timesOutline" size={1} />
+                    {overall.pending}
+                  </span>
+                </Tooltip>
+              </Text>
+            </div>
           </Cell>
           <Cell xs={12} md={6}>
             <div>

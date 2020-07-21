@@ -1,23 +1,10 @@
+import { DataTable, Link, Text, Tooltip, useCss } from 'bold-ui';
 import React from 'react';
-import { Test, CorruptedTest } from '../test';
-
-import { useCss } from 'bold-ui';
-
+import { generatePath } from 'react-router-dom';
 import { Instance, InstanceTest } from '../../generated/graphql';
+import { shortEnglishHumanizerWithMsIfNeeded } from '../../lib/utis';
+import { TestState } from '../common';
 
-const TestItem = ({
-  test,
-  instanceId,
-}: {
-  test: InstanceTest | null;
-  instanceId: string;
-}) => {
-  if (!test) {
-    return <CorruptedTest />;
-  }
-
-  return <Test instanceId={instanceId} test={test} />;
-};
 export const InstanceDetails: React.FC<{ instance: Instance }> = ({
   instance,
 }: {
@@ -32,25 +19,64 @@ export const InstanceDetails: React.FC<{ instance: Instance }> = ({
   if (!tests) {
     return <div>No tests reported for spec</div>;
   }
-
+  /* eslint-disable react/display-name */
   return (
     <div>
       <strong>Tests</strong>
-
-      <ul>
-        {tests.map((t) => (
-          <li
-            key={(t && t.testId) || ''}
-            className={css`
-               {
-                padding: 12px 0;
-              }
-            `}
-          >
-            <TestItem test={t} instanceId={instance.instanceId} />
-          </li>
-        ))}
-      </ul>
+      <div
+        className={css`
+           {
+            margin: 12px 0;
+          }
+        `}
+      >
+        <DataTable
+          rows={tests}
+          loading={false}
+          columns={[
+            {
+              name: 'status',
+              header: 'Status',
+              sortable: false,
+              render: (test: InstanceTest) => <TestState state={test.state} />,
+            },
+            {
+              name: 'duration',
+              header: 'Duration',
+              sortable: false,
+              render: (test: InstanceTest) => {
+                if (test?.wallClockDuration) {
+                  return (
+                    <Tooltip text={`Started at ${test.wallClockStartedAt}`}>
+                      <Text>
+                        {shortEnglishHumanizerWithMsIfNeeded(
+                          test.wallClockDuration
+                        )}
+                      </Text>
+                    </Tooltip>
+                  );
+                } else {
+                  return '';
+                }
+              },
+            },
+            {
+              name: 'link',
+              header: '',
+              sortable: false,
+              render: (test: InstanceTest) => (
+                <Link
+                  href={generatePath(
+                    `/instance/${instance?.instanceId}/test/${test.testId}`
+                  )}
+                >
+                  {test.title?.join(' > ')}
+                </Link>
+              ),
+            },
+          ]}
+        />
+      </div>
     </div>
   );
 };

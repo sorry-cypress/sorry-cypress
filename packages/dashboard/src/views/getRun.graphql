@@ -1,6 +1,7 @@
 query getRun($runId: ID!) {
   run(id: $runId) {
     runId
+    createdAt
     meta {
       ciBuildId
       projectId
@@ -17,6 +18,7 @@ query getRun($runId: ID!) {
       spec
       instanceId
       claimed
+      claimedAt
       results {
         cypressConfig {
           video
@@ -26,6 +28,8 @@ query getRun($runId: ID!) {
         tests {
           title
           state
+          wallClockDuration
+          wallClockStartedAt
         }
         stats {
           tests
@@ -34,6 +38,9 @@ query getRun($runId: ID!) {
           failures
           skipped
           suites
+          wallClockDuration
+          wallClockStartedAt
+          wallClockEndedAt
         }
       }
     }

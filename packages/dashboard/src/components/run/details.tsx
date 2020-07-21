@@ -1,8 +1,20 @@
+import {
+  DataTable,
+  HFlow,
+  Icon,
+  Link,
+  Switch,
+  Text,
+  Tooltip,
+  useCss,
+} from 'bold-ui';
 import React, { useState } from 'react';
-import { useCss, Switch, HFlow } from 'bold-ui';
-import { SpecSummary } from '../spec/summary';
+import { generatePath } from 'react-router-dom';
+import { FullRunSpec, Run } from '../../generated/graphql';
 import { getSpecState } from '../../lib/spec';
-import { Run } from '../../generated/graphql';
+import { shortEnglishHumanizerWithMsIfNeeded } from '../../lib/utis';
+import { SpecState } from '../common';
+import RenderOnInterval from '../renderOnInterval/renderOnInterval';
 
 type RunDetailsProps = {
   run: Partial<Run>;
@@ -17,7 +29,13 @@ export function RunDetails({ run }: RunDetailsProps) {
   if (!specs) {
     return null;
   }
-  /* eslint-disable @typescript-eslint/no-non-null-assertion */
+
+  const centeredIconClassName = css(`{
+    display: flex;
+    align-items: center;
+  }`);
+
+  /* eslint-disable @typescript-eslint/no-non-null-assertion, react/display-name */
   return (
     <div>
       <HFlow justifyContent="space-between">
@@ -27,25 +45,134 @@ export function RunDetails({ run }: RunDetailsProps) {
           onChange={() => setHidePassedSpecs(!isPassedHidden)}
         />
       </HFlow>
-      <ul>
-        {specs
-          .filter((spec) => !!spec)
-          .filter((spec) =>
-            isPassedHidden ? getSpecState(spec!) !== 'passed' : true
-          )
-          .map((spec) => (
-            <li
-              key={spec!.instanceId}
-              className={css`
-                 {
-                  padding: 12px 0;
+      <div
+        className={css`
+           {
+            margin: 12px 0;
+          }
+        `}
+      >
+        <DataTable
+          rows={specs
+            .filter((spec) => !!spec)
+            .filter((spec) =>
+              isPassedHidden ? getSpecState(spec!) !== 'passed' : true
+            )}
+          loading={false}
+          columns={[
+            {
+              name: 'status',
+              header: 'Status',
+              sortable: false,
+              render: (spec: FullRunSpec) => (
+                <SpecState state={getSpecState(spec)} />
+              ),
+            },
+            {
+              name: 'link',
+              header: '',
+              sortable: false,
+              render: (spec: FullRunSpec) => (
+                <Link href={generatePath(`/instance/${spec?.instanceId}`)}>
+                  {spec?.spec}
+                </Link>
+              ),
+            },
+            {
+              name: 'duration',
+              header: 'Duration',
+              sortable: false,
+              render: (spec: FullRunSpec) => {
+                if (spec?.results?.stats?.wallClockDuration) {
+                  return (
+                    <Tooltip
+                      text={`Started at ${spec.results.stats.wallClockStartedAt}`}
+                    >
+                      <Text>
+                        {shortEnglishHumanizerWithMsIfNeeded(
+                          spec.results.stats.wallClockDuration
+                        )}
+                      </Text>
+                    </Tooltip>
+                  );
+                } else if (spec?.claimedAt) {
+                  return (
+                    <Tooltip text={`Started at ${spec.claimedAt}`}>
+                      <Text>
+                        <RenderOnInterval
+                          live
+                          refreshIntervalInSeconds={1}
+                          renderChild={() => {
+                            return `${shortEnglishHumanizerWithMsIfNeeded(
+                              Date.now() - new Date(spec.claimedAt!).getTime()
+                            )}`;
+                          }}
+                        />
+                      </Text>
+                    </Tooltip>
+                  );
+                } else {
+                  return '';
                 }
-              `}
-            >
-              <SpecSummary spec={spec} />
-            </li>
-          ))}
-      </ul>
+              },
+            },
+            {
+              name: 'failures',
+              header: '',
+              sortable: false,
+              render: (spec) =>
+                spec?.results?.stats?.failures ? (
+                  <Text color="danger">
+                    <Tooltip text="failed">
+                      <span className={centeredIconClassName}>
+                        <Icon icon="exclamationTriangleOutline" size={1} />
+                        {spec.results.stats.failures}
+                      </span>
+                    </Tooltip>
+                  </Text>
+                ) : (
+                  ''
+                ),
+            },
+            {
+              name: 'passes',
+              header: '',
+              sortable: false,
+              render: (spec) =>
+                spec?.results?.stats?.passes ? (
+                  <Text color="success">
+                    <Tooltip text="passed">
+                      <span className={centeredIconClassName}>
+                        <Icon icon="checkCircleOutline" size={1} />
+                        {spec.results.stats.passes}
+                      </span>
+                    </Tooltip>
+                  </Text>
+                ) : (
+                  ''
+                ),
+            },
+            {
+              name: 'skipped',
+              header: '',
+              sortable: false,
+              render: (spec) =>
+                spec?.results?.stats?.pending ? (
+                  <Text>
+                    <Tooltip text="skipped">
+                      <span className={centeredIconClassName}>
+                        <Icon icon="timesOutline" size={1} />
+                        {spec.results.stats.pending}
+                      </span>
+                    </Tooltip>
+                  </Text>
+                ) : (
+                  ''
+                ),
+            },
+          ]}
+        />
+      </div>
     </div>
   );
 }

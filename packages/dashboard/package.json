@@ -36,6 +36,7 @@
     "express": "^4.17.1",
     "graphql": "^14.5.4",
     "graphql-tag": "^2.10.1",
+    "humanize-duration": "^3.23.1",
     "lodash.capitalize": "^4.2.1",
     "lodash.truncate": "^4.4.2",
     "react": "^16.9.0",

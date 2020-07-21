@@ -29,6 +29,7 @@ type FullRunSpec {
   spec: String!
   instanceId: String!
   claimed: Boolean!
+  claimedAt: String
   results: InstanceResults
 }
 
@@ -113,6 +114,7 @@ type RunSpec {
   spec: String!
   instanceId: String!
   claimed: Boolean!
+  claimedAt: String
 }
 
 type RunMeta {
