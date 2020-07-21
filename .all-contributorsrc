@@ -91,6 +91,15 @@
         "doc",
         "code"
       ]
+    },
+    {
+      "login": "KyleThenTR",
+      "name": "Kyle Then",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/52414395?v=4",
+      "profile": "https://github.com/KyleThenTR",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
