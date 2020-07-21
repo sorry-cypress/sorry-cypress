@@ -71,6 +71,16 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "MeStrak",
+      "name": "MeStrak",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/31989238?v=4",
+      "profile": "https://github.com/MeStrak",
+      "contributions": [
+        "doc",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
