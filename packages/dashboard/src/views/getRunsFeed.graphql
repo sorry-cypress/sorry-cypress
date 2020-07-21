@@ -38,6 +38,9 @@ query getRunsFeed($cursor: String) {
             failures
             skipped
             suites
+            wallClockDuration
+            wallClockStartedAt
+            wallClockEndedAt
           }
         }
       }

@@ -4,9 +4,7 @@ import { AppError, RUN_EXISTS, CLAIM_FAILED } from '@src/lib/errors';
 import { getSanitizedMongoObject } from '@src/lib/results';
 
 export const getRunById = async (id: string) =>
-  await getMongoDB()
-    .collection('runs')
-    .findOne({ runId: id });
+  await getMongoDB().collection('runs').findOne({ runId: id });
 
 export const createRun = async (run: Run) => {
   try {
@@ -33,17 +31,18 @@ export const setSpecClaimed = async (runId: string, instanceId: string) => {
         specs: {
           $elemMatch: {
             instanceId,
-            claimed: false
-          }
-        }
+            claimed: false,
+          },
+        },
       },
       {
         $set: {
-          'specs.$[spec].claimed': true
-        }
+          'specs.$[spec].claimed': true,
+          'specs.$[spec].claimedAt': new Date().toISOString(),
+        },
       },
       {
-        arrayFilters: [{ 'spec.instanceId': instanceId }]
+        arrayFilters: [{ 'spec.instanceId': instanceId }],
       }
     );
 

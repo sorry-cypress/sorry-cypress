@@ -18,6 +18,7 @@ export function InstanceDetailsView({
 }: InstanceDetailsViewProps): React.ReactNode {
   const { loading, error, data } = useGetInstanceQuery({
     variables: { instanceId: id },
+    pollInterval: 1500,
   });
   const apollo = useApolloClient();
 

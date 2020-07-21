@@ -40,6 +40,7 @@ export type FullRunSpec = {
   spec: Scalars['String'];
   instanceId: Scalars['String'];
   claimed: Scalars['Boolean'];
+  claimedAt?: Maybe<Scalars['String']>;
   results?: Maybe<InstanceResults>;
 };
 
@@ -198,6 +199,7 @@ export type RunSpec = {
   spec: Scalars['String'];
   instanceId: Scalars['String'];
   claimed: Scalars['Boolean'];
+  claimedAt?: Maybe<Scalars['String']>;
 };
 
 export type DeleteRunMutationVariables = {
@@ -252,6 +254,8 @@ export type GetInstanceQuery = { __typename?: 'Query' } & {
                 | 'skipped'
                 | 'failures'
                 | 'wallClockDuration'
+                | 'wallClockStartedAt'
+                | 'wallClockEndedAt'
               >;
               tests?: Maybe<
                 Array<
@@ -260,6 +264,7 @@ export type GetInstanceQuery = { __typename?: 'Query' } & {
                       InstanceTest,
                       | 'testId'
                       | 'wallClockDuration'
+                      | 'wallClockStartedAt'
                       | 'state'
                       | 'error'
                       | 'stack'
@@ -296,7 +301,7 @@ export type GetRunQueryVariables = {
 
 export type GetRunQuery = { __typename?: 'Query' } & {
   run?: Maybe<
-    { __typename?: 'Run' } & Pick<Run, 'runId'> & {
+    { __typename?: 'Run' } & Pick<Run, 'runId' | 'createdAt'> & {
         meta?: Maybe<
           { __typename?: 'RunMeta' } & Pick<
             RunMeta,
@@ -319,7 +324,7 @@ export type GetRunQuery = { __typename?: 'Query' } & {
           Maybe<
             { __typename?: 'FullRunSpec' } & Pick<
               FullRunSpec,
-              'spec' | 'instanceId' | 'claimed'
+              'spec' | 'instanceId' | 'claimed' | 'claimedAt'
             > & {
                 results?: Maybe<
                   { __typename?: 'InstanceResults' } & Pick<
@@ -337,7 +342,10 @@ export type GetRunQuery = { __typename?: 'Query' } & {
                           Maybe<
                             { __typename?: 'InstanceTest' } & Pick<
                               InstanceTest,
-                              'title' | 'state'
+                              | 'title'
+                              | 'state'
+                              | 'wallClockDuration'
+                              | 'wallClockStartedAt'
                             >
                           >
                         >
@@ -350,6 +358,9 @@ export type GetRunQuery = { __typename?: 'Query' } & {
                         | 'failures'
                         | 'skipped'
                         | 'suites'
+                        | 'wallClockDuration'
+                        | 'wallClockStartedAt'
+                        | 'wallClockEndedAt'
                       >;
                     }
                 >;
@@ -421,6 +432,9 @@ export type GetRunsFeedQuery = { __typename?: 'Query' } & {
                             | 'failures'
                             | 'skipped'
                             | 'suites'
+                            | 'wallClockDuration'
+                            | 'wallClockStartedAt'
+                            | 'wallClockEndedAt'
                           >;
                         }
                     >;
@@ -512,10 +526,13 @@ export const GetInstanceDocument = gql`
           skipped
           failures
           wallClockDuration
+          wallClockStartedAt
+          wallClockEndedAt
         }
         tests {
           testId
           wallClockDuration
+          wallClockStartedAt
           state
           error
           stack
@@ -588,6 +605,7 @@ export const GetRunDocument = gql`
   query getRun($runId: ID!) {
     run(id: $runId) {
       runId
+      createdAt
       meta {
         ciBuildId
         projectId
@@ -604,6 +622,7 @@ export const GetRunDocument = gql`
         spec
         instanceId
         claimed
+        claimedAt
         results {
           cypressConfig {
             video
@@ -613,6 +632,8 @@ export const GetRunDocument = gql`
           tests {
             title
             state
+            wallClockDuration
+            wallClockStartedAt
           }
           stats {
             tests
@@ -621,6 +642,9 @@ export const GetRunDocument = gql`
             failures
             skipped
             suites
+            wallClockDuration
+            wallClockStartedAt
+            wallClockEndedAt
           }
         }
       }
@@ -713,6 +737,9 @@ export const GetRunsFeedDocument = gql`
               failures
               skipped
               suites
+              wallClockDuration
+              wallClockStartedAt
+              wallClockEndedAt
             }
           }
         }

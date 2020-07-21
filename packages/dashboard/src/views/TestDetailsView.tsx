@@ -9,6 +9,7 @@ export function TestDetailsView(): React.ReactNode {
 
   const { loading, error, data } = useGetInstanceQuery({
     variables: { instanceId },
+    pollInterval: 1500,
   });
 
   const apollo = useApolloClient();

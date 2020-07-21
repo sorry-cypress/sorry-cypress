@@ -25,10 +25,13 @@ query getInstance($instanceId: ID!) {
         skipped
         failures
         wallClockDuration
+        wallClockStartedAt
+        wallClockEndedAt
       }
       tests {
         testId
         wallClockDuration
+        wallClockStartedAt
         state
         error
         stack
