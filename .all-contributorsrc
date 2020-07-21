@@ -14,6 +14,15 @@
         "code",
         "ideas"
       ]
+    },
+    {
+      "login": "abhidp",
+      "name": "Abhi D",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/30851622?v=4",
+      "profile": "https://github.com/abhidp",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
