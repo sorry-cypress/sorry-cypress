@@ -16,10 +16,30 @@
       ]
     },
     {
+
       "login": "abhidp",
       "name": "Abhi D",
       "avatar_url": "https://avatars0.githubusercontent.com/u/30851622?v=4",
       "profile": "https://github.com/abhidp",
+      "contributions": [
+        "code"
+      ]
+  },
+  {
+      "login": "TomaszG",
+      "name": "TomaszG",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/873114?v=4",
+      "profile": "https://github.com/TomaszG",
+      "contributions": [
+        "code",
+        "doc"
+       ]
+    },
+    {
+     "login": "coreyshirk",
+      "name": "Corey Shirk",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/9434322?v=4",
+      "profile": "https://www.linkedin.com/in/coreyshirk/",
       "contributions": [
         "doc"
       ]
