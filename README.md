@@ -441,6 +441,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/MeStrak"><img src="https://avatars3.githubusercontent.com/u/31989238?v=4" width="100px;" alt=""/><br /><sub><b>MeStrak</b></sub></a><br /><a href="https://github.com/agoldis/sorry-cypress/commits?author=MeStrak" title="Documentation">📖</a> <a href="https://github.com/agoldis/sorry-cypress/commits?author=MeStrak" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/mlsad3"><img src="https://avatars2.githubusercontent.com/u/15711477?v=4" width="100px;" alt=""/><br /><sub><b>mlsad3</b></sub></a><br /><a href="https://github.com/agoldis/sorry-cypress/commits?author=mlsad3" title="Documentation">📖</a> <a href="https://github.com/agoldis/sorry-cypress/commits?author=mlsad3" title="Code">💻</a></td>
   </tr>
 </table>
 
