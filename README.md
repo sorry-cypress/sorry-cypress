@@ -439,6 +439,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://www.linkedin.com/in/coreyshirk/"><img src="https://avatars1.githubusercontent.com/u/9434322?v=4" width="100px;" alt=""/><br /><sub><b>Corey Shirk</b></sub></a><br /><a href="https://github.com/agoldis/sorry-cypress/commits?author=coreyshirk" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/nickcox"><img src="https://avatars0.githubusercontent.com/u/135552?v=4" width="100px;" alt=""/><br /><sub><b>nickcox</b></sub></a><br /><a href="https://github.com/agoldis/sorry-cypress/commits?author=nickcox" title="Documentation">📖</a></td>
   </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/MeStrak"><img src="https://avatars3.githubusercontent.com/u/31989238?v=4" width="100px;" alt=""/><br /><sub><b>MeStrak</b></sub></a><br /><a href="https://github.com/agoldis/sorry-cypress/commits?author=MeStrak" title="Documentation">📖</a> <a href="https://github.com/agoldis/sorry-cypress/commits?author=MeStrak" title="Code">💻</a></td>
+  </tr>
 </table>
 
 <!-- markdownlint-enable -->
