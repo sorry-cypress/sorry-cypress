@@ -1,8 +1,8 @@
+import { useApolloClient } from '@apollo/react-hooks';
+import { Button } from 'bold-ui';
 import React from 'react';
 import { RunSummary } from '../components/run/summary';
 import { useGetRunsFeedQuery } from '../generated/graphql';
-import { Button } from 'bold-ui';
-import { useApolloClient } from '@apollo/react-hooks';
 
 export function RunsView() {
   const apollo = useApolloClient();
@@ -17,7 +17,6 @@ export function RunsView() {
     variables: {
       cursor: '',
     },
-    pollInterval: 1500,
   });
 
   if (loading) return <p>Loading...</p>;
