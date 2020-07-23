@@ -1,7 +1,8 @@
 import { getMongoDB, init, ObjectID } from '@src/lib/mongo';
 import { DataSource } from 'apollo-datasource';
 
-const PAGE_LIMIT = 5;
+const DEFAULT_PAGE_SIZE = 5;
+
 const mergeRunSpecs = (run) => {
   // merge fullspec into spec
   run.specs = run.specs.map((s) => ({
@@ -13,22 +14,22 @@ const mergeRunSpecs = (run) => {
 
 const fullRunReducer = (fullMongoRun) => fullMongoRun.map(mergeRunSpecs);
 
-const getCursor = (runs) => {
+const getCursor = (runs, pageSize: number) => {
   if (!runs.length) {
     return 0;
   }
 
-  if (runs.length > PAGE_LIMIT) {
+  if (runs.length > pageSize * 2) {
     return runs[runs.length - 2]._id;
   }
 
   return runs[runs.length - 1]._id;
 };
 
-const runFeedReducer = (runs) => ({
-  runs: runs.slice(0, PAGE_LIMIT).map(mergeRunSpecs),
-  cursor: getCursor(runs),
-  hasMore: runs.length > PAGE_LIMIT,
+const runFeedReducer = (runs, pageSize: number) => ({
+  runs: runs.map(mergeRunSpecs),
+  cursor: getCursor(runs, pageSize),
+  hasMore: runs.length > pageSize * 2,
 });
 
 const matchRunAggregation = (runId: string) => ({
@@ -69,25 +70,38 @@ const lookupAggregation = {
   },
 };
 
+export interface GetRunFeedParam {
+  startCursor: string;
+  endCursor: string;
+  pageSize: number;
+}
 export class RunsAPI extends DataSource {
   async initialize() {
     await init();
   }
 
-  async getRunFeed({ cursor }) {
+  async getRunFeed({ startCursor, endCursor, pageSize }: GetRunFeedParam) {
+    const _pageSize = pageSize || DEFAULT_PAGE_SIZE;
+
     const aggregationPipeline = [
       getSortByAggregation(),
-      cursor
+      startCursor
         ? {
             $match: {
-              _id: { $lt: new ObjectID(cursor) },
+              _id: { $lt: new ObjectID(startCursor) },
             },
           }
         : null,
-      {
-        // get one extra to know if there's more
-        $limit: PAGE_LIMIT + 1,
-      },
+      endCursor
+        ? {
+            $match: {
+              _id: { $gt: new ObjectID(endCursor) },
+            },
+          }
+        : {
+            // get one extra to know if there's more
+            $limit: _pageSize * 2 + 1,
+          },
       projectAggregation,
       lookupAggregation,
     ].filter((i) => !!i);
@@ -96,7 +110,7 @@ export class RunsAPI extends DataSource {
       await getMongoDB().collection('runs').aggregate(aggregationPipeline)
     ).toArray();
 
-    return runFeedReducer(results);
+    return runFeedReducer(results, pageSize);
   }
 
   async getAllRuns({ orderDirection }) {

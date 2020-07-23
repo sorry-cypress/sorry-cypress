@@ -4,6 +4,7 @@ import {
   GraphQLScalarTypeConfig,
 } from 'graphql';
 export type Maybe<T> = T | null;
+export type Exact<T extends { [key: string]: any }> = { [K in keyof T]: T[K] };
 export type RequireFields<T, K extends keyof T> = {
   [X in Exclude<keyof T, K>]?: T[X];
 } &
@@ -154,7 +155,9 @@ export type QueryRunsArgs = {
 };
 
 export type QueryRunFeedArgs = {
-  cursor?: Maybe<Scalars['String']>;
+  startCursor?: Maybe<Scalars['String']>;
+  endCursor?: Maybe<Scalars['String']>;
+  pageSize?: Maybe<Scalars['Int']>;
 };
 
 export type QueryRunArgs = {
@@ -210,11 +213,18 @@ export type RunSpec = {
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
 
-export type StitchingResolver<TResult, TParent, TContext, TArgs> = {
+export type LegacyStitchingResolver<TResult, TParent, TContext, TArgs> = {
   fragment: string;
   resolve: ResolverFn<TResult, TParent, TContext, TArgs>;
 };
 
+export type NewStitchingResolver<TResult, TParent, TContext, TArgs> = {
+  selectionSet: string;
+  resolve: ResolverFn<TResult, TParent, TContext, TArgs>;
+};
+export type StitchingResolver<TResult, TParent, TContext, TArgs> =
+  | LegacyStitchingResolver<TResult, TParent, TContext, TArgs>
+  | NewStitchingResolver<TResult, TParent, TContext, TArgs>;
 export type Resolver<TResult, TParent = {}, TContext = {}, TArgs = {}> =
   | ResolverFn<TResult, TParent, TContext, TArgs>
   | StitchingResolver<TResult, TParent, TContext, TArgs>;
@@ -294,7 +304,7 @@ export type TypeResolveFn<TTypes, TParent = {}, TContext = {}> = (
   info: GraphQLResolveInfo
 ) => Maybe<TTypes> | Promise<Maybe<TTypes>>;
 
-export type isTypeOfResolverFn<T = {}> = (
+export type IsTypeOfResolverFn<T = {}> = (
   obj: T,
   info: GraphQLResolveInfo
 ) => boolean | Promise<boolean>;
@@ -344,7 +354,6 @@ export type ResolversTypes = {
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Query: {};
-  OrderingOptions: OrderingOptions;
   String: Scalars['String'];
   Run: Run;
   ID: Scalars['ID'];
@@ -390,7 +399,7 @@ export type CommitResolvers<
     ParentType,
     ContextType
   >;
-  __isTypeOf?: isTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type CypressConfigResolvers<
@@ -403,7 +412,7 @@ export type CypressConfigResolvers<
     ParentType,
     ContextType
   >;
-  __isTypeOf?: isTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export interface DateTimeScalarConfig
@@ -422,7 +431,7 @@ export type DeleteRunResponseResolvers<
     ParentType,
     ContextType
   >;
-  __isTypeOf?: isTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type FullRunSpecResolvers<
@@ -442,7 +451,7 @@ export type FullRunSpecResolvers<
     ParentType,
     ContextType
   >;
-  __isTypeOf?: isTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type InstanceResolvers<
@@ -458,7 +467,7 @@ export type InstanceResolvers<
     ParentType,
     ContextType
   >;
-  __isTypeOf?: isTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type InstanceResultsResolvers<
@@ -489,7 +498,7 @@ export type InstanceResultsResolvers<
     ContextType
   >;
   videoUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: isTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type InstanceScreeshotResolvers<
@@ -507,7 +516,7 @@ export type InstanceScreeshotResolvers<
     ParentType,
     ContextType
   >;
-  __isTypeOf?: isTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type InstanceStatsResolvers<
@@ -535,7 +544,7 @@ export type InstanceStatsResolvers<
     ParentType,
     ContextType
   >;
-  __isTypeOf?: isTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type InstanceTestResolvers<
@@ -562,7 +571,7 @@ export type InstanceTestResolvers<
     ParentType,
     ContextType
   >;
-  __isTypeOf?: isTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type MutationResolvers<
@@ -601,7 +610,7 @@ export type PartialRunResolvers<
     ParentType,
     ContextType
   >;
-  __isTypeOf?: isTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type QueryResolvers<
@@ -646,7 +655,7 @@ export type ReporterStatsResolvers<
   start?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   end?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   duration?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  __isTypeOf?: isTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type RunResolvers<
@@ -661,7 +670,7 @@ export type RunResolvers<
     ParentType,
     ContextType
   >;
-  __isTypeOf?: isTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type RunFeedResolvers<
@@ -671,7 +680,7 @@ export type RunFeedResolvers<
   cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   hasMore?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   runs?: Resolver<Array<ResolversTypes['Run']>, ParentType, ContextType>;
-  __isTypeOf?: isTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type RunMetaResolvers<
@@ -690,7 +699,7 @@ export type RunMetaResolvers<
     ContextType
   >;
   commit?: Resolver<Maybe<ResolversTypes['Commit']>, ParentType, ContextType>;
-  __isTypeOf?: isTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type RunSpecResolvers<
@@ -705,7 +714,7 @@ export type RunSpecResolvers<
     ParentType,
     ContextType
   >;
-  __isTypeOf?: isTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type Resolvers<ContextType = any> = {

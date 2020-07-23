@@ -148,7 +148,9 @@ export type QueryRunsArgs = {
 };
 
 export type QueryRunFeedArgs = {
-  cursor?: Maybe<Scalars['String']>;
+  startCursor?: Maybe<Scalars['String']>;
+  endCursor?: Maybe<Scalars['String']>;
+  pageSize?: Maybe<Scalars['Int']>;
 };
 
 export type QueryRunArgs = {
@@ -372,7 +374,9 @@ export type GetRunQuery = { __typename?: 'Query' } & {
 };
 
 export type GetRunsFeedQueryVariables = {
-  cursor?: Maybe<Scalars['String']>;
+  startCursor?: Maybe<Scalars['String']>;
+  endCursor?: Maybe<Scalars['String']>;
+  pageSize?: Maybe<Scalars['Int']>;
 };
 
 export type GetRunsFeedQuery = { __typename?: 'Query' } & {
@@ -697,8 +701,12 @@ export type GetRunQueryResult = ApolloReactCommon.QueryResult<
   GetRunQueryVariables
 >;
 export const GetRunsFeedDocument = gql`
-  query getRunsFeed($cursor: String) {
-    runFeed(cursor: $cursor) {
+  query getRunsFeed($startCursor: String, $endCursor: String, $pageSize: Int) {
+    runFeed(
+      startCursor: $startCursor
+      endCursor: $endCursor
+      pageSize: $pageSize
+    ) {
       cursor
       hasMore
       runs {
@@ -760,7 +768,9 @@ export const GetRunsFeedDocument = gql`
  * @example
  * const { data, loading, error } = useGetRunsFeedQuery({
  *   variables: {
- *      cursor: // value for 'cursor'
+ *      startCursor: // value for 'startCursor'
+ *      endCursor: // value for 'endCursor'
+ *      pageSize: // value for 'pageSize'
  *   },
  * });
  */

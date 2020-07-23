@@ -1,5 +1,9 @@
-query getRunsFeed($cursor: String) {
-  runFeed(cursor: $cursor) {
+query getRunsFeed($startCursor: String, $endCursor: String, $pageSize: Int) {
+  runFeed(
+    startCursor: $startCursor
+    endCursor: $endCursor
+    pageSize: $pageSize
+  ) {
     cursor
     hasMore
     runs {

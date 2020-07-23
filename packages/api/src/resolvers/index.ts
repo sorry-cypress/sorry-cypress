@@ -1,5 +1,6 @@
-import { GraphQLDateTime } from 'graphql-iso-date';
+import { GetRunFeedParam } from '@src/datasources/runs';
 import { AppDatasources } from '@src/datasources/types';
+import { GraphQLDateTime } from 'graphql-iso-date';
 
 export const resolvers = {
   DateTime: GraphQLDateTime,
@@ -11,9 +12,9 @@ export const resolvers = {
     ) => dataSources.runsAPI.getAllRuns({ orderDirection }),
     runFeed: (
       _,
-      { cursor }: { cursor?: string },
+      queryParams: GetRunFeedParam,
       { dataSources }: { dataSources: AppDatasources }
-    ) => dataSources.runsAPI.getRunFeed({ cursor: cursor || false }),
+    ) => dataSources.runsAPI.getRunFeed(queryParams),
     run: (
       _,
       { id }: { id: string },

@@ -1,8 +1,8 @@
+import { useApolloClient } from '@apollo/react-hooks';
+import { Button } from 'bold-ui';
 import React from 'react';
 import { RunSummary } from '../components/run/summary';
 import { useGetRunsFeedQuery } from '../generated/graphql';
-import { Button } from 'bold-ui';
-import { useApolloClient } from '@apollo/react-hooks';
 
 export function RunsView() {
   const apollo = useApolloClient();
@@ -15,9 +15,9 @@ export function RunsView() {
 
   const { fetchMore, loading, error, data } = useGetRunsFeedQuery({
     variables: {
-      cursor: '',
+      pageSize: 2,
     },
-    pollInterval: 1500,
+    // pollInterval: 1500,
   });
 
   if (loading) return <p>Loading...</p>;
@@ -30,16 +30,17 @@ export function RunsView() {
 
   function loadMore() {
     return fetchMore({
-      variables: {
-        cursor: runFeed.cursor,
-      },
+      variables: {},
       updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) {
+          return prev;
+        }
         return {
           runFeed: {
             __typename: prev.runFeed.__typename,
-            hasMore: fetchMoreResult!.runFeed.hasMore,
-            cursor: fetchMoreResult!.runFeed.cursor,
-            runs: [...prev.runFeed.runs, ...fetchMoreResult!.runFeed.runs],
+            hasMore: fetchMoreResult.runFeed.hasMore,
+            cursor: fetchMoreResult.runFeed.cursor,
+            runs: [...prev.runFeed.runs, ...fetchMoreResult.runFeed.runs],
           },
         };
       },
