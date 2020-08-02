@@ -89,7 +89,6 @@ export type InstanceTest = {
   body?: Maybe<Scalars['String']>;
   stack?: Maybe<Scalars['String']>;
   error?: Maybe<Scalars['String']>;
-  /** timings: InstanceTestTimings */
   wallClockStartedAt?: Maybe<Scalars['String']>;
   wallClockDuration?: Maybe<Scalars['Int']>;
 };
@@ -99,7 +98,6 @@ export enum OrderingOptions {
   Asc = 'ASC'
 }
 
-/** Runs and subtypes */
 export type PartialRun = {
    __typename?: 'PartialRun';
   runId: Scalars['ID'];
@@ -465,5 +463,5 @@ export type Resolvers<ContextType = any> = {
 /**
  * @deprecated
  * Use "Resolvers" root object instead. If you wish to get "IResolvers", add "typesPrefix: I" to your config.
-*/
+ */
 export type IResolvers<ContextType = any> = Resolvers<ContextType>;

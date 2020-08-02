@@ -255,6 +255,20 @@ SCREENSHOTS_DRIVER="../screenshots/dummy.driver"
 
 S3 screenshots driver documentation has moved to [Wiki](https://github.com/agoldis/sorry-cypress/wiki/S3-screenshot-driver)
 
+##### Minio Driver
+
+see docker-compose.full.minio.yml or docker-compose.full.minio.local.yml
+
+You need to make a host entry to 127.0.0.1 storage this needs to be fixed
+
+`127.0.0.1 storage`
+
+You should be able to use the Env Vars for configuration, if it doesn't work you should look at the default values in src/screenshots/minio/config.ts
+
+The keys and stuff should maybe handled like the secrets in s3
+
+The minio bucket docker compose setup might delete existing buckets, so please test - or remove from the docker file after first run!
+
 #### Record keys whitelist
 
 Setting ALLOWED_KEYS variable allows you to define list of comma delimited record keys (provided to the Cypress Runner using `--key` option) which are accepted by the `director` service. This can be useful when Cypress is running on external CI servers and we need to expose `director` to the internet.
