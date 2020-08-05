@@ -18,23 +18,38 @@ type RunFeed {
   runs: [Run!]!
 }
 
-type Instance {
+type Run {
   runId: ID!
-  run: PartialRun!
+  createdAt: DateTime!
+  meta: RunMeta
+  specs: [FullRunSpec]!
+}
+
+type FullRunSpec {
   spec: String!
-  instanceId: ID!
+  instanceId: String!
+  claimed: Boolean!
+  claimedAt: String
   results: InstanceResults
 }
 
 type InstanceResults {
   stats: InstanceStats!
-  tests: [InstanceTest]!
+  tests: [InstanceTest]
   error: String
   stdout: String
   screenshots: [InstanceScreeshot!]!
   cypressConfig: CypressConfig
   reporterStats: ReporterStats
   videoUrl: String
+}
+
+type Instance {
+  runId: ID!
+  run: PartialRun!
+  spec: String!
+  instanceId: ID!
+  results: InstanceResults
 }
 
 type CypressConfig {
@@ -95,24 +110,11 @@ type PartialRun {
   specs: [RunSpec]!
 }
 
-type Run {
-  runId: ID!
-  createdAt: DateTime!
-  meta: RunMeta
-  specs: [FullRunSpec]!
-}
-
 type RunSpec {
   spec: String!
   instanceId: String!
   claimed: Boolean!
-}
-
-type FullRunSpec {
-  spec: String!
-  instanceId: String!
-  claimed: Boolean!
-  results: InstanceResults
+  claimedAt: String
 }
 
 type RunMeta {
@@ -129,4 +131,19 @@ type Commit {
   authorEmail: String
   message: String
   remoteOrigin: String
+}
+
+type Mutation {
+  deleteRun(runId: ID!): DeleteRunResponse!
+  deleteRuns(runIds: [ID]!): DeleteRunResponse!
+  deleteRunsInDateRange(
+    startDate: DateTime!
+    endDate: DateTime!
+  ): DeleteRunResponse!
+}
+
+type DeleteRunResponse {
+  success: Boolean!
+  message: String!
+  runIds: [ID]!
 }

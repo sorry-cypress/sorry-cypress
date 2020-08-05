@@ -3,40 +3,41 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: {
-    main: ['./src/index.tsx']
+    main: ['./src/index.tsx'],
   },
+  devtool: 'source-map',
   output: {
     publicPath: '/',
     jsonpScriptType: 'module',
     path: path.resolve(__dirname, 'dist'),
-    filename: 'index.mjs'
+    filename: 'index.mjs',
   },
   resolve: {
-    extensions: ['.ts', '.tsx', '.js', '.json']
+    extensions: ['.ts', '.tsx', '.js', '.json'],
   },
   module: {
     rules: [
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader']
+        use: ['style-loader', 'css-loader'],
       },
       {
         test: /\.(ts|js)x?$/,
         exclude: /node_modules/,
-        loader: 'babel-loader'
-      }
-    ]
+        loader: 'babel-loader',
+      },
+    ],
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: './src/index.ejs',
       filename: 'views/index.ejs',
       inject: true,
-      hash: true
-    })
+      hash: true,
+    }),
   ],
   devServer: {
     writeToDisk: true,
-    host: '0.0.0.0'
-  }
+    host: '0.0.0.0',
+  },
 };

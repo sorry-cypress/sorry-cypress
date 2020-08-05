@@ -1,14 +1,15 @@
 import React from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useGetInstanceQuery } from '../generated/graphql';
 import { useApolloClient } from '@apollo/react-hooks';
 import { TestDetails } from '../components/test';
 
-export const TestDetailsView: React.FC = (props) => {
+export function TestDetailsView(): React.ReactNode {
   const { instanceId, testId } = useParams();
 
   const { loading, error, data } = useGetInstanceQuery({
     variables: { instanceId },
+    pollInterval: 1500,
   });
 
   const apollo = useApolloClient();
@@ -63,4 +64,4 @@ export const TestDetailsView: React.FC = (props) => {
     : [];
 
   return <TestDetails test={test} screenshots={screenshots} />;
-};
+}

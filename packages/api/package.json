@@ -1,6 +1,6 @@
 {
   "name": "@sorry-cypress/api",
-  "version": "0.2.6",
+  "version": "0.5.1",
   "author": {
     "name": "Andrew Goldis",
     "email": "agoldis@gmail.com"
@@ -22,16 +22,18 @@
     "build:types": "tsc --emitDeclarationOnly",
     "build:js": "babel src --out-dir dist --extensions \".ts\" --source-maps inline",
     "start": "node ./dist/",
-    "clean": "rimraf ./dist"
+    "clean": "rimraf ./dist",
+    "test": "echo \"@sorry-cypress/api\"",
+    "lint": "eslint ./ --ext ts"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",
     "@babel/core": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-typescript": "^7.3.3",
-    "@graphql-codegen/cli": "^1.8.2",
-    "@graphql-codegen/typescript": "^1.8.2",
-    "@graphql-codegen/typescript-resolvers": "^1.8.2",
+    "@graphql-codegen/cli": "^1.13.4",
+    "@graphql-codegen/typescript": "^1.13.4",
+    "@graphql-codegen/typescript-resolvers": "^1.13.4",
     "@types/node": "^12.7.2",
     "babel-plugin-module-resolver": "^3.2.0",
     "graphql-import": "^0.7.1",
@@ -42,7 +44,7 @@
     "typescript": "^3.7.5"
   },
   "dependencies": {
-    "apollo-server": "^2.9.3",
+    "apollo-server": "2.16.0",
     "dotenv": "^8.1.0",
     "graphql": "^14.5.4",
     "graphql-import": "^0.7.1",

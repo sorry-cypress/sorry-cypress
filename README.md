@@ -5,7 +5,15 @@
 
 <br />
 
+
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
 ![Update Dockerhub Images](https://github.com/agoldis/sorry-cypress/workflows/Update%20Dockerhub%20Images/badge.svg?event=push)
+![Update Dockerhub Images](https://github.com/agoldis/sorry-cypress/workflows/Lint%20and%20test/badge.svg)
+<a href="https://join.slack.com/t/sorry-cypress/shared_invite/zt-eis1h6jl-tJELaD7q9UGEhMP8WHJOaw" target="_blank">![Join slack](https://img.shields.io/badge/join-slack-orange?logo=slack)<a/>
+
+# Hello 👋🏻
+
+Please help us by taking a short 1-minute [survey](https://forms.gle/qxoTPFiokLWuc6eZ7). Thank you!
 
 ## Table of contents
 
@@ -20,6 +28,9 @@
   - [🔥<span style="color: white; background: orange; padding: 2px 4px">new!</span> Amazon AWS](#Amazon-AWS)
 - [Documentation](#documentation)
   - [Reconfiguring Cypress](#Reconfiguring-Cypress)
+    - [Manual setup](#Manual-configuration-change)
+    - [Using CLI one-liner](#Using-one-liner)
+    - [🔥<span style="color: white; background: orange; padding: 2px 4px">new!</span> Using sorry-cypress wrapper](#Using-sorry-cypress-wrapper)
   - [Project structure](#project-structure)
   - [`director` service](#director-service)
   - [`api` service](#api-service)
@@ -29,6 +40,7 @@
 - [FAQ](#faq)
 - [Additional Resources](#additional-resources)
 - [License](#license)
+- [Contributors](#contributors)
 
 ## Features
 
@@ -110,6 +122,8 @@ Read more in [Wiki - AWS Tutorial](https://github.com/agoldis/sorry-cypress/wiki
 
 ### Reconfiguring Cypress
 
+#### Manual configuration change
+
 Find cypress installation path
 
 ```bash
@@ -135,6 +149,53 @@ production:
   api_url: "http://localhost:1234/"
 ...
 ```
+
+#### Using one-liner
+
+Use this CLI one-liner to change cypress configuration (courtesy of [@MeStrak](https://github.com/MeStrak)):
+
+```bash
+> sed -i -e 's|api_url:.*$|api_url: "https://sorry-cypress-demo-director.herokuapp.com/"|g' /*/.cache/Cypress/*/Cypress/resources/app/packages/server/config/app.yml
+```
+
+Or for windows (by [@nickcox](https://github.com/nickcox)): 
+
+```powershell
+ls $env:LOCALAPPDATA/Cypress/Cache -Recurse -Filter app.yml |
+% { (Get-Content $_ -Raw) -replace "https://api.cypress.io/", "https://sorry-cypress-demo-director.herokuapp.com/" | Out-File $_ }
+```
+
+#### Using sorry-cypress wrapper
+
+Thanks [@janineahn](https://github.com/janineahn) and [@redaxmedia](https://github.com/redaxmedia) for this contribution!
+
+Instead of changing the `api_url` in the cypress config, it's also possible to reroute the cypress api IP in your `/etc/hosts` file.
+
+Sorry-cypress includes an executable helper for this, to use it run `sudo sorry-cypress` (superuser rights are necessary for editing the hosts file).
+
+This command will use [hostile](https://github.com/feross/hostile) to change your hosts file and will start cypress in a child process.
+Once Cypress is done or killed the rerouting rule in your hosts file will be deleted.
+
+Please be aware of the following limitation before using `sorry-cypress.js` script:
+
+- Only works with `etc/hosts` or `C:/Windows/System32/drivers/etc/hosts` present
+- Only works with HTTPS on and port 443 on the target machine
+- Has hard coded arguments for the cypress run
+- Missing output that CLI started/finished
+
+The command will need the following env variables:
+
+- `SORRY_CYPRESS_RECORD_KEY`
+- `SORRY_CYPRESS_API_IP`
+- `SORRY_CYPRESS_BUILD_ID`
+
+Example:
+
+```sh
+sudo SORRY_CYPRESS_BUILD_ID=build-001 SORRY_CYPRESS_RECORD_KEY=whateve SORRY_CYPRESS_API_IP=127.0.0.1 ./bin/sorry-cypress.js <other cypress arguments>
+```
+
+Find more method to configure cypress wrapper [Configuring cypress agents](https://github.com/agoldis/sorry-cypress/wiki/Configuring-cypress-agents) wiki article
 
 ### Project structure
 
@@ -369,7 +430,40 @@ Yes.
 - [The official guide on Cypress parallelization](https://docs.cypress.io/guides/guides/parallelization.html)
 - [CodeBuild configuration for running multiple Cypress Agents on AWS](https://github.com/agoldis/sorry-cypress/wiki/AWS-Multiple-Cypress-Agents-mlsad3) by [@mlsad3](https://github.com/mlsad3)
 - [CodeBuild configuration for running multiple Cypress Agents on AWS](https://github.com/agoldis/sorry-cypress/wiki/AWS-Multiple-Cypress-Agents-KyleThenTR) by [@KyleThenTR](https://github.com/KyleThenTR)
+- [Cypress Parallelization on Jenkins using Sorry-Cypress](https://medium.com/@adityahbk/cypress-parallelization-on-jenkins-using-sorry-cypress-197a86ad8ed1) by [@huskywhale](https://github.com/huskywhale)
 
 ## License
 
 MIT
+
+## Contributors
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="http://jeffhicken.com"><img src="https://avatars3.githubusercontent.com/u/5297942?v=4" width="100px;" alt=""/><br /><sub><b>Jeff Hicken</b></sub></a><br /><a href="https://github.com/agoldis/sorry-cypress/commits?author=jhicken" title="Code">💻</a> <a href="#ideas-jhicken" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/janineahn"><img src="https://avatars3.githubusercontent.com/u/15375744?v=4" width="100px;" alt=""/><br /><sub><b>Janine</b></sub></a><br /><a href="https://github.com/agoldis/sorry-cypress/commits?author=janineahn" title="Code">💻</a> <a href="https://github.com/agoldis/sorry-cypress/commits?author=janineahn" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/xtroncode"><img src="https://avatars2.githubusercontent.com/u/3901381?v=4" width="100px;" alt=""/><br /><sub><b>Meet Shah</b></sub></a><br /><a href="https://github.com/agoldis/sorry-cypress/commits?author=xtroncode" title="Code">💻</a> <a href="https://github.com/agoldis/sorry-cypress/commits?author=xtroncode" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/abhidp"><img src="https://avatars0.githubusercontent.com/u/30851622?v=4" width="100px;" alt=""/><br /><sub><b>Abhi D</b></sub></a><br /><a href="https://github.com/agoldis/sorry-cypress/commits?author=abhidp" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/TomaszG"><img src="https://avatars0.githubusercontent.com/u/873114?v=4" width="100px;" alt=""/><br /><sub><b>TomaszG</b></sub></a><br /><a href="https://github.com/agoldis/sorry-cypress/commits?author=TomaszG" title="Code">💻</a> <a href="https://github.com/agoldis/sorry-cypress/commits?author=TomaszG" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://www.linkedin.com/in/coreyshirk/"><img src="https://avatars1.githubusercontent.com/u/9434322?v=4" width="100px;" alt=""/><br /><sub><b>Corey Shirk</b></sub></a><br /><a href="https://github.com/agoldis/sorry-cypress/commits?author=coreyshirk" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/nickcox"><img src="https://avatars0.githubusercontent.com/u/135552?v=4" width="100px;" alt=""/><br /><sub><b>nickcox</b></sub></a><br /><a href="https://github.com/agoldis/sorry-cypress/commits?author=nickcox" title="Documentation">📖</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/MeStrak"><img src="https://avatars3.githubusercontent.com/u/31989238?v=4" width="100px;" alt=""/><br /><sub><b>MeStrak</b></sub></a><br /><a href="https://github.com/agoldis/sorry-cypress/commits?author=MeStrak" title="Documentation">📖</a> <a href="https://github.com/agoldis/sorry-cypress/commits?author=MeStrak" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/mlsad3"><img src="https://avatars2.githubusercontent.com/u/15711477?v=4" width="100px;" alt=""/><br /><sub><b>mlsad3</b></sub></a><br /><a href="https://github.com/agoldis/sorry-cypress/commits?author=mlsad3" title="Documentation">📖</a> <a href="https://github.com/agoldis/sorry-cypress/commits?author=mlsad3" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/KyleThenTR"><img src="https://avatars3.githubusercontent.com/u/52414395?v=4" width="100px;" alt=""/><br /><sub><b>Kyle Then</b></sub></a><br /><a href="https://github.com/agoldis/sorry-cypress/commits?author=KyleThenTR" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://redaxmedia.com"><img src="https://avatars3.githubusercontent.com/u/1835397?v=4" width="100px;" alt=""/><br /><sub><b>Henry Ruhs</b></sub></a><br /><a href="#ideas-redaxmedia" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/adityatr"><img src="https://avatars0.githubusercontent.com/u/9066230?v=4" width="100px;" alt=""/><br /><sub><b>Aditya Trivedi</b></sub></a><br /><a href="#content-adityatr" title="Content">🖋</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!

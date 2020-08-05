@@ -1,19 +1,19 @@
+import { getMongoDB, init, ObjectID } from '@src/lib/mongo';
 import { DataSource } from 'apollo-datasource';
-import { init, getMongoDB, ObjectID } from '@src/lib/mongo';
 
 const PAGE_LIMIT = 5;
-const mergeRunSpecs = run => {
+const mergeRunSpecs = (run) => {
   // merge fullspec into spec
-  run.specs = run.specs.map(s => ({
+  run.specs = run.specs.map((s) => ({
     ...s,
-    ...(run.specsFull.find(full => full.instanceId === s.instanceId) || {})
+    ...(run.specsFull.find((full) => full.instanceId === s.instanceId) || {}),
   }));
   return run;
 };
 
-const fullRunReducer = fullMongoRun => fullMongoRun.map(mergeRunSpecs);
+const fullRunReducer = (fullMongoRun) => fullMongoRun.map(mergeRunSpecs);
 
-const getCursor = runs => {
+const getCursor = (runs) => {
   if (!runs.length) {
     return 0;
   }
@@ -25,22 +25,22 @@ const getCursor = runs => {
   return runs[runs.length - 1]._id;
 };
 
-const runFeedReducer = runs => ({
+const runFeedReducer = (runs) => ({
   runs: runs.slice(0, PAGE_LIMIT).map(mergeRunSpecs),
   cursor: getCursor(runs),
-  hasMore: runs.length > PAGE_LIMIT
+  hasMore: runs.length > PAGE_LIMIT,
 });
 
 const matchRunAggregation = (runId: string) => ({
   $match: {
-    runId
-  }
+    runId,
+  },
 });
 
 const getSortByAggregation = (direction = 'DESC') => ({
   $sort: {
-    _id: direction === 'DESC' ? -1 : 1
-  }
+    _id: direction === 'DESC' ? -1 : 1,
+  },
 });
 
 const projectAggregation = {
@@ -54,10 +54,10 @@ const projectAggregation = {
       $map: {
         input: '$specs',
         as: 'spec',
-        in: '$$spec.instanceId'
-      }
-    }
-  }
+        in: '$$spec.instanceId',
+      },
+    },
+  },
 };
 
 const lookupAggregation = {
@@ -65,8 +65,8 @@ const lookupAggregation = {
     from: 'instances',
     localField: 'specsFull',
     foreignField: 'instanceId',
-    as: 'specsFull'
-  }
+    as: 'specsFull',
+  },
 };
 
 export class RunsAPI extends DataSource {
@@ -80,22 +80,20 @@ export class RunsAPI extends DataSource {
       cursor
         ? {
             $match: {
-              _id: { $lt: new ObjectID(cursor) }
-            }
+              _id: { $lt: new ObjectID(cursor) },
+            },
           }
         : null,
       {
         // get one extra to know if there's more
-        $limit: PAGE_LIMIT + 1
+        $limit: PAGE_LIMIT + 1,
       },
       projectAggregation,
-      lookupAggregation
-    ].filter(i => !!i);
+      lookupAggregation,
+    ].filter((i) => !!i);
 
     const results = await (
-      await getMongoDB()
-        .collection('runs')
-        .aggregate(aggregationPipeline)
+      await getMongoDB().collection('runs').aggregate(aggregationPipeline)
     ).toArray();
 
     return runFeedReducer(results);
@@ -105,15 +103,15 @@ export class RunsAPI extends DataSource {
     const aggregationPipeline = [
       getSortByAggregation(orderDirection),
       projectAggregation,
-      lookupAggregation
-    ].filter(i => !!i);
+      lookupAggregation,
+    ].filter((i) => !!i);
 
     const results = await getMongoDB()
       .collection('runs')
       .aggregate(aggregationPipeline)
       .toArray();
 
-    return runFeedReducer(results);
+    return fullRunReducer(results);
   }
 
   async getRunById(id: string) {
@@ -122,9 +120,47 @@ export class RunsAPI extends DataSource {
       .aggregate([
         matchRunAggregation(id),
         projectAggregation,
-        lookupAggregation
+        lookupAggregation,
       ]);
 
     return fullRunReducer(await result.toArray()).pop();
+  }
+
+  async deleteRunsByIds(runIds: string[]) {
+    const result = await getMongoDB()
+      .collection('runs')
+      .deleteMany({
+        runId: {
+          $in: runIds,
+        },
+      });
+    return {
+      success: result.result.ok === 1,
+      message: `${result.deletedCount} document${
+        result.deletedCount > 1 ? 's' : ''
+      } deleted`,
+      runIds: result.result.ok === 1 ? runIds : [],
+    };
+  }
+
+  async deleteRunsInDateRange(startDate: Date, endDate: Date) {
+    if (startDate > endDate) {
+      return {
+        success: false,
+        message: `startDate: ${startDate.toISOString()} should be less than endDate: ${endDate.toISOString()}`,
+        runIds: [],
+      };
+    }
+    const response = await getMongoDB()
+      .collection('runs')
+      .find({
+        createdAt: {
+          $lte: endDate.toISOString(),
+          $gte: startDate.toISOString(),
+        },
+      })
+      .toArray();
+    const runIds = response.map((x) => x.runId) as string[];
+    return await this.deleteRunsByIds(runIds);
   }
 }

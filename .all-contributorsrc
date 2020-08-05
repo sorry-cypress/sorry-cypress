@@ -1,0 +1,129 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "jhicken",
+      "name": "Jeff Hicken",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/5297942?v=4",
+      "profile": "http://jeffhicken.com",
+      "contributions": [
+        "code",
+        "ideas"
+      ]
+    },
+    {
+      "login": "janineahn",
+      "name": "Janine",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/15375744?v=4",
+      "profile": "https://github.com/janineahn",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "xtroncode",
+      "name": "Meet Shah",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/3901381?v=4",
+      "profile": "https://github.com/xtroncode",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "abhidp",
+      "name": "Abhi D",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/30851622?v=4",
+      "profile": "https://github.com/abhidp",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "TomaszG",
+      "name": "TomaszG",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/873114?v=4",
+      "profile": "https://github.com/TomaszG",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "coreyshirk",
+      "name": "Corey Shirk",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/9434322?v=4",
+      "profile": "https://www.linkedin.com/in/coreyshirk/",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "nickcox",
+      "name": "nickcox",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/135552?v=4",
+      "profile": "https://github.com/nickcox",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "MeStrak",
+      "name": "MeStrak",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/31989238?v=4",
+      "profile": "https://github.com/MeStrak",
+      "contributions": [
+        "doc",
+        "code"
+      ]
+    },
+    {
+      "login": "mlsad3",
+      "name": "mlsad3",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/15711477?v=4",
+      "profile": "https://github.com/mlsad3",
+      "contributions": [
+        "doc",
+        "code"
+      ]
+    },
+    {
+      "login": "KyleThenTR",
+      "name": "Kyle Then",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/52414395?v=4",
+      "profile": "https://github.com/KyleThenTR",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "redaxmedia",
+      "name": "Henry Ruhs",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/1835397?v=4",
+      "profile": "https://redaxmedia.com",
+      "contributions": [
+        "ideas"
+      ]
+    },
+    {
+      "login": "adityatr",
+      "name": "Aditya Trivedi",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/9066230?v=4",
+      "profile": "https://github.com/adityatr",
+      "contributions": [
+        "content"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "sorry-cypress",
+  "projectOwner": "agoldis",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
