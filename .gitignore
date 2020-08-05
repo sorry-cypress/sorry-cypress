@@ -67,4 +67,4 @@ typings/
 */**/.aws
 
 # Minio
-/data/data-minio-cypress
+/data

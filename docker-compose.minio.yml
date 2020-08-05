@@ -1,4 +1,4 @@
-version: "3.6"
+version: '3.6'
 
 services:
   mongo:
@@ -8,10 +8,10 @@ services:
 
   storage:
     image: minio/minio
-    hostname: "storage"
+    hostname: 'storage'
     environment:
-      MINIO_ACCESS_KEY: "YourMinioAccessKey"
-      MINIO_SECRET_KEY: "YourMinioSecret"
+      MINIO_ACCESS_KEY: 'MW32h3gd6HvjBEgTRx'
+      MINIO_SECRET_KEY: 't6NgQWUcEyG2AzaDCVkN6sbWcvDCVkN6sGiZ7'
     volumes:
       - ./data/data-minio-cypress:/data
     command: server /data
@@ -24,32 +24,31 @@ services:
       - storage
     entrypoint: >
       /bin/sh -c "
-      /usr/bin/mc config host add myminio http://storage:9000 YourMinioAccessKey YourMinioSecret;
-      /usr/bin/mc rm -r --force myminio/sorry-cypress;
+      sleep 3;
+      /usr/bin/mc config host add myminio http://storage:9000 MW32h3gd6HvjBEgTRx t6NgQWUcEyG2AzaDCVkN6sbWcvDCVkN6sGiZ7;
+      /usr/bin/mc rm -r --dangerous --force myminio/sorry-cypress;
       /usr/bin/mc mb myminio/sorry-cypress;
       /usr/bin/mc policy set download myminio/sorry-cypress;
       /usr/bin/mc policy set public myminio/sorry-cypress;
       exit 0;
       "
   director:
-    image: stefanso/sorry-cypress-director:latest
+    image: agoldis/sorry-cypress-director:latest
     links:
-      - "storage:storage"
+      - 'storage:storage'
     environment:
       DASHBOARD_URL: http://localhost:8080
-      MONGODB_URI: "mongodb://mongo:27017"
-      MONGODB_DATABASE: "sorry-cypress"
-      EXECUTION_DRIVER: "../execution/mongo/driver"
-      SCREENSHOTS_DRIVER: "../screenshots/minio.driver"
-      AWS_ACCESS_KEY_ID: "key"
-      AWS_SECRET_ACCESS_KEY: "secret"
-      S3_BUCKET: sorry-cypress
-      MINIO_ACCESS_KEY: "YourMinioAccessKey"
-      MINIO_SECRET_KEY: "YourMinioSecret"
-      MINIO_ENDPOINT: "storage"
-      MINIO_URL: "http://storage"
-      MINIO_PORT: "9000"
-      MINIO_USESSL: "false"
+      EXECUTION_DRIVER: '../execution/mongo/driver'
+      MONGODB_URI: 'mongodb://mongo:27017'
+      MONGODB_DATABASE: 'sorry-cypress'
+
+      SCREENSHOTS_DRIVER: '../screenshots/minio.driver'
+      MINIO_ACCESS_KEY: 'MW32h3gd6HvjBEgTRx'
+      MINIO_SECRET_KEY: 't6NgQWUcEyG2AzaDCVkN6sbWcvDCVkN6sGiZ7'
+      MINIO_ENDPOINT: 'storage'
+      MINIO_URL: 'http://storage'
+      MINIO_PORT: '9000'
+      MINIO_USESSL: 'false'
       MINIO_BUCKET: sorry-cypress
     ports:
       - 1234:1234
@@ -59,12 +58,13 @@ services:
   api:
     image: agoldis/sorry-cypress-api:latest
     environment:
-      MONGODB_URI: "mongodb://mongo:27017"
-      MONGODB_DATABASE: "sorry-cypress"
+      MONGODB_URI: 'mongodb://mongo:27017'
+      MONGODB_DATABASE: 'sorry-cypress'
     ports:
       - 4000:4000
     depends_on:
       - mongo
+
   dashboard:
     image: agoldis/sorry-cypress-dashboard:latest
     environment:

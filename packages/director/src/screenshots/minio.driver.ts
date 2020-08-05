@@ -1,16 +1,15 @@
-import md5 from 'md5';
-import {
-  ScreenshotsDriver,
-  InstanceResult,
-  ScreenshotUploadInstruction,
-  Screenshot,
-  AssetUploadInstruction
-} from '@src/types';
-
 import { isInstanceFailed } from '@src/lib/results';
 import {
+  AssetUploadInstruction,
+  InstanceResult,
+  Screenshot,
+  ScreenshotsDriver,
+  ScreenshotUploadInstruction,
+} from '@src/types';
+import md5 from 'md5';
+import {
   getImageUploadUrl,
-  getVideoUploadUrl as s3getVideoUploadUrl
+  getVideoUploadUrl as minioGetVideoUploadUrl,
 } from './minio';
 
 const getScreenshotUploadInstruction = (namespace: string) => async (
@@ -19,7 +18,7 @@ const getScreenshotUploadInstruction = (namespace: string) => async (
   const key = md5(`${namespace}:${screenshot.screenshotId}`);
   return {
     ...(await getImageUploadUrl(key)),
-    screenshotId: screenshot.screenshotId
+    screenshotId: screenshot.screenshotId,
   };
 };
 
@@ -33,7 +32,7 @@ export const getVideoUploadUrl = async (
   if (!isInstanceFailed(result) && !result.cypressConfig.videoUploadOnPasses) {
     return null;
   }
-  return await s3getVideoUploadUrl(instanceId);
+  return await minioGetVideoUploadUrl(instanceId);
 };
 
 export const getScreenshotsUploadUrls = async (
@@ -53,5 +52,5 @@ export const driver: ScreenshotsDriver = {
   id: 'minio',
   init: () => Promise.resolve(),
   getScreenshotsUploadUrls,
-  getVideoUploadUrl
+  getVideoUploadUrl,
 };
