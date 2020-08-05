@@ -5,8 +5,6 @@
 
 <br />
 
-
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
 ![Update Dockerhub Images](https://github.com/agoldis/sorry-cypress/workflows/Update%20Dockerhub%20Images/badge.svg?event=push)
 ![Update Dockerhub Images](https://github.com/agoldis/sorry-cypress/workflows/Lint%20and%20test/badge.svg)
 <a href="https://join.slack.com/t/sorry-cypress/shared_invite/zt-eis1h6jl-tJELaD7q9UGEhMP8WHJOaw" target="_blank">![Join slack](https://img.shields.io/badge/join-slack-orange?logo=slack)<a/>
@@ -22,19 +20,28 @@ Please help us by taking a short 1-minute [survey](https://forms.gle/qxoTPFiokLW
 - [Demo & example](#demo--example)
   - [Cloud-based demo](#Cloud-based-demo)
   - [Run the demo locally (2 minutes)](#Run-the-demo-locally)
+- [Terminology](#terminology)
 - [On-premise installation instructions](#on-premise-installation-instructions)
   - [Docker images](#docker-images)
   - [🔥<span style="color: white; background: orange; padding: 2px 4px">new!</span> Heroku](#heroku)
   - [🔥<span style="color: white; background: orange; padding: 2px 4px">new!</span> Amazon AWS](#Amazon-AWS)
-- [Documentation](#documentation)
-  - [Reconfiguring Cypress](#Reconfiguring-Cypress)
-    - [Manual setup](#Manual-configuration-change)
-    - [Using CLI one-liner](#Using-one-liner)
-    - [🔥<span style="color: white; background: orange; padding: 2px 4px">new!</span> Using sorry-cypress wrapper](#Using-sorry-cypress-wrapper)
-  - [Project structure](#project-structure)
-  - [`director` service](#director-service)
-  - [`api` service](#api-service)
-  - [`dashboard` service](#dashboard-service)
+- [Reconfiguring Cypress Client](#Reconfiguring-Cypress)
+  - [Manual setup](#Manual-configuration-change)
+  - [Using CLI one-liner](#Using-one-liner)
+  - [Using sorry-cypress wrapper](#Using-sorry-cypress-wrapper)
+- [`director` service](#director-service)
+  - [Starting the service](#starting-the-service)
+  - [`director` configuration](#director-configuration)
+  - [Drivers overview](#drivers-overview)
+  - [Execution driver](#drivers-overview)
+    - [Stateless execution driver](#stateless-execution-driver)
+    - [Persisting execution driver](#persisting-execution-driver)
+  - [Snapshots drivers](#snapshots-drivers)
+    - [Dummy](#dummy)
+    - [S3 storage driver](#s3-driver)
+    - [🔥<span style="color: white; background: orange; padding: 2px 4px">new!</span> Minio driver](#minio-driver)
+- [`api` service](#api-service)
+- [`dashboard` service](#dashboard-service)
 - [Development](#development)
 - [Behind the scenes](#behind-the-scenes)
 - [FAQ](#faq)
@@ -85,6 +92,14 @@ Run your tests `cypress run --parallel --record --key xxx --ci-build-id <buildId
 
 > You will need to [setup S3](https://github.com/agoldis/sorry-cypress/wiki/S3-screenshot-bucket-setup-instructions) to be able to upload failed test screenshots. Replace the credentials in `docker-compose.full.yml` after you've set up S3 bucket.
 
+## Terminology
+
+The repository consists of 3 packages, each one represents a service:
+
+- [`packages/director`](#the-director) - is a service that's responsibe for parallelization and saving test results
+- [`packages/api`](#the-api-service) - is a GraphQL server that allows to read test run details and results
+- [`packages/dashboard`](#the-dashboard-service) - is a web dashboard (ReactJS)
+
 ## On-premise installation instructions
 
 ### Docker images
@@ -118,11 +133,9 @@ Read more in [Wiki - AWS Tutorial](https://github.com/agoldis/sorry-cypress/wiki
 
 [![Launch Stack](https://cdn.rawgit.com/buildkite/cloudformation-launch-stack-button-svg/master/launch-stack.svg)](https://console.aws.amazon.com/cloudformation/home#/stacks/new?stackName=sorry-cypress&templateURL=https://s3.amazonaws.com/agoldis.dev/sorry-cypress/sorry-cypress-stack.yml)
 
-## Documentation
+## Reconfiguring Cypress Client
 
-### Reconfiguring Cypress
-
-#### Manual configuration change
+### Manual configuration change
 
 Find cypress installation path
 
@@ -150,7 +163,7 @@ production:
 ...
 ```
 
-#### Using one-liner
+### Using one-liner
 
 Use this CLI one-liner to change cypress configuration (courtesy of [@MeStrak](https://github.com/MeStrak)):
 
@@ -158,14 +171,14 @@ Use this CLI one-liner to change cypress configuration (courtesy of [@MeStrak](h
 > sed -i -e 's|api_url:.*$|api_url: "https://sorry-cypress-demo-director.herokuapp.com/"|g' /*/.cache/Cypress/*/Cypress/resources/app/packages/server/config/app.yml
 ```
 
-Or for windows (by [@nickcox](https://github.com/nickcox)): 
+Or for windows (by [@nickcox](https://github.com/nickcox)):
 
 ```powershell
 ls $env:LOCALAPPDATA/Cypress/Cache -Recurse -Filter app.yml |
 % { (Get-Content $_ -Raw) -replace "https://api.cypress.io/", "https://sorry-cypress-demo-director.herokuapp.com/" | Out-File $_ }
 ```
 
-#### Using sorry-cypress wrapper
+### Using sorry-cypress wrapper
 
 Thanks [@janineahn](https://github.com/janineahn) and [@redaxmedia](https://github.com/redaxmedia) for this contribution!
 
@@ -217,9 +230,7 @@ When you launch Cypress on a CI environment with multiple machines, each machine
 
 The dashboard coordinates the requests from different machines and assigns tests to each.
 
-That is what `director` service does 👆
-
-#### Starting the service
+### Starting the service
 
 ```sh
 cd packages/director
@@ -237,9 +248,9 @@ Listening on 1234...
 
 By default, the service will start on port `1234` with in-memory execution driver and `dummy` snapshots driver.
 
-That is what running on `https://sorry-cypress.herokuapp.com` - it is a stateless execution, that just parallelizes tests, but does not persist test results and does not upload screenshots of failed tests.
+This configuratuin is running on `https://sorry-cypress.herokuapp.com` - a stateless execution driver, that just parallelizes tests, does not persist test results and does not persist screenshots of failed tests.
 
-#### Configuration
+### `director` configuration
 
 The service uses [`dotenv`](https://www.npmjs.com/package/dotenv) package - to change the default configuration, create `.env` file in service's root to set the default environment variables:
 
@@ -264,17 +275,19 @@ SCREENSHOTS_DRIVER="../screenshots/dummy.driver"
 ALLOWED_KEYS="my_secret_key,my_another_secret_key"
 ```
 
-#### Drivers
+Setting `ALLOWED_KEYS` variable allows you to define list of comma delimited record keys (provided to the Cypress Runner using `--key` option) which are accepted by the `director` service. This can be useful when Cypress is running on external CI servers and we need to expose `director` to the internet.
 
-The `director` uses "drivers" that define different aspects of its functionality.
+Empty or not provided variable means that all record keys are allowed.
 
-#### Execution driver
+### Drivers overview
 
-...is what drives the execution flow.
+The `director` uses "drivers" that define different aspects of its functionality. You can choose or implement different type of drivers to support the desired functionality. There're several community-supported drivers listed below.
 
-There're 2 "execution drivers" implemented:
+### Execution driver
 
-##### Stateless
+...is what drives the execution flow of `director` service.
+
+#### Stateless execution driver
 
 Keeps the state of runs in-memory. That means that restarting the service wipes everything.
 
@@ -282,7 +295,7 @@ That's the simplest and most naive implementation.
 
 If you just want to run the tests in parallel and not worry about storing test results.
 
-##### MongoDB persisted
+#### Persisting execution driver
 
 The state - test runs and results - are persisted in MongoDB, thus, can be queried and displayed in a dashboard.
 
@@ -294,15 +307,15 @@ MONGODB_URI="monodgb://your-DB-URI"
 MONGODB_DATABASE="your-DB-name"
 ```
 
-With MongoDB driver you can use the other services - `api` and `dashboard` to see the results of your runs.
+With MongoDB driver you can use the other services - `api` and `dashboard` to browse the results of your runs.
 
-#### Snapshots driver
+### Snapshots drivers
 
 ...is what allows you to save the snapshots and videos tests.
 
-It provides the client (Cypress runner) a URL for uploading the assets (videos and screenshots).
+It provides the client (Cypress runner) a URL for uploading generated assets (videos and screenshots).
 
-##### Dummy
+#### Dummy
 
 Is the default driver and it does nothing - snapshots won't be saved.
 
@@ -312,41 +325,49 @@ Set the environment variable to define the screenshots driver.
 SCREENSHOTS_DRIVER="../screenshots/dummy.driver"
 ```
 
-##### S3 Driver
+#### S3 Driver
 
 S3 screenshots driver documentation has moved to [Wiki](https://github.com/agoldis/sorry-cypress/wiki/S3-screenshot-driver)
 
-#### Record keys whitelist
+#### Minio Driver
 
-Setting ALLOWED_KEYS variable allows you to define list of comma delimited record keys (provided to the Cypress Runner using `--key` option) which are accepted by the `director` service. This can be useful when Cypress is running on external CI servers and we need to expose `director` to the internet.
+Thanks @StefanS-O for contributing minio driver!
 
-Empty or not provided variable means that all record keys are allowed.
+See [`docker-compose.minio.yml`](https://github.com/agoldis/sorry-cypress/blob/master/docker-compose.minio.yml) for ready-to-use sorry-cypress configuration that uses locally hosted Minio as a storage layer.
 
+To run on the local machine, edit your `/etc/hosts` file to allow cypress agents discover the local instance of minio
+
+```sh
+127.0.0.1 storage
 ```
-ALLOWED_KEYS="my_secret_key"
-```
+
+**Warning!** The example `docker-compose.minio.yml` deletes existing buckets, so please test - or remove from the docker file after first run!
+
+You should be able to change the environment variables according to your Minio setup. Please refer to the default values at [`src/screenshots/minio/config.ts`](https://github.com/agoldis/sorry-cypress/blob/master/packages/director/src/screenshots/minio/config.ts).
+
+The available minio configuration resembles S3 storage driver configruation.
+
+Treat your Minio keys and secrets AWS credentials and hide them.
 
 ### `api` service
 
-...is a simple GraphQL service, that allows to query the data persisted by MongoDB.
+...is a simple GraphQL service, that allows querying data persisted by MongoDB.
 
 Set environment variables that define MongoDB connection details:
 
-```
+```sh
 MONGODB_URI='mongodb://mongo:27017'
 MONGODB_DATABASE='sorry-cypress'
 ```
 
 ### `dashboard` service
 
-...is a web dashboard implemented in ReactJS. It is in alpha stage and still very naive - you can explore test details, failures and see screenshots.
+...is a web dashboard implemented in ReactJS. It is still very naive but useful - you can explore test details, failures, see screenshots and video recordings (if enabled).
 
-In production mode you will need to provide environment variable `GRAPHQL_SCHEMA_URL` - graphql client will use the URL to download the schema.
+Set the environment variable `GRAPHQL_SCHEMA_URL` to the api service - GraphQL client will use it to pull schema definitions.
 
-Set environment variable that defines the URL for getting the schema:
-
-```
-GRAPHQL_SCHEMA_URL=https://sorry-cypress-demo-api.herokuapp.com
+```sh
+GRAPHQL_SCHEMA_URL='https://sorry-cypress-demo-api.herokuapp.com'
 ```
 
 You can explore currently available features at https://sorry-cypress-demo.herokuapp.com/.
@@ -450,6 +471,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
