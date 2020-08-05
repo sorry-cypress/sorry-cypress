@@ -39,7 +39,7 @@ Please help us by taking a short 1-minute [survey](https://forms.gle/qxoTPFiokLW
   - [Snapshots drivers](#snapshots-drivers)
     - [Dummy](#dummy)
     - [S3 storage driver](#s3-driver)
-    - [Minio driver](#minio-driver)
+    - [🔥<span style="color: white; background: orange; padding: 2px 4px">new!</span> Minio driver](#minio-driver)
 - [`api` service](#api-service)
 - [`dashboard` service](#dashboard-service)
 - [Development](#development)
@@ -330,6 +330,8 @@ SCREENSHOTS_DRIVER="../screenshots/dummy.driver"
 S3 screenshots driver documentation has moved to [Wiki](https://github.com/agoldis/sorry-cypress/wiki/S3-screenshot-driver)
 
 #### Minio Driver
+
+Thanks @StefanS-O for contributing minio driver!
 
 See [`docker-compose.minio.yml`](https://github.com/agoldis/sorry-cypress/blob/master/docker-compose.minio.yml) for ready-to-use sorry-cypress configuration that uses locally hosted Minio as a storage layer.
 
