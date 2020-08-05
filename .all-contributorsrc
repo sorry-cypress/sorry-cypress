@@ -118,6 +118,18 @@
       "contributions": [
         "content"
       ]
+    },
+    {
+      "login": "StefanS-O",
+      "name": "Stefan Schulte-Ortbeck",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/1253938?v=4",
+      "profile": "https://github.com/StefanS-O",
+      "contributions": [
+        "code",
+        "example",
+        "doc",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
