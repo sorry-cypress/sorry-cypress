@@ -16,9 +16,11 @@ export function InstanceDetailsView({
     params: { id },
   },
 }: InstanceDetailsViewProps): React.ReactNode {
+  const shouldAutoRefresh = Boolean(JSON.parse(window.localStorage.getItem('shouldAutoRefresh')));
+  
   const { loading, error, data } = useGetInstanceQuery({
     variables: { instanceId: id },
-    pollInterval: 1500,
+    pollInterval: shouldAutoRefresh ? 1500 : undefined,
   });
   const apollo = useApolloClient();
 

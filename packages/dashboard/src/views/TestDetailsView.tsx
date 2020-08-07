@@ -7,9 +7,11 @@ import { TestDetails } from '../components/test';
 export function TestDetailsView(): React.ReactNode {
   const { instanceId, testId } = useParams();
 
+  const shouldAutoRefresh = Boolean(JSON.parse(window.localStorage.getItem('shouldAutoRefresh')));
+
   const { loading, error, data } = useGetInstanceQuery({
     variables: { instanceId },
-    pollInterval: 1500,
+    pollInterval: shouldAutoRefresh ? 1500 : undefined,
   });
 
   const apollo = useApolloClient();
