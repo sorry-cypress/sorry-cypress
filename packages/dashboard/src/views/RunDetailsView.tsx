@@ -1,8 +1,9 @@
+import { useApolloClient } from '@apollo/react-hooks';
+import { useAutoRefresh } from '@src/hooks/useAutoRefresh';
 import React from 'react';
 import { RunDetails } from '../components/run/details';
 import { RunSummary } from '../components/run/summary';
 import { useGetRunQuery } from '../generated/graphql';
-import { useApolloClient } from '@apollo/react-hooks';
 
 type RunDetailsViewProps = {
   match: {
@@ -18,7 +19,7 @@ export function RunDetailsView({
 }: RunDetailsViewProps): React.ReactNode {
   const apollo = useApolloClient();
 
-  const shouldAutoRefresh = Boolean(JSON.parse(window.localStorage.getItem('shouldAutoRefresh')));
+  const [shouldAutoRefresh] = useAutoRefresh();
 
   const { loading, error, data } = useGetRunQuery({
     variables: { runId: id },

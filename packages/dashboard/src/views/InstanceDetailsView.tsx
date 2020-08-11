@@ -1,8 +1,9 @@
-import React from 'react';
-import { InstanceSummary } from '../components/instance/summary';
-import { InstanceDetails } from '../components/instance/details';
-import { useGetInstanceQuery } from '../generated/graphql';
 import { useApolloClient } from '@apollo/react-hooks';
+import { useAutoRefresh } from '@src/hooks/useAutoRefresh';
+import React from 'react';
+import { InstanceDetails } from '../components/instance/details';
+import { InstanceSummary } from '../components/instance/summary';
+import { useGetInstanceQuery } from '../generated/graphql';
 
 type InstanceDetailsViewProps = {
   match: {
@@ -16,8 +17,8 @@ export function InstanceDetailsView({
     params: { id },
   },
 }: InstanceDetailsViewProps): React.ReactNode {
-  const shouldAutoRefresh = Boolean(JSON.parse(window.localStorage.getItem('shouldAutoRefresh')));
-  
+  const [shouldAutoRefresh] = useAutoRefresh();
+
   const { loading, error, data } = useGetInstanceQuery({
     variables: { instanceId: id },
     pollInterval: shouldAutoRefresh ? 1500 : undefined,
