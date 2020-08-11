@@ -1,15 +1,18 @@
+import { useApolloClient } from '@apollo/react-hooks';
+import { useAutoRefresh } from '@src/hooks/useAutoRefresh';
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { useGetInstanceQuery } from '../generated/graphql';
-import { useApolloClient } from '@apollo/react-hooks';
 import { TestDetails } from '../components/test';
+import { useGetInstanceQuery } from '../generated/graphql';
 
 export function TestDetailsView(): React.ReactNode {
   const { instanceId, testId } = useParams();
 
+  const [shouldAutoRefresh] = useAutoRefresh();
+
   const { loading, error, data } = useGetInstanceQuery({
     variables: { instanceId },
-    pollInterval: 1500,
+    pollInterval: shouldAutoRefresh ? 1500 : undefined,
   });
 
   const apollo = useApolloClient();
