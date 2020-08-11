@@ -1,5 +1,5 @@
 <div align="center">
-<div><img src="https://sorry-cypress.dev/public/octolumbercat.png" width="128" /></div>
+<div><img src="https://sorry-cypress.dev/public/octolumbercat.png" width="256" /></div>
 <div>:octocat: An open-source, on-premise, self-hosted alternative to Cypress dashboard :evergreen_tree:</div>
 </div>
 
@@ -56,14 +56,6 @@ Yes, Cypress is an [open source software](https://github.com/cypress-io/cypress/
 ### Is it production-ready?
 
 Yes.
-
-## Additional Resources
-
-- [Wiki](https://github.com/agoldis/sorry-cypress/wiki)
-- [The official guide on Cypress parallelization](https://docs.cypress.io/guides/guides/parallelization.html)
-- [CodeBuild configuration for running multiple Cypress Agents on AWS](https://github.com/agoldis/sorry-cypress/wiki/AWS-Multiple-Cypress-Agents-mlsad3) by [@mlsad3](https://github.com/mlsad3)
-- [CodeBuild configuration for running multiple Cypress Agents on AWS](https://github.com/agoldis/sorry-cypress/wiki/AWS-Multiple-Cypress-Agents-KyleThenTR) by [@KyleThenTR](https://github.com/KyleThenTR)
-- [Cypress Parallelization on Jenkins using Sorry-Cypress](https://medium.com/@adityahbk/cypress-parallelization-on-jenkins-using-sorry-cypress-197a86ad8ed1) by [@huskywhale](https://github.com/huskywhale)
 
 ## License
 
