@@ -1,7 +1,7 @@
 import { getMongoDB, init } from '@src/lib/mongo';
 import { DataSource } from 'apollo-datasource';
 
-const PAGE_LIMIT = 10;
+const PAGE_LIMIT = 3;
 const NB_RUNNER = 25;
 
 const mergeRunSpecs = (run) => {
