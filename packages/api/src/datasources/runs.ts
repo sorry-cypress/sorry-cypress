@@ -168,7 +168,8 @@ export class RunsAPI extends DataSource {
             projectAggregation,
             lookupAggregation,
             projectRestrictedAggregation,
-          ].filter((i) => !!i)
+          ].filter((i) => !!i),
+          { allowDiskUse: true }
         )
     ).toArray();
 
@@ -197,7 +198,7 @@ export class RunsAPI extends DataSource {
 
     const results = await getMongoDB()
       .collection('runs')
-      .aggregate(aggregationPipeline)
+      .aggregate(aggregationPipeline, { allowDiskUse: true })
       .toArray();
 
     return fullRunReducer(results);
@@ -206,13 +207,16 @@ export class RunsAPI extends DataSource {
   async getRunById(id: string) {
     const result = getMongoDB()
       .collection('runs')
-      .aggregate([
-        matchRunAggregation(id),
-        unwindAggregation,
-        groupAggregation,
-        projectAggregation,
-        lookupAggregation,
-      ]);
+      .aggregate(
+        [
+          matchRunAggregation(id),
+          unwindAggregation,
+          groupAggregation,
+          projectAggregation,
+          lookupAggregation,
+        ],
+        { allowDiskUse: true }
+      );
 
     return fullRunReducer(await result.toArray()).pop();
   }
