@@ -7,7 +7,7 @@ import { Instance, InstanceTest } from '../../generated/graphql';
 
 const TestItem = ({
   test,
-  instanceId
+  instanceId,
 }: {
   test: InstanceTest | null;
   instanceId: string;
@@ -19,20 +19,26 @@ const TestItem = ({
   return <Test instanceId={instanceId} test={test} />;
 };
 export const InstanceDetails: React.FC<{ instance: Instance }> = ({
-  instance
+  instance,
 }: {
   instance: Instance;
 }) => {
   const { css } = useCss();
   if (!instance.results) {
-    return <p>No results for the instance</p>;
+    return <p>No results yet for the spec</p>;
   }
   const tests = instance.results.tests;
+
+  if (!tests) {
+    return <div>No tests reported for spec</div>;
+  }
+
   return (
     <div>
       <strong>Tests</strong>
+
       <ul>
-        {tests.map(t => (
+        {tests.map((t) => (
           <li
             key={(t && t.testId) || ''}
             className={css`

@@ -5,15 +5,18 @@ import { getSpecState } from '../../lib/spec';
 import { Run } from '../../generated/graphql';
 
 type RunDetailsProps = {
-  run: Run;
+  run: Partial<Run>;
 };
 
-export function RunDetails({ run }: RunDetailsProps): React.ReactNode {
+export function RunDetails({ run }: RunDetailsProps) {
   const { css } = useCss();
   const { specs } = run;
 
   const [isPassedHidden, setHidePassedSpecs] = useState(false);
 
+  if (!specs) {
+    return null;
+  }
   /* eslint-disable @typescript-eslint/no-non-null-assertion */
   return (
     <div>
