@@ -11,9 +11,7 @@ const getInstanceStatLabel = (statusItem: keyof InstanceStats): string =>
 type InstanceSummaryProps = {
   instance: Instance;
 };
-export function InstanceSummary({
-  instance,
-}: InstanceSummaryProps): React.ReactNode {
+export function InstanceSummary({ instance }: InstanceSummaryProps) {
   if (!instance.results) {
     return <p>No results for the instance</p>;
   }

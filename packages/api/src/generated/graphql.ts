@@ -63,7 +63,7 @@ export type Instance = {
 export type InstanceResults = {
    __typename?: 'InstanceResults';
   stats: InstanceStats;
-  tests: Array<Maybe<InstanceTest>>;
+  tests?: Maybe<Array<Maybe<InstanceTest>>>;
   error?: Maybe<Scalars['String']>;
   stdout?: Maybe<Scalars['String']>;
   screenshots: Array<InstanceScreeshot>;
@@ -397,7 +397,7 @@ export type InstanceResolvers<ContextType = any, ParentType extends ResolversPar
 
 export type InstanceResultsResolvers<ContextType = any, ParentType extends ResolversParentTypes['InstanceResults'] = ResolversParentTypes['InstanceResults']> = {
   stats?: Resolver<ResolversTypes['InstanceStats'], ParentType, ContextType>,
-  tests?: Resolver<Array<Maybe<ResolversTypes['InstanceTest']>>, ParentType, ContextType>,
+  tests?: Resolver<Maybe<Array<Maybe<ResolversTypes['InstanceTest']>>>, ParentType, ContextType>,
   error?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   stdout?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   screenshots?: Resolver<Array<ResolversTypes['InstanceScreeshot']>, ParentType, ContextType>,

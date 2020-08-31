@@ -55,7 +55,7 @@ export type Instance = {
 export type InstanceResults = {
   __typename?: 'InstanceResults';
   stats: InstanceStats;
-  tests: Array<Maybe<InstanceTest>>;
+  tests?: Maybe<Array<Maybe<InstanceTest>>>;
   error?: Maybe<Scalars['String']>;
   stdout?: Maybe<Scalars['String']>;
   screenshots: Array<InstanceScreeshot>;
@@ -267,16 +267,18 @@ export type GetInstanceQuery = { __typename?: 'Query' } & {
                 | 'failures'
                 | 'wallClockDuration'
               >;
-              tests: Array<
-                Maybe<
-                  { __typename?: 'InstanceTest' } & Pick<
-                    InstanceTest,
-                    | 'testId'
-                    | 'wallClockDuration'
-                    | 'state'
-                    | 'error'
-                    | 'stack'
-                    | 'title'
+              tests?: Maybe<
+                Array<
+                  Maybe<
+                    { __typename?: 'InstanceTest' } & Pick<
+                      InstanceTest,
+                      | 'testId'
+                      | 'wallClockDuration'
+                      | 'state'
+                      | 'error'
+                      | 'stack'
+                      | 'title'
+                    >
                   >
                 >
               >;
