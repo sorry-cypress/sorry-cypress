@@ -12,7 +12,12 @@ import {
   ModalBody,
   ModalFooter,
 } from 'bold-ui';
-import { getRunTestsOverall, updateCacheOnDeleteRun } from '@src/lib/run';
+import {
+  getRunTestsOverall,
+  updateCacheOnDeleteRun,
+  getRunMetaData,
+} from '@src/lib/run';
+import './summary.css';
 import { Commit } from '@src/components/commit/commit';
 import { Paper } from '../common/';
 import {
