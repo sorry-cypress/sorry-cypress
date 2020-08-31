@@ -353,16 +353,9 @@ export type GetRunQuery = { __typename?: 'Query' } & {
                               InstanceTest,
                               'title' | 'state'
                             >
-                          >
-                        >;
-                        tests: Array<
-                          Maybe<
-                            { __typename?: 'InstanceTest' } & Pick<
-                              InstanceTest,
-                              'title' | 'state'
-                            >
-                          >
-                        >;
+                        >
+		      >
+		      >;
                         stats: { __typename?: 'InstanceStats' } & Pick<
                           InstanceStats,
                           | 'tests'
@@ -376,7 +369,6 @@ export type GetRunQuery = { __typename?: 'Query' } & {
                   >;
                 }
             >
-          >
         >;
       }
   >;
