@@ -310,10 +310,7 @@ export type GetRunQueryVariables = {
 
 export type GetRunQuery = { __typename?: 'Query' } & {
   run?: Maybe<
-    { __typename?: 'Run' } & Pick<
-      Run,
-      'tests' | 'failures' | 'passes' | 'pending' | 'skipped' | 'runId'
-    > & {
+    { __typename?: 'Run' } & Pick<Run, 'runId'> & {
         meta?: Maybe<
           { __typename?: 'RunMeta' } & Pick<
             RunMeta,
@@ -332,32 +329,33 @@ export type GetRunQuery = { __typename?: 'Query' } & {
               >;
             }
         >;
-        specs?: Maybe<
-          Array<
-            Maybe<
-              { __typename?: 'FullRunSpec' } & Pick<
-                FullRunSpec,
-                'spec' | 'instanceId' | 'claimed'
-              > & {
-                  results?: Maybe<
-                    { __typename?: 'InstanceResults' } & Pick<
-                      InstanceResults,
-                      'videoUrl'
-                    > & {
-                        cypressConfig?: Maybe<
-                          { __typename?: 'CypressConfig' } & Pick<
-                            CypressConfig,
-                            'video' | 'videoUploadOnPasses'
-                          >
-                        >;
-                        tests: Array<
+        specs: Array<
+          Maybe<
+            { __typename?: 'FullRunSpec' } & Pick<
+              FullRunSpec,
+              'spec' | 'instanceId' | 'claimed'
+            > & {
+                results?: Maybe<
+                  { __typename?: 'InstanceResults' } & Pick<
+                    InstanceResults,
+                    'videoUrl'
+                  > & {
+                      cypressConfig?: Maybe<
+                        { __typename?: 'CypressConfig' } & Pick<
+                          CypressConfig,
+                          'video' | 'videoUploadOnPasses'
+                        >
+                      >;
+                      tests?: Maybe<
+                        Array<
                           Maybe<
                             { __typename?: 'InstanceTest' } & Pick<
                               InstanceTest,
                               'title' | 'state'
                             >
-                          >
-                        >;
+                        >
+		      >
+		      >;
                         stats: { __typename?: 'InstanceStats' } & Pick<
                           InstanceStats,
                           | 'tests'
@@ -371,7 +369,6 @@ export type GetRunQuery = { __typename?: 'Query' } & {
                   >;
                 }
             >
-          >
         >;
       }
   >;
@@ -385,16 +382,7 @@ export type GetRunsFeedQueryVariables = {
 export type GetRunsFeedQuery = { __typename?: 'Query' } & {
   runFeed: { __typename?: 'RunFeed' } & Pick<RunFeed, 'cursor' | 'hasMore'> & {
       runs: Array<
-        { __typename?: 'Run' } & Pick<
-          Run,
-          | 'tests'
-          | 'failures'
-          | 'passes'
-          | 'pending'
-          | 'skipped'
-          | 'runId'
-          | 'createdAt'
-        > & {
+        { __typename?: 'Run' } & Pick<Run, 'runId' | 'createdAt'> & {
             meta?: Maybe<
               { __typename?: 'RunMeta' } & Pick<
                 RunMeta,
@@ -413,14 +401,45 @@ export type GetRunsFeedQuery = { __typename?: 'Query' } & {
                   >;
                 }
             >;
-            specs?: Maybe<
-              Array<
-                Maybe<
-                  { __typename?: 'FullRunSpec' } & Pick<
-                    FullRunSpec,
-                    'spec' | 'instanceId' | 'claimed'
-                  >
-                >
+            specs: Array<
+              Maybe<
+                { __typename?: 'FullRunSpec' } & Pick<
+                  FullRunSpec,
+                  'spec' | 'instanceId' | 'claimed'
+                > & {
+                    results?: Maybe<
+                      { __typename?: 'InstanceResults' } & Pick<
+                        InstanceResults,
+                        'videoUrl'
+                      > & {
+                          cypressConfig?: Maybe<
+                            { __typename?: 'CypressConfig' } & Pick<
+                              CypressConfig,
+                              'video' | 'videoUploadOnPasses'
+                            >
+                          >;
+                          tests?: Maybe<
+                            Array<
+                              Maybe<
+                                { __typename?: 'InstanceTest' } & Pick<
+                                  InstanceTest,
+                                  'title' | 'state'
+                                >
+                              >
+                            >
+                          >;
+                          stats: { __typename?: 'InstanceStats' } & Pick<
+                            InstanceStats,
+                            | 'tests'
+                            | 'pending'
+                            | 'passes'
+                            | 'failures'
+                            | 'skipped'
+                            | 'suites'
+                          >;
+                        }
+                    >;
+                  }
               >
             >;
           }
