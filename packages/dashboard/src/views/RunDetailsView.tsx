@@ -3,7 +3,7 @@ import { useAutoRefresh } from '@src/hooks/useAutoRefresh';
 import React from 'react';
 import { RunDetails } from '../components/run/details';
 import { RunSummary } from '../components/run/summary';
-import { useGetRunQuery } from '../generated/graphql';
+import { useGetRunQuery, useGetRunsByProjectIdLimitedToTimingQuery } from '../generated/graphql';
 
 type RunDetailsViewProps = {
   match: {
@@ -17,20 +17,44 @@ export function RunDetailsView({
     params: { id },
   },
 }: RunDetailsViewProps): React.ReactNode {
+  let propertySpecHeuristics;
   const apollo = useApolloClient();
 
   const [shouldAutoRefresh] = useAutoRefresh();
 
-  const { loading, error, data } = useGetRunQuery({
+  const { loading: runLoading, error: runError, data: runData } = useGetRunQuery({
     variables: { runId: id },
     pollInterval: shouldAutoRefresh ? 1500 : undefined,
   });
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error.toString()}</p>;
-  if (!data) return <p>No data</p>;
+  const { data: runsWithTimingData } = useGetRunsByProjectIdLimitedToTimingQuery({
+    variables: {
+      filters: [
+        {
+          key: 'meta.projectId',
+          value: runData?.run?.meta?.projectId
+        }
+      ]
+    }
+  });
 
-  if (!data.run) {
+  if (runsWithTimingData) {
+    propertySpecHeuristics = runsWithTimingData.runs.reduce((accumulator, runData)=>{
+      runData.specs.forEach((spec)=>{
+        accumulator[spec.spec] = accumulator[spec.spec] || [];
+        if ( spec?.results?.stats?.wallClockDuration ) {
+          accumulator[spec.spec].push(spec?.results?.stats?.wallClockDuration)
+        }
+      });
+      return accumulator; 
+    },{})
+  }
+
+  if (runLoading) return <p>Loading...</p>;
+  if (runError) return <p>{runError.toString()}</p>;
+  if (!runData) return <p>No data</p>;
+
+  if (!runData.run) {
     apollo.writeData({
       data: {
         navStructure: [
@@ -50,8 +74,8 @@ export function RunDetailsView({
       navStructure: [
         {
           __typename: 'NavStructureItem',
-          label: data.run!.meta!.ciBuildId,
-          link: `run/${data.run!.runId}`,
+          label: runData.run!.meta!.ciBuildId,
+          link: `run/${runData.run!.runId}`,
         },
       ],
     },
@@ -59,8 +83,8 @@ export function RunDetailsView({
 
   return (
     <>
-      <RunSummary run={data.run} />
-      <RunDetails run={data.run} />
+      <RunSummary run={runData.run} />
+      <RunDetails run={runData.run} propertySpecHeuristics={propertySpecHeuristics} />
     </>
   );
 }

@@ -16,11 +16,14 @@ import { shortEnglishHumanizerWithMsIfNeeded } from '../../lib/utis';
 import { SpecState } from '../common';
 import RenderOnInterval from '../renderOnInterval/renderOnInterval';
 
+const average = averageArray => averageArray.reduce( ( accumultor, nextArrayItem ) => accumultor + nextArrayItem, 0 ) / averageArray.length;
+
 type RunDetailsProps = {
   run: Partial<Run>;
+  propertySpecHeuristics: any;
 };
 
-export function RunDetails({ run }: RunDetailsProps) {
+export function RunDetails({ run, propertySpecHeuristics = {} }: RunDetailsProps) {
   const { css } = useCss();
   const { specs } = run;
 
@@ -113,6 +116,16 @@ export function RunDetails({ run }: RunDetailsProps) {
                   );
                 } else {
                   return '';
+                }
+              },
+            },
+            {
+              name: 'average-duration',
+              header: 'Average Duration',
+              sortable: false,
+              render: (spec: FullRunSpec) => {
+                if (spec?.spec) {
+                  return shortEnglishHumanizerWithMsIfNeeded(average(propertySpecHeuristics[spec?.spec] || []));
                 }
               },
             },

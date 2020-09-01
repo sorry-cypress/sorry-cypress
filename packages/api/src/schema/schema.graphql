@@ -5,8 +5,13 @@ enum OrderingOptions {
   ASC
 }
 
+input Filters {
+  key: String
+  value: String
+}
+
 type Query {
-  runs(orderDirection: OrderingOptions = DESC, cursor: String = null): [Run]!
+  runs(orderDirection: OrderingOptions = DESC, cursor: String = null, filters: [Filters] = null): [Run]!
   runFeed(cursor: String): RunFeed!
   run(id: ID!): Run
   instance(id: ID!): Instance

@@ -6,9 +6,11 @@ export const resolvers = {
   Query: {
     runs: (
       _,
-      { orderDirection }: { orderDirection: any },
+      { orderDirection, filters },
       { dataSources }: { dataSources: AppDatasources }
-    ) => dataSources.runsAPI.getAllRuns({ orderDirection }),
+    ) => {
+      return dataSources.runsAPI.getAllRuns({ orderDirection, filters })
+    },
     runFeed: (
       _,
       { cursor }: { cursor?: string },
