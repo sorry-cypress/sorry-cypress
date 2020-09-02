@@ -118,7 +118,6 @@ export class RunsAPI extends DataSource {
       lookupAggregation,
     ]).filter((i) => !!i);
 
-    console.log(JSON.stringify(aggregationPipeline))
     const results = await getMongoDB()
       .collection('runs')
       .aggregate(aggregationPipeline)
