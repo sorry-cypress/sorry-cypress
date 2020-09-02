@@ -1,3 +1,4 @@
+import { createProject } from './../projects/project.model';
 import {
   getRunById,
   createRun as storageCreateRun,
@@ -12,6 +13,7 @@ import {
   RUN_EXISTS,
   RUN_NOT_EXIST,
   CLAIM_FAILED,
+  PROJECT_CREATE_FAILED
 } from '@src/lib/errors';
 
 import {
@@ -36,6 +38,18 @@ export const createRun = async (
     runUrl: getDashboardRunURL(runId),
     warnings: [] as string[],
   };
+
+  try {
+    await createProject({
+      projectId: params.projectId,
+      createdAt: new Date().toISOString(),
+    });
+  } catch (error) {
+    if (error.code && error.code === PROJECT_CREATE_FAILED) {
+      return response;
+    }
+    throw error;
+  }
 
   try {
     await storageCreateRun({

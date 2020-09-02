@@ -143,12 +143,24 @@ export type PartialRun = {
   specs: Array<Maybe<RunSpec>>;
 };
 
+export type Project = {
+  __typename?: 'Project';
+  projectId: Scalars['String'];
+};
+
 export type Query = {
   __typename?: 'Query';
+  projects: Array<Maybe<Project>>;
   runs: Array<Maybe<Run>>;
   runFeed: RunFeed;
   run?: Maybe<Run>;
   instance?: Maybe<Instance>;
+};
+
+
+export type QueryProjectsArgs = {
+  orderDirection?: Maybe<OrderingOptions>;
+  filters?: Maybe<Array<Maybe<Filters>>>;
 };
 
 
@@ -161,6 +173,7 @@ export type QueryRunsArgs = {
 
 export type QueryRunFeedArgs = {
   cursor?: Maybe<Scalars['String']>;
+  filters?: Maybe<Array<Maybe<Filters>>>;
 };
 
 
@@ -296,8 +309,9 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
   OrderingOptions: OrderingOptions;
-  String: ResolverTypeWrapper<Scalars['String']>;
   Filters: Filters;
+  String: ResolverTypeWrapper<Scalars['String']>;
+  Project: ResolverTypeWrapper<Project>;
   Run: ResolverTypeWrapper<Run>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
@@ -323,8 +337,9 @@ export type ResolversTypes = {
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Query: {};
-  String: Scalars['String'];
   Filters: Filters;
+  String: Scalars['String'];
+  Project: Project;
   Run: Run;
   ID: Scalars['ID'];
   DateTime: Scalars['DateTime'];
@@ -454,9 +469,15 @@ export type PartialRunResolvers<ContextType = any, ParentType extends ResolversP
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
+export type ProjectResolvers<ContextType = any, ParentType extends ResolversParentTypes['Project'] = ResolversParentTypes['Project']> = {
+  projectId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  projects?: Resolver<Array<Maybe<ResolversTypes['Project']>>, ParentType, ContextType, RequireFields<QueryProjectsArgs, 'orderDirection' | 'filters'>>;
   runs?: Resolver<Array<Maybe<ResolversTypes['Run']>>, ParentType, ContextType, RequireFields<QueryRunsArgs, 'orderDirection' | 'cursor' | 'filters'>>;
-  runFeed?: Resolver<ResolversTypes['RunFeed'], ParentType, ContextType, RequireFields<QueryRunFeedArgs, never>>;
+  runFeed?: Resolver<ResolversTypes['RunFeed'], ParentType, ContextType, RequireFields<QueryRunFeedArgs, 'filters'>>;
   run?: Resolver<Maybe<ResolversTypes['Run']>, ParentType, ContextType, RequireFields<QueryRunArgs, 'id'>>;
   instance?: Resolver<Maybe<ResolversTypes['Instance']>, ParentType, ContextType, RequireFields<QueryInstanceArgs, 'id'>>;
 };
@@ -517,6 +538,7 @@ export type Resolvers<ContextType = any> = {
   InstanceTest?: InstanceTestResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   PartialRun?: PartialRunResolvers<ContextType>;
+  Project?: ProjectResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   ReporterStats?: ReporterStatsResolvers<ContextType>;
   Run?: RunResolvers<ContextType>;

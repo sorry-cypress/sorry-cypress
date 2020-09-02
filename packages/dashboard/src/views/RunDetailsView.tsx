@@ -74,6 +74,11 @@ export function RunDetailsView({
       navStructure: [
         {
           __typename: 'NavStructureItem',
+          label: runData.run!.meta!.projectId,
+          link: `${runData.run!.meta!.projectId}/runs`,
+        },
+        {
+          __typename: 'NavStructureItem',
           label: runData.run!.meta!.ciBuildId,
           link: `run/${runData.run!.runId}`,
         },

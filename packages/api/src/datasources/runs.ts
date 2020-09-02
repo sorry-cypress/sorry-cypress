@@ -86,8 +86,8 @@ export class RunsAPI extends DataSource {
     await init();
   }
 
-  async getRunFeed({ cursor }) {
-    const aggregationPipeline = [
+  async getRunFeed({ cursor, filters }) {
+    const aggregationPipeline = filtersToAggreations(filters).concat([
       getSortByAggregation(),
       cursor
         ? {
@@ -102,7 +102,7 @@ export class RunsAPI extends DataSource {
       },
       projectAggregation,
       lookupAggregation,
-    ].filter((i) => !!i);
+    ]).filter((i) => !!i);
 
     const results = await (
       await getMongoDB().collection('runs').aggregate(aggregationPipeline)
