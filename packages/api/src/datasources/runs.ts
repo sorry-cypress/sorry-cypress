@@ -43,16 +43,16 @@ const getSortByAggregation = (direction = 'DESC') => ({
   },
 });
 
-const filtersToAggreations = (filters)=>{
-  return filters ? filters.map((filter)=>{
-    const mapkeys = filter.key.split('.');
-    return {
-      $match: {
-        [filter.key]:filter.value
-      }
-    }
-  }) : []
-
+const filtersToAggregations = (filters) => {
+  return filters
+    ? filters.map((filter) => {
+        return {
+          $match: {
+            [filter.key]: filter.value,
+          },
+        };
+      })
+    : [];
 };
 
 const projectAggregation = {
@@ -112,11 +112,13 @@ export class RunsAPI extends DataSource {
   }
 
   async getAllRuns({ orderDirection, filters }) {
-    const aggregationPipeline = filtersToAggreations(filters).concat([
-      getSortByAggregation(orderDirection),
-      projectAggregation,
-      lookupAggregation,
-    ]).filter((i) => !!i);
+    const aggregationPipeline = filtersToAggregations(filters)
+      .concat([
+        getSortByAggregation(orderDirection),
+        projectAggregation,
+        lookupAggregation,
+      ])
+      .filter((i) => !!i);
 
     const results = await getMongoDB()
       .collection('runs')
