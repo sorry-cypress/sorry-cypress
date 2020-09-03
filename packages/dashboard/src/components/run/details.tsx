@@ -8,6 +8,7 @@ import {
   Tooltip,
   useCss,
 } from 'bold-ui';
+import mean from 'lodash/mean';
 import React, { useState } from 'react';
 import { generatePath } from 'react-router-dom';
 import { FullRunSpec, Run } from '../../generated/graphql';
@@ -18,9 +19,13 @@ import RenderOnInterval from '../renderOnInterval/renderOnInterval';
 
 type RunDetailsProps = {
   run: Partial<Run>;
+  propertySpecHeuristics: Record<string, number[]>;
 };
 
-export function RunDetails({ run }: RunDetailsProps) {
+export function RunDetails({
+  run,
+  propertySpecHeuristics = {},
+}: RunDetailsProps) {
   const { css } = useCss();
   const { specs } = run;
 
@@ -113,6 +118,18 @@ export function RunDetails({ run }: RunDetailsProps) {
                   );
                 } else {
                   return '';
+                }
+              },
+            },
+            {
+              name: 'average-duration',
+              header: 'Average Duration',
+              sortable: false,
+              render: (spec: FullRunSpec) => {
+                if (spec?.spec) {
+                  return shortEnglishHumanizerWithMsIfNeeded(
+                    mean(propertySpecHeuristics[spec?.spec] || [])
+                  );
                 }
               },
             },

@@ -1,0 +1,21 @@
+query getRunsByProjectIdLimitedToTiming(
+  $orderDirection: OrderingOptions
+  $filters: [Filters]
+) {
+  runs(orderDirection: $orderDirection, filters: $filters) {
+    runId
+    createdAt
+    meta {
+      ciBuildId
+      projectId
+    }
+    specs {
+      spec
+      results {
+        stats {
+          wallClockDuration
+        }
+      }
+    }
+  }
+}

@@ -35,6 +35,11 @@ export type DeleteRunResponse = {
   runIds: Array<Maybe<Scalars['ID']>>;
 };
 
+export type Filters = {
+  key?: Maybe<Scalars['String']>;
+  value?: Maybe<Scalars['String']>;
+};
+
 export type FullRunSpec = {
   __typename?: 'FullRunSpec';
   spec: Scalars['String'];
@@ -145,6 +150,7 @@ export type Query = {
 export type QueryRunsArgs = {
   orderDirection?: Maybe<OrderingOptions>;
   cursor?: Maybe<Scalars['String']>;
+  filters?: Maybe<Array<Maybe<Filters>>>;
 };
 
 export type QueryRunFeedArgs = {
@@ -368,6 +374,42 @@ export type GetRunQuery = { __typename?: 'Query' } & {
           >
         >;
       }
+  >;
+};
+
+export type GetRunsByProjectIdLimitedToTimingQueryVariables = {
+  orderDirection?: Maybe<OrderingOptions>;
+  filters?: Maybe<Array<Maybe<Filters>>>;
+};
+
+export type GetRunsByProjectIdLimitedToTimingQuery = {
+  __typename?: 'Query';
+} & {
+  runs: Array<
+    Maybe<
+      { __typename?: 'Run' } & Pick<Run, 'runId' | 'createdAt'> & {
+          meta?: Maybe<
+            { __typename?: 'RunMeta' } & Pick<
+              RunMeta,
+              'ciBuildId' | 'projectId'
+            >
+          >;
+          specs: Array<
+            Maybe<
+              { __typename?: 'FullRunSpec' } & Pick<FullRunSpec, 'spec'> & {
+                  results?: Maybe<
+                    { __typename?: 'InstanceResults' } & {
+                      stats: { __typename?: 'InstanceStats' } & Pick<
+                        InstanceStats,
+                        'wallClockDuration'
+                      >;
+                    }
+                  >;
+                }
+            >
+          >;
+        }
+    >
   >;
 };
 
@@ -695,6 +737,79 @@ export type GetRunLazyQueryHookResult = ReturnType<typeof useGetRunLazyQuery>;
 export type GetRunQueryResult = ApolloReactCommon.QueryResult<
   GetRunQuery,
   GetRunQueryVariables
+>;
+export const GetRunsByProjectIdLimitedToTimingDocument = gql`
+  query getRunsByProjectIdLimitedToTiming(
+    $orderDirection: OrderingOptions
+    $filters: [Filters]
+  ) {
+    runs(orderDirection: $orderDirection, filters: $filters) {
+      runId
+      createdAt
+      meta {
+        ciBuildId
+        projectId
+      }
+      specs {
+        spec
+        results {
+          stats {
+            wallClockDuration
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetRunsByProjectIdLimitedToTimingQuery__
+ *
+ * To run a query within a React component, call `useGetRunsByProjectIdLimitedToTimingQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRunsByProjectIdLimitedToTimingQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetRunsByProjectIdLimitedToTimingQuery({
+ *   variables: {
+ *      orderDirection: // value for 'orderDirection'
+ *      filters: // value for 'filters'
+ *   },
+ * });
+ */
+export function useGetRunsByProjectIdLimitedToTimingQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<
+    GetRunsByProjectIdLimitedToTimingQuery,
+    GetRunsByProjectIdLimitedToTimingQueryVariables
+  >
+) {
+  return ApolloReactHooks.useQuery<
+    GetRunsByProjectIdLimitedToTimingQuery,
+    GetRunsByProjectIdLimitedToTimingQueryVariables
+  >(GetRunsByProjectIdLimitedToTimingDocument, baseOptions);
+}
+export function useGetRunsByProjectIdLimitedToTimingLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    GetRunsByProjectIdLimitedToTimingQuery,
+    GetRunsByProjectIdLimitedToTimingQueryVariables
+  >
+) {
+  return ApolloReactHooks.useLazyQuery<
+    GetRunsByProjectIdLimitedToTimingQuery,
+    GetRunsByProjectIdLimitedToTimingQueryVariables
+  >(GetRunsByProjectIdLimitedToTimingDocument, baseOptions);
+}
+export type GetRunsByProjectIdLimitedToTimingQueryHookResult = ReturnType<
+  typeof useGetRunsByProjectIdLimitedToTimingQuery
+>;
+export type GetRunsByProjectIdLimitedToTimingLazyQueryHookResult = ReturnType<
+  typeof useGetRunsByProjectIdLimitedToTimingLazyQuery
+>;
+export type GetRunsByProjectIdLimitedToTimingQueryResult = ApolloReactCommon.QueryResult<
+  GetRunsByProjectIdLimitedToTimingQuery,
+  GetRunsByProjectIdLimitedToTimingQueryVariables
 >;
 export const GetRunsFeedDocument = gql`
   query getRunsFeed($cursor: String) {
