@@ -13,7 +13,7 @@ import {
   RUN_EXISTS,
   RUN_NOT_EXIST,
   CLAIM_FAILED,
-  PROJECT_CREATE_FAILED
+  PROJECT_CREATE_FAILED,
 } from '@src/lib/errors';
 
 import {

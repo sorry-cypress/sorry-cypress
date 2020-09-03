@@ -9,14 +9,14 @@ export const resolvers = {
       { orderDirection, filters },
       { dataSources }: { dataSources: AppDatasources }
     ) => {
-      return dataSources.projectsAPI.getProjects({ orderDirection, filters })
+      return dataSources.projectsAPI.getProjects({ orderDirection, filters });
     },
     runs: (
       _,
       { orderDirection, filters },
       { dataSources }: { dataSources: AppDatasources }
     ) => {
-      return dataSources.runsAPI.getAllRuns({ orderDirection, filters })
+      return dataSources.runsAPI.getAllRuns({ orderDirection, filters });
     },
     runFeed: (
       _,

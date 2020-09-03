@@ -1,15 +1,16 @@
 import { getMongoDB, init } from '@src/lib/mongo';
 import { DataSource } from 'apollo-datasource';
 
-const filtersToAggreations = (filters)=>{
-  return filters ? filters.map((filter)=>{
-    return {
-      $match: {
-        [filter.key]:filter.value
-      }
-    }
-  }) : []
-
+const filtersToAggregations = (filters) => {
+  return filters
+    ? filters.map((filter) => {
+        return {
+          $match: {
+            [filter.key]: filter.value,
+          },
+        };
+      })
+    : [];
 };
 
 const getSortByAggregation = (direction = 'DESC') => ({
@@ -24,9 +25,9 @@ export class ProjectsAPI extends DataSource {
   }
 
   async getProjects({ orderDirection, filters }) {
-    const aggregationPipeline = filtersToAggreations(filters).concat([
-      getSortByAggregation(orderDirection)
-    ]).filter((i) => !!i);
+    const aggregationPipeline = filtersToAggregations(filters)
+      .concat([getSortByAggregation(orderDirection)])
+      .filter((i) => !!i);
 
     const results = await getMongoDB()
       .collection('projects')

@@ -8,6 +8,7 @@ import {
   Tooltip,
   useCss,
 } from 'bold-ui';
+import mean from 'lodash/mean';
 import React, { useState } from 'react';
 import { generatePath } from 'react-router-dom';
 import { FullRunSpec, Run } from '../../generated/graphql';
@@ -16,14 +17,15 @@ import { shortEnglishHumanizerWithMsIfNeeded } from '../../lib/utis';
 import { SpecState } from '../common';
 import RenderOnInterval from '../renderOnInterval/renderOnInterval';
 
-const average = averageArray => averageArray.reduce( ( accumultor, nextArrayItem ) => accumultor + nextArrayItem, 0 ) / averageArray.length;
-
 type RunDetailsProps = {
   run: Partial<Run>;
-  propertySpecHeuristics: any;
+  propertySpecHeuristics: Record<string, number[]>;
 };
 
-export function RunDetails({ run, propertySpecHeuristics = {} }: RunDetailsProps) {
+export function RunDetails({
+  run,
+  propertySpecHeuristics = {},
+}: RunDetailsProps) {
   const { css } = useCss();
   const { specs } = run;
 
@@ -125,7 +127,9 @@ export function RunDetails({ run, propertySpecHeuristics = {} }: RunDetailsProps
               sortable: false,
               render: (spec: FullRunSpec) => {
                 if (spec?.spec) {
-                  return shortEnglishHumanizerWithMsIfNeeded(average(propertySpecHeuristics[spec?.spec] || []));
+                  return shortEnglishHumanizerWithMsIfNeeded(
+                    mean(propertySpecHeuristics[spec?.spec] || [])
+                  );
                 }
               },
             },

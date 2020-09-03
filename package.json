@@ -30,7 +30,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn run lint && pretty-quick --staged"
+      "pre-commit": "yarn run lint && pretty-quick"
     }
   },
   "dependencies": {

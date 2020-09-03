@@ -22,7 +22,6 @@ export function ProjectsView() {
 
   const projects = data.projects;
 
-
   if (!projects.length) {
     return (
       <div>

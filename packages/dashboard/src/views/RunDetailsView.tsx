@@ -3,8 +3,31 @@ import { useAutoRefresh } from '@src/hooks/useAutoRefresh';
 import React from 'react';
 import { RunDetails } from '../components/run/details';
 import { RunSummary } from '../components/run/summary';
-import { useGetRunQuery, useGetRunsByProjectIdLimitedToTimingQuery } from '../generated/graphql';
+import {
+  GetRunsByProjectIdLimitedToTimingQuery,
+  useGetRunQuery,
+  useGetRunsByProjectIdLimitedToTimingQuery,
+} from '../generated/graphql';
 
+function getSpecTimingsList(
+  runsWithTimingData: GetRunsByProjectIdLimitedToTimingQuery
+) {
+  return runsWithTimingData.runs.reduce<Record<string, number[]>>(
+    (accumulator, runData) => {
+      runData?.specs.forEach((spec) => {
+        if (!spec) {
+          return accumulator;
+        }
+        accumulator[spec.spec] = accumulator[spec.spec] || [];
+        if (spec?.results?.stats?.wallClockDuration) {
+          accumulator[spec.spec].push(spec?.results?.stats?.wallClockDuration);
+        }
+      });
+      return accumulator;
+    },
+    {}
+  );
+}
 type RunDetailsViewProps = {
   match: {
     params: {
@@ -17,38 +40,31 @@ export function RunDetailsView({
     params: { id },
   },
 }: RunDetailsViewProps): React.ReactNode {
-  let propertySpecHeuristics;
   const apollo = useApolloClient();
 
   const [shouldAutoRefresh] = useAutoRefresh();
 
-  const { loading: runLoading, error: runError, data: runData } = useGetRunQuery({
+  const {
+    loading: runLoading,
+    error: runError,
+    data: runData,
+  } = useGetRunQuery({
     variables: { runId: id },
     pollInterval: shouldAutoRefresh ? 1500 : undefined,
   });
 
-  const { data: runsWithTimingData } = useGetRunsByProjectIdLimitedToTimingQuery({
+  const {
+    data: runsWithTimingData,
+  } = useGetRunsByProjectIdLimitedToTimingQuery({
     variables: {
       filters: [
         {
           key: 'meta.projectId',
-          value: runData?.run?.meta?.projectId
-        }
-      ]
-    }
+          value: runData?.run?.meta?.projectId,
+        },
+      ],
+    },
   });
-
-  if (runsWithTimingData) {
-    propertySpecHeuristics = runsWithTimingData.runs.reduce((accumulator, runData)=>{
-      runData.specs.forEach((spec)=>{
-        accumulator[spec.spec] = accumulator[spec.spec] || [];
-        if ( spec?.results?.stats?.wallClockDuration ) {
-          accumulator[spec.spec].push(spec?.results?.stats?.wallClockDuration)
-        }
-      });
-      return accumulator; 
-    },{})
-  }
 
   if (runLoading) return <p>Loading...</p>;
   if (runError) return <p>{runError.toString()}</p>;
@@ -74,13 +90,13 @@ export function RunDetailsView({
       navStructure: [
         {
           __typename: 'NavStructureItem',
-          label: runData.run!.meta!.projectId,
-          link: `${runData.run!.meta!.projectId}/runs`,
+          label: runData.run.meta?.projectId,
+          link: `${runData.run.meta?.projectId}/runs`,
         },
         {
           __typename: 'NavStructureItem',
-          label: runData.run!.meta!.ciBuildId,
-          link: `run/${runData.run!.runId}`,
+          label: runData.run.meta?.ciBuildId,
+          link: `run/${runData.run?.runId}`,
         },
       ],
     },
@@ -89,7 +105,12 @@ export function RunDetailsView({
   return (
     <>
       <RunSummary run={runData.run} />
-      <RunDetails run={runData.run} propertySpecHeuristics={propertySpecHeuristics} />
+      <RunDetails
+        run={runData.run}
+        propertySpecHeuristics={
+          runsWithTimingData ? getSpecTimingsList(runsWithTimingData) : {}
+        }
+      />
     </>
   );
 }

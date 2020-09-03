@@ -4,10 +4,7 @@ import { AppError, PROJECT_CREATE_FAILED } from '@src/lib/errors';
 import { getSanitizedMongoObject } from '@src/lib/results';
 
 export const getProjectById = async (id: string) =>
-  await getMongoDB()
-    .collection('projects')
-    .findOne({ projectId: id });
-
+  await getMongoDB().collection('projects').findOne({ projectId: id });
 
 export const createProject = async (project: Project) => {
   try {
@@ -18,7 +15,7 @@ export const createProject = async (project: Project) => {
         .insertOne(getSanitizedMongoObject(project));
       return result;
     } else {
-      return storedProject
+      return storedProject;
     }
   } catch (error) {
     if (error.code) {

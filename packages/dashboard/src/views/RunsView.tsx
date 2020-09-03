@@ -26,7 +26,7 @@ export function RunsView({
           __typename: 'NavStructureItem',
           label: projectId,
           link: `${projectId}/runs`,
-        }
+        },
       ],
     },
   });
@@ -36,8 +36,8 @@ export function RunsView({
       filters: [
         {
           key: 'meta.projectId',
-          value: projectId
-        }
+          value: projectId,
+        },
       ],
       cursor: '',
     },
@@ -57,8 +57,8 @@ export function RunsView({
         filters: [
           {
             key: 'meta.projectId',
-            value: projectId
-          }
+            value: projectId,
+          },
         ],
         cursor: runFeed.cursor,
       },
@@ -76,11 +76,7 @@ export function RunsView({
   }
 
   if (!runFeed.runs.length) {
-    return (
-      <div>
-        No runs have started on this project.
-      </div>
-    );
+    return <div>No runs have started on this project.</div>;
   }
   return (
     <>

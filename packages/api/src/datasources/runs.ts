@@ -43,16 +43,16 @@ const getSortByAggregation = (direction = 'DESC') => ({
   },
 });
 
-const filtersToAggreations = (filters)=>{
-  return filters ? filters.map((filter)=>{
-    const mapkeys = filter.key.split('.');
-    return {
-      $match: {
-        [filter.key]:filter.value
-      }
-    }
-  }) : []
-
+const filtersToAggregations = (filters) => {
+  return filters
+    ? filters.map((filter) => {
+        return {
+          $match: {
+            [filter.key]: filter.value,
+          },
+        };
+      })
+    : [];
 };
 
 const projectAggregation = {
@@ -87,22 +87,24 @@ export class RunsAPI extends DataSource {
   }
 
   async getRunFeed({ cursor, filters }) {
-    const aggregationPipeline = filtersToAggreations(filters).concat([
-      getSortByAggregation(),
-      cursor
-        ? {
-            $match: {
-              _id: { $lt: new ObjectID(cursor) },
-            },
-          }
-        : null,
-      {
-        // get one extra to know if there's more
-        $limit: PAGE_LIMIT + 1,
-      },
-      projectAggregation,
-      lookupAggregation,
-    ]).filter((i) => !!i);
+    const aggregationPipeline = filtersToAggregations(filters)
+      .concat([
+        getSortByAggregation(),
+        cursor
+          ? {
+              $match: {
+                _id: { $lt: new ObjectID(cursor) },
+              },
+            }
+          : null,
+        {
+          // get one extra to know if there's more
+          $limit: PAGE_LIMIT + 1,
+        },
+        projectAggregation,
+        lookupAggregation,
+      ])
+      .filter((i) => !!i);
 
     const results = await (
       await getMongoDB().collection('runs').aggregate(aggregationPipeline)
@@ -112,11 +114,13 @@ export class RunsAPI extends DataSource {
   }
 
   async getAllRuns({ orderDirection, filters }) {
-    const aggregationPipeline = filtersToAggreations(filters).concat([
-      getSortByAggregation(orderDirection),
-      projectAggregation,
-      lookupAggregation,
-    ]).filter((i) => !!i);
+    const aggregationPipeline = filtersToAggregations(filters)
+      .concat([
+        getSortByAggregation(orderDirection),
+        projectAggregation,
+        lookupAggregation,
+      ])
+      .filter((i) => !!i);
 
     const results = await getMongoDB()
       .collection('runs')
