@@ -3,7 +3,6 @@ import { getMongoDB, init } from '@src/lib/mongo';
 import { DataSource } from 'apollo-datasource';
 
 const PAGE_LIMIT = 3;
-const NB_RUNNER = 25;
 
 const mergeRunSpecs = (run) => {
   // merge fullspec into spec
@@ -39,7 +38,7 @@ const specRandomsReducer = (runs) => {
     run._id.split('_').slice(0, 2).join('_')
   );
   const randoms = Object.entries(grouped)
-    .filter(([, groupedRuns]) => groupedRuns.length >= 2)
+    .filter(([, groupedRuns]: [string, Array<any>]) => groupedRuns.length >= 2)
     .reduce((acc, [, groupedRuns]) => {
       groupedRuns.sort((run1, run2) =>
         run1.createdAt < run2.createdAt ? -1 : 1
