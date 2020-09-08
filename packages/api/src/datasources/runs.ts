@@ -39,13 +39,18 @@ const specRandomsReducer = (runs) => {
   );
   const randoms = Object.entries(grouped)
     .filter(([, groupedRuns]: [string, Array<any>]) => groupedRuns.length >= 2)
-    .filter(
-      ([, [firstRun]]: [string, Array<any>]) =>
+    .filter(([, groupedRuns]: [string, Array<any>]) => {
+      groupedRuns.sort((run1, run2) =>
+        run1.createdAt < run2.createdAt ? -1 : 1
+      );
+      const [firstRun] = groupedRuns;
+      return (
         firstRun.specsFull.reduce(
           (acc, spec) => (spec.results.stats.failures > 0 ? 1 : 0) + acc,
           0
         ) < 100
-    ) // Remove all tests where more than 100 files failed
+      ); // Remove all tests where more than 100 files failed
+    })
     .reduce((acc, [, groupedRuns]: [string, Array<any>]) => {
       groupedRuns.sort((run1, run2) =>
         run1.createdAt < run2.createdAt ? -1 : 1
