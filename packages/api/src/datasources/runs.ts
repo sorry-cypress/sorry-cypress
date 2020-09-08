@@ -1,8 +1,8 @@
+import _ from 'lodash';
 import { getMongoDB, init } from '@src/lib/mongo';
 import { DataSource } from 'apollo-datasource';
 
 const PAGE_LIMIT = 3;
-const NB_RUNNER = 25;
 
 const mergeRunSpecs = (run) => {
   // merge fullspec into spec
@@ -32,6 +32,32 @@ const runFeedReducer = (runs) => ({
   cursor: getCursor(runs),
   hasMore: runs.length > PAGE_LIMIT,
 });
+
+const specRandomsReducer = (runs) => {
+  const grouped = _.groupBy(runs, (run) =>
+    run._id.split('_').slice(0, 2).join('_')
+  );
+  const randoms = Object.entries(grouped)
+    .filter(([, groupedRuns]: [string, Array<any>]) => groupedRuns.length >= 2)
+    .reduce((acc, [, groupedRuns]: [string, Array<any>]) => {
+      groupedRuns.sort((run1, run2) =>
+        run1.createdAt < run2.createdAt ? -1 : 1
+      );
+      const [firstRun] = groupedRuns;
+      const failedSpecs = firstRun.specsFull
+        .filter((spec) => spec.results.stats.failures > 0)
+        .map((spec) => {
+          const sp = firstRun.specs.find(
+            (spec2) => spec2.instanceId === spec.instanceId
+          );
+          return { ...spec, spec: sp.spec, claimed: sp.claimed };
+        });
+      return [...acc, ...failedSpecs];
+    }, []);
+  return {
+    specs: _.uniqBy(randoms, 'spec'),
+  };
+};
 
 const matchRunAggregation = (runId: string) => ({
   $match: {
@@ -174,6 +200,44 @@ export class RunsAPI extends DataSource {
     ).toArray();
 
     return runFeedReducer(results);
+  }
+
+  async getSpecsRandom({ branch }) {
+    const cursor = new Date().toISOString();
+    const cursorDate = new Date(Date.now());
+
+    const results = await (
+      await getMongoDB()
+        .collection('runs')
+        .aggregate(
+          [
+            branch ? matchBranchAggregation(branch) : null,
+            // Preselect items
+            cursor
+              ? {
+                  $match: {
+                    createdAt: {
+                      $lt: cursor,
+                      $gt: new Date(
+                        cursorDate.setDate(cursorDate.getDate() - 1)
+                      ).toISOString(), // One week from cursor.
+                    },
+                  },
+                }
+              : null,
+            getSortByAggregation(),
+            // Aggregation
+            unwindAggregation,
+            groupAggregation,
+            getSortByAggregation(),
+            projectAggregation,
+            lookupAggregation,
+            projectRestrictedAggregation,
+          ].filter((i) => !!i),
+          { allowDiskUse: true }
+        )
+    ).toArray();
+    return specRandomsReducer(results);
   }
 
   async getBranches() {

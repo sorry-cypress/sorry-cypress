@@ -53,6 +53,16 @@ export const resolvers = {
       });
       return res;
     },
+    specsRandom: async (
+      _,
+      { branch }: { branch?: string },
+      { dataSources }: { dataSources: AppDatasources }
+    ) => {
+      const res = await dataSources.runsAPI.getSpecsRandom({
+        branch: branch || null,
+      });
+      return res;
+    },
     run: async (
       _,
       { id }: { id: string },
