@@ -39,7 +39,7 @@ const specRandomsReducer = (runs) => {
   );
   const randoms = Object.entries(grouped)
     .filter(([, groupedRuns]: [string, Array<any>]) => groupedRuns.length >= 2)
-    .reduce((acc, [, groupedRuns]) => {
+    .reduce((acc, [, groupedRuns]: [string, Array<any>]) => {
       groupedRuns.sort((run1, run2) =>
         run1.createdAt < run2.createdAt ? -1 : 1
       );
