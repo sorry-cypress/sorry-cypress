@@ -46,7 +46,7 @@ const specRandomsReducer = (runs) => {
       const [firstRun] = groupedRuns;
       return (
         firstRun.specsFull.reduce(
-          (acc, spec) => (spec.results.stats.failures > 0 ? 1 : 0) + acc,
+          (acc, spec) => (spec.results?.stats.failures ?? 0 > 0 ? 1 : 0) + acc,
           0
         ) < 100
       ); // Remove all tests where more than 100 files failed
@@ -57,7 +57,7 @@ const specRandomsReducer = (runs) => {
       );
       const [firstRun] = groupedRuns;
       const failedSpecs = firstRun.specsFull
-        .filter((spec) => spec.results.stats.failures > 0)
+        .filter((spec) => spec.results?.stats.failures ?? 0 > 0)
         .map((spec) => {
           const sp = firstRun.specs.find(
             (spec2) => spec2.instanceId === spec.instanceId
