@@ -4,6 +4,13 @@ import { AppDatasources } from '@src/datasources/types';
 export const resolvers = {
   DateTime: GraphQLDateTime,
   Query: {
+    projects: (
+      _,
+      { orderDirection, filters },
+      { dataSources }: { dataSources: AppDatasources }
+    ) => {
+      return dataSources.projectsAPI.getProjects({ orderDirection, filters });
+    },
     runs: (
       _,
       { orderDirection, filters },
@@ -13,9 +20,9 @@ export const resolvers = {
     },
     runFeed: (
       _,
-      { cursor }: { cursor?: string },
+      { cursor, filters },
       { dataSources }: { dataSources: AppDatasources }
-    ) => dataSources.runsAPI.getRunFeed({ cursor: cursor || false }),
+    ) => dataSources.runsAPI.getRunFeed({ cursor: cursor || false, filters }),
     run: (
       _,
       { id }: { id: string },

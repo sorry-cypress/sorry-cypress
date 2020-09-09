@@ -37,6 +37,11 @@ export function TestDetailsView(): React.ReactNode {
       navStructure: [
         {
           __typename: 'NavStructureItem',
+          label: data.instance!.run!.meta!.projectId,
+          link: `${data.instance!.run!.meta!.projectId}/runs`,
+        },
+        {
+          __typename: 'NavStructureItem',
           label: data.instance.run!.meta!.ciBuildId,
           link: `run/${data.instance.runId}`,
         },

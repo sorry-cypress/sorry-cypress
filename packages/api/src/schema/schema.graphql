@@ -11,14 +11,22 @@ input Filters {
 }
 
 type Query {
+  projects(
+    orderDirection: OrderingOptions = DESC
+    filters: [Filters] = null
+  ): [Project]!
   runs(
     orderDirection: OrderingOptions = DESC
     cursor: String = null
     filters: [Filters] = null
   ): [Run]!
-  runFeed(cursor: String): RunFeed!
+  runFeed(cursor: String, filters: [Filters] = null): RunFeed!
   run(id: ID!): Run
   instance(id: ID!): Instance
+}
+
+type Project {
+  projectId: String!
 }
 
 type RunFeed {

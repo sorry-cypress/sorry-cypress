@@ -9,6 +9,7 @@ import { theme } from './theme/theme';
 import { Header } from './components/layout/header';
 import { Content } from './components/layout/content';
 
+import { ProjectsView } from './views/ProjectsView';
 import { RunsView } from './views/RunsView';
 import { RunDetailsView } from './views/RunDetailsView';
 import { InstanceDetailsView } from './views/InstanceDetailsView';
@@ -60,7 +61,8 @@ export const Root = () => {
           <ErrorBoundary>
             <Header />
             <Content>
-              <Route path="/" exact component={RunsView} />
+              <Route path="/" exact component={ProjectsView} />
+              <Route path="/:projectId/runs" component={RunsView} />
               <Route path="/run/:id" component={RunDetailsView} />
               <Route
                 path="/instance/:id"

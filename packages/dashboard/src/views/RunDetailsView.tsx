@@ -90,8 +90,13 @@ export function RunDetailsView({
       navStructure: [
         {
           __typename: 'NavStructureItem',
+          label: runData.run.meta?.projectId,
+          link: `${runData.run.meta?.projectId}/runs`,
+        },
+        {
+          __typename: 'NavStructureItem',
           label: runData.run.meta?.ciBuildId,
-          link: `run/${runData.run.runId}`,
+          link: `run/${runData.run?.runId}`,
         },
       ],
     },
@@ -103,7 +108,7 @@ export function RunDetailsView({
       <RunDetails
         run={runData.run}
         propertySpecHeuristics={
-          runsWithTimingData ? getSpecTimingsList(runsWithTimingData) : []
+          runsWithTimingData ? getSpecTimingsList(runsWithTimingData) : {}
         }
       />
     </>

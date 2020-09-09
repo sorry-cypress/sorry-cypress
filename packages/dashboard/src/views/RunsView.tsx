@@ -4,17 +4,41 @@ import React from 'react';
 import { RunSummary } from '../components/run/summary';
 import { useGetRunsFeedQuery } from '../generated/graphql';
 
-export function RunsView() {
+type RunsViewProps = {
+  match: {
+    params: {
+      projectId: string;
+    };
+  };
+};
+
+export function RunsView({
+  match: {
+    params: { projectId },
+  },
+}: RunsViewProps) {
   const apollo = useApolloClient();
 
   apollo.writeData({
     data: {
-      navStructure: [],
+      navStructure: [
+        {
+          __typename: 'NavStructureItem',
+          label: projectId,
+          link: `${projectId}/runs`,
+        },
+      ],
     },
   });
 
   const { fetchMore, loading, error, data } = useGetRunsFeedQuery({
     variables: {
+      filters: [
+        {
+          key: 'meta.projectId',
+          value: projectId,
+        },
+      ],
       cursor: '',
     },
   });
@@ -30,6 +54,12 @@ export function RunsView() {
   function loadMore() {
     return fetchMore({
       variables: {
+        filters: [
+          {
+            key: 'meta.projectId',
+            value: projectId,
+          },
+        ],
         cursor: runFeed.cursor,
       },
       updateQuery: (prev, { fetchMoreResult }) => {
@@ -46,18 +76,7 @@ export function RunsView() {
   }
 
   if (!runFeed.runs.length) {
-    return (
-      <div>
-        Welcome to Sorry Cypress! Your tests runs will appears here.{' '}
-        <a
-          href="https://github.com/agoldis/sorry-cypress"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Documentation
-        </a>
-      </div>
-    );
+    return <div>No runs have started on this project.</div>;
   }
   return (
     <>
