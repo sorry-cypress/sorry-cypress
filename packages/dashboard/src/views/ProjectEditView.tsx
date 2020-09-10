@@ -1,9 +1,15 @@
 import { useApolloClient } from '@apollo/react-hooks';
 import React from 'react';
 import { ProjectListItem } from '../components/project/projectListItem';
-import { useGetProjectsQuery } from '../generated/graphql';
+import { useGetProjectQuery } from '../generated/graphql';
 import { Button, Icon, Text, useCss } from 'bold-ui';
-export function ProjectsView() {
+
+
+export function ProjectEditView({
+  match: {
+    params: { projectId },
+  },
+}) {
   const { css } = useCss();
   const apollo = useApolloClient();
 
@@ -13,30 +19,23 @@ export function ProjectsView() {
     },
   });
 
-  const { loading, error, data, refetch } = useGetProjectsQuery();
+  const { loading, error, data, refetch } = useGetProjectQuery({
+    variables: {
+      projectId: projectId
+    }
+  });
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error.toString()}</p>;
   if (!data) {
     return <p>No data</p>;
   }
-
-  const projects = data.projects;
-
-  if (!projects.length) {
-    return (
-      <div>
-        Welcome to Sorry Cypress! Your projects will appears here.{' '}
-        <a
-          href="https://github.com/agoldis/sorry-cypress"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Documentation
-        </a>
-      </div>
-    );
+  if (!data.project) {
+    return <p>Not a recognized project</p>;
   }
+
+  const project = data.project;
+
   return (
     <>
       <div className={css`
@@ -48,11 +47,8 @@ export function ProjectsView() {
           <Text color="inherit">New Project</Text>
         </Button>
       </div>
-      {projects.map((project) => (
-        <div key={project.projectId}>
-          <ProjectListItem project={project} reloadProjects={refetch}/>
-        </div>
-      ))}
+      project.id
+      {project.projectId}
     </>
   );
 }
