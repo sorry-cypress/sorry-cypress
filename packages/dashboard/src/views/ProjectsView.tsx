@@ -43,7 +43,10 @@ export function ProjectsView() {
         display: flex;
         flex-direction: row-reverse;
       `}>
-        <Button>
+        <Button
+          component="a"
+          href="/--create-new-project--/edit"
+        >
           <Icon style={{ marginRight: '0.5rem' }} icon="plus"/>
           <Text color="inherit">New Project</Text>
         </Button>

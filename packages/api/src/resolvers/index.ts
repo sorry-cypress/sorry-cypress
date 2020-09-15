@@ -1,7 +1,5 @@
-import { DataSource } from 'apollo-datasource';
 import { GraphQLDateTime } from 'graphql-iso-date';
 import { AppDatasources } from '@src/datasources/types';
-import { type } from 'os';
 
 type Project = {
   projectId: string,

@@ -112,6 +112,8 @@ export function ProjectListItem({ project, reloadProjects }: ProjectListItemProp
               {project.projectId}
             </Link>
             <Button
+              component="a"
+              href={`/${project.projectId}/edit`}
               kind="normal"
               size="small"
               skin="ghost"

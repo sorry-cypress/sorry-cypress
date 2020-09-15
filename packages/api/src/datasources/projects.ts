@@ -38,19 +38,19 @@ export class ProjectsAPI extends DataSource {
   }
 
   async createProject(project) {
-    const { result } = await getMongoDB()
-    .collection('projects')
-    .insertOne(project);
+    await getMongoDB()
+      .collection('projects')
+      .insertOne(project);
     // this needs sanitization and validation it would be great to share the logic between director and the api.
     // its hard to do with the seperate yarn workspaces.
-    return await result;
+    return project;
   }
 
   async updateProject(project) {
-    const result = await getMongoDB()
+    await getMongoDB()
       .collection('projects')
       .replaceOne({'projectId':project.projectId}, project);
-    return result;
+    return project;
   }
 
   async getProjects({ orderDirection, filters }) {
