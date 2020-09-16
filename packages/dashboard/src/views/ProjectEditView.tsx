@@ -4,11 +4,19 @@ import { useGetProjectQuery, useCreateProjectMutation, useUpdateProjectMutation 
 import { Button, Icon, Tooltip, TextField, Grid, Cell } from 'bold-ui';
 import { useHistory } from "react-router-dom";
 
+type ProjectEditViewProps = {
+  match: {
+    params: {
+      projectId: string;
+    };
+  };
+};
+
 export function ProjectEditView({
   match: {
     params: { projectId },
   },
-}) {
+}:ProjectEditViewProps) {
   const history = useHistory();
   const apollo = useApolloClient();
   const isNewProject = projectId === '--create-new-project--';
@@ -18,10 +26,7 @@ export function ProjectEditView({
     },
   });
   
-  const [formState, setFormState] = useState(data?.project || {
-    projectId: isNewProject ? '' : projectId,
-    //other project fields
-  });
+
   const [creating, setCreating] = useState(false);
   const [createError, setCreateError] = useState<string | null>(null);
   const [updating, setUpdating] = useState(false);
@@ -31,6 +36,11 @@ export function ProjectEditView({
     variables: {
       projectId: projectId
     }
+  });
+
+  const [formState, setFormState] = useState(data?.project || {
+    projectId: isNewProject ? '' : projectId,
+    //other project fields
   });
 
   const [startCreateProjectMutation] = useCreateProjectMutation({
@@ -46,6 +56,7 @@ export function ProjectEditView({
   });
 
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function updateProject() {
     setUpdating(true);
     startUpdateProjectMutation().then((result) => {

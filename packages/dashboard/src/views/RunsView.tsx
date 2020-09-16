@@ -66,9 +66,9 @@ export function RunsView({
         return {
           runFeed: {
             __typename: prev.runFeed.__typename,
-            hasMore: fetchMoreResult!.runFeed.hasMore,
-            cursor: fetchMoreResult!.runFeed.cursor,
-            runs: [...prev.runFeed.runs, ...fetchMoreResult!.runFeed.runs],
+            hasMore: fetchMoreResult?.runFeed.hasMore,
+            cursor: fetchMoreResult?.runFeed.cursor,
+            runs: [...prev.runFeed.runs, ...fetchMoreResult?.runFeed.runs],
           },
         };
       },
