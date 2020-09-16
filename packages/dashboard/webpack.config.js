@@ -1,12 +1,14 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
+const PUBLIC_PATH = process.env.PUBLIC_PATH || '/';
+
 module.exports = {
   entry: {
     main: ['./src/index.tsx'],
   },
   output: {
-    publicPath: '/dashboard',
+    publicPath: PUBLIC_PATH,
     jsonpScriptType: 'module',
     path: path.resolve(__dirname, 'dist'),
     filename: 'index.mjs',
