@@ -26,10 +26,26 @@ query getRun($runId: ID!) {
         }
         videoUrl
         tests {
-          title
-          state
-          wallClockDuration
-          wallClockStartedAt
+          ... on InstanceTest {
+            title
+            state
+            wallClockDuration
+            wallClockStartedAt
+          }
+          ... on InstanceTestV5 {
+            title
+            state
+            attempts {
+              state
+              wallClockDuration
+              wallClockStartedAt
+              error {
+                name
+                message
+                stack
+              }
+            }
+          }
         }
         stats {
           tests

@@ -1,26 +1,17 @@
-import { useQuery } from '@apollo/react-hooks';
+import { useReactiveVar } from '@apollo/client';
 import { useAutoRefresh } from '@src/hooks/useAutoRefresh';
+import { navStructure } from '@src/lib/navigation';
 import { Breadcrumbs, Icon, Switch, Tooltip, useCss } from 'bold-ui';
-import gql from 'graphql-tag';
 import truncate from 'lodash.truncate';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const GET_NAV_STRUCTURE = gql`
-  {
-    navStructure @client {
-      label
-      link
-    }
-  }
-`;
-
 export const Header: React.FC = () => {
   const { css, theme } = useCss();
-  const { data } = useQuery(GET_NAV_STRUCTURE);
+  const nav = useReactiveVar(navStructure);
   const [shouldAutoRefresh, setShouldAutoRefresh] = useAutoRefresh();
 
-  const lastNavItem = data.navStructure.pop();
+  const lastNavItem = nav.pop();
   return (
     <header
       className={css`
@@ -33,7 +24,7 @@ export const Header: React.FC = () => {
         <Breadcrumbs>
           <Link to="/">All Runs</Link>
           {/*breadcrumb removes hover event from the last crumb so the there is a little hackery to get the tooltip working*/}
-          {data.navStructure.map((navItem) => (
+          {nav.map((navItem) => (
             <Tooltip text={navItem.label} key={navItem.link}>
               <Link to={`/${navItem.link}`}>{truncate(navItem.label)}</Link>
             </Tooltip>

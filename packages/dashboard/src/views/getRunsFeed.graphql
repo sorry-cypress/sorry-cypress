@@ -28,9 +28,16 @@ query getRunsFeed($cursor: String) {
           }
           videoUrl
           tests {
-            title
-            state
+            ... on InstanceTest {
+              title
+              state
+            }
+            ... on InstanceTestV5 {
+              title
+              state
+            }
           }
+
           stats {
             tests
             pending

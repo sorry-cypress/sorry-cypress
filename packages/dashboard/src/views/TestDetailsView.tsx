@@ -1,12 +1,15 @@
-import { useApolloClient } from '@apollo/react-hooks';
 import { useAutoRefresh } from '@src/hooks/useAutoRefresh';
-import React from 'react';
+import { navStructure } from '@src/lib/navigation';
+import React, { useLayoutEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { TestDetails } from '../components/test';
 import { useGetInstanceQuery } from '../generated/graphql';
 
 export function TestDetailsView(): React.ReactNode {
-  const { instanceId, testId } = useParams();
+  const { instanceId, testId } = useParams<{
+    instanceId: string;
+    testId: string;
+  }>();
 
   const [shouldAutoRefresh] = useAutoRefresh();
 
@@ -15,7 +18,31 @@ export function TestDetailsView(): React.ReactNode {
     pollInterval: shouldAutoRefresh ? 1500 : undefined,
   });
 
-  const apollo = useApolloClient();
+  useLayoutEffect(() => {
+    if (!data?.instance) {
+      return;
+    }
+    const test = data.instance?.results?.tests?.find(
+      (t) => t?.testId === testId
+    );
+    if (!test) {
+      return;
+    }
+    navStructure([
+      {
+        label: data.instance.run?.meta?.ciBuildId,
+        link: `run/${data.instance.runId}`,
+      },
+      {
+        label: data.instance.spec,
+        link: `instance/${instanceId}`,
+      },
+      {
+        label: test.title && test.title.join(' | '),
+        link: `instance/${data.instance.instanceId}/test/${testId}`,
+      },
+    ]);
+  }, [data]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
@@ -26,33 +53,11 @@ export function TestDetailsView(): React.ReactNode {
     return <p>Cannot find results for the spec</p>;
   }
 
-  const test = data.instance.results.tests.find((t) => t.testId === testId);
+  const test = data.instance?.results?.tests?.find((t) => t.testId === testId);
 
   if (!test) {
     return <p>Cannot find the specified test</p>;
   }
-
-  apollo.writeData({
-    data: {
-      navStructure: [
-        {
-          __typename: 'NavStructureItem',
-          label: data.instance.run!.meta!.ciBuildId,
-          link: `run/${data.instance.runId}`,
-        },
-        {
-          __typename: 'NavStructureItem',
-          label: data.instance.spec,
-          link: `instance/${instanceId}`,
-        },
-        {
-          __typename: 'NavStructureItem',
-          label: test.title && test.title.join(' | '),
-          link: `instance/${data.instance.instanceId}/test/${testId}`,
-        },
-      ],
-    },
-  });
 
   if (!test) {
     return (
@@ -62,9 +67,9 @@ export function TestDetailsView(): React.ReactNode {
       </>
     );
   }
-  const screenshots = data.instance.results
-    ? data.instance.results.screenshots
-    : [];
+  const screenshots = (data.instance.results?.screenshots ?? []).filter(
+    (s) => s.testId === test.testId
+  );
 
   return <TestDetails test={test} screenshots={screenshots} />;
 }
