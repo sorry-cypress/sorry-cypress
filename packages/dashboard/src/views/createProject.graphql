@@ -1,0 +1,5 @@
+mutation createProject($project: ProjectInput) {
+  createProject(project: $project) {
+    projectId
+  }
+}

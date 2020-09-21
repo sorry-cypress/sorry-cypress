@@ -10,6 +10,7 @@ import { Header } from './components/layout/header';
 import { Content } from './components/layout/content';
 
 import { ProjectsView } from './views/ProjectsView';
+import { ProjectEditView } from './views/ProjectEditView';
 import { RunsView } from './views/RunsView';
 import { RunDetailsView } from './views/RunDetailsView';
 import { InstanceDetailsView } from './views/InstanceDetailsView';
@@ -63,6 +64,7 @@ export const Root = () => {
             <Content>
               <Route path="/" exact component={ProjectsView} />
               <Route path="/:projectId/runs" component={RunsView} />
+              <Route path="/:projectId/edit" component={ProjectEditView} />
               <Route path="/run/:id" component={RunDetailsView} />
               <Route
                 path="/instance/:id"

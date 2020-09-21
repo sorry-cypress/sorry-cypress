@@ -38,13 +38,13 @@ export function InstanceDetailsView({
       navStructure: [
         {
           __typename: 'NavStructureItem',
-          label: data.instance!.run!.meta!.projectId,
-          link: `${data.instance!.run!.meta!.projectId}/runs`,
+          label: data.instance?.run?.meta?.projectId,
+          link: `${data.instance?.run?.meta?.projectId}/runs`,
         },
         {
           __typename: 'NavStructureItem',
-          label: data.instance!.run!.meta!.ciBuildId,
-          link: `run/${data.instance!.runId}`,
+          label: data.instance?.run?.meta?.ciBuildId,
+          link: `run/${data.instance?.runId}`,
         },
         {
           __typename: 'NavStructureItem',

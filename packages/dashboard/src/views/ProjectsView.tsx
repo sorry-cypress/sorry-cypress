@@ -1,9 +1,10 @@
 import { useApolloClient } from '@apollo/react-hooks';
-import { Link } from 'react-router-dom';
 import React from 'react';
+import { ProjectListItem } from '../components/project/projectListItem';
 import { useGetProjectsQuery } from '../generated/graphql';
-
+import { Button, Icon, Text, useCss } from 'bold-ui';
 export function ProjectsView() {
+  const { css } = useCss();
   const apollo = useApolloClient();
 
   apollo.writeData({
@@ -12,7 +13,7 @@ export function ProjectsView() {
     },
   });
 
-  const { loading, error, data } = useGetProjectsQuery();
+  const { loading, error, data, refetch } = useGetProjectsQuery();
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error.toString()}</p>;
@@ -38,9 +39,21 @@ export function ProjectsView() {
   }
   return (
     <>
+      <div className={css`
+        display: flex;
+        flex-direction: row-reverse;
+      `}>
+        <Button
+          component="a"
+          href="/--create-new-project--/edit"
+        >
+          <Icon style={{ marginRight: '0.5rem' }} icon="plus"/>
+          <Text color="inherit">New Project</Text>
+        </Button>
+      </div>
       {projects.map((project) => (
         <div key={project.projectId}>
-          <Link to={`/${project.projectId}/runs`}>{project.projectId}</Link>
+          <ProjectListItem project={project} reloadProjects={refetch}/>
         </div>
       ))}
     </>
