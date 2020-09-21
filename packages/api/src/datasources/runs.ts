@@ -86,23 +86,25 @@ export class RunsAPI extends DataSource {
     await init();
   }
 
-  async getRunFeed({ cursor }) {
-    const aggregationPipeline = [
-      getSortByAggregation(),
-      cursor
-        ? {
-            $match: {
-              _id: { $lt: new ObjectID(cursor) },
-            },
-          }
-        : null,
-      {
-        // get one extra to know if there's more
-        $limit: PAGE_LIMIT + 1,
-      },
-      projectAggregation,
-      lookupAggregation,
-    ].filter((i) => !!i);
+  async getRunFeed({ cursor, filters }) {
+    const aggregationPipeline = filtersToAggregations(filters)
+      .concat([
+        getSortByAggregation(),
+        cursor
+          ? {
+              $match: {
+                _id: { $lt: new ObjectID(cursor) },
+              },
+            }
+          : null,
+        {
+          // get one extra to know if there's more
+          $limit: PAGE_LIMIT + 1,
+        },
+        projectAggregation,
+        lookupAggregation,
+      ])
+      .filter((i) => !!i);
 
     const results = await (
       await getMongoDB().collection('runs').aggregate(aggregationPipeline)

@@ -13,7 +13,9 @@
   "main": "dist/index.js",
   "typings": "dist/typings",
   "scripts": {
-    "dev": "nodemon --inspect=0.0.0.0:9229 -e ts --watch 'src/**/*.ts' -r ./config/ts-dev.js src/index.ts",
+    "dev": "run-p dev:nodemon dev:js",
+    "dev:nodemon": "nodemon",
+    "dev:js": "npm run build:js -- --watch",
     "build": "npm run build:types && npm run build:js",
     "build:types": "tsc --emitDeclarationOnly",
     "build:js": "babel src --out-dir dist --extensions \".ts\" --source-maps inline",
@@ -23,7 +25,6 @@
     "clean": "rimraf ./dist"
   },
   "dependencies": {
-    "@types/minio": "^7.0.5",
     "aws-sdk": "^2.518.0",
     "body-parser": "^1.19.0",
     "dotenv": "^8.1.0",
@@ -44,14 +45,14 @@
     "@types/jest": "^25.2.1",
     "@types/lodash": "^4.14.149",
     "@types/md5": "^2.1.33",
+    "@types/minio": "^7.0.5",
     "@types/mongodb": "^3.3.1",
     "@types/node": "^12.7.2",
     "@types/uuid": "^3.4.5",
     "babel-plugin-module-resolver": "^3.2.0",
     "jest": "^25.5.4",
+    "npm-run-all": "^4.1.5",
     "rimraf": "^3.0.0",
-    "ts-node": "^8.3.0",
-    "tsconfig-paths": "^3.8.0",
     "typescript": "^3.7.5"
   }
 }

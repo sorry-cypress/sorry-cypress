@@ -1,11 +1,17 @@
 import { useAutoRefresh } from '@src/hooks/useAutoRefresh';
-import { navStructure } from '@src/lib/navigation';
+import {
+  getInstancePath,
+  getProjectPath,
+  getRunPath,
+  getTestPath,
+  navStructure,
+} from '@src/lib/navigation';
 import React, { useLayoutEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { TestDetails } from '../components/test';
 import { useGetInstanceQuery } from '../generated/graphql';
 
-export function TestDetailsView(): React.ReactNode {
+export function TestDetailsView() {
   const { instanceId, testId } = useParams<{
     instanceId: string;
     testId: string;
@@ -30,16 +36,20 @@ export function TestDetailsView(): React.ReactNode {
     }
     navStructure([
       {
+        label: data.instance?.run?.meta?.projectId,
+        link: getProjectPath(data.instance?.run?.meta?.projectId),
+      },
+      {
         label: data.instance.run?.meta?.ciBuildId,
-        link: `run/${data.instance.runId}`,
+        link: getRunPath(data.instance.runId),
       },
       {
         label: data.instance.spec,
-        link: `instance/${instanceId}`,
+        link: getInstancePath(instanceId),
       },
       {
         label: test.title && test.title.join(' | '),
-        link: `instance/${data.instance.instanceId}/test/${testId}`,
+        link: getTestPath(data.instance.instanceId, testId),
       },
     ]);
   }, [data]);

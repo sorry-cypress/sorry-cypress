@@ -35,25 +35,25 @@
     "@graphql-codegen/typescript": "^1.13.4",
     "@graphql-codegen/typescript-resolvers": "^1.13.4",
     "@types/node": "^12.7.2",
+    "@typescript-eslint/eslint-plugin": "^2.30.0",
+    "@typescript-eslint/parser": "^4.1.1",
     "babel-plugin-module-resolver": "^3.2.0",
+    "eslint-plugin-jest": "^23.8.2",
+    "eslint-plugin-react": "^7.19.0",
     "graphql-tools": "^6.2.3",
+    "husky": "^4.2.5",
     "npm-run-all": "^4.1.5",
+    "prettier": "^2.0.5",
     "rimraf": "^3.0.0",
     "typescript": "^3.7.5"
   },
   "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^2.30.0",
-    "@typescript-eslint/parser": "^2.30.0",
-    "apollo-server": "2.16.0",
+    "apollo-server": "2.17.0",
     "dotenv": "^8.1.0",
     "es-abstract": "^1.17.0",
-    "eslint-plugin-jest": "^23.8.2",
-    "eslint-plugin-react": "^7.19.0",
     "graphql": "^15.3.0",
     "graphql-iso-date": "^3.6.1",
-    "husky": "^4.2.5",
     "mongodb": "^3.3.2",
-    "prettier": "^2.0.5",
     "pretty-quick": "^2.0.1"
   }
 }

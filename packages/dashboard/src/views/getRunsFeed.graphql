@@ -1,5 +1,5 @@
-query getRunsFeed($cursor: String) {
-  runFeed(cursor: $cursor) {
+query getRunsFeed($cursor: String, $filters: [Filters]) {
+  runFeed(cursor: $cursor, filters: $filters) {
     cursor
     hasMore
     runs {

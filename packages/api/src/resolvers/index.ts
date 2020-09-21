@@ -1,6 +1,10 @@
 import { AppDatasources } from '@src/datasources/types';
 import { GraphQLDateTime } from 'graphql-iso-date';
 
+type Project = {
+  projectId: string,
+}
+
 export const resolvers = {
   DateTime: GraphQLDateTime,
   InstanceTestUnion: {
@@ -15,6 +19,18 @@ export const resolvers = {
     },
   },
   Query: {
+    projects: (
+      _,
+      { orderDirection, filters },
+      { dataSources }: { dataSources: AppDatasources }
+    ) => {
+      return dataSources.projectsAPI.getProjects({ orderDirection, filters });
+    },
+    project: (
+      _,
+      { id }: { id: string },
+      { dataSources }: { dataSources: AppDatasources }
+    ) => dataSources.projectsAPI.getProjectById(id),
     runs: (
       _,
       { orderDirection, filters },
@@ -24,9 +40,9 @@ export const resolvers = {
     },
     runFeed: (
       _,
-      { cursor }: { cursor?: string },
+      { cursor, filters },
       { dataSources }: { dataSources: AppDatasources }
-    ) => dataSources.runsAPI.getRunFeed({ cursor: cursor || false }),
+    ) => dataSources.runsAPI.getRunFeed({ cursor: cursor || false, filters }),
     run: (
       _,
       { id }: { id: string },
@@ -44,14 +60,7 @@ export const resolvers = {
       { runId }: { runId: string },
       { dataSources }: { dataSources: AppDatasources }
     ) => {
-      const instancesDeleteResponse = await dataSources.instancesAPI.deleteInstancesByRunIds(
-        [runId]
-      );
-      if (instancesDeleteResponse.success) {
-        return dataSources.runsAPI.deleteRunsByIds([runId]);
-      } else {
-        return instancesDeleteResponse;
-      }
+      return resolvers.Mutation.deleteRuns(_ ,{runIds:[runId]} ,{dataSources})
     },
     deleteRuns: async (
       _,
@@ -82,5 +91,42 @@ export const resolvers = {
         return instancesDeleteResponse;
       }
     },
+    createProject: (
+      _,
+      { project },
+      { dataSources }: { dataSources: AppDatasources }
+    ) => dataSources.projectsAPI.createProject(project),
+    updateProject: (
+      _,
+      { project },
+      { dataSources }: { dataSources: AppDatasources }
+    ) => dataSources.projectsAPI.updateProject(project),
+    deleteProject: async (
+      _,
+      { projectId }: Project,
+      { dataSources }: { dataSources: AppDatasources }
+    ) => {
+      const runsMatchingProjectResponse = await dataSources.runsAPI.getAllRuns({
+        orderDirection: "DESC",
+        filters: [
+          {
+            key: 'meta.projectId',
+            value: projectId,
+          },
+        ]
+      });
+
+      const runsDeleteResponse = await resolvers.Mutation.deleteRuns(
+        _,
+        {runIds:runsMatchingProjectResponse.map(run => run.runId)},
+        {dataSources}
+      )
+      if (runsDeleteResponse.success) {
+        return dataSources.projectsAPI.deleteProjectsByIds([projectId]);
+      } else {
+        return runsDeleteResponse;
+      }
+
+    }
   },
 };

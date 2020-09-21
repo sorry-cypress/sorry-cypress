@@ -1,5 +1,5 @@
 import { useAutoRefresh } from '@src/hooks/useAutoRefresh';
-import { navStructure } from '@src/lib/navigation';
+import { getProjectPath, getRunPath, navStructure } from '@src/lib/navigation';
 import React, { useLayoutEffect } from 'react';
 import { RunDetails } from '../components/run/details';
 import { RunSummary } from '../components/run/summary';
@@ -39,8 +39,7 @@ export function RunDetailsView({
   match: {
     params: { id },
   },
-}: RunDetailsViewProps): React.ReactNode {
-  // const apollo = useApolloClient();
+}: RunDetailsViewProps) {
   const [shouldAutoRefresh] = useAutoRefresh();
 
   const {
@@ -72,8 +71,12 @@ export function RunDetailsView({
 
     navStructure([
       {
+        label: runData.run.meta?.projectId,
+        link: getProjectPath(runData.run.meta?.projectId),
+      },
+      {
         label: runData?.run?.meta?.ciBuildId,
-        link: `run/${runData?.run?.runId}`,
+        link: getRunPath(runData?.run?.runId),
       },
     ]);
   }, [runData]);

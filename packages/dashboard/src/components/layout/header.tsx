@@ -22,7 +22,7 @@ export const Header: React.FC = () => {
     >
       <div>
         <Breadcrumbs>
-          <Link to="/">All Runs</Link>
+          <Link to="/">All Projects</Link>
           {/*breadcrumb removes hover event from the last crumb so the there is a little hackery to get the tooltip working*/}
           {nav.map((navItem) => (
             <Tooltip text={navItem.label} key={navItem.link}>

@@ -1,6 +1,7 @@
 import { ApolloServer } from 'apollo-server';
 import { PORT } from './config';
 import { InstancesAPI } from './datasources/instances';
+import { ProjectsAPI } from './datasources/projects';
 import { RunsAPI } from './datasources/runs';
 import { resolvers } from './resolvers';
 import { typeDefs } from './schema/schema';
@@ -9,6 +10,7 @@ async function start() {
   const dataSources = {
     runsAPI: new RunsAPI(),
     instancesAPI: new InstancesAPI(),
+    projectsAPI: new ProjectsAPI(),
   };
 
   const server = new ApolloServer({
@@ -26,6 +28,7 @@ async function start() {
       throw error;
     });
 }
+
 start().catch((error) => {
   console.error(error);
   process.exit(1);

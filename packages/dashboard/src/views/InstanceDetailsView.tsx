@@ -1,5 +1,10 @@
 import { useAutoRefresh } from '@src/hooks/useAutoRefresh';
-import { navStructure } from '@src/lib/navigation';
+import {
+  getInstancePath,
+  getProjectPath,
+  getRunPath,
+  navStructure,
+} from '@src/lib/navigation';
 import React, { useLayoutEffect } from 'react';
 import { InstanceDetails } from '../components/instance/details';
 import { InstanceSummary } from '../components/instance/summary';
@@ -16,7 +21,7 @@ export function InstanceDetailsView({
   match: {
     params: { id },
   },
-}: InstanceDetailsViewProps): React.ReactNode {
+}: InstanceDetailsViewProps) {
   const [shouldAutoRefresh] = useAutoRefresh();
 
   const { loading, error, data } = useGetInstanceQuery({
@@ -30,12 +35,16 @@ export function InstanceDetailsView({
     }
     navStructure([
       {
+        label: data.instance?.run?.meta?.projectId,
+        link: getProjectPath(data.instance?.run?.meta?.projectId),
+      },
+      {
         label: data.instance.run?.meta?.ciBuildId,
-        link: `run/${data.instance?.runId}`,
+        link: getRunPath(data.instance?.runId),
       },
       {
         label: data.instance.spec,
-        link: `instance/${data.instance.instanceId}`,
+        link: getInstancePath(data.instance.instanceId),
       },
     ]);
   }, [data]);

@@ -1,11 +1,16 @@
 ### Queries
 type Query {
+  projects(
+    orderDirection: OrderingOptions = DESC
+    filters: [Filters] = null
+  ): [Project]!
+  project(id: ID!): Project
   runs(
     orderDirection: OrderingOptions = DESC
     cursor: String = null
     filters: [Filters] = null
   ): [Run]!
-  runFeed(cursor: String): RunFeed!
+  runFeed(cursor: String, filters: [Filters] = null): RunFeed!
   run(id: ID!): Run
   instance(id: ID!): Instance
 }
@@ -18,12 +23,30 @@ type Mutation {
     startDate: DateTime!
     endDate: DateTime!
   ): DeleteRunResponse!
+  deleteProject(projectId: ID!): DeleteProjectResponse!
+  createProject(project: ProjectInput): Project!
+  updateProject(project: ProjectInput): Project!
 }
 
 type DeleteRunResponse {
   success: Boolean!
   message: String!
   runIds: [ID]!
+}
+
+### Project
+type Project {
+  projectId: String!
+}
+
+input ProjectInput {
+  projectId: String!
+}
+
+type DeleteProjectResponse {
+  success: Boolean!
+  message: String!
+  projectIds: [ID]!
 }
 
 ### Run - full representation of a run

@@ -6,6 +6,7 @@ query getInstance($instanceId: ID!) {
     run {
       meta {
         ciBuildId
+        projectId
         commit {
           sha
           branch
