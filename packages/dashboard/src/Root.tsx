@@ -14,6 +14,7 @@ import { RunsView } from './views/RunsView';
 import { RunDetailsView } from './views/RunDetailsView';
 import { InstanceDetailsView } from './views/InstanceDetailsView';
 import { TestDetailsView } from './views/TestDetailsView';
+import { environment } from '@src/state/environment';
 
 class ErrorBoundary extends React.Component<
   {},
@@ -57,7 +58,7 @@ export const Root = () => {
   return (
     <ApolloProvider client={client}>
       <ThemeProvider theme={theme}>
-        <Router basename="/dashboard">
+        <Router basename={environment.BASE_URL}>
           <ErrorBoundary>
             <Header />
             <Content>

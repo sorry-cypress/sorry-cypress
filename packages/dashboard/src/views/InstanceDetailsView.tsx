@@ -3,6 +3,7 @@ import { InstanceSummary } from '../components/instance/summary';
 import { InstanceDetails } from '../components/instance/details';
 import { useGetInstanceQuery } from '../generated/graphql';
 import { useApolloClient } from '@apollo/react-hooks';
+import { environment } from '@src/state/environment';
 
 type InstanceDetailsViewProps = {
   match: {
@@ -35,12 +36,12 @@ export function InstanceDetailsView({
         {
           __typename: 'NavStructureItem',
           label: data.instance!.run!.meta!.ciBuildId,
-          link: `dashboard/run/${data.instance!.runId}`,
+          link: `${environment.BASE_URL}/run/${data.instance!.runId}`,
         },
         {
           __typename: 'NavStructureItem',
           label: data.instance.spec,
-          link: `dashboard/instance/${data.instance.instanceId}`,
+          link: `${environment.BASE_URL}/instance/${data.instance.instanceId}`,
         },
       ],
     },

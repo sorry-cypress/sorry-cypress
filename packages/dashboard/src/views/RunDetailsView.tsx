@@ -3,6 +3,7 @@ import { RunDetails } from '../components/run/details';
 import { RunSummary } from '../components/run/summary';
 import { useGetRunQuery } from '../generated/graphql';
 import { useApolloClient } from '@apollo/react-hooks';
+import { environment } from '@src/state/environment';
 
 type RunDetailsViewProps = {
   match: {
@@ -33,7 +34,7 @@ export function RunDetailsView({
           {
             __typename: 'NavStructureItem',
             label: 'Non-existing run',
-            link: `dashboard/run/missing`,
+            link: `${environment.BASE_URL}/run/missing`,
           },
         ],
       },
@@ -47,7 +48,7 @@ export function RunDetailsView({
         {
           __typename: 'NavStructureItem',
           label: data.run!.meta!.ciBuildId,
-          link: `dashboard/run/${data.run!.runId}`,
+          link: `${environment.BASE_URL}/run/${data.run!.runId}`,
         },
       ],
     },

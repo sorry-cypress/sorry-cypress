@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useGetInstanceQuery } from '../generated/graphql';
 import { useApolloClient } from '@apollo/react-hooks';
 import { TestDetails } from '../components/test';
+import { environment } from '@src/state/environment';
 
 export function TestDetailsView(): React.ReactNode {
   const { instanceId, testId } = useParams();
@@ -34,17 +35,17 @@ export function TestDetailsView(): React.ReactNode {
         {
           __typename: 'NavStructureItem',
           label: data.instance.run!.meta!.ciBuildId,
-          link: `dashboard/run/${data.instance.runId}`,
+          link: `${environment.BASE_URL}/run/${data.instance.runId}`,
         },
         {
           __typename: 'NavStructureItem',
           label: data.instance.spec,
-          link: `dashboard/instance/${instanceId}`,
+          link: `${environment.BASE_URL}/instance/${instanceId}`,
         },
         {
           __typename: 'NavStructureItem',
           label: test.title && test.title.join(' | '),
-          link: `dashboard/instance/${data.instance.instanceId}/test/${testId}`,
+          link: `${environment.BASE_URL}/instance/${data.instance.instanceId}/test/${testId}`,
         },
       ],
     },
