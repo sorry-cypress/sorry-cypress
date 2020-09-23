@@ -8,7 +8,7 @@ import { theme } from './theme/theme';
 
 import { Header } from './components/layout/header';
 import { Content } from './components/layout/content';
-import Filter from "./components/layout/filter";
+import Filter from './components/layout/filter';
 
 import { RunsView } from './views/RunsView';
 import { RunDetailsView } from './views/RunDetailsView';
@@ -57,7 +57,7 @@ export const Root = () => {
   return (
     <ApolloProvider client={client}>
       <ThemeProvider theme={theme}>
-        <Router>
+        <Router basename={'/dashboard'}>
           <ErrorBoundary>
             <Header />
             <Content>
