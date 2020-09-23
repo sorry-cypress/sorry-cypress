@@ -142,7 +142,7 @@ export function RunSummary({ run }: RunSummaryProps): React.ReactNode {
           />
           <span className={`t-tag t-tag--${metaData.tag}`}>{metaData.tag}</span>
           <h1 style={{ flexGrow: 1 }}>
-            <a href={`/run/${runId}`} style={{ marginRight: '24px' }}>
+            <a href={`/dashboard/run/${runId}`} style={{ marginRight: '24px' }}>
               {metaData?.commitSha}
             </a>
             {metaData?.commitMsg}
@@ -157,7 +157,7 @@ export function RunSummary({ run }: RunSummaryProps): React.ReactNode {
         >
           <h4>
             Branch:{' '}
-            <a href={`/?branch=${metaData?.branch}`}>
+            <a href={`/dashboard/?branch=${metaData?.branch}`}>
               {metaData?.branch ?? 'unknown branch'}
             </a>
           </h4>
