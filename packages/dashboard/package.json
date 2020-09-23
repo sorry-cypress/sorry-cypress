@@ -9,6 +9,7 @@
     "type": "git",
     "url": "https://github.com/agoldis/sorry-cypress.git"
   },
+  "homepage": ".",
   "license": "MIT",
   "scripts": {
     "type-check": "tsc --noEmit",
