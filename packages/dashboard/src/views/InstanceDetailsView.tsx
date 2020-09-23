@@ -35,12 +35,12 @@ export function InstanceDetailsView({
         {
           __typename: 'NavStructureItem',
           label: data.instance!.run!.meta!.ciBuildId,
-          link: `run/${data.instance!.runId}`,
+          link: `dashboard/run/${data.instance!.runId}`,
         },
         {
           __typename: 'NavStructureItem',
           label: data.instance.spec,
-          link: `instance/${data.instance.instanceId}`,
+          link: `dashboard/instance/${data.instance.instanceId}`,
         },
       ],
     },

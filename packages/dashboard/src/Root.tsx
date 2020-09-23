@@ -57,7 +57,7 @@ export const Root = () => {
   return (
     <ApolloProvider client={client}>
       <ThemeProvider theme={theme}>
-        <Router basename={'/dashboard'}>
+        <Router basename="/dashboard">
           <ErrorBoundary>
             <Header />
             <Content>

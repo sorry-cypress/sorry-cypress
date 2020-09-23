@@ -33,7 +33,7 @@ export function RunDetailsView({
           {
             __typename: 'NavStructureItem',
             label: 'Non-existing run',
-            link: `run/missing`,
+            link: `dashboard/run/missing`,
           },
         ],
       },
@@ -47,7 +47,7 @@ export function RunDetailsView({
         {
           __typename: 'NavStructureItem',
           label: data.run!.meta!.ciBuildId,
-          link: `run/${data.run!.runId}`,
+          link: `dashboard/run/${data.run!.runId}`,
         },
       ],
     },
