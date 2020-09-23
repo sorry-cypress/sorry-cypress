@@ -6,7 +6,7 @@ module.exports = {
     main: ['./src/index.tsx'],
   },
   output: {
-    publicPath: '/',
+    publicPath: '/dashboard',
     jsonpScriptType: 'module',
     path: path.resolve(__dirname, 'dist'),
     filename: 'index.mjs',
