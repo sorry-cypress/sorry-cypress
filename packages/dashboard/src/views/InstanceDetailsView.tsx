@@ -36,12 +36,12 @@ export function InstanceDetailsView({
         {
           __typename: 'NavStructureItem',
           label: data.instance!.run!.meta!.ciBuildId,
-          link: `${environment.BASE_URL}/run/${data.instance!.runId}`,
+          link: `run/${data.instance!.runId}`,
         },
         {
           __typename: 'NavStructureItem',
           label: data.instance.spec,
-          link: `${environment.BASE_URL}/instance/${data.instance.instanceId}`,
+          link: `instance/${data.instance.instanceId}`,
         },
       ],
     },

@@ -35,17 +35,17 @@ export function TestDetailsView(): React.ReactNode {
         {
           __typename: 'NavStructureItem',
           label: data.instance.run!.meta!.ciBuildId,
-          link: `${environment.BASE_URL}/run/${data.instance.runId}`,
+          link: `run/${data.instance.runId}`,
         },
         {
           __typename: 'NavStructureItem',
           label: data.instance.spec,
-          link: `${environment.BASE_URL}/instance/${instanceId}`,
+          link: `instance/${instanceId}`,
         },
         {
           __typename: 'NavStructureItem',
           label: test.title && test.title.join(' | '),
-          link: `${environment.BASE_URL}/instance/${data.instance.instanceId}/test/${testId}`,
+          link: `instance/${data.instance.instanceId}/test/${testId}`,
         },
       ],
     },
