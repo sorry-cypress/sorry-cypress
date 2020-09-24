@@ -6,6 +6,7 @@ import {
   S3_BUCKET,
   FILES_EXPIRATION,
   S3_ENDPOINT,
+  S3_FORCE_PATH_STYLE,
 } from './config';
 import { S3SignedUploadResult } from './types';
 import { AssetUploadInstruction } from '@src/types';
@@ -18,7 +19,7 @@ const s3 = new aws.S3({
   region: S3_REGION,
   signatureVersion: 'v4',
   endpoint: S3_ENDPOINT,
-  s3ForcePathStyle: true,
+  s3ForcePathStyle: S3_FORCE_PATH_STYLE,
 });
 
 interface GetUploadURLParams {
