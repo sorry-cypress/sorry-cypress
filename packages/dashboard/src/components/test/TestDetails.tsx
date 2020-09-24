@@ -13,8 +13,6 @@ export function TestDetails({
   screenshots,
 }: TestDetailsProps): React.ReactNode {
   const screenshot = screenshots.find((s) => s.testId === test.testId);
-  console.log(screenshot);
-  console.log(screenshots);
   const { css } = useCss();
   const title = test.title.join(' > ');
   return (
