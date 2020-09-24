@@ -4,7 +4,9 @@ import {
   S3_IMAGE_KEY_PREFIX,
   S3_VIDEO_KEY_PREFIX,
   S3_BUCKET,
-  FILES_EXPIRATION
+  FILES_EXPIRATION,
+  S3_ENDPOINT,
+  S3_FORCE_PATH_STYLE,
 } from './config';
 import { S3SignedUploadResult } from './types';
 import { AssetUploadInstruction } from '@src/types';
@@ -16,8 +18,8 @@ const VideoContentType = 'video/mp4';
 const s3 = new aws.S3({
   region: S3_REGION,
   signatureVersion: 'v4',
-  endpoint: 'storage-eb4.cegedim.cloud',
-  s3ForcePathStyle: true,
+  endpoint: S3_ENDPOINT,
+  s3ForcePathStyle: S3_FORCE_PATH_STYLE,
 });
 
 interface GetUploadURLParams {
@@ -40,7 +42,7 @@ export const getUploadUrl = async ({
   const s3ParamsUpload = {
     Expires,
     ContentType,
-    ...s3ParamsRead
+    ...s3ParamsRead,
   };
 
   return new Promise((resolve, reject) => {

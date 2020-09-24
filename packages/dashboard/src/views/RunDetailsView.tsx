@@ -3,6 +3,7 @@ import { RunDetails } from '../components/run/details';
 import { RunSummary } from '../components/run/summary';
 import { useGetRunQuery } from '../generated/graphql';
 import { useApolloClient } from '@apollo/react-hooks';
+import { environment } from '@src/state/environment';
 
 type RunDetailsViewProps = {
   match: {

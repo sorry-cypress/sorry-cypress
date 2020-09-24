@@ -3,6 +3,7 @@ import { InstanceSummary } from '../components/instance/summary';
 import { InstanceDetails } from '../components/instance/details';
 import { useGetInstanceQuery } from '../generated/graphql';
 import { useApolloClient } from '@apollo/react-hooks';
+import { environment } from '@src/state/environment';
 
 type InstanceDetailsViewProps = {
   match: {

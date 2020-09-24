@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useGetInstanceQuery } from '../generated/graphql';
 import { useApolloClient } from '@apollo/react-hooks';
 import { TestDetails } from '../components/test';
+import { environment } from '@src/state/environment';
 
 export function TestDetailsView(): React.ReactNode {
   const { instanceId, testId } = useParams();
