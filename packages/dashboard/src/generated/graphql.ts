@@ -104,20 +104,41 @@ export type DeleteRunResponse = {
   runIds: Array<Maybe<Scalars['ID']>>;
 };
 
+export type Hook = {
+  __typename?: 'Hook';
+  hookId?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['String']>;
+  headers?: Maybe<Scalars['String']>;
+  hookEvents?: Maybe<Array<Maybe<Scalars['String']>>>;
+  hookType?: Maybe<Scalars['String']>;
+  githubToken?: Maybe<Scalars['String']>;
+};
+
 export type Project = {
   __typename?: 'Project';
   projectId: Scalars['String'];
+  hooks?: Maybe<Array<Maybe<Hook>>>;
+};
+
+export type HookInput = {
+  hookId?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['String']>;
+  headers?: Maybe<Scalars['String']>;
+  hookEvents?: Maybe<Array<Maybe<Scalars['String']>>>;
+  hookType?: Maybe<Scalars['String']>;
+  githubToken?: Maybe<Scalars['String']>;
 };
 
 export type ProjectInput = {
   projectId: Scalars['String'];
+  hooks?: Maybe<Array<Maybe<HookInput>>>;
 };
 
 export type DeleteProjectResponse = {
   __typename?: 'DeleteProjectResponse';
+  success: Scalars['Boolean'];
   message: Scalars['String'];
   projectIds: Array<Maybe<Scalars['ID']>>;
-  success: Scalars['Boolean'];
 };
 
 export type Run = {
@@ -301,6 +322,10 @@ export type CreateProjectMutation = (
   & { createProject: (
     { __typename?: 'Project' }
     & Pick<Project, 'projectId'>
+    & { hooks?: Maybe<Array<Maybe<(
+      { __typename?: 'Hook' }
+      & Pick<Hook, 'hookId' | 'url' | 'headers' | 'hookEvents' | 'hookType'>
+    )>>> }
   ) }
 );
 
@@ -391,6 +416,10 @@ export type GetProjectQuery = (
   & { project?: Maybe<(
     { __typename?: 'Project' }
     & Pick<Project, 'projectId'>
+    & { hooks?: Maybe<Array<Maybe<(
+      { __typename?: 'Hook' }
+      & Pick<Hook, 'hookId' | 'url' | 'headers' | 'hookEvents' | 'hookType'>
+    )>>> }
   )> }
 );
 
@@ -541,6 +570,10 @@ export type UpdateProjectMutation = (
   & { updateProject: (
     { __typename?: 'Project' }
     & Pick<Project, 'projectId'>
+    & { hooks?: Maybe<Array<Maybe<(
+      { __typename?: 'Hook' }
+      & Pick<Hook, 'hookId' | 'url' | 'headers' | 'hookEvents' | 'hookType'>
+    )>>> }
   ) }
 );
 
@@ -549,6 +582,13 @@ export const CreateProjectDocument = gql`
     mutation createProject($project: ProjectInput) {
   createProject(project: $project) {
     projectId
+    hooks {
+      hookId
+      url
+      headers
+      hookEvents
+      hookType
+    }
   }
 }
     `;
@@ -750,6 +790,13 @@ export const GetProjectDocument = gql`
     query getProject($projectId: ID!) {
   project(id: $projectId) {
     projectId
+    hooks {
+      hookId
+      url
+      headers
+      hookEvents
+      hookType
+    }
   }
 }
     `;
@@ -1040,6 +1087,13 @@ export const UpdateProjectDocument = gql`
     mutation updateProject($project: ProjectInput!) {
   updateProject(project: $project) {
     projectId
+    hooks {
+      hookId
+      url
+      headers
+      hookEvents
+      hookType
+    }
   }
 }
     `;

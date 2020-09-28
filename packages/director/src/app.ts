@@ -10,6 +10,8 @@ import {
 import { ALLOWED_KEYS } from '@src/config';
 import { RUN_NOT_EXIST } from '@src/lib/errors';
 import { UpdateInstanseResponse } from './types/response.types';
+import { hookEvents } from '@src/lib/hooksEnums';
+import { reportToHook } from '@src/lib/hooksReporter';
 
 export const app = express();
 
@@ -27,6 +29,7 @@ app.get('/', (_, res) =>
 
 app.post('/runs', async (req, res) => {
   const { recordKey, ciBuildId } = req.body;
+  const executionDriver = app.get('executionDriver');
 
   console.log(`>> Machine is asking to join a run`, { recordKey, ciBuildId });
 
@@ -38,7 +41,15 @@ app.post('/runs', async (req, res) => {
 
   console.log(`>> Machine is joining a run`, { ciBuildId });
 
-  const response = await app.get('executionDriver').createRun(req.body);
+  const response = await executionDriver.createRun(req.body);
+  const runWithSpecs = await executionDriver.getRunWithSpecs(response.runId);
+  reportToHook({
+    hookEvent: hookEvents.RUN_START,
+    reportData:{run:runWithSpecs},
+    project: await executionDriver.getProjectById(runWithSpecs.meta.projectId)
+  });
+
+  console.log(`<< RUN_START hook called`, response);
 
   console.log(`<< Responding to machine`, response);
   return res.json(response);
@@ -47,6 +58,7 @@ app.post('/runs', async (req, res) => {
 app.post('/runs/:runId/instances', async (req, res) => {
   const { groupId, machineId } = req.body;
   const { runId } = req.params;
+  const executionDriver = app.get('executionDriver');
 
   console.log(`>> Machine is requesting a new task`, {
     runId,
@@ -55,9 +67,7 @@ app.post('/runs/:runId/instances', async (req, res) => {
   });
 
   try {
-    const { instance, claimedInstances, totalInstances } = await app
-      .get('executionDriver')
-      .getNextTask(runId);
+    const { instance, claimedInstances, totalInstances } = await executionDriver.getNextTask(runId);
     if (instance === null) {
       console.log(`<< All tasks claimed`, { runId, machineId });
       return res.json({
@@ -68,6 +78,18 @@ app.post('/runs/:runId/instances', async (req, res) => {
       });
     }
 
+    const run = await executionDriver.getRunWithSpecs(runId);
+    reportToHook({
+      hookEvent: hookEvents.INSTANCE_START,
+      reportData:{
+        run,
+        instance
+      },
+      project: await executionDriver.getProjectById(run.meta.projectId)
+    });
+
+    console.log(`<< INSTANCE_START hook called`, instance.instanceId);
+    //Instance Start
     console.log(`<< Sending new task to machine`, instance);
     return res.json({
       spec: instance.spec,
@@ -94,6 +116,46 @@ app.put(
 
     console.log(`>> Received instance result`, { instanceId });
     await executionDriver.setInstanceResults(instanceId, result);
+
+    const instance = await executionDriver.getInstanceById(instanceId);
+    const run = await executionDriver.getRunWithSpecs(instance.runId);
+    const project = await executionDriver.getProjectById(run.meta.projectId);
+    const isRunStillRunning = run.specs.reduce((
+      wasRunning:boolean,
+      currentSpec:{
+        claimed: boolean,
+        results: any
+      },
+      index: number
+    ) => {
+      return !currentSpec.claimed || !run.specsFull[index].results || wasRunning;
+    }, false);
+
+    reportToHook({
+      hookEvent: hookEvents.INSTANCE_FINISH,
+      reportData:{
+        run,
+        instance
+      },
+      project
+    }).then(()=>{
+      console.log(`<< INSTANCE_FINISH hook called`, instance.instanceId);
+      // We should probably add a flag to the actual run here aswell
+      // We should also probably do a check to see if all specs passed and set a flag of success or fail
+      if (!isRunStillRunning) {
+        reportToHook({
+          hookEvent: hookEvents.RUN_FINISH,
+          reportData:{
+            run,
+            instance
+          },
+          project
+        });
+        console.log(`<< RUN_FINISH hook called`, run.runId);
+      }
+    });
+    
+
 
     const screenshotUploadUrls: ScreenshotUploadInstruction[] = await screenshotsDriver.getScreenshotsUploadUrls(
       instanceId,

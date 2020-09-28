@@ -52,7 +52,7 @@ export function RunDetails({
       </HFlow>
       <div
         className={css`
-           {
+          {
             margin: 12px 0;
           }
         `}

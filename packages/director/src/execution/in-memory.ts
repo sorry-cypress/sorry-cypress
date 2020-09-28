@@ -1,7 +1,9 @@
 import {
+  Project,
   Run,
   Task,
   RunMetaData,
+  Instance,
   InstanceResult,
   ExecutionDriver,
   CreateRunResponse,
@@ -15,13 +17,16 @@ import {
   generateUUID,
 } from '@src/lib/hash';
 
+const projects: { [key: string]: Project } = {};
 const runs: { [key: string]: Run } = {};
 const instances: {
-  [key: string]: {
-    runId: string;
-    results?: InstanceResult;
-  };
+  [key: string]: Instance;
 } = {};
+
+const createProject = (project:Project) => {
+  projects[project.projectId] = project;
+  return project;
+}
 
 const createRun = async (
   params: CreateRunParameters
@@ -41,10 +46,23 @@ const createRun = async (
     return response;
   }
 
+  if (!projects[params.projectId]) {
+    createProject({
+      projectId: params.projectId,
+      createdAt: new Date().toUTCString()
+    })
+  }
+
   runs[runId] = {
     runId,
     createdAt: new Date().toUTCString(),
-    meta: {} as RunMetaData,
+    meta: {
+      groupId,
+      ciBuildId: params.ciBuildId,
+      commit: params.commit,
+      projectId: params.projectId,
+      platform: params.platform,
+    } as RunMetaData,
     specs: params.specs.map((spec) => ({
       spec,
       instanceId: generateUUID(),
@@ -72,7 +90,10 @@ const getNextTask = async (runId: string): Promise<Task> => {
   const spec = runs[runId].specs[unclaimedSpecIndex];
 
   spec.claimed = true;
-  instances[spec.instanceId] = { runId };
+  instances[spec.instanceId] = {
+    runId,
+    instanceId: spec.instanceId
+  };
 
   return {
     instance: runs[runId].specs[unclaimedSpecIndex],
@@ -93,9 +114,13 @@ const setInstanceResults = async (
 export const driver: ExecutionDriver = {
   id: 'in-memory',
   init: () => Promise.resolve(),
-  setScreenshotUrl: () => Promise.resolve(),
-  setVideoUrl: () => Promise.resolve(),
+  getProjectById: (projectId:string)=>(Promise.resolve(projects[projectId])),
+  getRunById: (runId:string)=>(Promise.resolve(runs[runId])),
+  getRunWithSpecs: (runId:string)=>(Promise.resolve(runs[runId])),
+  getInstanceById: (instanceId:string)=>(Promise.resolve(instances[instanceId])),
   createRun,
   getNextTask,
   setInstanceResults,
+  setScreenshotUrl: () => Promise.resolve(),
+  setVideoUrl: () => Promise.resolve(),
 };

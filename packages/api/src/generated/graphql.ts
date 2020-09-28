@@ -105,13 +105,34 @@ export type DeleteRunResponse = {
   runIds: Array<Maybe<Scalars['ID']>>;
 };
 
+export type Hook = {
+  __typename?: 'Hook';
+  hookId?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['String']>;
+  headers?: Maybe<Scalars['String']>;
+  hookEvents?: Maybe<Array<Maybe<Scalars['String']>>>;
+  hookType?: Maybe<Scalars['String']>;
+  githubToken?: Maybe<Scalars['String']>;
+};
+
 export type Project = {
   __typename?: 'Project';
   projectId: Scalars['String'];
+  hooks?: Maybe<Array<Maybe<Hook>>>;
+};
+
+export type HookInput = {
+  hookId?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['String']>;
+  headers?: Maybe<Scalars['String']>;
+  hookEvents?: Maybe<Array<Maybe<Scalars['String']>>>;
+  hookType?: Maybe<Scalars['String']>;
+  githubToken?: Maybe<Scalars['String']>;
 };
 
 export type ProjectInput = {
   projectId: Scalars['String'];
+  hooks?: Maybe<Array<Maybe<HookInput>>>;
 };
 
 export type DeleteProjectResponse = {
@@ -376,7 +397,9 @@ export type ResolversTypes = {
   Mutation: ResolverTypeWrapper<{}>;
   DeleteRunResponse: ResolverTypeWrapper<DeleteRunResponse>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  Hook: ResolverTypeWrapper<Hook>;
   Project: ResolverTypeWrapper<Project>;
+  HookInput: HookInput;
   ProjectInput: ProjectInput;
   DeleteProjectResponse: ResolverTypeWrapper<DeleteProjectResponse>;
   Run: ResolverTypeWrapper<Run>;
@@ -411,7 +434,9 @@ export type ResolversParentTypes = {
   Mutation: {};
   DeleteRunResponse: DeleteRunResponse;
   Boolean: Scalars['Boolean'];
+  Hook: Hook;
   Project: Project;
+  HookInput: HookInput;
   ProjectInput: ProjectInput;
   DeleteProjectResponse: DeleteProjectResponse;
   Run: Run;
@@ -462,8 +487,19 @@ export type DeleteRunResponseResolvers<ContextType = any, ParentType extends Res
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
+export type HookResolvers<ContextType = any, ParentType extends ResolversParentTypes['Hook'] = ResolversParentTypes['Hook']> = {
+  hookId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  url?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  headers?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  hookEvents?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
+  hookType?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  githubToken?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
 export type ProjectResolvers<ContextType = any, ParentType extends ResolversParentTypes['Project'] = ResolversParentTypes['Project']> = {
   projectId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  hooks?: Resolver<Maybe<Array<Maybe<ResolversTypes['Hook']>>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
@@ -644,6 +680,7 @@ export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   DeleteRunResponse?: DeleteRunResponseResolvers<ContextType>;
+  Hook?: HookResolvers<ContextType>;
   Project?: ProjectResolvers<ContextType>;
   DeleteProjectResponse?: DeleteProjectResponseResolvers<ContextType>;
   Run?: RunResolvers<ContextType>;

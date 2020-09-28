@@ -1,9 +1,6 @@
-import { AppDatasources } from '@src/datasources/types';
+import { Project } from '@src/duplicatedFromDirector/project.types';
 import { GraphQLDateTime } from 'graphql-iso-date';
-
-type Project = {
-  projectId: string,
-}
+import { AppDatasources } from '@src/datasources/types';
 
 export const resolvers = {
   DateTime: GraphQLDateTime,

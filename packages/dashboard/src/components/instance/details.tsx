@@ -115,7 +115,7 @@ export const InstanceDetails = ({
       <strong>Tests</strong>
       <div
         className={css`
-           {
+          {
             margin: 12px 0;
           }
         `}

@@ -35,12 +35,32 @@ type DeleteRunResponse {
 }
 
 ### Project
+type Hook {
+  hookId: String
+  url: String
+  headers: String
+  hookEvents: [String]
+  hookType: String
+  githubToken: String
+}
+
 type Project {
   projectId: String!
+  hooks: [Hook]
+}
+
+input HookInput {
+  hookId: String
+  url: String
+  headers: String
+  hookEvents: [String]
+  hookType: String
+  githubToken: String
 }
 
 input ProjectInput {
   projectId: String!
+  hooks: [HookInput]
 }
 
 type DeleteProjectResponse {
