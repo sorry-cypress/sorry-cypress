@@ -14,7 +14,7 @@ async function main() {
 
   app.set('executionDriver', executionDriver);
   app.set('screenshotsDriver', screenshotsDriver);
-  app.on('error', error => {
+  app.on('error', (error) => {
     throw error;
   });
   app.listen(PORT, () => {
@@ -22,7 +22,11 @@ async function main() {
   });
 }
 
-main().catch(error => {
+main().catch((error) => {
   console.error(error);
   process.exit(1);
+});
+
+process.on('unhandledRejection', (reason) => {
+  console.log('unhandledRejection : ', reason);
 });
