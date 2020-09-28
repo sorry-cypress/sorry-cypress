@@ -1,5 +1,4 @@
-import { useApolloClient } from '@apollo/react-hooks';
-import React, { useState } from 'react';
+import React, { useState, useLayoutEffect } from 'react';
 import { useGetProjectQuery, useCreateProjectMutation, useUpdateProjectMutation } from '../generated/graphql';
 import {
   Button,
@@ -23,6 +22,7 @@ import clonedeep from 'lodash.clonedeep';
 import capitalize from 'lodash.capitalize';
 import {hookEvents, hookTypes} from '@src/duplicatedFromDirector/hooksEnums';
 import {Project} from '@src/duplicatedFromDirector/project.types'
+import {navStructure} from '@src/lib/navigation';
 
 type ProjectEditViewProps = {
   match: {
@@ -56,13 +56,11 @@ export function ProjectEditView({
   },
 }:ProjectEditViewProps) {
   const history = useHistory();
-  const apollo = useApolloClient();
   const isNewProject = projectId === '--create-new-project--';
-  apollo.writeData({
-    data: {
-      navStructure: [],
-    },
-  });
+
+  useLayoutEffect(() => {
+    navStructure([]);
+  }, []);
   
 
   const [creating, setCreating] = useState(false);
