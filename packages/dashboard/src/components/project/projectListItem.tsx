@@ -12,18 +12,18 @@ import {
 } from 'bold-ui';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  Project,
-  useDeleteProjectMutation
-} from '../../generated/graphql';
+import { Project, useDeleteProjectMutation } from '../../generated/graphql';
 import { Paper } from '../common';
 
 type ProjectListItemProps = {
-  project: Partial<Project>;
-  reloadProjects: Function
+  project: Project;
+  reloadProjects: () => void;
 };
 
-export function ProjectListItem({ project, reloadProjects }: ProjectListItemProps) {
+export function ProjectListItem({
+  project,
+  reloadProjects,
+}: ProjectListItemProps) {
   const { css } = useCss();
   const [startDeleteProjectMutation] = useDeleteProjectMutation({
     variables: {
@@ -37,19 +37,21 @@ export function ProjectListItem({ project, reloadProjects }: ProjectListItemProp
 
   function deleteProject() {
     setDeleting(true);
-    startDeleteProjectMutation().then((result) => {
-      if (result.errors) {
-        setDeleteError(result.errors[0].message);
+    startDeleteProjectMutation()
+      .then((result) => {
+        if (result.errors) {
+          setDeleteError(result.errors[0].message);
+          setDeleting(false);
+        } else {
+          setDeleting(false);
+          setShowModal(false);
+        }
+        reloadProjects();
+      })
+      .catch((error) => {
         setDeleting(false);
-      } else {
-        setDeleting(false);
-        setShowModal(false);
-      }
-      reloadProjects();
-    }).catch((error) => {
-      setDeleting(false);
-      setDeleteError(error.toString());
-    });
+        setDeleteError(error.toString());
+      });
   }
 
   return (
@@ -70,9 +72,9 @@ export function ProjectListItem({ project, reloadProjects }: ProjectListItemProp
             <div>
               <Heading level={1}>Delete project {project.projectId}?</Heading>
               <Heading level={5}>
-                Deleting project will permanently delete the associated data (project, run,
-                instances, test results). Running tests associated with the project
-                will fail.
+                Deleting project will permanently delete the associated data
+                (project, run, instances, test results). Running tests
+                associated with the project will fail.
               </Heading>
               {deleteError && <p>Delete error: {deleteError}</p>}
             </div>
@@ -102,11 +104,10 @@ export function ProjectListItem({ project, reloadProjects }: ProjectListItemProp
       <Paper>
         <HFlow justifyContent="space-between">
           <Heading level={1}>
-            <Link className={
-                css`
-                  vertical-align: middle;
-                `
-              }
+            <Link
+              className={css`
+                vertical-align: middle;
+              `}
               to={`/${project.projectId}/runs`}
             >
               {project.projectId}
@@ -120,8 +121,9 @@ export function ProjectListItem({ project, reloadProjects }: ProjectListItemProp
               style={{
                 verticalAlign: 'middle',
                 marginLeft: '10px',
-              }}>
-              <Icon icon="penFilled"/>
+              }}
+            >
+              <Icon icon="penFilled" />
             </Button>
           </Heading>
           <Button kind="danger" skin="ghost" onClick={() => setShowModal(true)}>

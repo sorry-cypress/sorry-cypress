@@ -7,7 +7,7 @@ interface NavItem {
 }
 export const navStructure = makeVar<NavItem[]>([]);
 
-const detectBadPath = (fn: Function) => (value: unknown) => {
+const detectBadPath = (fn: (value: string) => unknown) => (value: unknown) => {
   if (isNil(value)) {
     throw new Error(`Uknown path param for ${fn.name}`);
   }

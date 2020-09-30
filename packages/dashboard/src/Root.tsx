@@ -14,13 +14,13 @@ import { RunsView } from './views/RunsView';
 import { TestDetailsView } from './views/TestDetailsView';
 
 class ErrorBoundary extends React.Component<
-  {},
+  unknown,
   {
     hasError: boolean;
     error: Error | null;
   }
 > {
-  constructor(props: object) {
+  constructor(props: Record<string, unknown>) {
     super(props);
     this.state = { hasError: false, error: null };
   }

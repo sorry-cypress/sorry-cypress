@@ -1,4 +1,3 @@
-import { useApolloClient } from '@apollo/client';
 import React, { useLayoutEffect, useState } from 'react';
 import {
   useGetProjectQuery,
