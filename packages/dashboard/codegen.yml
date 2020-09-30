@@ -7,7 +7,9 @@ generates:
       - 'typescript'
       - 'typescript-operations'
       - 'typescript-react-apollo'
+      - 'fragment-matcher'
     config:
       withComponent: false
       withHooks: true
       withHOC: false
+      apolloClientVersion: 3

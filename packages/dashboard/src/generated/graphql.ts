@@ -1,7 +1,7 @@
-import gql from 'graphql-tag';
-import * as ApolloReactCommon from '@apollo/react-common';
-import * as ApolloReactHooks from '@apollo/react-hooks';
+import { gql } from '@apollo/client';
+import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -12,173 +12,8 @@ export type Scalars = {
   DateTime: any;
 };
 
-export type Commit = {
-   __typename?: 'Commit';
-  sha?: Maybe<Scalars['String']>;
-  branch?: Maybe<Scalars['String']>;
-  authorName?: Maybe<Scalars['String']>;
-  authorEmail?: Maybe<Scalars['String']>;
-  message?: Maybe<Scalars['String']>;
-  remoteOrigin?: Maybe<Scalars['String']>;
-};
-
-export type CypressConfig = {
-   __typename?: 'CypressConfig';
-  video: Scalars['Boolean'];
-  videoUploadOnPasses: Scalars['Boolean'];
-};
-
-
-export type DeleteProjectResponse = {
-   __typename?: 'DeleteProjectResponse';
-  success: Scalars['Boolean'];
-  message: Scalars['String'];
-  projectIds: Array<Maybe<Scalars['ID']>>;
-};
-
-export type DeleteRunResponse = {
-   __typename?: 'DeleteRunResponse';
-  success: Scalars['Boolean'];
-  message: Scalars['String'];
-  runIds: Array<Maybe<Scalars['ID']>>;
-};
-
-export type Filters = {
-  key?: Maybe<Scalars['String']>;
-  value?: Maybe<Scalars['String']>;
-};
-
-export type FullRunSpec = {
-   __typename?: 'FullRunSpec';
-  spec: Scalars['String'];
-  instanceId: Scalars['String'];
-  claimed: Scalars['Boolean'];
-  claimedAt?: Maybe<Scalars['String']>;
-  results?: Maybe<InstanceResults>;
-};
-
-export type Instance = {
-   __typename?: 'Instance';
-  runId: Scalars['ID'];
-  run: PartialRun;
-  spec: Scalars['String'];
-  instanceId: Scalars['ID'];
-  results?: Maybe<InstanceResults>;
-};
-
-export type InstanceResults = {
-   __typename?: 'InstanceResults';
-  stats: InstanceStats;
-  tests?: Maybe<Array<Maybe<InstanceTest>>>;
-  error?: Maybe<Scalars['String']>;
-  stdout?: Maybe<Scalars['String']>;
-  screenshots: Array<InstanceScreeshot>;
-  cypressConfig?: Maybe<CypressConfig>;
-  reporterStats?: Maybe<ReporterStats>;
-  videoUrl?: Maybe<Scalars['String']>;
-};
-
-export type InstanceScreeshot = {
-   __typename?: 'InstanceScreeshot';
-  screenshotId: Scalars['String'];
-  name?: Maybe<Scalars['String']>;
-  testId: Scalars['String'];
-  takenAt: Scalars['String'];
-  height: Scalars['Int'];
-  width: Scalars['Int'];
-  screenshotURL?: Maybe<Scalars['String']>;
-};
-
-export type InstanceStats = {
-   __typename?: 'InstanceStats';
-  suites?: Maybe<Scalars['Int']>;
-  tests?: Maybe<Scalars['Int']>;
-  passes?: Maybe<Scalars['Int']>;
-  pending?: Maybe<Scalars['Int']>;
-  skipped?: Maybe<Scalars['Int']>;
-  failures?: Maybe<Scalars['Int']>;
-  wallClockStartedAt?: Maybe<Scalars['String']>;
-  wallClockEndedAt?: Maybe<Scalars['String']>;
-  wallClockDuration?: Maybe<Scalars['Int']>;
-};
-
-export type InstanceTest = {
-   __typename?: 'InstanceTest';
-  testId: Scalars['String'];
-  title?: Maybe<Array<Maybe<Scalars['String']>>>;
-  state?: Maybe<Scalars['String']>;
-  body?: Maybe<Scalars['String']>;
-  stack?: Maybe<Scalars['String']>;
-  error?: Maybe<Scalars['String']>;
-  wallClockStartedAt?: Maybe<Scalars['String']>;
-  wallClockDuration?: Maybe<Scalars['Int']>;
-};
-
-export type Mutation = {
-   __typename?: 'Mutation';
-  deleteRun: DeleteRunResponse;
-  deleteRuns: DeleteRunResponse;
-  deleteRunsInDateRange: DeleteRunResponse;
-  deleteProject: DeleteProjectResponse;
-  createProject: Project;
-  updateProject: Project;
-};
-
-
-export type MutationDeleteRunArgs = {
-  runId: Scalars['ID'];
-};
-
-
-export type MutationDeleteRunsArgs = {
-  runIds: Array<Maybe<Scalars['ID']>>;
-};
-
-
-export type MutationDeleteRunsInDateRangeArgs = {
-  startDate: Scalars['DateTime'];
-  endDate: Scalars['DateTime'];
-};
-
-
-export type MutationDeleteProjectArgs = {
-  projectId: Scalars['ID'];
-};
-
-
-export type MutationCreateProjectArgs = {
-  project?: Maybe<ProjectInput>;
-};
-
-
-export type MutationUpdateProjectArgs = {
-  project?: Maybe<ProjectInput>;
-};
-
-export enum OrderingOptions {
-  Desc = 'DESC',
-  Asc = 'ASC'
-}
-
-export type PartialRun = {
-   __typename?: 'PartialRun';
-  runId: Scalars['ID'];
-  createdAt: Scalars['DateTime'];
-  meta?: Maybe<RunMeta>;
-  specs: Array<Maybe<RunSpec>>;
-};
-
-export type Project = {
-   __typename?: 'Project';
-  projectId: Scalars['String'];
-};
-
-export type ProjectInput = {
-  projectId: Scalars['String'];
-};
-
 export type Query = {
-   __typename?: 'Query';
+  __typename?: 'Query';
   projects: Array<Maybe<Project>>;
   project?: Maybe<Project>;
   runs: Array<Maybe<Run>>;
@@ -221,8 +56,181 @@ export type QueryInstanceArgs = {
   id: Scalars['ID'];
 };
 
+export type Mutation = {
+  __typename?: 'Mutation';
+  deleteRun: DeleteRunResponse;
+  deleteRuns: DeleteRunResponse;
+  deleteRunsInDateRange: DeleteRunResponse;
+  deleteProject: DeleteProjectResponse;
+  createProject: Project;
+  updateProject: Project;
+};
+
+
+export type MutationDeleteRunArgs = {
+  runId: Scalars['ID'];
+};
+
+
+export type MutationDeleteRunsArgs = {
+  runIds: Array<Maybe<Scalars['ID']>>;
+};
+
+
+export type MutationDeleteRunsInDateRangeArgs = {
+  startDate: Scalars['DateTime'];
+  endDate: Scalars['DateTime'];
+};
+
+
+export type MutationDeleteProjectArgs = {
+  projectId: Scalars['ID'];
+};
+
+
+export type MutationCreateProjectArgs = {
+  project?: Maybe<ProjectInput>;
+};
+
+
+export type MutationUpdateProjectArgs = {
+  project?: Maybe<ProjectInput>;
+};
+
+export type DeleteRunResponse = {
+  __typename?: 'DeleteRunResponse';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  runIds: Array<Maybe<Scalars['ID']>>;
+};
+
+export type Project = {
+  __typename?: 'Project';
+  projectId: Scalars['String'];
+};
+
+export type ProjectInput = {
+  projectId: Scalars['String'];
+};
+
+export type DeleteProjectResponse = {
+  __typename?: 'DeleteProjectResponse';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  projectIds: Array<Maybe<Scalars['ID']>>;
+};
+
+export type Run = {
+  __typename?: 'Run';
+  runId: Scalars['ID'];
+  createdAt: Scalars['DateTime'];
+  meta?: Maybe<RunMeta>;
+  specs: Array<Maybe<FullRunSpec>>;
+};
+
+export type FullRunSpec = {
+  __typename?: 'FullRunSpec';
+  spec: Scalars['String'];
+  instanceId: Scalars['String'];
+  claimed: Scalars['Boolean'];
+  claimedAt?: Maybe<Scalars['String']>;
+  results?: Maybe<InstanceResults>;
+};
+
+export type Commit = {
+  __typename?: 'Commit';
+  sha?: Maybe<Scalars['String']>;
+  branch?: Maybe<Scalars['String']>;
+  authorName?: Maybe<Scalars['String']>;
+  authorEmail?: Maybe<Scalars['String']>;
+  message?: Maybe<Scalars['String']>;
+  remoteOrigin?: Maybe<Scalars['String']>;
+};
+
+export type RunMeta = {
+  __typename?: 'RunMeta';
+  groupId?: Maybe<Scalars['String']>;
+  ciBuildId?: Maybe<Scalars['String']>;
+  projectId?: Maybe<Scalars['String']>;
+  commit?: Maybe<Commit>;
+};
+
+export type RunFeed = {
+  __typename?: 'RunFeed';
+  cursor: Scalars['String'];
+  hasMore: Scalars['Boolean'];
+  runs: Array<Run>;
+};
+
+export type Instance = {
+  __typename?: 'Instance';
+  runId: Scalars['ID'];
+  run: PartialRun;
+  spec: Scalars['String'];
+  instanceId: Scalars['ID'];
+  results?: Maybe<InstanceResults>;
+};
+
+export type PartialRun = {
+  __typename?: 'PartialRun';
+  runId: Scalars['ID'];
+  createdAt: Scalars['DateTime'];
+  meta?: Maybe<RunMeta>;
+  specs: Array<Maybe<RunSpec>>;
+};
+
+export type RunSpec = {
+  __typename?: 'RunSpec';
+  spec: Scalars['String'];
+  instanceId: Scalars['String'];
+  claimed: Scalars['Boolean'];
+  claimedAt?: Maybe<Scalars['String']>;
+};
+
+export type InstanceResults = {
+  __typename?: 'InstanceResults';
+  stats: InstanceStats;
+  tests?: Maybe<Array<Maybe<InstanceTestUnion>>>;
+  error?: Maybe<Scalars['String']>;
+  stdout?: Maybe<Scalars['String']>;
+  screenshots: Array<InstanceScreeshot>;
+  cypressConfig?: Maybe<CypressConfig>;
+  reporterStats?: Maybe<ReporterStats>;
+  videoUrl?: Maybe<Scalars['String']>;
+};
+
+export type InstanceStats = {
+  __typename?: 'InstanceStats';
+  suites?: Maybe<Scalars['Int']>;
+  tests?: Maybe<Scalars['Int']>;
+  passes?: Maybe<Scalars['Int']>;
+  pending?: Maybe<Scalars['Int']>;
+  skipped?: Maybe<Scalars['Int']>;
+  failures?: Maybe<Scalars['Int']>;
+  wallClockStartedAt?: Maybe<Scalars['String']>;
+  wallClockEndedAt?: Maybe<Scalars['String']>;
+  wallClockDuration?: Maybe<Scalars['Int']>;
+};
+
+export type CypressConfig = {
+  __typename?: 'CypressConfig';
+  video: Scalars['Boolean'];
+  videoUploadOnPasses: Scalars['Boolean'];
+};
+
+export type InstanceScreeshot = {
+  __typename?: 'InstanceScreeshot';
+  screenshotId: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  testId: Scalars['String'];
+  takenAt: Scalars['String'];
+  height: Scalars['Int'];
+  width: Scalars['Int'];
+  screenshotURL?: Maybe<Scalars['String']>;
+};
+
 export type ReporterStats = {
-   __typename?: 'ReporterStats';
+  __typename?: 'ReporterStats';
   suites?: Maybe<Scalars['Int']>;
   tests?: Maybe<Scalars['Int']>;
   passes?: Maybe<Scalars['Int']>;
@@ -233,40 +241,59 @@ export type ReporterStats = {
   duration?: Maybe<Scalars['Int']>;
 };
 
-export type Run = {
-   __typename?: 'Run';
-  runId: Scalars['ID'];
-  createdAt: Scalars['DateTime'];
-  meta?: Maybe<RunMeta>;
-  specs: Array<Maybe<FullRunSpec>>;
+export type InstanceTestUnion = InstanceTest | InstanceTestV5;
+
+export type InstanceTest = {
+  __typename?: 'InstanceTest';
+  testId: Scalars['String'];
+  title?: Maybe<Array<Maybe<Scalars['String']>>>;
+  state?: Maybe<Scalars['String']>;
+  body?: Maybe<Scalars['String']>;
+  stack?: Maybe<Scalars['String']>;
+  error?: Maybe<Scalars['String']>;
+  wallClockStartedAt?: Maybe<Scalars['String']>;
+  wallClockDuration?: Maybe<Scalars['Int']>;
 };
 
-export type RunFeed = {
-   __typename?: 'RunFeed';
-  cursor: Scalars['String'];
-  hasMore: Scalars['Boolean'];
-  runs: Array<Run>;
+export type InstanceTestV5 = {
+  __typename?: 'InstanceTestV5';
+  testId: Scalars['String'];
+  title?: Maybe<Array<Maybe<Scalars['String']>>>;
+  state?: Maybe<Scalars['String']>;
+  body?: Maybe<Scalars['String']>;
+  displayError?: Maybe<Scalars['String']>;
+  attempts: Array<TestAttempt>;
 };
 
-export type RunMeta = {
-   __typename?: 'RunMeta';
-  groupId?: Maybe<Scalars['String']>;
-  ciBuildId?: Maybe<Scalars['String']>;
-  projectId?: Maybe<Scalars['String']>;
-  commit?: Maybe<Commit>;
+export type TestError = {
+  __typename?: 'TestError';
+  name: Scalars['String'];
+  message: Scalars['String'];
+  stack: Scalars['String'];
 };
 
-export type RunSpec = {
-   __typename?: 'RunSpec';
-  spec: Scalars['String'];
-  instanceId: Scalars['String'];
-  claimed: Scalars['Boolean'];
-  claimedAt?: Maybe<Scalars['String']>;
+export type TestAttempt = {
+  __typename?: 'TestAttempt';
+  state?: Maybe<Scalars['String']>;
+  error?: Maybe<TestError>;
+  wallClockStartedAt?: Maybe<Scalars['String']>;
+  wallClockDuration?: Maybe<Scalars['Int']>;
 };
 
-export type CreateProjectMutationVariables = {
+
+export enum OrderingOptions {
+  Desc = 'DESC',
+  Asc = 'ASC'
+}
+
+export type Filters = {
+  key?: Maybe<Scalars['String']>;
+  value?: Maybe<Scalars['String']>;
+};
+
+export type CreateProjectMutationVariables = Exact<{
   project?: Maybe<ProjectInput>;
-};
+}>;
 
 
 export type CreateProjectMutation = (
@@ -277,9 +304,9 @@ export type CreateProjectMutation = (
   ) }
 );
 
-export type DeleteProjectMutationVariables = {
+export type DeleteProjectMutationVariables = Exact<{
   projectId: Scalars['ID'];
-};
+}>;
 
 
 export type DeleteProjectMutation = (
@@ -290,9 +317,9 @@ export type DeleteProjectMutation = (
   ) }
 );
 
-export type DeleteRunMutationVariables = {
+export type DeleteRunMutationVariables = Exact<{
   runId: Scalars['ID'];
-};
+}>;
 
 
 export type DeleteRunMutation = (
@@ -303,9 +330,9 @@ export type DeleteRunMutation = (
   ) }
 );
 
-export type GetInstanceQueryVariables = {
+export type GetInstanceQueryVariables = Exact<{
   instanceId: Scalars['ID'];
-};
+}>;
 
 
 export type GetInstanceQuery = (
@@ -331,7 +358,18 @@ export type GetInstanceQuery = (
         & Pick<InstanceStats, 'suites' | 'tests' | 'passes' | 'pending' | 'skipped' | 'failures' | 'wallClockDuration' | 'wallClockStartedAt' | 'wallClockEndedAt'>
       ), tests?: Maybe<Array<Maybe<(
         { __typename?: 'InstanceTest' }
-        & Pick<InstanceTest, 'testId' | 'wallClockDuration' | 'wallClockStartedAt' | 'state' | 'error' | 'stack' | 'title'>
+        & Pick<InstanceTest, 'testId' | 'title' | 'state' | 'wallClockDuration' | 'wallClockStartedAt' | 'error' | 'stack'>
+      ) | (
+        { __typename?: 'InstanceTestV5' }
+        & Pick<InstanceTestV5, 'testId' | 'title' | 'state' | 'displayError'>
+        & { attempts: Array<(
+          { __typename?: 'TestAttempt' }
+          & Pick<TestAttempt, 'state' | 'wallClockDuration' | 'wallClockStartedAt'>
+          & { error?: Maybe<(
+            { __typename?: 'TestError' }
+            & Pick<TestError, 'name' | 'message' | 'stack'>
+          )> }
+        )> }
       )>>>, screenshots: Array<(
         { __typename?: 'InstanceScreeshot' }
         & Pick<InstanceScreeshot, 'testId' | 'screenshotId' | 'height' | 'width' | 'screenshotURL'>
@@ -343,9 +381,9 @@ export type GetInstanceQuery = (
   )> }
 );
 
-export type GetProjectQueryVariables = {
+export type GetProjectQueryVariables = Exact<{
   projectId: Scalars['ID'];
-};
+}>;
 
 
 export type GetProjectQuery = (
@@ -356,10 +394,10 @@ export type GetProjectQuery = (
   )> }
 );
 
-export type GetProjectsQueryVariables = {
+export type GetProjectsQueryVariables = Exact<{
   orderDirection?: Maybe<OrderingOptions>;
   filters?: Maybe<Array<Maybe<Filters>>>;
-};
+}>;
 
 
 export type GetProjectsQuery = (
@@ -370,9 +408,9 @@ export type GetProjectsQuery = (
   )>> }
 );
 
-export type GetRunQueryVariables = {
+export type GetRunQueryVariables = Exact<{
   runId: Scalars['ID'];
-};
+}>;
 
 
 export type GetRunQuery = (
@@ -399,6 +437,17 @@ export type GetRunQuery = (
         )>, tests?: Maybe<Array<Maybe<(
           { __typename?: 'InstanceTest' }
           & Pick<InstanceTest, 'title' | 'state' | 'wallClockDuration' | 'wallClockStartedAt'>
+        ) | (
+          { __typename?: 'InstanceTestV5' }
+          & Pick<InstanceTestV5, 'title' | 'state'>
+          & { attempts: Array<(
+            { __typename?: 'TestAttempt' }
+            & Pick<TestAttempt, 'state' | 'wallClockDuration' | 'wallClockStartedAt'>
+            & { error?: Maybe<(
+              { __typename?: 'TestError' }
+              & Pick<TestError, 'name' | 'message' | 'stack'>
+            )> }
+          )> }
         )>>>, stats: (
           { __typename?: 'InstanceStats' }
           & Pick<InstanceStats, 'tests' | 'pending' | 'passes' | 'failures' | 'skipped' | 'suites' | 'wallClockDuration' | 'wallClockStartedAt' | 'wallClockEndedAt'>
@@ -408,10 +457,10 @@ export type GetRunQuery = (
   )> }
 );
 
-export type GetRunsByProjectIdLimitedToTimingQueryVariables = {
+export type GetRunsByProjectIdLimitedToTimingQueryVariables = Exact<{
   orderDirection?: Maybe<OrderingOptions>;
   filters?: Maybe<Array<Maybe<Filters>>>;
-};
+}>;
 
 
 export type GetRunsByProjectIdLimitedToTimingQuery = (
@@ -436,10 +485,10 @@ export type GetRunsByProjectIdLimitedToTimingQuery = (
   )>> }
 );
 
-export type GetRunsFeedQueryVariables = {
+export type GetRunsFeedQueryVariables = Exact<{
   cursor?: Maybe<Scalars['String']>;
   filters?: Maybe<Array<Maybe<Filters>>>;
-};
+}>;
 
 
 export type GetRunsFeedQuery = (
@@ -469,6 +518,9 @@ export type GetRunsFeedQuery = (
           )>, tests?: Maybe<Array<Maybe<(
             { __typename?: 'InstanceTest' }
             & Pick<InstanceTest, 'title' | 'state'>
+          ) | (
+            { __typename?: 'InstanceTestV5' }
+            & Pick<InstanceTestV5, 'title' | 'state'>
           )>>>, stats: (
             { __typename?: 'InstanceStats' }
             & Pick<InstanceStats, 'tests' | 'pending' | 'passes' | 'failures' | 'skipped' | 'suites' | 'wallClockDuration' | 'wallClockStartedAt' | 'wallClockEndedAt'>
@@ -479,9 +531,9 @@ export type GetRunsFeedQuery = (
   ) }
 );
 
-export type UpdateProjectMutationVariables = {
+export type UpdateProjectMutationVariables = Exact<{
   project: ProjectInput;
-};
+}>;
 
 
 export type UpdateProjectMutation = (
@@ -500,7 +552,7 @@ export const CreateProjectDocument = gql`
   }
 }
     `;
-export type CreateProjectMutationFn = ApolloReactCommon.MutationFunction<CreateProjectMutation, CreateProjectMutationVariables>;
+export type CreateProjectMutationFn = Apollo.MutationFunction<CreateProjectMutation, CreateProjectMutationVariables>;
 
 /**
  * __useCreateProjectMutation__
@@ -519,12 +571,12 @@ export type CreateProjectMutationFn = ApolloReactCommon.MutationFunction<CreateP
  *   },
  * });
  */
-export function useCreateProjectMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateProjectMutation, CreateProjectMutationVariables>) {
-        return ApolloReactHooks.useMutation<CreateProjectMutation, CreateProjectMutationVariables>(CreateProjectDocument, baseOptions);
+export function useCreateProjectMutation(baseOptions?: Apollo.MutationHookOptions<CreateProjectMutation, CreateProjectMutationVariables>) {
+        return Apollo.useMutation<CreateProjectMutation, CreateProjectMutationVariables>(CreateProjectDocument, baseOptions);
       }
 export type CreateProjectMutationHookResult = ReturnType<typeof useCreateProjectMutation>;
-export type CreateProjectMutationResult = ApolloReactCommon.MutationResult<CreateProjectMutation>;
-export type CreateProjectMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateProjectMutation, CreateProjectMutationVariables>;
+export type CreateProjectMutationResult = Apollo.MutationResult<CreateProjectMutation>;
+export type CreateProjectMutationOptions = Apollo.BaseMutationOptions<CreateProjectMutation, CreateProjectMutationVariables>;
 export const DeleteProjectDocument = gql`
     mutation deleteProject($projectId: ID!) {
   deleteProject(projectId: $projectId) {
@@ -534,7 +586,7 @@ export const DeleteProjectDocument = gql`
   }
 }
     `;
-export type DeleteProjectMutationFn = ApolloReactCommon.MutationFunction<DeleteProjectMutation, DeleteProjectMutationVariables>;
+export type DeleteProjectMutationFn = Apollo.MutationFunction<DeleteProjectMutation, DeleteProjectMutationVariables>;
 
 /**
  * __useDeleteProjectMutation__
@@ -553,12 +605,12 @@ export type DeleteProjectMutationFn = ApolloReactCommon.MutationFunction<DeleteP
  *   },
  * });
  */
-export function useDeleteProjectMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteProjectMutation, DeleteProjectMutationVariables>) {
-        return ApolloReactHooks.useMutation<DeleteProjectMutation, DeleteProjectMutationVariables>(DeleteProjectDocument, baseOptions);
+export function useDeleteProjectMutation(baseOptions?: Apollo.MutationHookOptions<DeleteProjectMutation, DeleteProjectMutationVariables>) {
+        return Apollo.useMutation<DeleteProjectMutation, DeleteProjectMutationVariables>(DeleteProjectDocument, baseOptions);
       }
 export type DeleteProjectMutationHookResult = ReturnType<typeof useDeleteProjectMutation>;
-export type DeleteProjectMutationResult = ApolloReactCommon.MutationResult<DeleteProjectMutation>;
-export type DeleteProjectMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteProjectMutation, DeleteProjectMutationVariables>;
+export type DeleteProjectMutationResult = Apollo.MutationResult<DeleteProjectMutation>;
+export type DeleteProjectMutationOptions = Apollo.BaseMutationOptions<DeleteProjectMutation, DeleteProjectMutationVariables>;
 export const DeleteRunDocument = gql`
     mutation deleteRun($runId: ID!) {
   deleteRun(runId: $runId) {
@@ -568,7 +620,7 @@ export const DeleteRunDocument = gql`
   }
 }
     `;
-export type DeleteRunMutationFn = ApolloReactCommon.MutationFunction<DeleteRunMutation, DeleteRunMutationVariables>;
+export type DeleteRunMutationFn = Apollo.MutationFunction<DeleteRunMutation, DeleteRunMutationVariables>;
 
 /**
  * __useDeleteRunMutation__
@@ -587,12 +639,12 @@ export type DeleteRunMutationFn = ApolloReactCommon.MutationFunction<DeleteRunMu
  *   },
  * });
  */
-export function useDeleteRunMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteRunMutation, DeleteRunMutationVariables>) {
-        return ApolloReactHooks.useMutation<DeleteRunMutation, DeleteRunMutationVariables>(DeleteRunDocument, baseOptions);
+export function useDeleteRunMutation(baseOptions?: Apollo.MutationHookOptions<DeleteRunMutation, DeleteRunMutationVariables>) {
+        return Apollo.useMutation<DeleteRunMutation, DeleteRunMutationVariables>(DeleteRunDocument, baseOptions);
       }
 export type DeleteRunMutationHookResult = ReturnType<typeof useDeleteRunMutation>;
-export type DeleteRunMutationResult = ApolloReactCommon.MutationResult<DeleteRunMutation>;
-export type DeleteRunMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteRunMutation, DeleteRunMutationVariables>;
+export type DeleteRunMutationResult = Apollo.MutationResult<DeleteRunMutation>;
+export type DeleteRunMutationOptions = Apollo.BaseMutationOptions<DeleteRunMutation, DeleteRunMutationVariables>;
 export const GetInstanceDocument = gql`
     query getInstance($instanceId: ID!) {
   instance(id: $instanceId) {
@@ -626,13 +678,31 @@ export const GetInstanceDocument = gql`
         wallClockEndedAt
       }
       tests {
-        testId
-        wallClockDuration
-        wallClockStartedAt
-        state
-        error
-        stack
-        title
+        ... on InstanceTest {
+          testId
+          title
+          state
+          wallClockDuration
+          wallClockStartedAt
+          error
+          stack
+        }
+        ... on InstanceTestV5 {
+          testId
+          title
+          state
+          displayError
+          attempts {
+            state
+            wallClockDuration
+            wallClockStartedAt
+            error {
+              name
+              message
+              stack
+            }
+          }
+        }
       }
       screenshots {
         testId
@@ -667,15 +737,15 @@ export const GetInstanceDocument = gql`
  *   },
  * });
  */
-export function useGetInstanceQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetInstanceQuery, GetInstanceQueryVariables>) {
-        return ApolloReactHooks.useQuery<GetInstanceQuery, GetInstanceQueryVariables>(GetInstanceDocument, baseOptions);
+export function useGetInstanceQuery(baseOptions?: Apollo.QueryHookOptions<GetInstanceQuery, GetInstanceQueryVariables>) {
+        return Apollo.useQuery<GetInstanceQuery, GetInstanceQueryVariables>(GetInstanceDocument, baseOptions);
       }
-export function useGetInstanceLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetInstanceQuery, GetInstanceQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GetInstanceQuery, GetInstanceQueryVariables>(GetInstanceDocument, baseOptions);
+export function useGetInstanceLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetInstanceQuery, GetInstanceQueryVariables>) {
+          return Apollo.useLazyQuery<GetInstanceQuery, GetInstanceQueryVariables>(GetInstanceDocument, baseOptions);
         }
 export type GetInstanceQueryHookResult = ReturnType<typeof useGetInstanceQuery>;
 export type GetInstanceLazyQueryHookResult = ReturnType<typeof useGetInstanceLazyQuery>;
-export type GetInstanceQueryResult = ApolloReactCommon.QueryResult<GetInstanceQuery, GetInstanceQueryVariables>;
+export type GetInstanceQueryResult = Apollo.QueryResult<GetInstanceQuery, GetInstanceQueryVariables>;
 export const GetProjectDocument = gql`
     query getProject($projectId: ID!) {
   project(id: $projectId) {
@@ -700,15 +770,15 @@ export const GetProjectDocument = gql`
  *   },
  * });
  */
-export function useGetProjectQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetProjectQuery, GetProjectQueryVariables>) {
-        return ApolloReactHooks.useQuery<GetProjectQuery, GetProjectQueryVariables>(GetProjectDocument, baseOptions);
+export function useGetProjectQuery(baseOptions?: Apollo.QueryHookOptions<GetProjectQuery, GetProjectQueryVariables>) {
+        return Apollo.useQuery<GetProjectQuery, GetProjectQueryVariables>(GetProjectDocument, baseOptions);
       }
-export function useGetProjectLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetProjectQuery, GetProjectQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GetProjectQuery, GetProjectQueryVariables>(GetProjectDocument, baseOptions);
+export function useGetProjectLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProjectQuery, GetProjectQueryVariables>) {
+          return Apollo.useLazyQuery<GetProjectQuery, GetProjectQueryVariables>(GetProjectDocument, baseOptions);
         }
 export type GetProjectQueryHookResult = ReturnType<typeof useGetProjectQuery>;
 export type GetProjectLazyQueryHookResult = ReturnType<typeof useGetProjectLazyQuery>;
-export type GetProjectQueryResult = ApolloReactCommon.QueryResult<GetProjectQuery, GetProjectQueryVariables>;
+export type GetProjectQueryResult = Apollo.QueryResult<GetProjectQuery, GetProjectQueryVariables>;
 export const GetProjectsDocument = gql`
     query getProjects($orderDirection: OrderingOptions, $filters: [Filters]) {
   projects(orderDirection: $orderDirection, filters: $filters) {
@@ -734,15 +804,15 @@ export const GetProjectsDocument = gql`
  *   },
  * });
  */
-export function useGetProjectsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetProjectsQuery, GetProjectsQueryVariables>) {
-        return ApolloReactHooks.useQuery<GetProjectsQuery, GetProjectsQueryVariables>(GetProjectsDocument, baseOptions);
+export function useGetProjectsQuery(baseOptions?: Apollo.QueryHookOptions<GetProjectsQuery, GetProjectsQueryVariables>) {
+        return Apollo.useQuery<GetProjectsQuery, GetProjectsQueryVariables>(GetProjectsDocument, baseOptions);
       }
-export function useGetProjectsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetProjectsQuery, GetProjectsQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GetProjectsQuery, GetProjectsQueryVariables>(GetProjectsDocument, baseOptions);
+export function useGetProjectsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProjectsQuery, GetProjectsQueryVariables>) {
+          return Apollo.useLazyQuery<GetProjectsQuery, GetProjectsQueryVariables>(GetProjectsDocument, baseOptions);
         }
 export type GetProjectsQueryHookResult = ReturnType<typeof useGetProjectsQuery>;
 export type GetProjectsLazyQueryHookResult = ReturnType<typeof useGetProjectsLazyQuery>;
-export type GetProjectsQueryResult = ApolloReactCommon.QueryResult<GetProjectsQuery, GetProjectsQueryVariables>;
+export type GetProjectsQueryResult = Apollo.QueryResult<GetProjectsQuery, GetProjectsQueryVariables>;
 export const GetRunDocument = gql`
     query getRun($runId: ID!) {
   run(id: $runId) {
@@ -772,10 +842,26 @@ export const GetRunDocument = gql`
         }
         videoUrl
         tests {
-          title
-          state
-          wallClockDuration
-          wallClockStartedAt
+          ... on InstanceTest {
+            title
+            state
+            wallClockDuration
+            wallClockStartedAt
+          }
+          ... on InstanceTestV5 {
+            title
+            state
+            attempts {
+              state
+              wallClockDuration
+              wallClockStartedAt
+              error {
+                name
+                message
+                stack
+              }
+            }
+          }
         }
         stats {
           tests
@@ -810,15 +896,15 @@ export const GetRunDocument = gql`
  *   },
  * });
  */
-export function useGetRunQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetRunQuery, GetRunQueryVariables>) {
-        return ApolloReactHooks.useQuery<GetRunQuery, GetRunQueryVariables>(GetRunDocument, baseOptions);
+export function useGetRunQuery(baseOptions?: Apollo.QueryHookOptions<GetRunQuery, GetRunQueryVariables>) {
+        return Apollo.useQuery<GetRunQuery, GetRunQueryVariables>(GetRunDocument, baseOptions);
       }
-export function useGetRunLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetRunQuery, GetRunQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GetRunQuery, GetRunQueryVariables>(GetRunDocument, baseOptions);
+export function useGetRunLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRunQuery, GetRunQueryVariables>) {
+          return Apollo.useLazyQuery<GetRunQuery, GetRunQueryVariables>(GetRunDocument, baseOptions);
         }
 export type GetRunQueryHookResult = ReturnType<typeof useGetRunQuery>;
 export type GetRunLazyQueryHookResult = ReturnType<typeof useGetRunLazyQuery>;
-export type GetRunQueryResult = ApolloReactCommon.QueryResult<GetRunQuery, GetRunQueryVariables>;
+export type GetRunQueryResult = Apollo.QueryResult<GetRunQuery, GetRunQueryVariables>;
 export const GetRunsByProjectIdLimitedToTimingDocument = gql`
     query getRunsByProjectIdLimitedToTiming($orderDirection: OrderingOptions, $filters: [Filters]) {
   runs(orderDirection: $orderDirection, filters: $filters) {
@@ -857,15 +943,15 @@ export const GetRunsByProjectIdLimitedToTimingDocument = gql`
  *   },
  * });
  */
-export function useGetRunsByProjectIdLimitedToTimingQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetRunsByProjectIdLimitedToTimingQuery, GetRunsByProjectIdLimitedToTimingQueryVariables>) {
-        return ApolloReactHooks.useQuery<GetRunsByProjectIdLimitedToTimingQuery, GetRunsByProjectIdLimitedToTimingQueryVariables>(GetRunsByProjectIdLimitedToTimingDocument, baseOptions);
+export function useGetRunsByProjectIdLimitedToTimingQuery(baseOptions?: Apollo.QueryHookOptions<GetRunsByProjectIdLimitedToTimingQuery, GetRunsByProjectIdLimitedToTimingQueryVariables>) {
+        return Apollo.useQuery<GetRunsByProjectIdLimitedToTimingQuery, GetRunsByProjectIdLimitedToTimingQueryVariables>(GetRunsByProjectIdLimitedToTimingDocument, baseOptions);
       }
-export function useGetRunsByProjectIdLimitedToTimingLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetRunsByProjectIdLimitedToTimingQuery, GetRunsByProjectIdLimitedToTimingQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GetRunsByProjectIdLimitedToTimingQuery, GetRunsByProjectIdLimitedToTimingQueryVariables>(GetRunsByProjectIdLimitedToTimingDocument, baseOptions);
+export function useGetRunsByProjectIdLimitedToTimingLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRunsByProjectIdLimitedToTimingQuery, GetRunsByProjectIdLimitedToTimingQueryVariables>) {
+          return Apollo.useLazyQuery<GetRunsByProjectIdLimitedToTimingQuery, GetRunsByProjectIdLimitedToTimingQueryVariables>(GetRunsByProjectIdLimitedToTimingDocument, baseOptions);
         }
 export type GetRunsByProjectIdLimitedToTimingQueryHookResult = ReturnType<typeof useGetRunsByProjectIdLimitedToTimingQuery>;
 export type GetRunsByProjectIdLimitedToTimingLazyQueryHookResult = ReturnType<typeof useGetRunsByProjectIdLimitedToTimingLazyQuery>;
-export type GetRunsByProjectIdLimitedToTimingQueryResult = ApolloReactCommon.QueryResult<GetRunsByProjectIdLimitedToTimingQuery, GetRunsByProjectIdLimitedToTimingQueryVariables>;
+export type GetRunsByProjectIdLimitedToTimingQueryResult = Apollo.QueryResult<GetRunsByProjectIdLimitedToTimingQuery, GetRunsByProjectIdLimitedToTimingQueryVariables>;
 export const GetRunsFeedDocument = gql`
     query getRunsFeed($cursor: String, $filters: [Filters]) {
   runFeed(cursor: $cursor, filters: $filters) {
@@ -897,8 +983,14 @@ export const GetRunsFeedDocument = gql`
           }
           videoUrl
           tests {
-            title
-            state
+            ... on InstanceTest {
+              title
+              state
+            }
+            ... on InstanceTestV5 {
+              title
+              state
+            }
           }
           stats {
             tests
@@ -935,15 +1027,15 @@ export const GetRunsFeedDocument = gql`
  *   },
  * });
  */
-export function useGetRunsFeedQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetRunsFeedQuery, GetRunsFeedQueryVariables>) {
-        return ApolloReactHooks.useQuery<GetRunsFeedQuery, GetRunsFeedQueryVariables>(GetRunsFeedDocument, baseOptions);
+export function useGetRunsFeedQuery(baseOptions?: Apollo.QueryHookOptions<GetRunsFeedQuery, GetRunsFeedQueryVariables>) {
+        return Apollo.useQuery<GetRunsFeedQuery, GetRunsFeedQueryVariables>(GetRunsFeedDocument, baseOptions);
       }
-export function useGetRunsFeedLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetRunsFeedQuery, GetRunsFeedQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GetRunsFeedQuery, GetRunsFeedQueryVariables>(GetRunsFeedDocument, baseOptions);
+export function useGetRunsFeedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRunsFeedQuery, GetRunsFeedQueryVariables>) {
+          return Apollo.useLazyQuery<GetRunsFeedQuery, GetRunsFeedQueryVariables>(GetRunsFeedDocument, baseOptions);
         }
 export type GetRunsFeedQueryHookResult = ReturnType<typeof useGetRunsFeedQuery>;
 export type GetRunsFeedLazyQueryHookResult = ReturnType<typeof useGetRunsFeedLazyQuery>;
-export type GetRunsFeedQueryResult = ApolloReactCommon.QueryResult<GetRunsFeedQuery, GetRunsFeedQueryVariables>;
+export type GetRunsFeedQueryResult = Apollo.QueryResult<GetRunsFeedQuery, GetRunsFeedQueryVariables>;
 export const UpdateProjectDocument = gql`
     mutation updateProject($project: ProjectInput!) {
   updateProject(project: $project) {
@@ -951,7 +1043,7 @@ export const UpdateProjectDocument = gql`
   }
 }
     `;
-export type UpdateProjectMutationFn = ApolloReactCommon.MutationFunction<UpdateProjectMutation, UpdateProjectMutationVariables>;
+export type UpdateProjectMutationFn = Apollo.MutationFunction<UpdateProjectMutation, UpdateProjectMutationVariables>;
 
 /**
  * __useUpdateProjectMutation__
@@ -970,9 +1062,25 @@ export type UpdateProjectMutationFn = ApolloReactCommon.MutationFunction<UpdateP
  *   },
  * });
  */
-export function useUpdateProjectMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateProjectMutation, UpdateProjectMutationVariables>) {
-        return ApolloReactHooks.useMutation<UpdateProjectMutation, UpdateProjectMutationVariables>(UpdateProjectDocument, baseOptions);
+export function useUpdateProjectMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProjectMutation, UpdateProjectMutationVariables>) {
+        return Apollo.useMutation<UpdateProjectMutation, UpdateProjectMutationVariables>(UpdateProjectDocument, baseOptions);
       }
 export type UpdateProjectMutationHookResult = ReturnType<typeof useUpdateProjectMutation>;
-export type UpdateProjectMutationResult = ApolloReactCommon.MutationResult<UpdateProjectMutation>;
-export type UpdateProjectMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateProjectMutation, UpdateProjectMutationVariables>;
+export type UpdateProjectMutationResult = Apollo.MutationResult<UpdateProjectMutation>;
+export type UpdateProjectMutationOptions = Apollo.BaseMutationOptions<UpdateProjectMutation, UpdateProjectMutationVariables>;
+
+      export interface PossibleTypesResultData {
+        possibleTypes: {
+          [key: string]: string[]
+        }
+      }
+      const result: PossibleTypesResultData = {
+  "possibleTypes": {
+    "InstanceTestUnion": [
+      "InstanceTest",
+      "InstanceTestV5"
+    ]
+  }
+};
+      export default result;
+    

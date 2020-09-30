@@ -1,5 +1,5 @@
-import { GraphQLDateTime } from 'graphql-iso-date';
 import { AppDatasources } from '@src/datasources/types';
+import { GraphQLDateTime } from 'graphql-iso-date';
 
 type Project = {
   projectId: string,
@@ -7,6 +7,17 @@ type Project = {
 
 export const resolvers = {
   DateTime: GraphQLDateTime,
+  InstanceTestUnion: {
+    __resolveType(obj) {
+      if (obj.attempts) {
+        return 'InstanceTestV5';
+      }
+      if (obj.wallClockStartedAt) {
+        return 'InstanceTest';
+      }
+      return null;
+    },
+  },
   Query: {
     projects: (
       _,

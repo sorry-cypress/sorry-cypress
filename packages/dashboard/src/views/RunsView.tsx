@@ -1,6 +1,6 @@
-import { useApolloClient } from '@apollo/react-hooks';
+import { getProjectPath, navStructure } from '@src/lib/navigation';
 import { Button } from 'bold-ui';
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import { RunSummary } from '../components/run/summary';
 import { useGetRunsFeedQuery } from '../generated/graphql';
 
@@ -17,19 +17,14 @@ export function RunsView({
     params: { projectId },
   },
 }: RunsViewProps) {
-  const apollo = useApolloClient();
-
-  apollo.writeData({
-    data: {
-      navStructure: [
-        {
-          __typename: 'NavStructureItem',
-          label: projectId,
-          link: `${projectId}/runs`,
-        },
-      ],
-    },
-  });
+  useLayoutEffect(() => {
+    navStructure([
+      {
+        label: projectId,
+        link: getProjectPath(projectId),
+      },
+    ]);
+  }, []);
 
   const { fetchMore, loading, error, data } = useGetRunsFeedQuery({
     variables: {
@@ -81,9 +76,7 @@ export function RunsView({
   return (
     <>
       {runFeed.runs.map((run) => (
-        <div key={run.runId}>
-          <RunSummary run={run} />
-        </div>
+        <RunSummary run={run} key={run.runId} />
       ))}
       {runFeed.hasMore && <Button onClick={loadMore}>Load More</Button>}
     </>

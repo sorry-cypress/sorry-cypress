@@ -1,15 +1,4 @@
-scalar DateTime
-
-enum OrderingOptions {
-  DESC
-  ASC
-}
-
-input Filters {
-  key: String
-  value: String
-}
-
+### Queries
 type Query {
   projects(
     orderDirection: OrderingOptions = DESC
@@ -26,6 +15,26 @@ type Query {
   instance(id: ID!): Instance
 }
 
+### Mutations
+type Mutation {
+  deleteRun(runId: ID!): DeleteRunResponse!
+  deleteRuns(runIds: [ID]!): DeleteRunResponse!
+  deleteRunsInDateRange(
+    startDate: DateTime!
+    endDate: DateTime!
+  ): DeleteRunResponse!
+  deleteProject(projectId: ID!): DeleteProjectResponse!
+  createProject(project: ProjectInput): Project!
+  updateProject(project: ProjectInput): Project!
+}
+
+type DeleteRunResponse {
+  success: Boolean!
+  message: String!
+  runIds: [ID]!
+}
+
+### Project
 type Project {
   projectId: String!
 }
@@ -34,12 +43,13 @@ input ProjectInput {
   projectId: String!
 }
 
-type RunFeed {
-  cursor: String!
-  hasMore: Boolean!
-  runs: [Run!]!
+type DeleteProjectResponse {
+  success: Boolean!
+  message: String!
+  projectIds: [ID]!
 }
 
+### Run - full representation of a run
 type Run {
   runId: ID!
   createdAt: DateTime!
@@ -47,6 +57,7 @@ type Run {
   specs: [FullRunSpec]!
 }
 
+# Full spec data, including execution results
 type FullRunSpec {
   spec: String!
   instanceId: String!
@@ -55,17 +66,30 @@ type FullRunSpec {
   results: InstanceResults
 }
 
-type InstanceResults {
-  stats: InstanceStats!
-  tests: [InstanceTest]
-  error: String
-  stdout: String
-  screenshots: [InstanceScreeshot!]!
-  cypressConfig: CypressConfig
-  reporterStats: ReporterStats
-  videoUrl: String
+type Commit {
+  sha: String
+  branch: String
+  authorName: String
+  authorEmail: String
+  message: String
+  remoteOrigin: String
 }
 
+type RunMeta {
+  groupId: String
+  ciBuildId: String
+  projectId: String
+  commit: Commit
+}
+
+### RunFeed - runs representation for the landing page
+type RunFeed {
+  cursor: String!
+  hasMore: Boolean!
+  runs: [Run!]!
+}
+
+### Instance - a claimed spec that's being executed
 type Instance {
   runId: ID!
   run: PartialRun!
@@ -74,11 +98,34 @@ type Instance {
   results: InstanceResults
 }
 
-type CypressConfig {
-  video: Boolean!
-  videoUploadOnPasses: Boolean!
+# Concise representation of a run
+type PartialRun {
+  runId: ID!
+  createdAt: DateTime!
+  meta: RunMeta
+  specs: [RunSpec]!
+}
+# Spec (which is also an instance 👹) within a run
+type RunSpec {
+  spec: String!
+  instanceId: String!
+  claimed: Boolean!
+  claimedAt: String
 }
 
+# Execution results of a single instance
+type InstanceResults {
+  stats: InstanceStats!
+  tests: [InstanceTestUnion]
+  error: String
+  stdout: String
+  screenshots: [InstanceScreeshot!]!
+  cypressConfig: CypressConfig
+  reporterStats: ReporterStats
+  videoUrl: String
+}
+
+# Aggregated stats for instance
 type InstanceStats {
   suites: Int
   tests: Int
@@ -91,16 +138,9 @@ type InstanceStats {
   wallClockDuration: Int
 }
 
-type InstanceTest {
-  testId: String!
-  title: [String]
-  state: String # prob enum
-  body: String
-  stack: String
-  error: String
-  # timings: InstanceTestTimings
-  wallClockStartedAt: String
-  wallClockDuration: Int
+type CypressConfig {
+  video: Boolean!
+  videoUploadOnPasses: Boolean!
 }
 
 type InstanceScreeshot {
@@ -124,57 +164,55 @@ type ReporterStats {
   duration: Int
 }
 
-# Runs and subtypes
-type PartialRun {
-  runId: ID!
-  createdAt: DateTime!
-  meta: RunMeta
-  specs: [RunSpec]!
+### InstanceTest - specific test within a suite / instance
+union InstanceTestUnion = InstanceTest | InstanceTestV5
+
+# InstanceTest is a test within an instance (test within a spec)
+type InstanceTest {
+  testId: String!
+  title: [String]
+  state: String # prob enum
+  body: String
+  stack: String
+  error: String
+  # timings: InstanceTestTimings
+  wallClockStartedAt: String
+  wallClockDuration: Int
 }
 
-type RunSpec {
-  spec: String!
-  instanceId: String!
-  claimed: Boolean!
-  claimedAt: String
+# v5+
+type InstanceTestV5 {
+  testId: String!
+  title: [String]
+  state: String # prob enum
+  body: String
+  displayError: String
+  attempts: [TestAttempt!]!
 }
 
-type RunMeta {
-  groupId: String
-  ciBuildId: String
-  projectId: String
-  commit: Commit
-}
-
-type Commit {
-  sha: String
-  branch: String
-  authorName: String
-  authorEmail: String
-  message: String
-  remoteOrigin: String
-}
-
-type Mutation {
-  deleteRun(runId: ID!): DeleteRunResponse!
-  deleteRuns(runIds: [ID]!): DeleteRunResponse!
-  deleteRunsInDateRange(
-    startDate: DateTime!
-    endDate: DateTime!
-  ): DeleteRunResponse!
-  deleteProject(projectId: ID!): DeleteProjectResponse!
-  createProject(project: ProjectInput): Project!
-  updateProject(project: ProjectInput): Project!
-}
-
-type DeleteRunResponse {
-  success: Boolean!
+type TestError {
+  name: String!
   message: String!
-  runIds: [ID]!
+  stack: String!
 }
 
-type DeleteProjectResponse {
-  success: Boolean!
-  message: String!
-  projectIds: [ID]!
+type TestAttempt {
+  state: String
+  error: TestError
+  # timings: ignore
+  wallClockStartedAt: String
+  wallClockDuration: Int
+}
+
+### Misc
+scalar DateTime
+
+enum OrderingOptions {
+  DESC
+  ASC
+}
+
+input Filters {
+  key: String
+  value: String
 }

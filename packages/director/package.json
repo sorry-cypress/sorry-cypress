@@ -13,7 +13,8 @@
   "main": "dist/index.js",
   "typings": "dist/typings",
   "scripts": {
-    "dev": "nodemon --inspect=0.0.0.0:9229 -e ts --watch 'src/**/*.ts' -r ./config/ts-dev.js src/index.ts",
+    "dev": "run-p dev:nodemon",
+    "dev:nodemon": "nodemon",
     "build": "npm run build:types && npm run build:js",
     "build:types": "tsc --emitDeclarationOnly",
     "build:js": "babel src --out-dir dist --extensions \".ts\" --source-maps inline",
@@ -23,11 +24,11 @@
     "clean": "rimraf ./dist"
   },
   "dependencies": {
-    "@types/minio": "^7.0.5",
     "aws-sdk": "^2.518.0",
     "body-parser": "^1.19.0",
     "dotenv": "^8.1.0",
     "express": "^4.17.1",
+    "graphql": "^15.3.0",
     "lodash": "^4.17.19",
     "md5": "^2.2.1",
     "minio": "^7.0.15",
@@ -35,23 +36,23 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "@babel/cli": "^7.5.5",
-    "@babel/core": "^7.5.5",
-    "@babel/preset-env": "^7.5.5",
-    "@babel/preset-typescript": "^7.9.0",
+    "@babel/cli": "^7.11.6",
+    "@babel/core": "^7.11.6",
+    "@babel/node": "^7.10.5",
+    "@babel/preset-env": "^7.11.5",
+    "@babel/preset-typescript": "^7.10.4",
     "@types/body-parser": "^1.19.0",
     "@types/express": "^4.17.6",
     "@types/jest": "^25.2.1",
     "@types/lodash": "^4.14.149",
     "@types/md5": "^2.1.33",
+    "@types/minio": "^7.0.5",
     "@types/mongodb": "^3.3.1",
-    "@types/node": "^12.7.2",
+    "@types/node": "^14.11.2",
     "@types/uuid": "^3.4.5",
-    "babel-plugin-module-resolver": "^3.2.0",
+    "babel-plugin-module-resolver": "^4.0.0",
     "jest": "^25.5.4",
-    "rimraf": "^3.0.0",
-    "ts-node": "^8.3.0",
-    "tsconfig-paths": "^3.8.0",
-    "typescript": "^3.7.5"
+    "npm-run-all": "^4.1.5",
+    "typescript": "^4.0.3"
   }
 }

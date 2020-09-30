@@ -1,24 +1,35 @@
 import { ApolloServer } from 'apollo-server';
-import { typeDefs } from './schema/schema';
-import { RunsAPI } from './datasources/runs';
+import { PORT } from './config';
 import { InstancesAPI } from './datasources/instances';
 import { ProjectsAPI } from './datasources/projects';
+import { RunsAPI } from './datasources/runs';
 import { resolvers } from './resolvers';
+import { typeDefs } from './schema/schema';
 
-import { PORT } from './config';
+async function start() {
+  const dataSources = {
+    runsAPI: new RunsAPI(),
+    instancesAPI: new InstancesAPI(),
+    projectsAPI: new ProjectsAPI(),
+  };
 
-const dataSources = {
-  runsAPI: new RunsAPI(),
-  instancesAPI: new InstancesAPI(),
-  projectsAPI: new ProjectsAPI(),
-};
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    dataSources: () => dataSources,
+  });
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  dataSources: () => dataSources,
-});
+  server
+    .listen({ port: PORT })
+    .then(({ url }) => {
+      console.log(`🚀 Apollo server is ready at ${url}`);
+    })
+    .catch((error) => {
+      throw error;
+    });
+}
 
-server.listen({ port: PORT }).then(({ url }) => {
-  console.log(`🚀 Apollo server ready at ${url}`);
+start().catch((error) => {
+  console.error(error);
+  process.exit(1);
 });

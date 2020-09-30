@@ -30,13 +30,31 @@ query getInstance($instanceId: ID!) {
         wallClockEndedAt
       }
       tests {
-        testId
-        wallClockDuration
-        wallClockStartedAt
-        state
-        error
-        stack
-        title
+        ... on InstanceTest {
+          testId
+          title
+          state
+          wallClockDuration
+          wallClockStartedAt
+          error
+          stack
+        }
+        ... on InstanceTestV5 {
+          testId
+          title
+          state
+          displayError
+          attempts {
+            state
+            wallClockDuration
+            wallClockStartedAt
+            error {
+              name
+              message
+              stack
+            }
+          }
+        }
       }
       screenshots {
         testId

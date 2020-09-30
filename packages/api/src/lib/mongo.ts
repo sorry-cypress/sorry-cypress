@@ -1,5 +1,5 @@
+import { MONGODB_DATABASE, MONGODB_URI } from '@src/config';
 import mongodb from 'mongodb';
-import { MONGODB_URI, MONGODB_DATABASE } from '@src/config';
 
 export { ObjectID } from 'mongodb';
 
@@ -11,7 +11,10 @@ export const init = async () => {
     return;
   }
 
-  client = await mongodb.connect(MONGODB_URI, { useNewUrlParser: true });
+  client = await mongodb.connect(MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
   console.log('Successfully connected to MongoDB server');
 
   db = client.db(MONGODB_DATABASE);
