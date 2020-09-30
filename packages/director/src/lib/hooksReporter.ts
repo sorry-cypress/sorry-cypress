@@ -32,9 +32,7 @@ function getRunTestsOverall(run: any) {
         if (
           index === 0 ||
           new Date(
-            currentSpec.results &&
-              currentSpec.results.stats &&
-              currentSpec.results.stats.wallClockStartedAt
+              currentSpec?.results?.stats?.wallClockStartedAt
           ) <= new Date(dates.firstStart)
         ) {
           dates.firstStart = currentSpec.results.stats.wallClockStartedAt;
@@ -42,9 +40,7 @@ function getRunTestsOverall(run: any) {
         if (
           index === 0 ||
           new Date(
-            currentSpec.results &&
-              currentSpec.results.stats &&
-              currentSpec.results.stats.wallClockEndedAt
+              currentSpec?.results?.stats?.wallClockEndedAt
           ) > new Date(dates.lastEnd)
         ) {
           dates.lastEnd = currentSpec.results.stats.wallClockEndedAt;
@@ -104,7 +100,7 @@ async function reportStatusToGithub({
     state: '',
     description: '',
     target_url: getDashboardRunURL(
-      (reportData.run && reportData.run.runId) || reportData.instance.runId
+      (reportData?.run?.runId) || reportData.instance.runId
     ),
     context: 'Sorry-Cypress-Tests',
   };
@@ -153,6 +149,40 @@ async function reportStatusToGithub({
   );
 }
 
+async function reportToGenericWebHook({
+  hook,
+  reportData,
+  hookEvent
+}: {
+  hook: Hook;
+  reportData: any;
+  hookEvent: string;
+}) {
+  if (
+    // if no hooks are specified we should trigger the hook call on all events
+    !hook.hookEvents || //no hooks
+    hook.hookEvents.length < 1 || // no hooks
+    hook.hookEvents.indexOf(hookEvent) !== -1 // matches specific event that fired
+  ) {
+    reportData.hookEvent = hookEvent;
+    reportData.reportUrl = getDashboardRunURL(
+      (reportData.run && reportData.run.runId) ||
+        reportData.instance.runId
+    );
+    return axios({
+      method: 'post',
+      headers: JSON.parse(hook.headers) || {},
+      url: hook.url,
+      data: reportData,
+    }).catch((err) => {
+      console.error(
+        `Error: Hook Post to ${hook.url} responded with `,
+        err
+      );
+    });
+  }
+}
+
 export function reportToHook({
   hookEvent,
   reportData,
@@ -164,42 +194,25 @@ export function reportToHook({
 }): Promise<any> {
   try {
     reportData.currentResults = getRunTestsOverall(reportData.run);
-    cleanHookReportData(reportData);
-    project &&
-      project.hooks &&
-      project.hooks.forEach((hook) => {
-        if (hook.hookType === hookTypes.GITHUB_STATUS_HOOK) {
-          return reportStatusToGithub({
-            hook,
-            reportData,
-            hookEvent,
-          });
-        } else {
-          if (
-            // if no hooks are specified we should trigger the hook call on all events
-            !hook.hookEvents || //no hooks
-            hook.hookEvents.length < 1 || // no hooks
-            hook.hookEvents.indexOf(hookEvent) !== -1 // matches specific event that fired
-          ) {
-            reportData.hookEvent = hookEvent;
-            reportData.reportUrl = getDashboardRunURL(
-              (reportData.run && reportData.run.runId) ||
-                reportData.instance.runId
-            );
-            return axios({
-              method: 'post',
-              headers: JSON.parse(hook.headers) || {},
-              url: hook.url,
-              data: reportData,
-            }).catch((err) => {
-              console.error(
-                `Error: Hook Post to ${hook.url} responded with `,
-                err
-              );
-            });
-          }
-        }
-      });
+    // This will mutate the report data object to have less data.
+    // This is needed to slim the data down for webhooks.
+    cleanHookReportData(reportData); 
+
+    project?.hooks?.forEach((hook) => {
+      if (hook.hookType === hookTypes.GITHUB_STATUS_HOOK) {
+        return reportStatusToGithub({
+          hook,
+          reportData,
+          hookEvent,
+        });
+      } else {
+        return reportToGenericWebHook({
+          hook,
+          reportData,
+          hookEvent,
+        });
+      }
+    });
   } catch (error) {
     console.error(`Failed to run hook at for ${project.projectId}`, error);
   }
