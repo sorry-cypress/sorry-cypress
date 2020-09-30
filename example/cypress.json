@@ -1,6 +1,6 @@
 {
   "$schema": "https://on.cypress.io/cypress.schema.json",
-  "baseUrl": "http://localhost:3003",
+  "baseUrl": "https://google.com",
   "projectId": "9v9it2",
   "video": true
 }

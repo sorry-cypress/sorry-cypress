@@ -356,7 +356,7 @@ export type TypeResolveFn<TTypes, TParent = {}, TContext = {}> = (
   info: GraphQLResolveInfo
 ) => Maybe<TTypes> | Promise<Maybe<TTypes>>;
 
-export type IsTypeOfResolverFn<T = {}> = (obj: T, info: GraphQLResolveInfo) => boolean | Promise<boolean>;
+export type IsTypeOfResolverFn<T = {}, TContext = {}> = (obj: T, context: TContext, info: GraphQLResolveInfo) => boolean | Promise<boolean>;
 
 export type NextResolverFn<T> = () => Promise<T>;
 
@@ -459,19 +459,19 @@ export type DeleteRunResponseResolvers<ContextType = any, ParentType extends Res
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   runIds?: Resolver<Array<Maybe<ResolversTypes['ID']>>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type ProjectResolvers<ContextType = any, ParentType extends ResolversParentTypes['Project'] = ResolversParentTypes['Project']> = {
   projectId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type DeleteProjectResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteProjectResponse'] = ResolversParentTypes['DeleteProjectResponse']> = {
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   projectIds?: Resolver<Array<Maybe<ResolversTypes['ID']>>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type RunResolvers<ContextType = any, ParentType extends ResolversParentTypes['Run'] = ResolversParentTypes['Run']> = {
@@ -479,7 +479,7 @@ export type RunResolvers<ContextType = any, ParentType extends ResolversParentTy
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   meta?: Resolver<Maybe<ResolversTypes['RunMeta']>, ParentType, ContextType>;
   specs?: Resolver<Array<Maybe<ResolversTypes['FullRunSpec']>>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type FullRunSpecResolvers<ContextType = any, ParentType extends ResolversParentTypes['FullRunSpec'] = ResolversParentTypes['FullRunSpec']> = {
@@ -488,7 +488,7 @@ export type FullRunSpecResolvers<ContextType = any, ParentType extends Resolvers
   claimed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   claimedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   results?: Resolver<Maybe<ResolversTypes['InstanceResults']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type CommitResolvers<ContextType = any, ParentType extends ResolversParentTypes['Commit'] = ResolversParentTypes['Commit']> = {
@@ -498,7 +498,7 @@ export type CommitResolvers<ContextType = any, ParentType extends ResolversParen
   authorEmail?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   remoteOrigin?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type RunMetaResolvers<ContextType = any, ParentType extends ResolversParentTypes['RunMeta'] = ResolversParentTypes['RunMeta']> = {
@@ -506,14 +506,14 @@ export type RunMetaResolvers<ContextType = any, ParentType extends ResolversPare
   ciBuildId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   projectId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   commit?: Resolver<Maybe<ResolversTypes['Commit']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type RunFeedResolvers<ContextType = any, ParentType extends ResolversParentTypes['RunFeed'] = ResolversParentTypes['RunFeed']> = {
   cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   hasMore?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   runs?: Resolver<Array<ResolversTypes['Run']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type InstanceResolvers<ContextType = any, ParentType extends ResolversParentTypes['Instance'] = ResolversParentTypes['Instance']> = {
@@ -522,7 +522,7 @@ export type InstanceResolvers<ContextType = any, ParentType extends ResolversPar
   spec?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   instanceId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   results?: Resolver<Maybe<ResolversTypes['InstanceResults']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type PartialRunResolvers<ContextType = any, ParentType extends ResolversParentTypes['PartialRun'] = ResolversParentTypes['PartialRun']> = {
@@ -530,7 +530,7 @@ export type PartialRunResolvers<ContextType = any, ParentType extends ResolversP
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   meta?: Resolver<Maybe<ResolversTypes['RunMeta']>, ParentType, ContextType>;
   specs?: Resolver<Array<Maybe<ResolversTypes['RunSpec']>>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type RunSpecResolvers<ContextType = any, ParentType extends ResolversParentTypes['RunSpec'] = ResolversParentTypes['RunSpec']> = {
@@ -538,7 +538,7 @@ export type RunSpecResolvers<ContextType = any, ParentType extends ResolversPare
   instanceId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   claimed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   claimedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type InstanceResultsResolvers<ContextType = any, ParentType extends ResolversParentTypes['InstanceResults'] = ResolversParentTypes['InstanceResults']> = {
@@ -550,7 +550,7 @@ export type InstanceResultsResolvers<ContextType = any, ParentType extends Resol
   cypressConfig?: Resolver<Maybe<ResolversTypes['CypressConfig']>, ParentType, ContextType>;
   reporterStats?: Resolver<Maybe<ResolversTypes['ReporterStats']>, ParentType, ContextType>;
   videoUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type InstanceStatsResolvers<ContextType = any, ParentType extends ResolversParentTypes['InstanceStats'] = ResolversParentTypes['InstanceStats']> = {
@@ -563,13 +563,13 @@ export type InstanceStatsResolvers<ContextType = any, ParentType extends Resolve
   wallClockStartedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   wallClockEndedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   wallClockDuration?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type CypressConfigResolvers<ContextType = any, ParentType extends ResolversParentTypes['CypressConfig'] = ResolversParentTypes['CypressConfig']> = {
   video?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   videoUploadOnPasses?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type InstanceScreeshotResolvers<ContextType = any, ParentType extends ResolversParentTypes['InstanceScreeshot'] = ResolversParentTypes['InstanceScreeshot']> = {
@@ -580,7 +580,7 @@ export type InstanceScreeshotResolvers<ContextType = any, ParentType extends Res
   height?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   width?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   screenshotURL?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type ReporterStatsResolvers<ContextType = any, ParentType extends ResolversParentTypes['ReporterStats'] = ResolversParentTypes['ReporterStats']> = {
@@ -592,7 +592,7 @@ export type ReporterStatsResolvers<ContextType = any, ParentType extends Resolve
   start?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   end?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   duration?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type InstanceTestUnionResolvers<ContextType = any, ParentType extends ResolversParentTypes['InstanceTestUnion'] = ResolversParentTypes['InstanceTestUnion']> = {
@@ -608,7 +608,7 @@ export type InstanceTestResolvers<ContextType = any, ParentType extends Resolver
   error?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   wallClockStartedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   wallClockDuration?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type InstanceTestV5Resolvers<ContextType = any, ParentType extends ResolversParentTypes['InstanceTestV5'] = ResolversParentTypes['InstanceTestV5']> = {
@@ -618,14 +618,14 @@ export type InstanceTestV5Resolvers<ContextType = any, ParentType extends Resolv
   body?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   displayError?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   attempts?: Resolver<Array<ResolversTypes['TestAttempt']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type TestErrorResolvers<ContextType = any, ParentType extends ResolversParentTypes['TestError'] = ResolversParentTypes['TestError']> = {
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   stack?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type TestAttemptResolvers<ContextType = any, ParentType extends ResolversParentTypes['TestAttempt'] = ResolversParentTypes['TestAttempt']> = {
@@ -633,7 +633,7 @@ export type TestAttemptResolvers<ContextType = any, ParentType extends Resolvers
   error?: Resolver<Maybe<ResolversTypes['TestError']>, ParentType, ContextType>;
   wallClockStartedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   wallClockDuration?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {

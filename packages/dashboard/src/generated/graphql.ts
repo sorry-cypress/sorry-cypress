@@ -115,9 +115,9 @@ export type ProjectInput = {
 
 export type DeleteProjectResponse = {
   __typename?: 'DeleteProjectResponse';
+  success: Scalars['Boolean'];
   message: Scalars['String'];
   projectIds: Array<Maybe<Scalars['ID']>>;
-  success: Scalars['Boolean'];
 };
 
 export type Run = {

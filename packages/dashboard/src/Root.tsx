@@ -1,4 +1,4 @@
-import { ApolloProvider } from '@apollo/react-hooks';
+import { ApolloProvider } from '@apollo/client';
 import { ThemeProvider } from 'bold-ui';
 import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';

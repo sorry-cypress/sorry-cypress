@@ -1,8 +1,13 @@
-import { useApolloClient } from '@apollo/react-hooks';
-import React, { useState } from 'react';
-import { useGetProjectQuery, useCreateProjectMutation, useUpdateProjectMutation } from '../generated/graphql';
+import { useApolloClient } from '@apollo/client';
+import React, { useLayoutEffect, useState } from 'react';
+import {
+  useGetProjectQuery,
+  useCreateProjectMutation,
+  useUpdateProjectMutation,
+} from '../generated/graphql';
 import { Button, Icon, Tooltip, TextField, Grid, Cell } from 'bold-ui';
-import { useHistory } from "react-router-dom";
+import { useHistory } from 'react-router-dom';
+import { navStructure } from '@src/lib/navigation';
 
 type ProjectEditViewProps = {
   match: {
@@ -16,75 +21,77 @@ export function ProjectEditView({
   match: {
     params: { projectId },
   },
-}:ProjectEditViewProps) {
+}: ProjectEditViewProps) {
   const history = useHistory();
-  const apollo = useApolloClient();
+
   const isNewProject = projectId === '--create-new-project--';
-  apollo.writeData({
-    data: {
-      navStructure: [],
-    },
-  });
-  
+  useLayoutEffect(() => {
+    navStructure([]);
+  }, []);
 
   const [creating, setCreating] = useState(false);
   const [createError, setCreateError] = useState<string | null>(null);
   const [updating, setUpdating] = useState(false);
   const [updateError, setUpdateError] = useState<string | null>(null);
 
-  const {loading, error, data} = useGetProjectQuery({
+  const { loading, error, data } = useGetProjectQuery({
     variables: {
-      projectId: projectId
-    }
+      projectId: projectId,
+    },
   });
 
-  const [formState, setFormState] = useState(data?.project || {
-    projectId: isNewProject ? '' : projectId,
-    //other project fields
-  });
+  const [formState, setFormState] = useState(
+    data?.project || {
+      projectId: isNewProject ? '' : projectId,
+      //other project fields
+    }
+  );
 
   const [startCreateProjectMutation] = useCreateProjectMutation({
-    variables:{
-      project: formState
-    }
+    variables: {
+      project: formState,
+    },
   });
 
-  const [startUpdateProjectMutation] = useUpdateProjectMutation ({
-    variables:{
-      project: formState
-    }
+  const [startUpdateProjectMutation] = useUpdateProjectMutation({
+    variables: {
+      project: formState,
+    },
   });
-
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function updateProject() {
     setUpdating(true);
-    startUpdateProjectMutation().then((result) => {
-      if (result.errors) {
-        setUpdateError(result.errors[0].message);
-      } else {
-        history.push(`/${result.data?.updateProject.projectId}/runs`);
-      }
-      setUpdating(false);
-    }).catch((error) => {
-      setUpdating(false);
-      setUpdateError(error.toString());
-    });
+    startUpdateProjectMutation()
+      .then((result) => {
+        if (result.errors) {
+          setUpdateError(result.errors[0].message);
+        } else {
+          history.push(`/${result.data?.updateProject.projectId}/runs`);
+        }
+        setUpdating(false);
+      })
+      .catch((error) => {
+        setUpdating(false);
+        setUpdateError(error.toString());
+      });
   }
 
   function createProject() {
     setCreating(true);
-    startCreateProjectMutation().then((result) => {
-      if (result.errors) {
-        setCreateError(result.errors[0].message);
-      } else {
-        history.push(`/${result.data?.createProject.projectId}/runs`);
-      }
-      setCreating(false);
-    }).catch((error) => {
-      setCreating(false);
-      setCreateError(error.toString());
-    });
+    startCreateProjectMutation()
+      .then((result) => {
+        if (result.errors) {
+          setCreateError(result.errors[0].message);
+        } else {
+          history.push(`/${result.data?.createProject.projectId}/runs`);
+        }
+        setCreating(false);
+      })
+      .catch((error) => {
+        setCreating(false);
+        setCreateError(error.toString());
+      });
   }
 
   if (!isNewProject) {
@@ -98,37 +105,36 @@ export function ProjectEditView({
     }
   }
 
-
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+    e.preventDefault();
     if (isNewProject) {
       createProject();
-    }else {
+    } else {
       // updateProject();
     }
-  }
+  };
 
-  const handleChange = (name: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    const el = e.target
+  const handleChange = (name: string) => (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const el = e.target;
 
-    setFormState(state => ({
+    setFormState((state) => ({
       ...state,
       [name]: el.type === 'checkbox' ? el.checked : el.value,
-    }))
-  }
+    }));
+  };
 
   return (
     <form onSubmit={handleSubmit}>
       {createError || updateError ? (
-        <div>
-          {createError || updateError}
-        </div>
-      ): null}
+        <div>{createError || updateError}</div>
+      ) : null}
       <Grid wrap>
         <Cell xs={6}>
           <TextField
-            name='projectId'
-            label='Project Id'
+            name="projectId"
+            label="Project Id"
             placeholder='Enter your "projectId"'
             value={formState.projectId}
             onChange={handleChange('projectId')}
@@ -136,20 +142,22 @@ export function ProjectEditView({
             required
           />
         </Cell>
-        <div style={{
-          display: 'flex',
-          alignSelf: 'flex-end',
-          marginBottom: '14px'
-        }}>
+        <div
+          style={{
+            display: 'flex',
+            alignSelf: 'flex-end',
+            marginBottom: '14px',
+          }}
+        >
           <Tooltip text='This must match the "projectId" value in your cypress.json configuration.'>
-            <Icon icon='infoCircleOutline' style={{}}/>
+            <Icon icon="infoCircleOutline" style={{}} />
           </Tooltip>
         </div>
       </Grid>
 
-      <div style={{marginTop:'32px'}}>
+      <div style={{ marginTop: '32px' }}>
         <Button
-          style={{marginRight:'15px'}}
+          style={{ marginRight: '15px' }}
           component="a"
           href="/"
           disabled={creating || updating}
@@ -161,8 +169,8 @@ export function ProjectEditView({
           That is the only editable field right now. So we disable saving for now.
         */}
         <Button
-          type='submit'
-          kind='primary'
+          type="submit"
+          kind="primary"
           disabled={!isNewProject || creating || updating || loading}
         >
           Save

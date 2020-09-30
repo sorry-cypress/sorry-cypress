@@ -1,7 +1,5 @@
 {
-  "ignore": ["src"],
-  "ext": "js",
-  "watch": ["dist/**/*.js"],
-  "exec": "node --inspect=0.0.0.0:9229 ./dist/index.js",
-  "delay": "500"
+  "ext": "ts",
+  "watch": ["src"],
+  "exec": "yarn babel-node --extensions .ts --inspect=0.0.0.0:9229 ./src/index.ts"
 }
