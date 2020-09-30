@@ -2,7 +2,7 @@ import {
   Instance,
   InstanceResult,
   ScreenshotUploadInstruction,
-  AssetUploadInstruction
+  AssetUploadInstruction,
 } from './instance.types';
 import { Project } from './project.types';
 import { CreateRunParameters, CreateRunResponse, Run, Task } from './run.types';

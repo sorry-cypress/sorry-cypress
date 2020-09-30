@@ -1,4 +1,4 @@
-import { ApolloProvider } from '@apollo/react-hooks';
+import { ApolloProvider } from '@apollo/client';
 import { ThemeProvider } from 'bold-ui';
 import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
@@ -14,13 +14,13 @@ import { RunsView } from './views/RunsView';
 import { TestDetailsView } from './views/TestDetailsView';
 
 class ErrorBoundary extends React.Component<
-  {},
+  unknown,
   {
     hasError: boolean;
     error: Error | null;
   }
 > {
-  constructor(props: object) {
+  constructor(props: Record<string, unknown>) {
     super(props);
     this.state = { hasError: false, error: null };
   }

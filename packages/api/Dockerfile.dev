@@ -8,6 +8,7 @@ RUN npm install
 COPY .babelrc ./
 COPY codegen.yml ./
 COPY tsconfig.json ./
+COPY nodemon.json ./
 
 EXPOSE 4000
 CMD [ "npm", "run", "dev" ]

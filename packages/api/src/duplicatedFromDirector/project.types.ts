@@ -1,11 +1,11 @@
 export type Hook = {
-  hookId: string,
-  url: string,
-  headers: string,
-  hookEvents: [string],
-  hookType: string
-  githubToken: string
-}
+  hookId: string;
+  url: string;
+  headers: string;
+  hookEvents: [string];
+  hookType: string;
+  githubToken: string;
+};
 
 export interface Project {
   projectId: string;

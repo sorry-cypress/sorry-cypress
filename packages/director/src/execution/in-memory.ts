@@ -23,10 +23,10 @@ const instances: {
   [key: string]: Instance;
 } = {};
 
-const createProject = (project:Project) => {
+const createProject = (project: Project) => {
   projects[project.projectId] = project;
   return project;
-}
+};
 
 const createRun = async (
   params: CreateRunParameters
@@ -49,8 +49,8 @@ const createRun = async (
   if (!projects[params.projectId]) {
     createProject({
       projectId: params.projectId,
-      createdAt: new Date().toUTCString()
-    })
+      createdAt: new Date().toUTCString(),
+    });
   }
 
   runs[runId] = {
@@ -92,7 +92,7 @@ const getNextTask = async (runId: string): Promise<Task> => {
   spec.claimed = true;
   instances[spec.instanceId] = {
     runId,
-    instanceId: spec.instanceId
+    instanceId: spec.instanceId,
   };
 
   return {
@@ -114,10 +114,11 @@ const setInstanceResults = async (
 export const driver: ExecutionDriver = {
   id: 'in-memory',
   init: () => Promise.resolve(),
-  getProjectById: (projectId:string)=>(Promise.resolve(projects[projectId])),
-  getRunById: (runId:string)=>(Promise.resolve(runs[runId])),
-  getRunWithSpecs: (runId:string)=>(Promise.resolve(runs[runId])),
-  getInstanceById: (instanceId:string)=>(Promise.resolve(instances[instanceId])),
+  getProjectById: (projectId: string) => Promise.resolve(projects[projectId]),
+  getRunById: (runId: string) => Promise.resolve(runs[runId]),
+  getRunWithSpecs: (runId: string) => Promise.resolve(runs[runId]),
+  getInstanceById: (instanceId: string) =>
+    Promise.resolve(instances[instanceId]),
   createRun,
   getNextTask,
   setInstanceResults,

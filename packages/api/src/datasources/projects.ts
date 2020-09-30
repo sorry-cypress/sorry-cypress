@@ -21,19 +21,19 @@ const getSortByAggregation = (direction = 'DESC') => ({
   },
 });
 
-const addHookIdsToProjectHooks = (project)=>{
+const addHookIdsToProjectHooks = (project) => {
   if (project && project.hooks) {
-    project.hooks = project.hooks.map((hook)=>{
+    project.hooks = project.hooks.map((hook) => {
       hook.hookId = hook.hookId || uuid();
       return hook;
-    })
+    });
   }
   return project;
-}
+};
 
-const removeUnusedHookDataFromProject = (project)=>{
+const removeUnusedHookDataFromProject = (project) => {
   if (project && project.hooks) {
-    project.hooks = project.hooks.map((hook)=>{
+    project.hooks = project.hooks.map((hook) => {
       if (hook.hookType === hookTypes.GENERIC_HOOK) {
         delete hook.githubToken;
       }
@@ -45,16 +45,22 @@ const removeUnusedHookDataFromProject = (project)=>{
     });
   }
   return project;
-}
+};
 
-const restoreGithubTokensOnGithubHooks = async (updatedProject, getProjectById)=>{
+const restoreGithubTokensOnGithubHooks = async (
+  updatedProject,
+  getProjectById
+) => {
   const oldProject = await getProjectById(updatedProject.projectId);
 
   // This is to ensure that we keep github tokens when the user only updaing the url
   if (updatedProject && updatedProject.hooks) {
-    updatedProject.hooks = updatedProject.hooks.map((hook)=>{
+    updatedProject.hooks = updatedProject.hooks.map((hook) => {
       if (!hook.githubToken) {
-        const oldhook = oldProject && oldProject.hooks && oldProject.hooks.find((oldHook)=>(oldHook.hookId === hook.hookId));
+        const oldhook =
+          oldProject &&
+          oldProject.hooks &&
+          oldProject.hooks.find((oldHook) => oldHook.hookId === hook.hookId);
         if (oldhook && oldhook.githubToken) {
           hook.githubToken = oldhook.githubToken;
         }
@@ -63,7 +69,7 @@ const restoreGithubTokensOnGithubHooks = async (updatedProject, getProjectById)=
     });
   }
   return updatedProject;
-}
+};
 
 export class ProjectsAPI extends DataSource {
   async initialize() {
@@ -73,11 +79,12 @@ export class ProjectsAPI extends DataSource {
   async getProjectById(id: string) {
     const result = getMongoDB()
       .collection('projects')
-      .aggregate([{
+      .aggregate([
+        {
           $match: {
-            projectId: id
-          }
-        }
+            projectId: id,
+          },
+        },
       ]);
 
     return (await result.toArray()).pop();
@@ -86,9 +93,7 @@ export class ProjectsAPI extends DataSource {
   async createProject(project) {
     project = addHookIdsToProjectHooks(project);
     project = removeUnusedHookDataFromProject(project);
-    await getMongoDB()
-      .collection('projects')
-      .insertOne(project);
+    await getMongoDB().collection('projects').insertOne(project);
     // this needs sanitization and validation it would be great to share the logic between director and the api.
     // its hard to do with the seperate yarn workspaces.
     return project;
@@ -97,11 +102,14 @@ export class ProjectsAPI extends DataSource {
   async updateProject(project) {
     project = addHookIdsToProjectHooks(project);
     project = removeUnusedHookDataFromProject(project);
-    project = await restoreGithubTokensOnGithubHooks(project, this.getProjectById);
+    project = await restoreGithubTokensOnGithubHooks(
+      project,
+      this.getProjectById
+    );
 
     await getMongoDB()
       .collection('projects')
-      .replaceOne({'projectId':project.projectId}, project);
+      .replaceOne({ projectId: project.projectId }, project);
     return project;
   }
 

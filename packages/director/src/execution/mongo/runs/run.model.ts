@@ -3,13 +3,16 @@ import { getMongoDB } from '@src/lib/mongo';
 import { AppError, RUN_EXISTS, CLAIM_FAILED } from '@src/lib/errors';
 import { getSanitizedMongoObject } from '@src/lib/results';
 
-const mergeRunSpecs = (run:any) => {
+const mergeRunSpecs = (run: any) => {
   // merge fullspec into spec
-  run.specs = run.specs.map((spec:any) => (Object.assign(
-    {},
-    spec,
-    (run.specsFull.find((full:any) => full.instanceId === spec.instanceId) || {})
-  )));
+  run.specs = run.specs.map((spec: any) =>
+    Object.assign(
+      {},
+      spec,
+      run.specsFull.find((full: any) => full.instanceId === spec.instanceId) ||
+        {}
+    )
+  );
   return run;
 };
 
@@ -57,7 +60,7 @@ export const getRunWithSpecs = async (id: string) =>
         ])
         .toArray()
     ).pop()
-  )
+  );
 
 export const getRunById = async (id: string) =>
   await getMongoDB().collection('runs').findOne({ runId: id });

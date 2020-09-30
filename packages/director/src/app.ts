@@ -5,7 +5,7 @@ import {
   ScreenshotUploadInstruction,
   AssetUploadInstruction,
   ExecutionDriver,
-  ScreenshotsDriver
+  ScreenshotsDriver,
 } from '@src/types';
 import { ALLOWED_KEYS } from '@src/config';
 import { RUN_NOT_EXIST } from '@src/lib/errors';
@@ -15,11 +15,12 @@ import { reportToHook } from '@src/lib/hooksReporter';
 
 export const app = express();
 
-const isKeyAllowed = (recordKey: string) => ALLOWED_KEYS ? ALLOWED_KEYS.includes(recordKey) : true;
+const isKeyAllowed = (recordKey: string) =>
+  ALLOWED_KEYS ? ALLOWED_KEYS.includes(recordKey) : true;
 
 app.use(
   bodyParser.json({
-    limit: '50mb'
+    limit: '50mb',
   })
 );
 
@@ -33,10 +34,12 @@ app.post('/runs', async (req, res) => {
 
   console.log(`>> Machine is asking to join a run`, { recordKey, ciBuildId });
 
-  if(!isKeyAllowed(recordKey)) {
-    console.log(`<< Record key is not allowed`, { recordKey })
+  if (!isKeyAllowed(recordKey)) {
+    console.log(`<< Record key is not allowed`, { recordKey });
 
-    return res.status(403).send(`Provided record key '${recordKey}' is not allowed`);
+    return res
+      .status(403)
+      .send(`Provided record key '${recordKey}' is not allowed`);
   }
 
   console.log(`>> Machine is joining a run`, { ciBuildId });
@@ -45,8 +48,8 @@ app.post('/runs', async (req, res) => {
   const runWithSpecs = await executionDriver.getRunWithSpecs(response.runId);
   reportToHook({
     hookEvent: hookEvents.RUN_START,
-    reportData:{run:runWithSpecs},
-    project: await executionDriver.getProjectById(runWithSpecs.meta.projectId)
+    reportData: { run: runWithSpecs },
+    project: await executionDriver.getProjectById(runWithSpecs.meta.projectId),
   });
 
   console.log(`<< RUN_START hook called`, response);
@@ -63,29 +66,33 @@ app.post('/runs/:runId/instances', async (req, res) => {
   console.log(`>> Machine is requesting a new task`, {
     runId,
     machineId,
-    groupId
+    groupId,
   });
 
   try {
-    const { instance, claimedInstances, totalInstances } = await executionDriver.getNextTask(runId);
+    const {
+      instance,
+      claimedInstances,
+      totalInstances,
+    } = await executionDriver.getNextTask(runId);
     if (instance === null) {
       console.log(`<< All tasks claimed`, { runId, machineId });
       return res.json({
         spec: null,
         instanceId: null,
         claimedInstances,
-        totalInstances
+        totalInstances,
       });
     }
 
     const run = await executionDriver.getRunWithSpecs(runId);
     reportToHook({
       hookEvent: hookEvents.INSTANCE_START,
-      reportData:{
+      reportData: {
         run,
-        instance
+        instance,
       },
-      project: await executionDriver.getProjectById(run.meta.projectId)
+      project: await executionDriver.getProjectById(run.meta.projectId),
     });
 
     console.log(`<< INSTANCE_START hook called`, instance.instanceId);
@@ -95,7 +102,7 @@ app.post('/runs/:runId/instances', async (req, res) => {
       spec: instance.spec,
       instanceId: instance.instanceId,
       claimedInstances,
-      totalInstances
+      totalInstances,
     });
   } catch (error) {
     if (error.code && error.code === RUN_NOT_EXIST) {
@@ -120,42 +127,45 @@ app.put(
     const instance = await executionDriver.getInstanceById(instanceId);
     const run = await executionDriver.getRunWithSpecs(instance.runId);
     const project = await executionDriver.getProjectById(run.meta.projectId);
-    const isRunStillRunning = run.specs.reduce((
-      wasRunning:boolean,
-      currentSpec:{
-        claimed: boolean,
-        results: any
+    const isRunStillRunning = run.specs.reduce(
+      (
+        wasRunning: boolean,
+        currentSpec: {
+          claimed: boolean;
+          results: any;
+        },
+        index: number
+      ) => {
+        return (
+          !currentSpec.claimed || !run.specsFull[index].results || wasRunning
+        );
       },
-      index: number
-    ) => {
-      return !currentSpec.claimed || !run.specsFull[index].results || wasRunning;
-    }, false);
+      false
+    );
 
     reportToHook({
       hookEvent: hookEvents.INSTANCE_FINISH,
-      reportData:{
+      reportData: {
         run,
-        instance
+        instance,
       },
-      project
-    }).then(()=>{
+      project,
+    }).then(() => {
       console.log(`<< INSTANCE_FINISH hook called`, instance.instanceId);
       // We should probably add a flag to the actual run here aswell
       // We should also probably do a check to see if all specs passed and set a flag of success or fail
       if (!isRunStillRunning) {
         reportToHook({
           hookEvent: hookEvents.RUN_FINISH,
-          reportData:{
+          reportData: {
             run,
-            instance
+            instance,
           },
-          project
+          project,
         });
         console.log(`<< RUN_FINISH hook called`, run.runId);
       }
     });
-    
-
 
     const screenshotUploadUrls: ScreenshotUploadInstruction[] = await screenshotsDriver.getScreenshotsUploadUrls(
       instanceId,
@@ -182,18 +192,18 @@ app.put(
     if (videoUploadInstructions) {
       executionDriver.setVideoUrl({
         instanceId,
-        videoUrl: videoUploadInstructions.readUrl
+        videoUrl: videoUploadInstructions.readUrl,
       });
     }
 
     console.log(`<< Sending assets upload URLs`, {
       instanceId,
       screenshotUploadUrls,
-      videoUploadInstructions
+      videoUploadInstructions,
     });
 
     const responsePayload: UpdateInstanseResponse = {
-      screenshotUploadUrls
+      screenshotUploadUrls,
     };
     if (videoUploadInstructions) {
       responsePayload.videoUploadUrl = videoUploadInstructions.uploadUrl;
@@ -209,7 +219,7 @@ app.put(
 app.put('/instances/:instanceId/stdout', (req, res) => {
   const { instanceId } = req.params;
   console.log(`>> [not implemented] Received stdout for instance`, {
-    instanceId
+    instanceId,
   });
   return res.sendStatus(200);
 });

@@ -1,7 +1,5 @@
 {
-  "ignore": ["src"],
-  "ext": "js,graphql",
-  "watch": ["dist/**/*.js", "dist/**/*.graphql"],
-  "exec": "node --inspect=0.0.0.0:9230  ./dist/index.js",
-  "delay": "500"
+  "ext": "ts,graphql",
+  "watch": ["./src"],
+  "exec": "yarn babel-node --extensions .ts --inspect=0.0.0.0:9230 ./src/index.ts"
 }

@@ -57,7 +57,11 @@ export const resolvers = {
       { runId }: { runId: string },
       { dataSources }: { dataSources: AppDatasources }
     ) => {
-      return resolvers.Mutation.deleteRuns(_ ,{runIds:[runId]} ,{dataSources})
+      return resolvers.Mutation.deleteRuns(
+        _,
+        { runIds: [runId] },
+        { dataSources }
+      );
     },
     deleteRuns: async (
       _,
@@ -104,26 +108,25 @@ export const resolvers = {
       { dataSources }: { dataSources: AppDatasources }
     ) => {
       const runsMatchingProjectResponse = await dataSources.runsAPI.getAllRuns({
-        orderDirection: "DESC",
+        orderDirection: 'DESC',
         filters: [
           {
             key: 'meta.projectId',
             value: projectId,
           },
-        ]
+        ],
       });
 
       const runsDeleteResponse = await resolvers.Mutation.deleteRuns(
         _,
-        {runIds:runsMatchingProjectResponse.map(run => run.runId)},
-        {dataSources}
-      )
+        { runIds: runsMatchingProjectResponse.map((run) => run.runId) },
+        { dataSources }
+      );
       if (runsDeleteResponse.success) {
         return dataSources.projectsAPI.deleteProjectsByIds([projectId]);
       } else {
         return runsDeleteResponse;
       }
-
-    }
+    },
   },
 };

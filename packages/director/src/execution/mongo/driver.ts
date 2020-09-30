@@ -17,5 +17,5 @@ export const driver: ExecutionDriver = {
   getNextTask: mongoRunController.getNextTask,
   setVideoUrl: mongoInstanceController.setVideoUrl,
   setScreenshotUrl: mongoInstanceController.setScreenshotUrl,
-  setInstanceResults: mongoInstanceController.setInstanceResults
+  setInstanceResults: mongoInstanceController.setInstanceResults,
 };
