@@ -8,9 +8,9 @@ import { mapKeys, mapValues, isObject, identity, isPlainObject } from 'lodash';
  * @param fn function to produce new keys
  */
 export function deepTraverseKeys(
-  target: Record<string, unknown>,
+  target: any,
   fn: (key: string) => string = identity
-): Record<string, unknown> {
+): any {
   if (!isPlainObject(target)) {
     throw new Error('Non-plain object detected');
   }

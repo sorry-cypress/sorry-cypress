@@ -13,10 +13,11 @@
   "main": "dist/index.js",
   "typings": "dist/typings",
   "scripts": {
-    "dev": "run-p dev:nodemon",
+    "dev": "run-p dev:nodemon types:watch",
     "dev:nodemon": "nodemon",
     "build": "npm run build:types && npm run build:js",
     "build:types": "tsc --emitDeclarationOnly",
+    "types:watch": "tsc --noEmit --watch",
     "build:js": "babel src --out-dir dist --extensions \".ts\" --source-maps inline",
     "test": "jest",
     "lint": "eslint ./ --ext ts",
