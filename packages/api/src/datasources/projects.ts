@@ -11,30 +11,37 @@ import { DataSource } from 'apollo-datasource';
 import { v4 as uuid } from 'uuid';
 import { negate, isNil } from 'lodash';
 import { OrderingOptions } from '@src/generated/graphql';
+import plur from 'plur';
 
 const addHookIdsToProjectHooks = (project: Project) => {
-  if (project?.hooks) {
-    project.hooks = project.hooks.map((hook) => {
-      hook.hookId = hook.hookId || uuid();
-      return hook;
-    });
+  if (!project?.hooks) {
+    return project;
   }
+
+  project.hooks = project.hooks.map((hook) => {
+    hook.hookId = hook.hookId || uuid();
+    return hook;
+  });
+
   return project;
 };
 
 const removeUnusedHookDataFromProject = (project: Project) => {
-  if (project?.hooks) {
-    project.hooks = project.hooks.map((hook) => {
-      if (hook.hookType === hookTypes.GENERIC_HOOK) {
-        delete hook.githubToken;
-      }
-      if (hook.hookType === hookTypes.GITHUB_STATUS_HOOK) {
-        delete hook.headers;
-        delete hook.hookEvents;
-      }
-      return hook;
-    });
+  if (!project?.hooks) {
+    return project;
   }
+
+  project.hooks = project.hooks.map((hook) => {
+    if (hook.hookType === hookTypes.GENERIC_HOOK) {
+      delete hook.githubToken;
+    }
+    if (hook.hookType === hookTypes.GITHUB_STATUS_HOOK) {
+      delete hook.headers;
+      delete hook.hookEvents;
+    }
+    return hook;
+  });
+
   return project;
 };
 
@@ -144,9 +151,10 @@ export class ProjectsAPI extends DataSource implements IProjectsAPI {
       });
     return {
       success: projectResult.result.ok === 1,
-      message: `${projectResult.deletedCount} document${
-        projectResult.deletedCount > 1 ? 's' : ''
-      } deleted`,
+      message: `Deleted ${projectResult.deletedCount} ${plur(
+        'project',
+        projectResult.deletedCount
+      )}`,
       projectIds: projectResult.result.ok === 1 ? projectIds : [],
     };
   }
