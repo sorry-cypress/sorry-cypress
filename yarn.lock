@@ -2134,7 +2134,15 @@
   dependencies:
     "@types/node" "*"
 
-"@types/mongodb@^3.3.1", "@types/mongodb@^3.5.27":
+"@types/mongodb@^3.3.1":
+  version "3.5.15"
+  resolved "https://registry.yarnpkg.com/@types/mongodb/-/mongodb-3.5.15.tgz#afe6ec0ee1dda4e732be7af0d487a82ff10a4d16"
+  integrity sha512-Ar1vMe46lA+gmVQShIQzcWmx2W1SrU2PM9FV5XJwNM6+i52y9mP4H5hnuZI748NEJx7EzyZ5v/CWjOYGbjfl+w==
+  dependencies:
+    "@types/bson" "*"
+    "@types/node" "*"
+
+"@types/mongodb@^3.5.27":
   version "3.5.27"
   resolved "https://registry.yarnpkg.com/@types/mongodb/-/mongodb-3.5.27.tgz#158a7a43ce25ef3592ac8a62e62ab38bebf661f2"
   integrity sha512-1jxKDgdfJEOO9zp+lv43p8jOqRs02xPrdUTzAZIVK9tVEySfCEmktL2jEu9A3wOBEOs18yKzpVIKUh8b8ALk3w==
@@ -7567,10 +7575,15 @@ lodash.truncate@^4.4.2:
   resolved "https://registry.yarnpkg.com/lodash.truncate/-/lodash.truncate-4.4.2.tgz#5a350da0b1113b837ecfffd5812cbe58d6eae193"
   integrity sha1-WjUNoLERO4N+z//VgSy+WNbq4ZM=
 
-lodash@^4.14.2, lodash@^4.17.11, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@~4.17.15:
+lodash@^4.14.2, lodash@^4.17.20, lodash@~4.17.15:
   version "4.17.20"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.20.tgz#b44a9b6297bcb698f1c51a3545a2b3b368d59c52"
   integrity sha512-PlhdFcillOINfeV7Ni6oF1TAEayyZBoZ8bcshTHqOYJYlrqzRK5hagpagky5o4HfCzzd1TRkXPMFq6cKk9rGmA==
+
+lodash@^4.17.11, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19:
+  version "4.17.19"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.19.tgz#e48ddedbe30b3321783c5b4301fbd353bc1e4a4b"
+  integrity sha512-JNvd8XER9GQX0v2qJgsaN/mzFCNA5BRe/j8JN9d+tWyGLSodKQHKFicdwNYzWwI3wjRnaKPsGj1XkBjx/F96DQ==
 
 log-symbols@^1.0.2:
   version "1.0.2"
