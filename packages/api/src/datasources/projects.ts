@@ -1,4 +1,5 @@
 import { hookTypes } from '@src/duplicatedFromDirector/hooksEnums';
+import { Project } from '@src/duplicatedFromDirector/project.types';
 import { getMongoDB, init } from '@src/lib/mongo';
 import { DataSource } from 'apollo-datasource';
 import uuid from 'uuid/v4';
@@ -21,8 +22,8 @@ const getSortByAggregation = (direction = 'DESC') => ({
   },
 });
 
-const addHookIdsToProjectHooks = (project) => {
-  if (project && project.hooks) {
+const addHookIdsToProjectHooks = (project: Project) => {
+  if (project?.hooks) {
     project.hooks = project.hooks.map((hook) => {
       hook.hookId = hook.hookId || uuid();
       return hook;
@@ -31,8 +32,8 @@ const addHookIdsToProjectHooks = (project) => {
   return project;
 };
 
-const removeUnusedHookDataFromProject = (project) => {
-  if (project && project.hooks) {
+const removeUnusedHookDataFromProject = (project: Project) => {
+  if (project?.hooks) {
     project.hooks = project.hooks.map((hook) => {
       if (hook.hookType === hookTypes.GENERIC_HOOK) {
         delete hook.githubToken;
@@ -79,7 +80,7 @@ export class ProjectsAPI extends DataSource {
   async getProjectById(id: string) {
     const result = getMongoDB()
       .collection('projects')
-      .aggregate([
+      .aggregate<Project>([
         {
           $match: {
             projectId: id,
@@ -90,7 +91,7 @@ export class ProjectsAPI extends DataSource {
     return (await result.toArray()).pop();
   }
 
-  async createProject(project) {
+  async createProject(project: Project) {
     project = addHookIdsToProjectHooks(project);
     project = removeUnusedHookDataFromProject(project);
     await getMongoDB().collection('projects').insertOne(project);
@@ -99,7 +100,7 @@ export class ProjectsAPI extends DataSource {
     return project;
   }
 
-  async updateProject(project) {
+  async updateProject(project: Project) {
     project = addHookIdsToProjectHooks(project);
     project = removeUnusedHookDataFromProject(project);
     project = await restoreGithubTokensOnGithubHooks(

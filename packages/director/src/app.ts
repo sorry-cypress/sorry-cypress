@@ -30,7 +30,7 @@ app.get('/', (_, res) =>
 
 app.post('/runs', async (req, res) => {
   const { recordKey, ciBuildId } = req.body;
-  const executionDriver = app.get('executionDriver');
+  const executionDriver: ExecutionDriver = app.get('executionDriver');
 
   console.log(`>> Machine is asking to join a run`, { recordKey, ciBuildId });
 
