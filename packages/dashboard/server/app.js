@@ -5,7 +5,7 @@ const { GRAPHQL_SCHEMA_URL } = require('./config');
 const { dev } = require('./dev');
 
 const SORRY_CYPRESS_ENVIRONMENT = JSON.stringify({
-  GRAPHQL_SCHEMA_URL
+  GRAPHQL_SCHEMA_URL,
 });
 
 app.set('view engine', 'ejs');
@@ -13,6 +13,7 @@ app.set('view options', { delimiter: '?' });
 app.set('views', path.join(__dirname, '../dist/views'));
 
 app.use(express.static(path.join(__dirname, '../dist')));
+app.use(express.static(path.join(__dirname, './static')));
 
 if (process.env.NODE_ENV !== 'production') {
   app.use(dev);
@@ -20,6 +21,6 @@ if (process.env.NODE_ENV !== 'production') {
 
 app.use((_, res) =>
   res.render('index.ejs', {
-    SORRY_CYPRESS_ENVIRONMENT
+    SORRY_CYPRESS_ENVIRONMENT,
   })
 );
