@@ -1,5 +1,12 @@
 mutation updateProject($project: ProjectInput!) {
   updateProject(project: $project) {
     projectId
+    hooks {
+      hookId
+      url
+      headers
+      hookEvents
+      hookType
+    }
   }
 }

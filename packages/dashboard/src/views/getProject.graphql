@@ -1,5 +1,12 @@
 query getProject($projectId: ID!) {
   project(id: $projectId) {
     projectId
+    hooks {
+      hookId
+      url
+      headers
+      hookEvents
+      hookType
+    }
   }
 }

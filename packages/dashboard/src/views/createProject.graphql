@@ -1,5 +1,12 @@
 mutation createProject($project: ProjectInput) {
   createProject(project: $project) {
     projectId
+    hooks {
+      hookId
+      url
+      headers
+      hookEvents
+      hookType
+    }
   }
 }

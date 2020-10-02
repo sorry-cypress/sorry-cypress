@@ -1,6 +1,7 @@
 export interface Instance {
   instanceId: string;
-  results: InstanceResult;
+  runId: string;
+  results?: InstanceResult;
 }
 
 export interface Screenshot {
