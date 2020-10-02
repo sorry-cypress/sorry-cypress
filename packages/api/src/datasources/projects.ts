@@ -1,26 +1,16 @@
 import { hookTypes } from '@src/duplicatedFromDirector/hooksEnums';
 import { Project } from '@src/duplicatedFromDirector/project.types';
 import { getMongoDB, init } from '@src/lib/mongo';
+
+import {
+  getSortByAggregation,
+  filtersToAggregations,
+  AggregationFilter,
+} from '@src/lib/query';
 import { DataSource } from 'apollo-datasource';
-import uuid from 'uuid/v4';
-
-const filtersToAggregations = (filters) => {
-  return filters
-    ? filters.map((filter) => {
-        return {
-          $match: {
-            [filter.key]: filter.value,
-          },
-        };
-      })
-    : [];
-};
-
-const getSortByAggregation = (direction = 'DESC') => ({
-  $sort: {
-    _id: direction === 'DESC' ? -1 : 1,
-  },
-});
+import { v4 as uuid } from 'uuid';
+import { negate, isNil } from 'lodash';
+import { OrderingOptions } from '@src/generated/graphql';
 
 const addHookIdsToProjectHooks = (project: Project) => {
   if (project?.hooks) {
@@ -49,20 +39,19 @@ const removeUnusedHookDataFromProject = (project: Project) => {
 };
 
 const restoreGithubTokensOnGithubHooks = async (
-  updatedProject,
-  getProjectById
+  updatedProject: Project,
+  getProjectById: ProjectsAPI['getProjectById']
 ) => {
   const oldProject = await getProjectById(updatedProject.projectId);
 
   // This is to ensure that we keep github tokens when the user only updaing the url
-  if (updatedProject && updatedProject.hooks) {
+  if (updatedProject?.hooks) {
     updatedProject.hooks = updatedProject.hooks.map((hook) => {
       if (!hook.githubToken) {
-        const oldhook =
-          oldProject &&
-          oldProject.hooks &&
-          oldProject.hooks.find((oldHook) => oldHook.hookId === hook.hookId);
-        if (oldhook && oldhook.githubToken) {
+        const oldhook = oldProject?.hooks?.find(
+          (oldHook) => oldHook.hookId === hook.hookId
+        );
+        if (oldhook?.githubToken) {
           hook.githubToken = oldhook.githubToken;
         }
       }
@@ -72,7 +61,18 @@ const restoreGithubTokensOnGithubHooks = async (
   return updatedProject;
 };
 
-export class ProjectsAPI extends DataSource {
+interface IProjectsAPI extends DataSource {
+  getProjectById(id: string): Promise<Project | undefined>;
+  createProject(project: Project): Promise<Project>;
+  getProjects({
+    orderDirection,
+    filters,
+  }: {
+    orderDirection: OrderingOptions;
+    filters: AggregationFilter[];
+  }): Promise<Project[]>;
+}
+export class ProjectsAPI extends DataSource implements IProjectsAPI {
   async initialize() {
     await init();
   }
@@ -114,13 +114,20 @@ export class ProjectsAPI extends DataSource {
     return project;
   }
 
-  async getProjects({ orderDirection, filters }) {
-    const aggregationPipeline = filtersToAggregations(filters)
-      .concat([getSortByAggregation(orderDirection)])
-      .filter((i) => !!i);
+  async getProjects({
+    orderDirection,
+    filters,
+  }: {
+    orderDirection: OrderingOptions;
+    filters: AggregationFilter[];
+  }) {
+    const aggregationPipeline = [
+      ...filtersToAggregations(filters),
+      getSortByAggregation(orderDirection),
+    ].filter(negate(isNil));
 
     const results = await getMongoDB()
-      .collection('projects')
+      .collection<Project>('projects')
       .aggregate(aggregationPipeline)
       .toArray();
 
@@ -129,7 +136,7 @@ export class ProjectsAPI extends DataSource {
 
   async deleteProjectsByIds(projectIds: string[]) {
     const projectResult = await getMongoDB()
-      .collection('projects')
+      .collection<Project>('projects')
       .deleteMany({
         projectId: {
           $in: projectIds,
