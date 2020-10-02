@@ -728,7 +728,7 @@ export type RunMetaResolvers<
     ContextType
   >;
   commit?: Resolver<Maybe<ResolversTypes['Commit']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type RunFeedResolvers<
@@ -738,7 +738,7 @@ export type RunFeedResolvers<
   cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   hasMore?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   runs?: Resolver<Array<ResolversTypes['Run']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type InstanceResolvers<
@@ -815,7 +815,7 @@ export type InstanceResultsResolvers<
     ContextType
   >;
   videoUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type InstanceStatsResolvers<
@@ -889,7 +889,7 @@ export type ReporterStatsResolvers<
   start?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   end?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   duration?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type InstanceTestUnionResolvers<
@@ -962,7 +962,7 @@ export type TestErrorResolvers<
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   stack?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type TestAttemptResolvers<
