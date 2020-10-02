@@ -1,6 +1,5 @@
+import { Paper as UIPaper, Tag, useStyles } from 'bold-ui';
 import React from 'react';
-import { Paper as UIPaper, useStyles, Tag } from 'bold-ui';
-import { SpecStateType } from '../../lib/spec';
 
 export const Paper: React.FC = (props) => {
   const { css } = useStyles();
@@ -20,11 +19,9 @@ export const Paper: React.FC = (props) => {
 type TestStates = 'failed' | 'passed' | 'pending' | 'skipped' | 'unknown';
 
 type TestStateProps = {
-  state: TestStates;
+  state?: TestStates | null;
 };
-export const TestState: React.FC<TestStateProps> = ({
-  state,
-}: TestStateProps) => {
+export const VisualState = ({ state }: TestStateProps) => {
   switch (state) {
     case 'failed':
       return <Tag type="danger">Failed</Tag>;
@@ -40,7 +37,7 @@ export const TestState: React.FC<TestStateProps> = ({
 };
 
 type SpecStateProps = {
-  state: SpecStateType;
+  state: TestStates & 'running';
 };
 
 export const SpecState: React.FC<SpecStateProps> = ({

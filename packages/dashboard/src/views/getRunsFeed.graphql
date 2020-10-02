@@ -1,5 +1,5 @@
-query getRunsFeed($cursor: String) {
-  runFeed(cursor: $cursor) {
+query getRunsFeed($cursor: String, $filters: [Filters]) {
+  runFeed(cursor: $cursor, filters: $filters) {
     cursor
     hasMore
     runs {
@@ -28,9 +28,16 @@ query getRunsFeed($cursor: String) {
           }
           videoUrl
           tests {
-            title
-            state
+            ... on InstanceTest {
+              title
+              state
+            }
+            ... on InstanceTestV5 {
+              title
+              state
+            }
           }
+
           stats {
             tests
             pending

@@ -29,7 +29,7 @@ type RunSummaryProps = {
   run: Partial<Run> & { runId: string; specs: Array<FullRunSpec> };
 };
 
-export function RunSummary({ run }: RunSummaryProps): React.ReactNode {
+export function RunSummary({ run }: RunSummaryProps) {
   const { css } = useCss();
   const centeredIconClassName = css(`{
     display: flex;

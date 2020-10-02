@@ -9,7 +9,7 @@
     "sourceMap": true,
     "declaration": true,
     "declarationDir": "dist/typings",
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,

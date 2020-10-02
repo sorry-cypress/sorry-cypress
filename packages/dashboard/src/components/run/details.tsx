@@ -12,7 +12,7 @@ import mean from 'lodash/mean';
 import React, { useState } from 'react';
 import { generatePath } from 'react-router-dom';
 import { FullRunSpec, Run } from '../../generated/graphql';
-import { getSpecState } from '../../lib/spec';
+import { getFullRunSpecState } from '../../lib/executionState';
 import { shortEnglishHumanizerWithMsIfNeeded } from '../../lib/utis';
 import { SpecState } from '../common';
 import RenderOnInterval from '../renderOnInterval/renderOnInterval';
@@ -61,7 +61,7 @@ export function RunDetails({
           rows={specs
             .filter((spec) => !!spec)
             .filter((spec) =>
-              isPassedHidden ? getSpecState(spec!) !== 'passed' : true
+              isPassedHidden ? getFullRunSpecState(spec!) !== 'passed' : true
             )}
           loading={false}
           columns={[
@@ -70,7 +70,7 @@ export function RunDetails({
               header: 'Status',
               sortable: false,
               render: (spec: FullRunSpec) => (
-                <SpecState state={getSpecState(spec)} />
+                <SpecState state={getFullRunSpecState(spec)} />
               ),
             },
             {

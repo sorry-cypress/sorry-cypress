@@ -1,27 +1,26 @@
-import React from 'react';
-import { ApolloProvider } from '@apollo/react-hooks';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { ApolloProvider } from '@apollo/client';
 import { ThemeProvider } from 'bold-ui';
-
+import React from 'react';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Content } from './components/layout/content';
+import { Header } from './components/layout/header';
 import { client } from './lib/apolloClient';
 import { theme } from './theme/theme';
-
-import { Header } from './components/layout/header';
-import { Content } from './components/layout/content';
-
-import { RunsView } from './views/RunsView';
-import { RunDetailsView } from './views/RunDetailsView';
 import { InstanceDetailsView } from './views/InstanceDetailsView';
+import { ProjectEditView } from './views/ProjectEditView';
+import { ProjectsView } from './views/ProjectsView';
+import { RunDetailsView } from './views/RunDetailsView';
+import { RunsView } from './views/RunsView';
 import { TestDetailsView } from './views/TestDetailsView';
 
 class ErrorBoundary extends React.Component<
-  {},
+  unknown,
   {
     hasError: boolean;
     error: Error | null;
   }
 > {
-  constructor(props: object) {
+  constructor(props: Record<string, unknown>) {
     super(props);
     this.state = { hasError: false, error: null };
   }
@@ -60,7 +59,10 @@ export const Root = () => {
           <ErrorBoundary>
             <Header />
             <Content>
-              <Route path="/" exact component={RunsView} />
+              <Route path="/" exact component={ProjectsView} />
+
+              <Route path="/:projectId/runs" component={RunsView} />
+              <Route path="/:projectId/edit" component={ProjectEditView} />
               <Route path="/run/:id" component={RunDetailsView} />
               <Route
                 path="/instance/:id"
