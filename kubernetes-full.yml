@@ -79,19 +79,11 @@ spec:
           value: sorry-cypress
         - name: MONGODB_URI
           value: mongodb://mongo-service:27017
-        image: agoldis/sorry-cypress-api:cypress-v5
+        image: agoldis/sorry-cypress-api:latest
         imagePullPolicy: "Always"
         name: api
         ports:
         - containerPort: 4000
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 4000
-          periodSeconds: 10
-          timeoutSeconds: 5
-          successThreshold: 2
-          failureThreshold: 5
         resources:
           requests:
             memory: "128M"
@@ -144,7 +136,7 @@ spec:
               secretKeyRef:
                 name: cypress-s3-secrets
                 key: AWS_SECRET_ACCESS_KEY
-        image: agoldis/sorry-cypress-director:cypress-v5
+        image: agoldis/sorry-cypress-director:latest
         imagePullPolicy: "Always"
         name: director
         ports:
@@ -187,7 +179,7 @@ spec:
       - env:
         - name: GRAPHQL_SCHEMA_URL
           value: [YOUR-API-URL-HERE]
-        image: agoldis/sorry-cypress-dashboard:cypress-v5
+        image: agoldis/sorry-cypress-dashboard:latest
         imagePullPolicy: "Always"
         name: dashboard
         ports:
@@ -289,5 +281,7 @@ kind: Secret
 metadata:
   name: cypress-s3-secrets
 data:
-  AWS_SECRET_ACCESS_KEY: VGhpcyBpcyB0aGUgY3J1bWJob2xl
-  AWS_ACCESS_KEY_ID: Tm8gcGVla2luZw==
+  # Insert your appropriate secrets, base64-encoded.
+  # In a terminal, type: echo -n YOUR-TEXT-TO-ENCODE | base64
+  AWS_SECRET_ACCESS_KEY: [INSERT-HERE]
+  AWS_ACCESS_KEY_ID: [INSERT-HERE]
