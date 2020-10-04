@@ -25,17 +25,18 @@ Please help us by taking a short 1-minute [survey](https://forms.gle/qxoTPFiokLW
 
 ## Features
 
-- run cypress tests in parallel without dashboard
-- upload failure screenshots and videos to S3 bucket
-- browse test results, failures, screenshots and video recordings
-- run in light mode w/o persistency or with MongoDB storage attached
-- on-premise self-hosted cypress dashboard - use your own infrastructure, own your data, no limitations
+- run cypress tests in parallel with no limitations
+- upload screenshots and videos to your own storage
+- browse test results, screenshots and video recordings
+- self-hosted - use your own infrastructure, own your data
+- integrate with GitHub or anything else via webhooks
+- ready to use Docker images, Kubernetes and AWS Cloud formation template
 
 ## Quickstart
 
 ![Running Cypress test in parallel demo](https://sorry-cypress.dev/public/demo.gif)
 
-You will be running your cypress tests In 10 minutes 🚀
+It takes just 5 minutes to setup sorry-cypress 🚀
 
 Follow our [Quickstart Guide](https://sorry-cypress.dev/quickstart).
 
