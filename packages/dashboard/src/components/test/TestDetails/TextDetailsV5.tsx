@@ -27,7 +27,7 @@ const TestAttemptView = ({
   attempt: TestAttempt;
   screenshot: Partial<InstanceScreeshot>;
 }) => {
-  const [open, toggleOpen] = useSwitch();
+  const [open, toggleOpen] = useSwitch(true);
 
   return (
     <Grid>
