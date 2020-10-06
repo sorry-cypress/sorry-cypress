@@ -20,5 +20,8 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
+      - name: Install dependencies
+        run: yarn global add semver
+
       - name: Dockerhub Release
         run: ./scripts/release-dockerhub.sh
