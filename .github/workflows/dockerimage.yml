@@ -20,5 +20,8 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
       - name: Dockerhub Release
         run: ./scripts/release-dockerhub.sh
