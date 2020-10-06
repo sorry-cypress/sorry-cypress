@@ -88,6 +88,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/StefanS-O"><img src="https://avatars2.githubusercontent.com/u/1253938?v=4" width="100px;" alt=""/><br /><sub><b>Stefan Schulte-Ortbeck</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=StefanS-O" title="Code">💻</a> <a href="#example-StefanS-O" title="Examples">💡</a> <a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=StefanS-O" title="Documentation">📖</a> <a href="#ideas-StefanS-O" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://github.com/tico24"><img src="https://avatars2.githubusercontent.com/u/45351296?v=4" width="100px;" alt=""/><br /><sub><b>Tim Collins</b></sub></a><br /><a href="#content-tico24" title="Content">🖋</a> <a href="#example-tico24" title="Examples">💡</a></td>
   </tr>
+  <tr>
+    <td align="center"><a href="http://www.webdevotion.be"><img src="https://avatars3.githubusercontent.com/u/50583?v=4" width="100px;" alt=""/><br /><sub><b>Bram Plessers</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=webdevotion" title="Code">💻</a></td>
+  </tr>
 </table>
 
 <!-- markdownlint-enable -->

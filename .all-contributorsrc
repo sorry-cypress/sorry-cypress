@@ -140,6 +140,15 @@
         "content",
         "example"
       ]
+    },
+    {
+      "login": "webdevotion",
+      "name": "Bram Plessers",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/50583?v=4",
+      "profile": "http://www.webdevotion.be",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
