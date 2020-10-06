@@ -1,6 +1,6 @@
-import { useApolloClient } from '@apollo/react-hooks';
 import { useAutoRefresh } from '@src/hooks/useAutoRefresh';
-import React from 'react';
+import { getProjectPath, getRunPath, navStructure } from '@src/lib/navigation';
+import React, { useLayoutEffect } from 'react';
 import { RunDetails } from '../components/run/details';
 import { RunSummary } from '../components/run/summary';
 import {
@@ -39,9 +39,7 @@ export function RunDetailsView({
   match: {
     params: { id },
   },
-}: RunDetailsViewProps): React.ReactNode {
-  const apollo = useApolloClient();
-
+}: RunDetailsViewProps) {
   const [shouldAutoRefresh] = useAutoRefresh();
 
   const {
@@ -65,37 +63,30 @@ export function RunDetailsView({
       ],
     },
   });
+  useLayoutEffect(() => {
+    if (!runData?.run) {
+      navStructure([]);
+      return;
+    }
+
+    navStructure([
+      {
+        label: runData.run.meta?.projectId,
+        link: getProjectPath(runData.run.meta?.projectId),
+      },
+      {
+        label: runData?.run?.meta?.ciBuildId,
+        link: getRunPath(runData?.run?.runId),
+      },
+    ]);
+  }, [runData]);
 
   if (runLoading) return <p>Loading...</p>;
   if (runError) return <p>{runError.toString()}</p>;
   if (!runData) return <p>No data</p>;
-
-  if (!runData.run) {
-    apollo.writeData({
-      data: {
-        navStructure: [
-          {
-            __typename: 'NavStructureItem',
-            label: 'Non-existing run',
-            link: `run/missing`,
-          },
-        ],
-      },
-    });
-    return 'Cannot find this run does not exist';
+  if (!runData?.run) {
+    return 'Non-existing run';
   }
-
-  apollo.writeData({
-    data: {
-      navStructure: [
-        {
-          __typename: 'NavStructureItem',
-          label: runData.run.meta?.ciBuildId,
-          link: `run/${runData.run.runId}`,
-        },
-      ],
-    },
-  });
 
   return (
     <>
@@ -103,7 +94,7 @@ export function RunDetailsView({
       <RunDetails
         run={runData.run}
         propertySpecHeuristics={
-          runsWithTimingData ? getSpecTimingsList(runsWithTimingData) : []
+          runsWithTimingData ? getSpecTimingsList(runsWithTimingData) : {}
         }
       />
     </>

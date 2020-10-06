@@ -1,0 +1,7 @@
+mutation deleteProject($projectId: ID!) {
+  deleteProject(projectId: $projectId) {
+    success
+    message
+    projectIds
+  }
+}

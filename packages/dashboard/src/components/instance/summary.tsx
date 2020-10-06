@@ -1,18 +1,18 @@
-import React from 'react';
+import { Cell, Grid, Heading, HFlow, Text } from 'bold-ui';
 import { capitalize } from 'lodash';
-import { Heading, Cell, Grid, HFlow, Text } from 'bold-ui';
-import { Paper, TestState } from '../common/';
-import { getSpecState } from '../../lib/spec';
-import { InstanceStats, Instance } from '../../generated/graphql';
+import React from 'react';
+import { GetInstanceQuery, InstanceStats } from '../../generated/graphql';
+import { getInstanceState } from '../../lib/executionState';
+import { Paper, VisualState } from '../common/';
 
 const getInstanceStatLabel = (statusItem: keyof InstanceStats): string =>
   statusItem === 'pending' ? 'skipped' : statusItem;
 
 type InstanceSummaryProps = {
-  instance: Instance;
+  instance: GetInstanceQuery['instance'];
 };
 export function InstanceSummary({ instance }: InstanceSummaryProps) {
-  if (!instance.results) {
+  if (!instance?.results) {
     return <p>No results for the instance</p>;
   }
   const stats: InstanceStats = instance.results.stats;
@@ -22,7 +22,7 @@ export function InstanceSummary({ instance }: InstanceSummaryProps) {
       <Grid>
         <Cell xs={12} lg={6}>
           <HFlow>
-            <TestState state={getSpecState(instance)} />
+            <VisualState state={getInstanceState(instance)} />
             <Heading level={1}>{instance.spec}</Heading>
           </HFlow>
           <ul>

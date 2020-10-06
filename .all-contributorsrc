@@ -130,11 +130,21 @@
         "doc",
         "ideas"
       ]
+    },
+    {
+      "login": "tico24",
+      "name": "Tim Collins",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/45351296?v=4",
+      "profile": "https://github.com/tico24",
+      "contributions": [
+        "content",
+        "example"
+      ]
     }
   ],
   "contributorsPerLine": 7,
   "projectName": "sorry-cypress",
-  "projectOwner": "agoldis",
+  "projectOwner": "sorry-cypress",
   "repoType": "github",
   "repoHost": "https://github.com",
   "skipCi": true

@@ -56,7 +56,22 @@ function dockerPush() {
   done
 }
 
-setDockerTags
+# ./scripts/release-dockerhub.sh -t cypress-v5
+while getopts t: flag
+do
+    case "${flag}" in
+        t) explicitTag=${OPTARG};;
+    esac
+done
+
+echo "Tag: $explicitTag";
+
+if [ -z "${BRANCH}" ]
+then
+  TAGS=${explicitTag}
+else
+  setDockerTags
+fi
 
 echo 🚀 Releasing tags: $TAGS
 echo ========================

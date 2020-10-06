@@ -1,13 +1,24 @@
 import { DataSource } from 'apollo-datasource';
+import plur from 'plur';
 import { init, getMongoDB } from '@src/lib/mongo';
+import { Instance } from '@src/duplicatedFromDirector/instance.types';
+import { Run } from '@src/duplicatedFromDirector/run.types';
 
-const getInstanceReducer = (mongoRuns) => {
-  if (mongoRuns.length === 0) {
+type InstanceWithRuns = Instance & {
+  run: Run[];
+};
+type InstanceWithRun = Instance & {
+  run: Run;
+};
+
+const getInstanceReducer = (
+  instanceWithRuns: InstanceWithRuns[]
+): InstanceWithRun => {
+  if (instanceWithRuns.length === 0) {
     return null;
   }
-  const result = mongoRuns.pop();
-  result.run = result.run.pop();
-  return result;
+  const result = instanceWithRuns.pop();
+  return { ...result, run: result.run.pop() };
 };
 
 const lookupAggregation = {
@@ -25,15 +36,15 @@ export class InstancesAPI extends DataSource {
   }
 
   async getInstanceById(instanceId: string) {
-    const response = await getMongoDB()
-      .collection('instances')
+    const response = (await getMongoDB()
+      .collection<Instance>('instances')
       .aggregate([
         {
           $match: { instanceId },
         },
         lookupAggregation,
       ])
-      .toArray();
+      .toArray()) as InstanceWithRuns[];
 
     return getInstanceReducer(response);
   }
@@ -48,9 +59,10 @@ export class InstancesAPI extends DataSource {
       });
     return {
       success: result.result.ok === 1,
-      message: `${result.deletedCount} document${
-        result.deletedCount > 1 ? 's' : ''
-      } deleted`,
+      message: `${result.deletedCount} ${plur(
+        'document',
+        result.deletedCount
+      )} deleted`,
       runIds: result.result.ok === 1 ? runIds : [],
     };
   }
@@ -63,7 +75,7 @@ export class InstancesAPI extends DataSource {
         runIds: [],
       };
     }
-    const response = await getMongoDB()
+    const response = (await getMongoDB()
       .collection('instances')
       .aggregate([
         lookupAggregation,
@@ -76,7 +88,7 @@ export class InstancesAPI extends DataSource {
           },
         },
       ])
-      .toArray();
+      .toArray()) as InstanceWithRuns[];
 
     const runIds = response.map((x) => x.run[0].runId) as string[];
     return await this.deleteInstancesByRunIds(runIds);

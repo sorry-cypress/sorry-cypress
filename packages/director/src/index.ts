@@ -1,5 +1,5 @@
-import { app } from './app';
 import { getExecutionDriver, getScreenshotsDriver } from '@src/drivers';
+import { app } from './app';
 import { PORT } from './config';
 export * from './types';
 
@@ -14,15 +14,15 @@ async function main() {
 
   app.set('executionDriver', executionDriver);
   app.set('screenshotsDriver', screenshotsDriver);
-  app.on('error', error => {
+  app.on('error', (error) => {
     throw error;
   });
   app.listen(PORT, () => {
-    console.log(`Listening on ${PORT}...`);
+    console.log(`🚀 Director service is ready at http://0.0.0.0:${PORT}/...`);
   });
 }
 
-main().catch(error => {
+main().catch((error) => {
   console.error(error);
   process.exit(1);
 });
