@@ -33,13 +33,16 @@ spec:
         ports:
         - containerPort: 27017
         readinessProbe:
-          httpGet:
-            path: /
-            port: 27017
+          exec:
+            command:
+            - mongo
+            - --eval
+            - db.adminCommand('ping')
+          failureThreshold: 6
+          initialDelaySeconds: 60
           periodSeconds: 10
+          successThreshold: 1
           timeoutSeconds: 5
-          successThreshold: 2
-          failureThreshold: 5
         resources:
           requests:
             memory: "128M"
