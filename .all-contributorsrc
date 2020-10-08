@@ -149,6 +149,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "nilsmartel",
+      "name": "Nils Martel",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/28377948?v=4",
+      "profile": "https://github.com/nilsmartel",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
