@@ -1,5 +1,6 @@
 {
-  "version": "1.0.0-beta.3",
+  "name": "@sorry-cypress/director",
+  "version": "1.0.0-beta.4",
   "author": {
     "name": "Andrew Goldis",
     "email": "agoldis@gmail.com"
@@ -9,7 +10,6 @@
     "url": "https://github.com/agoldis/sorry-cypress.git"
   },
   "license": "MIT",
-  "name": "@sorry-cypress/director",
   "main": "dist/index.js",
   "typings": "dist/typings",
   "scripts": {
