@@ -1,13 +1,3 @@
-import { MutationUpdaterFn } from 'apollo-client';
-import {
-  DeleteRunMutation,
-  GetInstanceDocument,
-  GetRunDocument,
-  GetRunQuery,
-  GetRunsFeedDocument,
-  GetRunsFeedQuery,
-} from '../generated/graphql';
-
 export const getRunTestsOverall = (run) => {
   const isStillRunning = run.specs.reduce((wasRunning, currentSpec) => {
     return !currentSpec.claimed || !currentSpec.results || wasRunning;
@@ -62,71 +52,4 @@ export const getRunTestsOverall = (run) => {
       wallClockDuration: 0,
     }
   );
-};
-
-export const updateCacheOnDeleteRun: MutationUpdaterFn<DeleteRunMutation> = (
-  cache,
-  { data, errors }
-) => {
-  if (!errors && data?.deleteRun.success) {
-    try {
-      const existingRuns: GetRunsFeedQuery | null = cache.readQuery({
-        query: GetRunsFeedDocument,
-        variables: {
-          cursor: '',
-        },
-      });
-      const filteredRuns = existingRuns?.runFeed.runs.filter(
-        (run) => data?.deleteRun.runIds.indexOf(run.runId) === -1
-      );
-      cache.writeQuery({
-        query: GetRunsFeedDocument,
-        variables: {
-          cursor: '',
-        },
-        data: {
-          runFeed: {
-            ...existingRuns?.runFeed,
-            runs: filteredRuns,
-          },
-        },
-      });
-    } catch (e) {
-      // the query does not exist in cache
-    }
-
-    data?.deleteRun.runIds.forEach((runId) => {
-      try {
-        const existingRun: GetRunQuery | null = cache.readQuery({
-          query: GetRunDocument,
-          variables: {
-            runId,
-          },
-        });
-
-        existingRun?.run?.specs.forEach((spec) => {
-          cache.writeQuery({
-            query: GetInstanceDocument,
-            variables: {
-              instanceId: spec?.instanceId,
-            },
-            data: {
-              instance: null,
-            },
-          });
-        });
-        cache.writeQuery({
-          query: GetRunDocument,
-          variables: {
-            runId,
-          },
-          data: {
-            run: null,
-          },
-        });
-      } catch (e) {
-        // the query does not exist in cache
-      }
-    });
-  }
 };
