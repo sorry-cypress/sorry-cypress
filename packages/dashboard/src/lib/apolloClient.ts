@@ -4,6 +4,9 @@ import { navStructure } from './navigation';
 
 const cache = new InMemoryCache({
   typePolicies: {
+    Run: {
+      keyFields: ['runId'],
+    },
     Query: {
       fields: {
         navStructure: {
