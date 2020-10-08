@@ -3,7 +3,7 @@ import { format } from 'date-fns';
 import { Tooltip } from 'bold-ui';
 
 const FORMAT = 'MMM dd yyyy, HH:mm:ss';
-export const Date = ({ value }: { value: Date }) => {
+export const FormattedDate = ({ value }: { value: Date }) => {
   return (
     <Tooltip text={value.toUTCString()}>
       <span>{format(value, FORMAT)}</span>
