@@ -52,7 +52,7 @@ I was upset because:
 
 ### Is it legal?
 
-Yes, Cypress is an [open source software](https://github.com/cypress-io/cypress/blob/develop/LICENSE).
+Yes, Cypress is an [MIT licensed open source software](https://github.com/cypress-io/cypress/blob/develop/LICENSE).
 
 ### Is it production-ready?
 
