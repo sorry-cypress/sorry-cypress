@@ -20,8 +20,9 @@ export function ProjectsView() {
 
   const projects = data.projects;
 
+  let content: React.ReactNode = null;
   if (!projects.length) {
-    return (
+    content = (
       <div>
         Welcome to Sorry Cypress! Your projects will appears here.{' '}
         <a
@@ -33,7 +34,14 @@ export function ProjectsView() {
         </a>
       </div>
     );
+  } else {
+    content = projects.map((project) => (
+      <div key={project.projectId}>
+        <ProjectListItem project={project} reloadProjects={refetch} />
+      </div>
+    ));
   }
+
   return (
     <>
       <div
@@ -47,11 +55,7 @@ export function ProjectsView() {
           <Text color="inherit">New Project</Text>
         </Button>
       </div>
-      {projects.map((project) => (
-        <div key={project.projectId}>
-          <ProjectListItem project={project} reloadProjects={refetch} />
-        </div>
-      ))}
+      {content}
     </>
   );
 }

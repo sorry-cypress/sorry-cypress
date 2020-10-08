@@ -14,7 +14,7 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
-  projects: Array<Maybe<Project>>;
+  projects: Array<Project>;
   project?: Maybe<Project>;
   runs: Array<Maybe<Run>>;
   runFeed: RunFeed;
@@ -431,10 +431,10 @@ export type GetProjectsQueryVariables = Exact<{
 
 export type GetProjectsQuery = (
   { __typename?: 'Query' }
-  & { projects: Array<Maybe<(
+  & { projects: Array<(
     { __typename?: 'Project' }
     & Pick<Project, 'projectId'>
-  )>> }
+  )> }
 );
 
 export type GetRunQueryVariables = Exact<{
