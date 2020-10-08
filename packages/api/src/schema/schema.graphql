@@ -3,7 +3,7 @@ type Query {
   projects(
     orderDirection: OrderingOptions = DESC
     filters: [Filters] = null
-  ): [Project]!
+  ): [Project!]!
   project(id: ID!): Project
   runs(
     orderDirection: OrderingOptions = DESC
