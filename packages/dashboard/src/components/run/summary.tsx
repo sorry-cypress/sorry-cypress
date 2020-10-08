@@ -26,7 +26,7 @@ import {
 } from '../../generated/graphql';
 import { shortEnglishHumanizerWithMsIfNeeded } from '../../lib/utis';
 import { Paper } from '../common/';
-import { Date } from '../common/date';
+import { FormattedDate } from '../common/date';
 import RenderOnInterval from '../renderOnInterval/renderOnInterval';
 
 type RunSummaryProps = {
@@ -42,7 +42,8 @@ const DeleteButton = ({
 }) => {
   const {
     params: { projectId },
-  } = useRouteMatch();
+  } = useRouteMatch<{ projectId: string }>();
+
   const [deleteRunMutation] = useDeleteRunMutation({
     variables: {
       runId,
@@ -156,7 +157,7 @@ export function RunSummary({ run }: RunSummaryProps) {
         <Cell xs={12} md={6}>
           <div>
             <Text>
-              Started At: <Date value={overall.wallClockStartedAt} />
+              Started At: <FormattedDate value={overall.wallClockStartedAt} />
             </Text>
           </div>
           <div>
