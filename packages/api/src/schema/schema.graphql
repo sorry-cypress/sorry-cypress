@@ -97,6 +97,7 @@ type Commit {
 
 type RunMeta {
   groupId: String
+  group: String
   ciBuildId: String
   projectId: String
   commit: Commit

@@ -172,6 +172,7 @@ export type Commit = {
 export type RunMeta = {
   __typename?: 'RunMeta';
   groupId?: Maybe<Scalars['String']>;
+  group?: Maybe<Scalars['String']>;
   ciBuildId?: Maybe<Scalars['String']>;
   projectId?: Maybe<Scalars['String']>;
   commit?: Maybe<Commit>;
@@ -539,6 +540,7 @@ export type CommitResolvers<ContextType = any, ParentType extends ResolversParen
 
 export type RunMetaResolvers<ContextType = any, ParentType extends ResolversParentTypes['RunMeta'] = ResolversParentTypes['RunMeta']> = {
   groupId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  group?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   ciBuildId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   projectId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   commit?: Resolver<Maybe<ResolversTypes['Commit']>, ParentType, ContextType>;

@@ -7,6 +7,7 @@ export interface PlatformData {
 }
 export interface CreateRunParameters {
   ciBuildId: string;
+  group?: string;
   commit: CommitData;
   projectId: string;
   specs: string[];
@@ -23,6 +24,7 @@ export interface CreateRunResponse {
 
 export interface RunMetaData {
   groupId: string;
+  group?: string;
   ciBuildId: string;
   commit: CommitData;
   projectId: string;

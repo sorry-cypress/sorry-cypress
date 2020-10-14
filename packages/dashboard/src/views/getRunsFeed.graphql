@@ -8,6 +8,7 @@ query getRunsFeed($cursor: String, $filters: [Filters]) {
       meta {
         ciBuildId
         projectId
+        group
         commit {
           sha
           branch

@@ -1,7 +1,7 @@
 import { getProjectPath, navStructure } from '@src/lib/navigation';
 import { Button } from 'bold-ui';
 import React, { useLayoutEffect } from 'react';
-import { RunSummary } from '../components/run/summary';
+import { RunSummary, RunGroupSummary } from '../components/run/summary';
 import { useGetRunsFeedQuery } from '../generated/graphql';
 
 type RunsViewProps = {
@@ -73,10 +73,29 @@ export function RunsView({
   if (!runFeed.runs.length) {
     return <div>No runs have started on this project.</div>;
   }
+
+  const runsWithType: any[] = []
+  data.runFeed.runs.forEach((run) => {
+    const groupName = run.meta?.group
+
+    if (groupName) {
+      const existingGroup = runsWithType.find((run) => {
+        return run.groupName === groupName
+      })
+      if (existingGroup) {
+        existingGroup.runs.push(run)
+      } else {
+        runsWithType.push({ groupName, type: 'group', runs: [run]})
+      }
+    } else {
+      runsWithType.push({type: 'single', runs: [run]})
+    }
+  })
+
   return (
     <>
-      {runFeed.runs.map((run) => (
-        <RunSummary run={run} key={run.runId} />
+      {runsWithType.map((item, index) => (
+          item.groupName ? <RunGroupSummary group={item} key={index} /> : <RunSummary run={item.runs[0]} key={index} />
       ))}
       {runFeed.hasMore && <Button onClick={loadMore}>Load More</Button>}
     </>

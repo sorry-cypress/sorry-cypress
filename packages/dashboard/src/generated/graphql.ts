@@ -171,6 +171,7 @@ export type Commit = {
 export type RunMeta = {
   __typename?: 'RunMeta';
   groupId?: Maybe<Scalars['String']>;
+  group?: Maybe<Scalars['String']>;
   ciBuildId?: Maybe<Scalars['String']>;
   projectId?: Maybe<Scalars['String']>;
   commit?: Maybe<Commit>;
@@ -530,7 +531,7 @@ export type GetRunsFeedQuery = (
       & Pick<Run, 'runId' | 'createdAt'>
       & { meta?: Maybe<(
         { __typename?: 'RunMeta' }
-        & Pick<RunMeta, 'ciBuildId' | 'projectId'>
+        & Pick<RunMeta, 'ciBuildId' | 'projectId' | 'group'>
         & { commit?: Maybe<(
           { __typename?: 'Commit' }
           & Pick<Commit, 'sha' | 'branch' | 'remoteOrigin' | 'message' | 'authorEmail' | 'authorName'>
@@ -1010,6 +1011,7 @@ export const GetRunsFeedDocument = gql`
       meta {
         ciBuildId
         projectId
+        group
         commit {
           sha
           branch

@@ -57,6 +57,7 @@ export const createRun = async (
       createdAt: new Date().toISOString(),
       meta: {
         groupId,
+        group: params.group,
         ciBuildId: params.ciBuildId,
         commit: params.commit,
         projectId: params.projectId,
