@@ -29,10 +29,14 @@ app.get('/', (_, res) =>
 );
 
 app.post('/runs', async (req, res) => {
-  const { recordKey, ciBuildId } = req.body;
+  const { recordKey, ciBuildId, group } = req.body;
   const executionDriver: ExecutionDriver = app.get('executionDriver');
 
-  console.log(`>> Machine is asking to join a run`, { recordKey, ciBuildId });
+  console.log(`>> Machine is asking to join a run`, {
+    recordKey,
+    ciBuildId,
+    group,
+  });
 
   if (!isKeyAllowed(recordKey)) {
     console.log(`<< Record key is not allowed`, { recordKey });

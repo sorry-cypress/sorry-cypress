@@ -68,3 +68,6 @@ credentials
 
 # Minio
 /data
+
+# IntelliJ
+.idea

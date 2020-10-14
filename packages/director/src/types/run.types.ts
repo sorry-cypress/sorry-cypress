@@ -11,6 +11,7 @@ export interface CreateRunParameters {
   projectId: string;
   specs: string[];
   platform: PlatformData;
+  group?: string;
 }
 
 export interface CreateRunResponse {
