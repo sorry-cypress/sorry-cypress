@@ -1,5 +1,6 @@
 import { useReactiveVar } from '@apollo/client';
 import { useAutoRefresh } from '@src/hooks/useAutoRefresh';
+import { useStackRuns } from '@src/hooks/useStackRuns';
 import { navStructure } from '@src/lib/navigation';
 import { Breadcrumbs, Icon, Switch, Tooltip, useCss } from 'bold-ui';
 import { truncate } from 'lodash';
@@ -10,6 +11,7 @@ export const Header: React.FC = () => {
   const { css, theme } = useCss();
   const nav = useReactiveVar(navStructure);
   const [shouldAutoRefresh, setShouldAutoRefresh] = useAutoRefresh();
+  const [shouldStackRuns, setShouldStackRuns] = useStackRuns();
 
   const lastNavItem = nav.pop();
   return (
@@ -45,6 +47,25 @@ export const Header: React.FC = () => {
           </Link>
         </Tooltip>
       </div>
+      <Switch
+        label="Stack runs"
+        checked={shouldStackRuns}
+        onChange={() => {
+          setShouldStackRuns(!shouldStackRuns);
+          window.location.reload();
+        }}
+      />
+      &nbsp;
+      <Tooltip text="Toggle Stacking runs with same ID into groups.">
+        <Icon
+          className={css`
+            align-self: center;
+          `}
+          icon="infoCircleOutline"
+          size={1}
+        />
+      </Tooltip>
+      &nbsp;&nbsp;&nbsp;
       <Switch
         label="Auto Refresh"
         checked={shouldAutoRefresh}

@@ -17,6 +17,13 @@ import {
   useCss,
 } from 'bold-ui';
 import React, { useEffect, useState } from 'react';
+import {
+  Accordion,
+  AccordionItem,
+  AccordionItemHeading,
+  AccordionItemButton,
+  AccordionItemPanel,
+} from 'react-accessible-accordion';
 import { Link, useRouteMatch } from 'react-router-dom';
 import {
   FullRunSpec,
@@ -28,6 +35,14 @@ import { shortEnglishHumanizerWithMsIfNeeded } from '../../lib/utis';
 import { Paper } from '../common/';
 import { FormattedDate } from '../common/date';
 import RenderOnInterval from '../renderOnInterval/renderOnInterval';
+import 'react-accessible-accordion/dist/fancy-example.css';
+
+type RunCiGroupSummaryProps = {
+  group: {
+    ciGroupName?: string;
+    runs: [Partial<Run> & { runId: string; specs: Array<FullRunSpec> }];
+  };
+};
 
 type RunSummaryProps = {
   run: Partial<Run> & { runId: string; specs: Array<FullRunSpec> };
@@ -136,6 +151,28 @@ const DeleteButton = ({
   );
 };
 
+export function RunCiGroupSummary({ group }: RunCiGroupSummaryProps) {
+  return (
+    <>
+      <Accordion allowMultipleExpanded={true} allowZeroExpanded={true}>
+        <AccordionItem>
+          <AccordionItemHeading>
+            <AccordionItemButton>
+              CI Build ID: {group.ciGroupName} <b> | </b> Number of Runs:{' '}
+              {group.runs?.length}
+            </AccordionItemButton>
+          </AccordionItemHeading>
+          {group.runs.map((run, index) => (
+            <AccordionItemPanel key={index}>
+              <RunSummary key={index} run={run} />
+            </AccordionItemPanel>
+          ))}
+        </AccordionItem>
+      </Accordion>
+    </>
+  );
+}
+
 export function RunSummary({ run }: RunSummaryProps) {
   const { css } = useCss();
   const centeredIconClassName = css(`{
@@ -154,7 +191,7 @@ export function RunSummary({ run }: RunSummaryProps) {
         <DeleteButton runId={runId} ciBuildId={meta?.ciBuildId || ''} />
       </HFlow>
       <Grid>
-        <Cell xs={12} md={6}>
+        <Cell xs={12} md={4}>
           <div>
             <Text>
               Started At: <FormattedDate value={overall.wallClockStartedAt} />
@@ -227,7 +264,7 @@ export function RunSummary({ run }: RunSummaryProps) {
             </Text>
           </div>
         </Cell>
-        <Cell xs={12} md={6}>
+        <Cell xs={12} md={4}>
           <div>
             <strong>Spec files</strong>
             <ul>
@@ -235,7 +272,11 @@ export function RunSummary({ run }: RunSummaryProps) {
               <li>Claimed: {specs.filter((s) => s?.claimed).length}</li>
             </ul>
           </div>
-          <Commit commit={meta?.commit} />
+        </Cell>
+        <Cell xs={12} md={4}>
+          <div>
+            <Commit commit={meta?.commit} />
+          </div>
         </Cell>
       </Grid>
     </Paper>

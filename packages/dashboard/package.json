@@ -41,6 +41,7 @@
     "lodash.setwith": "^4.3.2",
     "lodash.truncate": "^4.4.2",
     "react": "^16.9.0",
+    "react-accessible-accordion": "^3.3.3",
     "react-dom": "^16.9.0",
     "react-router": "^5.1.2",
     "react-router-dom": "^5.1.2"
