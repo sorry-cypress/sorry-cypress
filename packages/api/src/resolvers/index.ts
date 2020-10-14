@@ -16,10 +16,8 @@ export const resolvers = {
       if (obj.attempts) {
         return 'InstanceTestV5';
       }
-      if (obj.wallClockStartedAt) {
-        return 'InstanceTest';
-      }
-      return null;
+
+      return 'InstanceTest';
     },
   },
   Query: {
