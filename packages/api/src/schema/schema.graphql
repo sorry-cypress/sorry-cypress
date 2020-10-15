@@ -235,4 +235,5 @@ enum OrderingOptions {
 input Filters {
   key: String
   value: String
+  like: String
 }

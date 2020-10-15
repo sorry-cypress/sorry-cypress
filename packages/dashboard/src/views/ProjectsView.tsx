@@ -1,30 +1,36 @@
 import { navStructure } from '@src/lib/navigation';
-import { Button, Icon, Text, useCss } from 'bold-ui';
-import React, { useLayoutEffect } from 'react';
+import { Button, Icon, Text } from 'bold-ui';
+import React, { FC, useLayoutEffect, useState } from 'react';
 import { ProjectListItem } from '../components/project/projectListItem';
 import { useGetProjectsQuery } from '../generated/graphql';
-export function ProjectsView() {
-  const { css } = useCss();
+import PageControls from "../components/ui/PageControls";
+import SearchField from "@src/components/ui/SearchField";
 
-  useLayoutEffect(() => {
-    navStructure([]);
-  }, []);
+type ProjectsListProps = {
+  search: string;
+};
 
-  const { loading, error, data, refetch } = useGetProjectsQuery();
+const ProjectsList = ({ search }: ProjectsListProps) => {
+  const queryOptions = {
+    variables: {
+      filters: search ? [{
+        key: 'projectId',
+        like: search
+      }] : [],
+    }
+  };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error.toString()}</p>;
-  if (!data) {
-    return <p>No data</p>;
-  }
+  const { loading, error, data, refetch } = useGetProjectsQuery(queryOptions);
 
-  const projects = data.projects;
+  if (loading) return <p>Loading ...</p>;
+  if (!data || error) return <p>{ error && error.toString() || 'Oups an error occured' }</p>;
 
-  let content: React.ReactNode = null;
-  if (!projects.length) {
-    content = (
+  const { projects } = data;
+
+  if (projects.length === 0) {
+    return (
       <div>
-        Welcome to Sorry Cypress! Your projects will appears here.{' '}
+        Welcome to Sorry Cypress! Your projects will appears here.{ ' ' }
         <a
           href="https://github.com/agoldis/sorry-cypress"
           target="_blank"
@@ -34,28 +40,39 @@ export function ProjectsView() {
         </a>
       </div>
     );
-  } else {
-    content = projects.map((project) => (
-      <div key={project.projectId}>
-        <ProjectListItem project={project} reloadProjects={refetch} />
-      </div>
-    ));
   }
 
   return (
     <>
-      <div
-        className={css`
-          display: flex;
-          flex-direction: row-reverse;
-        `}
-      >
+      {projects.map((project) => (
+      <div key={ project.projectId }>
+        <ProjectListItem project={ project } reloadProjects={ refetch }/>
+      </div>
+      ))}
+    </>
+  );
+};
+
+export function ProjectsView() {
+  const [search, setSearch] = useState('');
+
+  useLayoutEffect(() => {
+    navStructure([]);
+  }, []);
+
+  return (
+    <>
+      <PageControls>
+        <SearchField
+          label="Search Project"
+          placeholder="Search Project"
+          onSearch={ (value) => setSearch(value) }/>
         <Button component="a" href="/--create-new-project--/edit">
-          <Icon style={{ marginRight: '0.5rem' }} icon="plus" />
+          <Icon style={ { marginRight: '0.5rem' } } icon="plus"/>
           <Text color="inherit">New Project</Text>
         </Button>
-      </div>
-      {content}
+      </PageControls>
+      <ProjectsList search={ search }/>
     </>
   );
 }
