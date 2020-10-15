@@ -28,6 +28,8 @@ import { shortEnglishHumanizerWithMsIfNeeded } from '../../lib/utis';
 import { Paper } from '../common/';
 import { FormattedDate } from '../common/date';
 import RenderOnInterval from '../renderOnInterval/renderOnInterval';
+import { CiUrl } from '@src/components/ci/ci';
+import { environment } from '@src/state/environment';
 
 type RunSummaryProps = {
   run: Partial<Run> & { runId: string; specs: Array<FullRunSpec> };
@@ -236,6 +238,14 @@ export function RunSummary({ run }: RunSummaryProps) {
             </ul>
           </div>
           <Commit commit={meta?.commit} />
+          <div>
+            <CiUrl
+              ciBuildId={meta?.ciBuildId}
+              projectId={meta?.projectId}
+              ciUrl={environment.CI_URL}
+              key={meta?.ciBuildId}
+            />
+          </div>
         </Cell>
       </Grid>
     </Paper>
