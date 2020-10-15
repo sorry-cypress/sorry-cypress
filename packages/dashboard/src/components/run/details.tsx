@@ -9,9 +9,10 @@ import {
   useCss,
 } from 'bold-ui';
 import mean from 'lodash/mean';
-import React, { useState } from 'react';
+import React from 'react';
 import { generatePath } from 'react-router-dom';
 import { FullRunSpec, Run } from '../../generated/graphql';
+import { useHideSuccessfulSpecs } from '../../hooks/useHideSuccessfulSpecs';
 import { getFullRunSpecState } from '../../lib/executionState';
 import { shortEnglishHumanizerWithMsIfNeeded } from '../../lib/utis';
 import { SpecState } from '../common';
@@ -29,7 +30,7 @@ export function RunDetails({
   const { css } = useCss();
   const { specs } = run;
 
-  const [isPassedHidden, setHidePassedSpecs] = useState(false);
+  const [isPassedHidden, setHidePassedSpecs] = useHideSuccessfulSpecs();
 
   if (!specs) {
     return null;
@@ -47,6 +48,7 @@ export function RunDetails({
         <strong>Spec files</strong>
         <Switch
           label="Hide successful specs"
+          checked={isPassedHidden}
           onChange={() => setHidePassedSpecs(!isPassedHidden)}
         />
       </HFlow>
