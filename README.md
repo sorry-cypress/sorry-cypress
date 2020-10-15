@@ -91,6 +91,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="http://www.webdevotion.be"><img src="https://avatars3.githubusercontent.com/u/50583?v=4" width="100px;" alt=""/><br /><sub><b>Bram Plessers</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=webdevotion" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/nilsmartel"><img src="https://avatars1.githubusercontent.com/u/28377948?v=4" width="100px;" alt=""/><br /><sub><b>Nils Martel</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=nilsmartel" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/dlavrenuek"><img src="https://avatars3.githubusercontent.com/u/20122620?v=4" width="100px;" alt=""/><br /><sub><b>dlavrenuek</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=dlavrenuek" title="Code">💻</a></td>
   </tr>
 </table>
 
