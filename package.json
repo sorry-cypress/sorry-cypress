@@ -15,6 +15,7 @@
     "packages/*"
   ],
   "scripts": {
+    "version": "wsrun version",
     "test": "yarn workspaces run test",
     "lint": "yarn workspaces run lint",
     "start": "yarn workspace @sorry-cypress/director start",
@@ -42,6 +43,7 @@
     "pretty-quick": "^3.0.2",
     "rimraf": "^3.0.2",
     "semver": "^7.3.2",
-    "typescript": "^4.0.3"
+    "typescript": "^4.0.3",
+    "wsrun": "^5.2.4"
   }
 }
