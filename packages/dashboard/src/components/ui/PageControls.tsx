@@ -1,21 +1,8 @@
-import React, { FC, PropsWithChildren } from "react";
-import { useCss } from "bold-ui";
+import React, { PropsWithChildren } from 'react';
+import FlexRow from './FlexRow';
 
-export type PageControlsProps = PropsWithChildren<unknown>;
-
-const PageControls: FC<PageControlsProps> = ({ children }: PageControlsProps) => {
-  const { css } = useCss();
-
-  return (
-    <div
-      className={ css`
-          display: flex;
-          flex-direction: row;
-        ` }
-    >
-      { children }
-    </div>
-  )
-};
+const PageControls = ({ children }: PropsWithChildren<unknown>) => (
+  <FlexRow>{children}</FlexRow>
+);
 
 export default PageControls;

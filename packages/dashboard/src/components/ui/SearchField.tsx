@@ -1,21 +1,19 @@
-import React, { FC, ChangeEvent, useState } from "react";
-import { TextField, useCss } from "bold-ui";
-import { useDebounce } from "../../hooks/useDebounce";
+import { TextField, useCss } from 'bold-ui';
+import React, { ChangeEvent, FC, useState } from 'react';
+import useDebounce from '../../hooks/useDebounce';
 
 export type OnSearch = (value: string) => unknown;
 
 export type SearchFieldProps = {
-  label: string;
-  placeholder?: string;
   onSearch: OnSearch;
+  placeholder: string;
   disabled?: boolean;
 };
 
 const SearchField: FC<SearchFieldProps> = ({
-  label,
   placeholder,
   onSearch,
-  disabled
+  disabled,
 }: SearchFieldProps) => {
   const { css } = useCss();
   const debounce = useDebounce();
@@ -31,16 +29,24 @@ const SearchField: FC<SearchFieldProps> = ({
   };
 
   return (
-    <TextField
-      label={ label }
-      placeholder={ placeholder }
-      value={ value }
-      onChange={ handleOnChange }
-      disabled={ disabled }
-      className={ css`
-        flex: 1;
-      ` }
-    />
+    <div
+      className={css`
+        flex: 1 1;
+        margin-right: 1em;
+      `}
+    >
+      <TextField
+        placeholder={placeholder}
+        value={value}
+        icon="zoomOutline"
+        onChange={handleOnChange}
+        disabled={disabled}
+        className={css`
+          padding: calc(0.75rem + 1px) 1rem;
+          width: 100%;
+        `}
+      />
+    </div>
   );
 };
 

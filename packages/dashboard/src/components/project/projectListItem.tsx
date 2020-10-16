@@ -1,4 +1,4 @@
-// import { updateCacheOnDeleteProject } from '@src/lib/run';
+import HeaderLink from '@src/components/ui/HeaderLink';
 import {
   Button,
   Heading,
@@ -8,12 +8,11 @@ import {
   ModalBody,
   ModalFooter,
   Text,
-  useCss,
 } from 'bold-ui';
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Project, useDeleteProjectMutation } from '../../generated/graphql';
 import { Paper } from '../common';
+import FlexRow from '../ui/FlexRow';
 
 type ProjectListItemProps = {
   project: Project;
@@ -24,7 +23,6 @@ export function ProjectListItem({
   project,
   reloadProjects,
 }: ProjectListItemProps) {
-  const { css } = useCss();
   const [startDeleteProjectMutation] = useDeleteProjectMutation({
     variables: {
       projectId: project.projectId,
@@ -102,35 +100,29 @@ export function ProjectListItem({
         </ModalFooter>
       </Modal>
       <Paper>
-        <HFlow justifyContent="space-between">
-          <Heading level={1}>
-            <Link
-              className={css`
-                vertical-align: middle;
-              `}
-              to={`/${project.projectId}/runs`}
+        <FlexRow>
+          <HeaderLink to={`/${project.projectId}/runs`}>
+            {project.projectId}
+          </HeaderLink>
+          <div>
+            <Button
+              kind="danger"
+              skin="ghost"
+              onClick={() => setShowModal(true)}
             >
-              {project.projectId}
-            </Link>
+              <Icon icon="trashOutline" style={{ marginRight: '0.5rem' }} />
+              <Text color="inherit">Delete</Text>
+            </Button>
             <Button
               component="a"
               href={`/${project.projectId}/edit`}
-              kind="normal"
-              size="small"
               skin="ghost"
-              style={{
-                verticalAlign: 'middle',
-                marginLeft: '10px',
-              }}
             >
-              <Icon icon="penFilled" />
+              <Icon icon="penFilled" style={{ marginRight: '0.5rem' }} />
+              <Text color="inherit">Edit</Text>
             </Button>
-          </Heading>
-          <Button kind="danger" skin="ghost" onClick={() => setShowModal(true)}>
-            <Icon icon="trashOutline" style={{ marginRight: '0.5rem' }} />
-            <Text color="inherit">Delete</Text>
-          </Button>
-        </HFlow>
+          </div>
+        </FlexRow>
       </Paper>
     </>
   );
