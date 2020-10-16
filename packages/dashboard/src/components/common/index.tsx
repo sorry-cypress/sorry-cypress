@@ -1,5 +1,5 @@
 import { Paper as UIPaper, Tag, useCss, useStyles } from 'bold-ui';
-import React, { FC } from 'react';
+import React, { FC, PropsWithChildren } from 'react';
 
 export const Paper: FC = (props) => {
   const { css } = useStyles();
@@ -56,7 +56,7 @@ export const SpecState: FC<SpecStateProps> = ({ state }: SpecStateProps) => {
   }
 };
 
-export const CenteredContent: FC = ({ children }) => {
+export const CenteredContent: FC = ({ children }: PropsWithChildren<unknown>) => {
   const { css } = useCss();
 
   return (
