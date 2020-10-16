@@ -1,7 +1,7 @@
-import React, { PropsWithChildren } from 'react';
 import { useCss } from 'bold-ui';
+import React, { PropsWithChildren } from 'react';
 
-export type FlexRowProps = {
+type FlexRowProps = {
   alignItems?: 'center' | 'flex-start' | 'flex-end';
 };
 

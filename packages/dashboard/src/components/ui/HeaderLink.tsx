@@ -2,7 +2,7 @@ import { useCss } from 'bold-ui';
 import React, { PropsWithChildren } from 'react';
 import { Link } from 'react-router-dom';
 
-export type HeaderLinkProps = PropsWithChildren<{
+type HeaderLinkProps = PropsWithChildren<{
   to: string;
 }>;
 

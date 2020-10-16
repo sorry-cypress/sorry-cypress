@@ -1,8 +1,6 @@
-import React, { PropsWithChildren } from 'react';
+import React, { FC } from 'react';
 import FlexRow from './FlexRow';
 
-const PageControls = ({ children }: PropsWithChildren<unknown>) => (
-  <FlexRow>{children}</FlexRow>
-);
+const PageControls: FC = ({ children }) => <FlexRow>{children}</FlexRow>;
 
 export default PageControls;

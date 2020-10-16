@@ -1,6 +1,8 @@
-import React from 'react';
-import { useGetProjectsQuery } from '@src/generated/graphql';
+import { CenteredContent } from '@src/components/common';
 import { ProjectListItem } from '@src/components/project/projectListItem';
+import { useGetProjectsQuery } from '@src/generated/graphql';
+import { Heading } from 'bold-ui';
+import React from 'react';
 
 type ProjectsListProps = {
   search: string;
@@ -22,24 +24,42 @@ const ProjectsList = ({ search }: ProjectsListProps) => {
 
   const { loading, error, data, refetch } = useGetProjectsQuery(queryOptions);
 
-  if (loading) return <p>Loading ...</p>;
-  if (!data || error)
-    return <p>{(error && error.toString()) || 'Oups an error occured'}</p>;
+  if (loading) {
+    return <CenteredContent>Loading ...</CenteredContent>;
+  }
+  if (!data || error) {
+    return (
+      <CenteredContent>
+        {(error && error.toString()) || 'Oups an error occured'}
+      </CenteredContent>
+    );
+  }
 
   const { projects } = data;
 
   if (projects.length === 0) {
+    if (search) {
+      return (
+        <CenteredContent>
+          <p>No projects found </p>
+        </CenteredContent>
+      );
+    }
+
     return (
-      <div>
-        Welcome to Sorry Cypress! Your projects will appears here.{' '}
-        <a
-          href="https://github.com/agoldis/sorry-cypress"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Documentation
-        </a>
-      </div>
+      <CenteredContent>
+        <Heading level={1}>Welcome to Sorry Cypress!</Heading>
+        <p>
+          Your projects will appears here.{' '}
+          <a
+            href="https://github.com/agoldis/sorry-cypress"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Documentation
+          </a>
+        </p>
+      </CenteredContent>
     );
   }
 

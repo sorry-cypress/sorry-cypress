@@ -4,7 +4,7 @@ import useDebounce from '../../hooks/useDebounce';
 
 export type OnSearch = (value: string) => unknown;
 
-export type SearchFieldProps = {
+type SearchFieldProps = {
   onSearch: OnSearch;
   placeholder: string;
   disabled?: boolean;
