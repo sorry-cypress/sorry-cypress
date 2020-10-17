@@ -27,7 +27,6 @@ export function ProjectListItem({
     variables: {
       projectId: project.projectId,
     },
-    // update: updateCacheOnDeleteProject,
   });
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);

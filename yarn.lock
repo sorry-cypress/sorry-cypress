@@ -3433,10 +3433,10 @@ body-parser@1.19.0, body-parser@^1.18.3, body-parser@^1.19.0:
     raw-body "2.4.0"
     type-is "~1.6.17"
 
-bold-ui@1.0.0-beta.38:
-  version "1.0.0-beta.38"
-  resolved "https://registry.yarnpkg.com/bold-ui/-/bold-ui-1.0.0-beta.38.tgz#01e4b0852abed3ca31e4e1638c62dfb39aca0cfd"
-  integrity sha512-Hxq4FDoq68HeDFWxLFyw1/d63tjMOWTExZFUcw71NYHY8wXDfkvb0yU+cwYQ8DOaGBGVHO+9Jjufm179ahf3IQ==
+bold-ui@^1.0.0-beta.40:
+  version "1.0.0-beta.40"
+  resolved "https://registry.yarnpkg.com/bold-ui/-/bold-ui-1.0.0-beta.40.tgz#ff3e9455ee347d1edf4d06ad4ded2c467dce369c"
+  integrity sha512-P7kD2CzbVHKIPDoV3YUb+zxw0V0EFPI7SmFOGjU3wBiFfePv+mzP67IBLMTJX9XD2QP4ICj8jRvGOaqYMYfRmw==
   dependencies:
     "@emotion/core" "10.0.28"
     "@popperjs/core" "2.4.2"
@@ -9914,11 +9914,6 @@ run-async@^2.4.0:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/run-async/-/run-async-2.4.1.tgz#8440eccf99ea3e70bd409d49aab88e10c189a455"
   integrity sha512-tvVnVv01b8c1RrA6Ep7JkStj85Guv/YrMcwqYQnwjsAS2cTmmPGBBjAjpCW7RrSodNSoE2/qg9O4bceNvUuDgQ==
-
-run-p@^0.0.0:
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/run-p/-/run-p-0.0.0.tgz#716a55bd120277a9d90da5f82333b70b918088f2"
-  integrity sha1-cWpVvRICd6nZDaX4IzO3C5GAiPI=
 
 run-parallel@^1.1.9:
   version "1.1.9"

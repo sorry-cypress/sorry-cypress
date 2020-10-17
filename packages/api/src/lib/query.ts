@@ -2,17 +2,19 @@ export interface AggregationFilter {
   key: string;
   value?: string;
   like?: string;
-};
+}
 
 export const filtersToAggregations = (filters?: AggregationFilter[]) => {
   if (!filters) {
     return [];
   }
-  return filters.map((filter) => ({
-    $match: {
-      [filter.key]: buildFilterExpression(filter),
-    },
-  }));
+  return filters
+    .filter(({ like, value }) => like !== undefined || value !== undefined)
+    .map((filter) => ({
+      $match: {
+        [filter.key]: buildFilterExpression(filter),
+      },
+    }));
 };
 
 const buildFilterExpression = ({ like, value }: AggregationFilter) => {
@@ -21,7 +23,7 @@ const buildFilterExpression = ({ like, value }: AggregationFilter) => {
   }
   if (like !== undefined) {
     return {
-      '$regex': RegExp(like.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&'), 'i')
+      $regex: RegExp(like.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&'), 'i'),
     };
   }
   return '';
