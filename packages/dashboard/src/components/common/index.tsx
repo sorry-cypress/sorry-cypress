@@ -56,7 +56,9 @@ export const SpecState: FC<SpecStateProps> = ({ state }: SpecStateProps) => {
   }
 };
 
-export const CenteredContent: FC = ({ children }: PropsWithChildren<unknown>) => {
+export const CenteredContent: FC = ({
+  children,
+}: PropsWithChildren<unknown>) => {
   const { css } = useCss();
 
   return (
