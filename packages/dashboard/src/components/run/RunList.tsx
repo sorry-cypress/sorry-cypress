@@ -46,14 +46,13 @@ const RunList: FC<RunListProps> = ({
     );
   }
 
-  const { runFeed } = data;
-  const { runs } = runFeed;
+  const { runFeed: { runs, cursor } } = data;
 
   const loadMore = () => {
     return fetchMore({
       variables: {
         filters,
-        cursor: runFeed.cursor,
+        cursor: cursor,
       },
       updateQuery: (prev, { fetchMoreResult }) => {
         return {
