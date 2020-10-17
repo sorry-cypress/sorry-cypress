@@ -311,6 +311,7 @@ export enum OrderingOptions {
 export type Filters = {
   key?: Maybe<Scalars['String']>;
   value?: Maybe<Scalars['String']>;
+  like?: Maybe<Scalars['String']>;
 };
 
 
