@@ -10,7 +10,7 @@ import {
   UpdateInstanceResponse,
 } from '@src/types';
 
-export const handleCreateNextTask: RequestHandler = async (req, res) => {
+export const handleCreateInstance: RequestHandler = async (req, res) => {
   const { groupId, machineId } = req.body;
   const { runId } = req.params;
   const executionDriver = await getExecutionDriver();
@@ -26,7 +26,7 @@ export const handleCreateNextTask: RequestHandler = async (req, res) => {
       instance,
       claimedInstances,
       totalInstances,
-    } = await executionDriver.getNextTask(runId);
+    } = await executionDriver.getNextTask({ runId, machineId, groupId });
 
     if (instance === null) {
       console.log(`<< All tasks claimed`, { runId, machineId });
@@ -78,17 +78,11 @@ export const handleUpdateInstance: RequestHandler = async (req, res) => {
   const instance = await executionDriver.getInstanceById(instanceId);
   const run = await executionDriver.getRunWithSpecs(instance.runId);
   const project = await executionDriver.getProjectById(run.meta.projectId);
+
   const isRunStillRunning = run.specs.reduce(
-    (
-      wasRunning: boolean,
-      currentSpec: {
-        claimed: boolean;
-        results: any;
-      },
-      index: number
-    ) => {
+    (wasRunning, currentSpec, index) => {
       return (
-        !currentSpec.claimed || !run.specsFull[index].results || wasRunning
+        !currentSpec.claimed || !run.specsFull[index]?.results || wasRunning
       );
     },
     false

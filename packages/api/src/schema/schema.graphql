@@ -83,6 +83,8 @@ type FullRunSpec {
   instanceId: String!
   claimed: Boolean!
   claimedAt: String
+  machineId: String
+  groupId: String
   results: InstanceResults
 }
 
@@ -96,7 +98,6 @@ type Commit {
 }
 
 type RunMeta {
-  groupId: String
   ciBuildId: String
   projectId: String
   commit: Commit
@@ -125,12 +126,14 @@ type PartialRun {
   meta: RunMeta
   specs: [RunSpec]!
 }
-# Spec (which is also an instance 👹) within a run
+# Spec within a run. Instance is a claimed spec
 type RunSpec {
   spec: String!
   instanceId: String!
   claimed: Boolean!
   claimedAt: String
+  groupId: String
+  machineId: String
 }
 
 # Execution results of a single instance

@@ -6,9 +6,7 @@ export const generateRunIdHash = ({
   ciBuildId,
   commit,
   projectId,
-  specs,
-}: CreateRunParameters) =>
-  md5(ciBuildId + commit.sha + projectId + specs.join(' '));
+}: CreateRunParameters) => md5(ciBuildId + commit.sha + projectId);
 
 // not sure how specific that should be
 export const generateGroupId = (

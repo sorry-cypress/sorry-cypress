@@ -17,6 +17,7 @@ import { getFullRunSpecState } from '../../lib/executionState';
 import { shortEnglishHumanizerWithMsIfNeeded } from '../../lib/utis';
 import { SpecState } from '../common';
 import RenderOnInterval from '../renderOnInterval/renderOnInterval';
+import stringHash from 'string-hash';
 
 type RunDetailsProps = {
   run: Partial<Run>;
@@ -74,6 +75,23 @@ export function RunDetails({
               render: (spec: FullRunSpec) => (
                 <SpecState state={getFullRunSpecState(spec)} />
               ),
+            },
+            {
+              name: 'machine',
+              header: 'Machine',
+              sortable: false,
+              render: (spec: FullRunSpec) => {
+                if (spec.machineId) {
+                  return stringHash(spec.machineId);
+                }
+                return 'unknown';
+              },
+            },
+            {
+              name: 'group',
+              header: 'Group',
+              sortable: false,
+              render: (spec: FullRunSpec) => spec.groupId,
             },
             {
               name: 'link',

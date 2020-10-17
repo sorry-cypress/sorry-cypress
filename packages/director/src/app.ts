@@ -1,7 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import { blockKeys, handleCreateRun } from './api/runs';
-import { handleCreateNextTask, handleUpdateInstance } from './api/instances';
+import { handleCreateInstance, handleUpdateInstance } from './api/instances';
 
 export const app = express();
 
@@ -16,7 +16,7 @@ app.get('/', (_, res) =>
 );
 
 app.post('/runs', blockKeys, handleCreateRun);
-app.post('/runs/:runId/instances', handleCreateNextTask);
+app.post('/runs/:runId/instances', handleCreateInstance);
 app.put('/instances/:instanceId', handleUpdateInstance);
 
 /*
