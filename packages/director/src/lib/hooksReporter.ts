@@ -2,7 +2,7 @@ import { hookEvents, hookTypes } from '@src/lib/hooksEnums';
 import axios from 'axios';
 import { getDashboardRunURL } from '@src/lib/urls';
 import { Instance } from '@src/types/instance.types';
-import { Run } from '@src/types/run.types';
+import { Run, RunSpec } from '@src/types/run.types';
 import { Project, Hook } from '@src/types/project.types';
 import { hookReportSchema } from '@src/lib/schemas';
 import Ajv from 'ajv';
@@ -12,7 +12,7 @@ const cleanHookReportData = ajv.compile(hookReportSchema);
 
 type ReportData = {
   run?: Run;
-  instance?: Instance;
+  instance?: Instance | RunSpec;
   reportUrl?: string;
   hookEvent?: string;
   currentResults?: any;
@@ -31,17 +31,15 @@ function getRunTestsOverall(run: any) {
       if (currentSpec.results) {
         if (
           index === 0 ||
-          new Date(
-              currentSpec?.results?.stats?.wallClockStartedAt
-          ) <= new Date(dates.firstStart)
+          new Date(currentSpec?.results?.stats?.wallClockStartedAt) <=
+            new Date(dates.firstStart)
         ) {
           dates.firstStart = currentSpec.results.stats.wallClockStartedAt;
         }
         if (
           index === 0 ||
-          new Date(
-              currentSpec?.results?.stats?.wallClockEndedAt
-          ) > new Date(dates.lastEnd)
+          new Date(currentSpec?.results?.stats?.wallClockEndedAt) >
+            new Date(dates.lastEnd)
         ) {
           dates.lastEnd = currentSpec.results.stats.wallClockEndedAt;
         }
@@ -100,7 +98,7 @@ async function reportStatusToGithub({
     state: '',
     description: '',
     target_url: getDashboardRunURL(
-      (reportData?.run?.runId) || reportData.instance.runId
+      reportData?.run?.runId || reportData.instance.runId
     ),
     context: 'Sorry-Cypress-Tests',
   };
@@ -152,7 +150,7 @@ async function reportStatusToGithub({
 async function reportToGenericWebHook({
   hook,
   reportData,
-  hookEvent
+  hookEvent,
 }: {
   hook: Hook;
   reportData: any;
@@ -166,8 +164,7 @@ async function reportToGenericWebHook({
   ) {
     reportData.hookEvent = hookEvent;
     reportData.reportUrl = getDashboardRunURL(
-      (reportData.run && reportData.run.runId) ||
-        reportData.instance.runId
+      (reportData.run && reportData.run.runId) || reportData.instance.runId
     );
     return axios({
       method: 'post',
@@ -175,10 +172,7 @@ async function reportToGenericWebHook({
       url: hook.url,
       data: reportData,
     }).catch((err) => {
-      console.error(
-        `Error: Hook Post to ${hook.url} responded with `,
-        err
-      );
+      console.error(`Error: Hook Post to ${hook.url} responded with `, err);
     });
   }
 }
@@ -196,7 +190,7 @@ export function reportToHook({
     reportData.currentResults = getRunTestsOverall(reportData.run);
     // This will mutate the report data object to have less data.
     // This is needed to slim the data down for webhooks.
-    cleanHookReportData(reportData); 
+    cleanHookReportData(reportData);
 
     project?.hooks?.forEach((hook) => {
       if (hook.hookType === hookTypes.GITHUB_STATUS_HOOK) {
