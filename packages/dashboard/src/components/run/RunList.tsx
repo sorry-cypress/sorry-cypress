@@ -4,15 +4,15 @@ import { useGetRunsFeedQuery } from '@src/generated/graphql';
 import { Button } from 'bold-ui';
 import React, { FC } from 'react';
 
-type RunsListProps = {
+type RunListProps = {
   projectId: string;
   search?: string;
 };
 
-const RunList: FC<RunsListProps> = ({
+const RunList: FC<RunListProps> = ({
   projectId,
   search = '',
-}: RunsListProps) => {
+}: RunListProps) => {
   const searchFilters = search
     ? [
         {
