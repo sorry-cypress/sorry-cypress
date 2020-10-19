@@ -46,8 +46,8 @@ const RunList: FC<RunListProps> = ({
     );
   }
 
-  const { runFeed: { runs, cursor } } = data;
-
+  const { runFeed } = data;
+  const { runs, cursor } = runFeed;
   const loadMore = () => {
     return fetchMore({
       variables: {
