@@ -32,7 +32,6 @@ const SearchField: FC<SearchFieldProps> = ({
     <div
       className={css`
         flex: 1 1;
-        margin-right: 1em;
       `}
     >
       <TextField

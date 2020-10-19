@@ -74,7 +74,7 @@ type Run {
   runId: ID!
   createdAt: DateTime!
   meta: RunMeta
-  specs: [FullRunSpec]!
+  specs: [FullRunSpec!]!
 }
 
 # Full spec data, including execution results

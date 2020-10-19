@@ -16,7 +16,7 @@ export function ProjectsView() {
     <>
       <PageControls>
         <SearchField
-          placeholder="Search Project"
+          placeholder="Enter project id"
           onSearch={(value) => setSearch(value)}
         />
         <Button component="a" href="/--create-new-project--/edit">

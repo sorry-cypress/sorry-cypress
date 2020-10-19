@@ -147,7 +147,7 @@ export type Run = {
   runId: Scalars['ID'];
   createdAt: Scalars['DateTime'];
   meta?: Maybe<RunMeta>;
-  specs: Array<Maybe<FullRunSpec>>;
+  specs: Array<FullRunSpec>;
 };
 
 export type FullRunSpec = {
@@ -515,7 +515,7 @@ export type RunResolvers<ContextType = any, ParentType extends ResolversParentTy
   runId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   meta?: Resolver<Maybe<ResolversTypes['RunMeta']>, ParentType, ContextType>;
-  specs?: Resolver<Array<Maybe<ResolversTypes['FullRunSpec']>>, ParentType, ContextType>;
+  specs?: Resolver<Array<ResolversTypes['FullRunSpec']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

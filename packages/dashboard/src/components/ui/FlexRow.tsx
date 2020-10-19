@@ -17,6 +17,10 @@ const FlexRow = ({
         display: flex;
         flex-direction: row;
         align-items: ${alignItems};
+
+        & > * + * {
+          margin-left: 1em;
+        }
       `}
     >
       {children}

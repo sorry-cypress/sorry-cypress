@@ -146,7 +146,7 @@ export type Run = {
   runId: Scalars['ID'];
   createdAt: Scalars['DateTime'];
   meta?: Maybe<RunMeta>;
-  specs: Array<Maybe<FullRunSpec>>;
+  specs: Array<FullRunSpec>;
 };
 
 export type FullRunSpec = {
@@ -455,7 +455,7 @@ export type GetRunQuery = (
         { __typename?: 'Commit' }
         & Pick<Commit, 'sha' | 'branch' | 'remoteOrigin' | 'message' | 'authorEmail' | 'authorName'>
       )> }
-    )>, specs: Array<Maybe<(
+    )>, specs: Array<(
       { __typename?: 'FullRunSpec' }
       & Pick<FullRunSpec, 'spec' | 'instanceId' | 'claimed' | 'claimedAt'>
       & { results?: Maybe<(
@@ -483,7 +483,7 @@ export type GetRunQuery = (
           & Pick<InstanceStats, 'tests' | 'pending' | 'passes' | 'failures' | 'skipped' | 'suites' | 'wallClockDuration' | 'wallClockStartedAt' | 'wallClockEndedAt'>
         ) }
       )> }
-    )>> }
+    )> }
   )> }
 );
 
@@ -501,7 +501,7 @@ export type GetRunsByProjectIdLimitedToTimingQuery = (
     & { meta?: Maybe<(
       { __typename?: 'RunMeta' }
       & Pick<RunMeta, 'ciBuildId' | 'projectId'>
-    )>, specs: Array<Maybe<(
+    )>, specs: Array<(
       { __typename?: 'FullRunSpec' }
       & Pick<FullRunSpec, 'spec'>
       & { results?: Maybe<(
@@ -511,7 +511,7 @@ export type GetRunsByProjectIdLimitedToTimingQuery = (
           & Pick<InstanceStats, 'wallClockDuration'>
         ) }
       )> }
-    )>> }
+    )> }
   )>> }
 );
 
@@ -536,7 +536,7 @@ export type GetRunsFeedQuery = (
           { __typename?: 'Commit' }
           & Pick<Commit, 'sha' | 'branch' | 'remoteOrigin' | 'message' | 'authorEmail' | 'authorName'>
         )> }
-      )>, specs: Array<Maybe<(
+      )>, specs: Array<(
         { __typename?: 'FullRunSpec' }
         & Pick<FullRunSpec, 'spec' | 'instanceId' | 'claimed'>
         & { results?: Maybe<(
@@ -556,7 +556,7 @@ export type GetRunsFeedQuery = (
             & Pick<InstanceStats, 'tests' | 'pending' | 'passes' | 'failures' | 'skipped' | 'suites' | 'wallClockDuration' | 'wallClockStartedAt' | 'wallClockEndedAt'>
           ) }
         )> }
-      )>> }
+      )> }
     )> }
   ) }
 );

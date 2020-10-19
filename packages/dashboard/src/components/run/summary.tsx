@@ -1,4 +1,6 @@
 import { Commit } from '@src/components/commit/commit';
+import FlexRow from '@src/components/ui/FlexRow';
+import HeaderLink from '@src/components/ui/HeaderLink';
 import { useAsync } from '@src/hooks/useAsync';
 import { getRunTestsOverall } from '@src/lib/run';
 import {
@@ -17,7 +19,7 @@ import {
   useCss,
 } from 'bold-ui';
 import React, { useEffect, useState } from 'react';
-import { Link, useRouteMatch } from 'react-router-dom';
+import { useRouteMatch } from 'react-router-dom';
 import {
   FullRunSpec,
   GetRunsFeedDocument,
@@ -147,12 +149,10 @@ export function RunSummary({ run }: RunSummaryProps) {
   const overall = getRunTestsOverall(run);
   return (
     <Paper>
-      <HFlow justifyContent="space-between">
-        <Heading level={1}>
-          <Link to={`/run/${runId}`}>{meta?.ciBuildId}</Link>
-        </Heading>
+      <FlexRow>
+        <HeaderLink to={`/run/${runId}`}>{meta?.ciBuildId}</HeaderLink>
         <DeleteButton runId={runId} ciBuildId={meta?.ciBuildId || ''} />
-      </HFlow>
+      </FlexRow>
       <Grid>
         <Cell xs={12} md={6}>
           <div>
