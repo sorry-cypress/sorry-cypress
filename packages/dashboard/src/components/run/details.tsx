@@ -19,6 +19,9 @@ import { SpecState } from '../common';
 import RenderOnInterval from '../renderOnInterval/renderOnInterval';
 import stringHash from 'string-hash';
 
+function getMachineName(machineId: string) {
+  return (stringHash(machineId) % 10000) + 1;
+}
 type RunDetailsProps = {
   run: Partial<Run>;
   propertySpecHeuristics: Record<string, number[]>;
@@ -78,13 +81,17 @@ export function RunDetails({
             },
             {
               name: 'machine',
-              header: 'Machine',
+              header: (
+                <Tooltip text="Random but consistent">
+                  <Text>Machine #</Text>
+                </Tooltip>
+              ),
               sortable: false,
               render: (spec: FullRunSpec) => {
                 if (spec.machineId) {
-                  return stringHash(spec.machineId);
+                  return getMachineName(spec.machineId);
                 }
-                return 'unknown';
+                return null;
               },
             },
             {
