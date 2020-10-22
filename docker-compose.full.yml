@@ -36,7 +36,6 @@ services:
     image: agoldis/sorry-cypress-dashboard:latest
     environment:
       GRAPHQL_SCHEMA_URL: http://localhost:4000
-      CI_URL: CI Link, https://ci.instance/{project_id}/{build_id}
     ports:
       - 8080:8080
     depends_on:
