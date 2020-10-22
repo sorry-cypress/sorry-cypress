@@ -1,4 +1,4 @@
-import { Instance, Run, RunSpec, RunWithSpecs } from '@src/types';
+import { ExecutionDriver, Run, RunSpec, RunWithSpecs } from '@src/types';
 import { getMongoDB } from '@src/lib/mongo';
 import { AppError, RUN_EXISTS, CLAIM_FAILED } from '@src/lib/errors';
 import { getSanitizedMongoObject } from '@src/lib/results';
@@ -48,7 +48,9 @@ const lookupAggregation = {
   },
 };
 
-export const getRunWithSpecs = async (id: string): Promise<RunWithSpecs> =>
+export const getRunWithSpecs: ExecutionDriver['getRunWithSpecs'] = async (
+  id: string
+): Promise<RunWithSpecs> =>
   mergeRunSpecs(
     (
       await getMongoDB()
@@ -92,7 +94,11 @@ export const addSpecsToRun = async (runId: string, specs: RunSpec[]) => {
 
 // atomic operation to avoid concurrency issues
 // filter document prevents concurrent writes
-export const setSpecClaimed = async (runId: string, instanceId: string) => {
+export const setSpecClaimed = async (
+  runId: string,
+  instanceId: string,
+  machineId: string
+) => {
   const { matchedCount, modifiedCount } = await getMongoDB()
     .collection('runs')
     .updateOne(
@@ -107,6 +113,7 @@ export const setSpecClaimed = async (runId: string, instanceId: string) => {
       },
       {
         $set: {
+          'specs.$[spec].machineId': machineId,
           'specs.$[spec].claimed': true,
           'specs.$[spec].claimedAt': new Date().toISOString(),
         },

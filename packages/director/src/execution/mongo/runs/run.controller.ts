@@ -23,11 +23,12 @@ import {
 } from '@src/lib/hash';
 import { ExecutionDriver, Task, CreateRunWarning } from '@src/types';
 import {
+  enhanceSpec,
   getClaimedSpecs,
   getFirstUnclaimedSpec,
   getNewSpecsInGroup,
   getSpecsForGroup,
-} from './utils';
+} from '../../utils';
 
 export const getById = getRunById;
 
@@ -37,6 +38,8 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
     params.group ?? generateGroupId(params.platform, params.ciBuildId);
 
   const machineId = generateUUID();
+  const enhaceSpecForThisRun = enhanceSpec(groupId);
+
   const response = {
     groupId,
     machineId,
@@ -59,13 +62,7 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
         projectId: params.projectId,
         platform: params.platform,
       },
-      specs: params.specs.map((spec) => ({
-        spec,
-        instanceId: generateUUID(),
-        claimed: false,
-        groupId,
-        machineId,
-      })),
+      specs: params.specs.map(enhaceSpecForThisRun),
     });
     return response;
   } catch (error) {
@@ -95,16 +92,7 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
         return response;
       }
 
-      await addSpecsToRun(
-        runId,
-        newSpecs.map((spec) => ({
-          spec,
-          instanceId: generateUUID(),
-          claimed: false,
-          groupId,
-          machineId,
-        }))
-      );
+      await addSpecsToRun(runId, newSpecs.map(enhaceSpecForThisRun));
 
       return response;
     }
@@ -133,7 +121,7 @@ export const getNextTask: ExecutionDriver['getNextTask'] = async ({
 
   const spec = getFirstUnclaimedSpec(run, groupId);
   try {
-    await setSpecClaimed(runId, spec.instanceId);
+    await setSpecClaimed(runId, spec.instanceId, machineId);
     await createInstance({
       runId,
       instanceId: spec.instanceId,

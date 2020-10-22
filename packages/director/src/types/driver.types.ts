@@ -40,7 +40,7 @@ export interface ExecutionDriver extends Driver {
   getRunById: (runId: string) => Promise<Run>;
   getInstanceById: (instanceId: string) => Promise<Instance>;
   createRun: (params: CreateRunParameters) => Promise<CreateRunResponse>;
-  getNextTask: (parmas: GetNextTaskParams) => Promise<Task>;
+  getNextTask: (params: GetNextTaskParams) => Promise<Task>;
   setInstanceResults: (
     instanceId: string,
     results: InstanceResult

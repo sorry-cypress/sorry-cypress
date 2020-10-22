@@ -1,3 +1,4 @@
+import { generateUUID } from '@src/lib/hash';
 import { Run } from '@src/types';
 import { difference } from 'lodash';
 
@@ -22,3 +23,10 @@ export const getNewSpecsInGroup = ({
   const existingSpecs = getSpecsForGroup(run, groupId).map((spec) => spec.spec);
   return difference(candidateSpecs, existingSpecs);
 };
+
+export const enhanceSpec = (groupId: string) => (spec: string) => ({
+  spec,
+  instanceId: generateUUID(),
+  claimed: false,
+  groupId,
+});

@@ -4,7 +4,6 @@ import { hookEvents } from '@src/lib/hooksEnums';
 import { reportToHook } from '@src/lib/hooksReporter';
 import { CreateRunParameters } from '@src/types';
 import { RequestHandler } from 'express';
-
 export const blockKeys: RequestHandler = (req, res, next) => {
   const { recordKey } = req.body;
 

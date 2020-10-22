@@ -37,7 +37,7 @@ export interface InstanceResult {
   tests: Record<string, unknown>[];
   error: null | string;
   reporterStats: Record<string, unknown>;
-  cypressConfig: CypressConfig;
+  cypressConfig?: CypressConfig;
   screenshots: Screenshot[];
   video: boolean;
   videoUrl?: string;

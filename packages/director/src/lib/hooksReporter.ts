@@ -6,10 +6,12 @@ import { Run, RunSpec } from '@src/types/run.types';
 import { Project, Hook } from '@src/types/project.types';
 import { hookReportSchema } from '@src/lib/schemas';
 import Ajv from 'ajv';
+import { cloneDeep } from 'lodash';
 
 const ajv = new Ajv({ removeAdditional: 'all' });
 const cleanHookReportData = ajv.compile(hookReportSchema);
-
+const getCleanHookReportData = (data: unknown) =>
+  cleanHookReportData(cloneDeep(data));
 type ReportData = {
   run?: Run;
   instance?: Instance | RunSpec;
@@ -188,21 +190,19 @@ export function reportToHook({
 }): Promise<any> {
   try {
     reportData.currentResults = getRunTestsOverall(reportData.run);
-    // This will mutate the report data object to have less data.
-    // This is needed to slim the data down for webhooks.
-    cleanHookReportData(reportData);
+    const cleanReportData = getCleanHookReportData(reportData);
 
     project?.hooks?.forEach((hook) => {
       if (hook.hookType === hookTypes.GITHUB_STATUS_HOOK) {
         return reportStatusToGithub({
           hook,
-          reportData,
+          reportData: cleanReportData,
           hookEvent,
         });
       } else {
         return reportToGenericWebHook({
           hook,
-          reportData,
+          reportData: cleanReportData,
           hookEvent,
         });
       }
