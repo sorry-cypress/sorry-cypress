@@ -167,6 +167,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Upgreydd",
+      "name": "Kacper",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/579481?v=4",
+      "profile": "https://github.com/Upgreydd",
+      "contributions": [
+        "code",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
