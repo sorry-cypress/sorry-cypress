@@ -30,6 +30,8 @@ import { shortEnglishHumanizerWithMsIfNeeded } from '../../lib/utis';
 import { Paper } from '../common/';
 import { FormattedDate } from '../common/date';
 import RenderOnInterval from '../renderOnInterval/renderOnInterval';
+import { CiUrl } from '@src/components/ci/ci';
+import { theme } from '@src/theme/theme';
 
 type RunSummaryProps = {
   run: Partial<Run> & { runId: string; specs: Array<FullRunSpec> };
@@ -226,16 +228,18 @@ export function RunSummary({ run }: RunSummaryProps) {
               </Tooltip>
             </Text>
           </div>
-        </Cell>
-        <Cell xs={12} md={6}>
-          <div>
+
+          <div style={{ marginTop: theme.sizes.text }}>
             <strong>Spec files</strong>
             <ul>
               <li>Overall: {specs.length}</li>
               <li>Claimed: {specs.filter((s) => s?.claimed).length}</li>
             </ul>
           </div>
+        </Cell>
+        <Cell xs={12} md={6}>
           <Commit commit={meta?.commit} />
+          <CiUrl ciBuildId={meta?.ciBuildId} projectId={meta?.projectId} />
         </Cell>
       </Grid>
     </Paper>

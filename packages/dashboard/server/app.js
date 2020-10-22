@@ -1,10 +1,11 @@
 const express = require('express');
 const path = require('path');
 const app = (exports.app = express());
-const { GRAPHQL_SCHEMA_URL } = require('./config');
+const { GRAPHQL_SCHEMA_URL, CI_URL } = require('./config');
 
 const SORRY_CYPRESS_ENVIRONMENT = JSON.stringify({
   GRAPHQL_SCHEMA_URL,
+  CI_URL,
 });
 
 app.set('view engine', 'ejs');
