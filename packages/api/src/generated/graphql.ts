@@ -47,6 +47,7 @@ export type FullRunSpec = {
   instanceId: Scalars['String'];
   claimed: Scalars['Boolean'];
   results?: Maybe<InstanceResults>;
+  occurrences?: Maybe<Scalars['Int']>;
 };
 
 export type Instance = {
@@ -454,6 +455,7 @@ export type FullRunSpecResolvers<
     ParentType,
     ContextType
   >;
+  occurrences?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   __isTypeOf?: isTypeOfResolverFn<ParentType>;
 };
 
