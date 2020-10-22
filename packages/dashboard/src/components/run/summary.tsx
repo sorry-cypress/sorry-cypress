@@ -29,7 +29,7 @@ import { Paper } from '../common/';
 import { FormattedDate } from '../common/date';
 import RenderOnInterval from '../renderOnInterval/renderOnInterval';
 import { CiUrl } from '@src/components/ci/ci';
-import { environment } from '@src/state/environment';
+import { theme } from '@src/theme/theme';
 
 type RunSummaryProps = {
   run: Partial<Run> & { runId: string; specs: Array<FullRunSpec> };
@@ -228,24 +228,18 @@ export function RunSummary({ run }: RunSummaryProps) {
               </Tooltip>
             </Text>
           </div>
-        </Cell>
-        <Cell xs={12} md={6}>
-          <div>
+
+          <div style={{ marginTop: theme.sizes.text }}>
             <strong>Spec files</strong>
             <ul>
               <li>Overall: {specs.length}</li>
               <li>Claimed: {specs.filter((s) => s?.claimed).length}</li>
             </ul>
           </div>
+        </Cell>
+        <Cell xs={12} md={6}>
           <Commit commit={meta?.commit} />
-          <div>
-            <CiUrl
-              ciBuildId={meta?.ciBuildId}
-              projectId={meta?.projectId}
-              ciUrl={environment.CI_URL}
-              key={meta?.ciBuildId}
-            />
-          </div>
+          <CiUrl ciBuildId={meta?.ciBuildId} projectId={meta?.projectId} />
         </Cell>
       </Grid>
     </Paper>
