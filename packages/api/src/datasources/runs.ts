@@ -66,8 +66,17 @@ const specRandomsReducer = (runs) => {
         });
       return [...acc, ...failedSpecs];
     }, []);
+  const randomsWithOccurrences = randoms.reduce((acc, random) => {
+    if (acc[random.spec]) {
+      acc[random.spec].occurrences += 1;
+    } else {
+      random.occurrences = 1;
+      acc[random.spec] = random;
+    }
+    return acc;
+  }, {});
   return {
-    specs: _.uniqBy(randoms, 'spec'),
+    specs: Object.values(randomsWithOccurrences),
   };
 };
 

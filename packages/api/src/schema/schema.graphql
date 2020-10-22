@@ -41,6 +41,7 @@ type FullRunSpec {
   instanceId: String!
   claimed: Boolean!
   results: InstanceResults
+  occurrences: Int
 }
 
 type InstanceResults {
