@@ -44,7 +44,8 @@
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-router": "^5.1.2",
-    "react-router-dom": "^5.1.2"
+    "react-router-dom": "^5.1.2",
+    "string-hash": "^1.1.3"
   },
   "devDependencies": {
     "@babel/cli": "^7.11.6",
@@ -68,6 +69,7 @@
     "@types/react-dom": "^16.8.4",
     "@types/react-router-dom": "^5.1.5",
     "@types/react-tooltip": "^3.9.3",
+    "@types/string-hash": "^1.1.1",
     "@typescript-eslint/eslint-plugin": "^4.3.0",
     "@typescript-eslint/parser": "^4.3.0",
     "babel-loader": "^8.0.6",

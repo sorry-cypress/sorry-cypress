@@ -1,6 +1,6 @@
 import { ScreenshotUploadInstruction } from './instance.types';
 
-export interface UpdateInstanseResponse {
+export interface UpdateInstanceResponse {
   videoUploadUrl?: string;
   screenshotUploadUrls: ScreenshotUploadInstruction[];
 }

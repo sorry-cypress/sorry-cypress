@@ -156,6 +156,8 @@ export type FullRunSpec = {
   instanceId: Scalars['String'];
   claimed: Scalars['Boolean'];
   claimedAt?: Maybe<Scalars['String']>;
+  machineId?: Maybe<Scalars['String']>;
+  groupId?: Maybe<Scalars['String']>;
   results?: Maybe<InstanceResults>;
 };
 
@@ -171,7 +173,6 @@ export type Commit = {
 
 export type RunMeta = {
   __typename?: 'RunMeta';
-  groupId?: Maybe<Scalars['String']>;
   ciBuildId?: Maybe<Scalars['String']>;
   projectId?: Maybe<Scalars['String']>;
   commit?: Maybe<Commit>;
@@ -207,6 +208,8 @@ export type RunSpec = {
   instanceId: Scalars['String'];
   claimed: Scalars['Boolean'];
   claimedAt?: Maybe<Scalars['String']>;
+  groupId?: Maybe<Scalars['String']>;
+  machineId?: Maybe<Scalars['String']>;
 };
 
 export type InstanceResults = {
@@ -524,6 +527,8 @@ export type FullRunSpecResolvers<ContextType = any, ParentType extends Resolvers
   instanceId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   claimed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   claimedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  machineId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  groupId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   results?: Resolver<Maybe<ResolversTypes['InstanceResults']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -539,7 +544,6 @@ export type CommitResolvers<ContextType = any, ParentType extends ResolversParen
 };
 
 export type RunMetaResolvers<ContextType = any, ParentType extends ResolversParentTypes['RunMeta'] = ResolversParentTypes['RunMeta']> = {
-  groupId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   ciBuildId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   projectId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   commit?: Resolver<Maybe<ResolversTypes['Commit']>, ParentType, ContextType>;
@@ -575,6 +579,8 @@ export type RunSpecResolvers<ContextType = any, ParentType extends ResolversPare
   instanceId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   claimed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   claimedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  groupId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  machineId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

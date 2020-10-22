@@ -155,6 +155,8 @@ export type FullRunSpec = {
   instanceId: Scalars['String'];
   claimed: Scalars['Boolean'];
   claimedAt?: Maybe<Scalars['String']>;
+  machineId?: Maybe<Scalars['String']>;
+  groupId?: Maybe<Scalars['String']>;
   results?: Maybe<InstanceResults>;
 };
 
@@ -170,7 +172,6 @@ export type Commit = {
 
 export type RunMeta = {
   __typename?: 'RunMeta';
-  groupId?: Maybe<Scalars['String']>;
   ciBuildId?: Maybe<Scalars['String']>;
   projectId?: Maybe<Scalars['String']>;
   commit?: Maybe<Commit>;
@@ -206,6 +207,8 @@ export type RunSpec = {
   instanceId: Scalars['String'];
   claimed: Scalars['Boolean'];
   claimedAt?: Maybe<Scalars['String']>;
+  groupId?: Maybe<Scalars['String']>;
+  machineId?: Maybe<Scalars['String']>;
 };
 
 export type InstanceResults = {
@@ -457,7 +460,7 @@ export type GetRunQuery = (
       )> }
     )>, specs: Array<(
       { __typename?: 'FullRunSpec' }
-      & Pick<FullRunSpec, 'spec' | 'instanceId' | 'claimed' | 'claimedAt'>
+      & Pick<FullRunSpec, 'spec' | 'instanceId' | 'claimed' | 'claimedAt' | 'machineId' | 'groupId'>
       & { results?: Maybe<(
         { __typename?: 'InstanceResults' }
         & Pick<InstanceResults, 'videoUrl'>
@@ -883,6 +886,8 @@ export const GetRunDocument = gql`
       instanceId
       claimed
       claimedAt
+      machineId
+      groupId
       results {
         cypressConfig {
           video
