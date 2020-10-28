@@ -10,8 +10,11 @@ import { cloneDeep } from 'lodash';
 
 const ajv = new Ajv({ removeAdditional: 'all' });
 const cleanHookReportData = ajv.compile(hookReportSchema);
-const getCleanHookReportData = (data: unknown) =>
-  cleanHookReportData(cloneDeep(data));
+const getCleanHookReportData = (data: unknown) => {
+  const cloned = cloneDeep(data);
+  cleanHookReportData(cloned);
+  return cloned;
+};
 type ReportData = {
   run?: Run;
   instance?: Instance | RunSpec;
