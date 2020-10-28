@@ -15,7 +15,8 @@
     "packages/*"
   ],
   "scripts": {
-    "version": "wsrun version",
+    "release": "./scripts/release-github.sh",
+    "release-packages": "wsrun release",
     "test": "yarn workspaces run test",
     "lint": "yarn workspaces run lint",
     "start": "yarn workspace @sorry-cypress/director start",

@@ -22,7 +22,8 @@
     "test": "jest",
     "lint": "eslint ./ --ext ts",
     "start": "node ./dist/",
-    "clean": "rimraf ./dist"
+    "clean": "rimraf ./dist",
+    "release": "yarn version --no-git-tag-version"
   },
   "dependencies": {
     "ajv": "^6.12.5",

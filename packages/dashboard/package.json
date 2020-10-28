@@ -23,7 +23,8 @@
     "generate": "graphql-codegen --config codegen.yml",
     "generate:watch": "graphql-codegen --config codegen.yml --watch",
     "test": "echo \"@sorry-cypress/dashboard\"",
-    "lint": "eslint ./ --ext ts,tsx"
+    "lint": "eslint ./ --ext ts,tsx",
+    "release": "yarn version --no-git-tag-version"
   },
   "dependencies": {
     "@apollo/client": "^3.2.0",
