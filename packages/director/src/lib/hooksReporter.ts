@@ -173,7 +173,7 @@ async function reportToGenericWebHook({
     );
     return axios({
       method: 'post',
-      headers: JSON.parse(hook.headers) || {},
+      headers: hook.headers ? JSON.parse(hook.headers) : {},
       url: hook.url,
       data: reportData,
     }).catch((err) => {
