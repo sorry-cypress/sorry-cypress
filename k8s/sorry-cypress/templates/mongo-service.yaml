@@ -1,6 +1,6 @@
 {{- if .Values.mongo.enabled -}}
 ---
-mongoVersion: v1
+apiVersion: v1
 kind: Service
 metadata:
   name: {{ include "sorrycypress.fullname" . }}-mongo
