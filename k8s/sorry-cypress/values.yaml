@@ -12,7 +12,7 @@ api:
   replicaCount: 1
   image:
     repository: registry.padoa.fr/padoa/sorry-cypress-api
-    tag: "{{ .Values.global.sorry_cypress_tag }}"
+    tag: '{{ .Values.global.sorry_cypress_tag }}'
   service:
     name: api-http
     type: ClusterIP
@@ -37,7 +37,7 @@ dashboard:
   replicaCount: 1
   image:
     repository: registry.padoa.fr/padoa/sorry-cypress-dashboard
-    tag: "{{ .Values.global.sorry_cypress_tag }}"
+    tag: '{{ .Values.global.sorry_cypress_tag }}'
   service:
     name: dashboard-http
     type: ClusterIP
@@ -62,7 +62,7 @@ director:
   replicaCount: 1
   image:
     repository: registry.padoa.fr/padoa/sorry-cypress-director
-    tag: "{{ .Values.global.sorry_cypress_tag }}"
+    tag: '{{ .Values.global.sorry_cypress_tag }}'
   service:
     name: director-http
     type: ClusterIP
@@ -87,7 +87,7 @@ mongo:
   replicaCount: 1
   image:
     repository: mongo
-    tag: 4.0
+    tag: '4.0'
   volumeMount:
     name:
   service:
