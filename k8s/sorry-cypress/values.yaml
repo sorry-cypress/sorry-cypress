@@ -4,7 +4,7 @@ bucket:
   name: sorry-cypress-aks
   region: eu-west-1
   endpoint: s3.amazonaws.com
-  expiration: 604800
+  expiration: '604800'
 
 storage:
   size: 1Gi
