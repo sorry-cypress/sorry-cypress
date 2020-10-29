@@ -47,6 +47,12 @@ spec:
               value: {{ .Values.bucket.name }}
             - name: S3_REGION
               value: {{ .Values.bucket.region}}
+            - name: S3_ENDPOINT
+              value: {{ .Values.bucket.endpoint }}
+            - name: S3_FORCE_PATH_STYLE
+              value: "false"
+            - name: FILES_EXPIRATION
+              value: {{ .Values.bucket.expiration }}
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:
