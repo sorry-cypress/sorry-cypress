@@ -4,6 +4,9 @@ bucket:
   name: sorry-cypress-aks
   region: eu-west-1
 
+storage:
+  size: 1Gi
+
 api:
   enabled: true
   replicaCount: 1
