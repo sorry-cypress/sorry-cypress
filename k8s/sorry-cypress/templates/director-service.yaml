@@ -1,0 +1,20 @@
+{{- if .Values.director.enabled -}}
+---
+directorVersion: v1
+kind: Service
+metadata:
+  name: {{ include "sorrycypress.fullname" . }}-director
+  labels:
+    {{- include "sorrycypress.labels" . | nindent 4 }}
+    component: director
+spec:
+  type: {{ .Values.director.service.type }}
+  ports:
+    - port: {{ .Values.director.service.port }}
+      targetPort: {{ .Values.director.service.port }}
+      protocol: {{ .Values.director.service.protocol }}
+      name: {{ .Values.director.service.name }}
+  selector:
+    {{- include "sorrycypress.selectorLabels" . | nindent 4 }}
+    component: director
+{{- end -}}

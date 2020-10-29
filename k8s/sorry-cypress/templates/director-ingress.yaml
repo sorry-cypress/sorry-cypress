@@ -1,0 +1,28 @@
+{{- if .Values.director.enabled | and .Values.director.ingress.enabled -}}
+  {{- $fullName := include "sorrycypress.fullname" . -}}
+  {{- $svcPort := .Values.director.service.port -}}
+  {{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+  {{- else -}}
+apiVersion: extensions/v1beta1
+  {{- end }}
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-director
+  labels:
+    {{- include "sorrycypress.labels" . | nindent 4 }}
+    component: director
+  {{- with .Values.director.ingress.annotations }}
+  annotations:
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  rules:
+    - host: "{{ .Values.director.ingress.host_prefix }}.{{ .Values.global.cluster_endpoint }}"
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: {{ $fullName }}-director
+              servicePort: {{ $svcPort }}
+  {{- end }}

@@ -1,0 +1,20 @@
+{{- if .Values.api.enabled -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "sorrycypress.fullname" . }}-api
+  labels:
+    {{- include "sorrycypress.labels" . | nindent 4 }}
+    component: api
+spec:
+  type: {{ .Values.api.service.type }}
+  ports:
+    - port: {{ .Values.api.service.port }}
+      targetPort: {{ .Values.api.service.port }}
+      protocol: {{ .Values.api.service.protocol }}
+      name: {{ .Values.api.service.name }}
+  selector:
+    {{- include "sorrycypress.selectorLabels" . | nindent 4 }}
+    component: api
+{{- end -}}

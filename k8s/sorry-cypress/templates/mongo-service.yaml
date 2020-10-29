@@ -1,0 +1,20 @@
+{{- if .Values.mongo.enabled -}}
+---
+mongoVersion: v1
+kind: Service
+metadata:
+  name: {{ include "sorrycypress.fullname" . }}-mongo
+  labels:
+    {{- include "sorrycypress.labels" . | nindent 4 }}
+    component: mongo
+spec:
+  type: {{ .Values.mongo.service.type }}
+  ports:
+    - port: {{ .Values.mongo.service.port }}
+      targetPort: {{ .Values.mongo.service.port }}
+      protocol: {{ .Values.mongo.service.protocol }}
+      name: {{ .Values.mongo.service.name }}
+  selector:
+    {{- include "sorrycypress.selectorLabels" . | nindent 4 }}
+    component: mongo
+{{- end -}}

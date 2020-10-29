@@ -1,0 +1,104 @@
+global: {}
+
+api:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: padoa.azurecr.io/?????????????????
+    tag: "{{ .Values.global.sorry_cypress_tag }}"
+  service:
+    name: api-http
+    type: ClusterIP
+    port: 4000
+    protocol: TCP
+  ingress:
+    enabled: true
+    host_prefix: sorry-cypress-api
+    annotations:
+      kubernetes.io/ingress.class: traefik
+      traefik.ingress.kubernetes.io/router.tls: 'true'
+  resources:
+    requests:
+      cpu: 100m
+      memory: 200Mi
+    limits:
+      cpu: 1.0
+      memory: 550Mi
+
+dashboard:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: padoa.azurecr.io/?????????????????
+    tag: "{{ .Values.global.sorry_cypress_tag }}"
+  service:
+    name: dashboard-http
+    type: ClusterIP
+    port: 8080
+    protocol: TCP
+  ingress:
+    enabled: true
+    host_prefix: sorry-cypress-dashboard
+    annotations:
+      kubernetes.io/ingress.class: traefik
+      traefik.ingress.kubernetes.io/router.tls: 'true'
+  resources:
+    requests:
+      cpu: 100m
+      memory: 200Mi
+    limits:
+      cpu: 1.0
+      memory: 550Mi
+
+director:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: padoa.azurecr.io/?????????????????
+    tag: "{{ .Values.global.sorry_cypress_tag }}"
+  service:
+    name: director-http
+    type: ClusterIP
+    port: 1234
+    protocol: TCP
+  ingress:
+    enabled: true
+    host_prefix: sorry-cypress-director
+    annotations:
+      kubernetes.io/ingress.class: traefik
+      traefik.ingress.kubernetes.io/router.tls: 'true'
+  resources:
+    requests:
+      cpu: 100m
+      memory: 200Mi
+    limits:
+      cpu: 1.0
+      memory: 550Mi
+
+mongo:
+  enabled: true
+  service:
+    name: mongo
+    type: ClusterIP
+    port: 27017
+    protocol: TCP
+
+imagePullSecrets:
+  - name: registry-secret
+
+image:
+  pullPolicy: IfNotPresent
+
+podSecurityContext: {}
+
+securityContext: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+serviceAccount:
+  create: false
+  name:

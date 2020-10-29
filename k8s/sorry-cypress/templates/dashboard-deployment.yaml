@@ -1,0 +1,64 @@
+{{- if .Values.dashboard.enabled -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "sorrycypress.fullname" . }}-dashboard
+  labels:
+    component: dashboard
+  {{- include "sorrycypress.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.dashboard.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "sorrycypress.selectorLabels" . | nindent 6 }}
+      component: dashboard
+  template:
+    metadata:
+      labels:
+        {{- include "sorrycypress.selectorLabels" . | nindent 8 }}
+        component: dashboard
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "sorrycypress.serviceAccountName" . }}
+      securityContext:
+      {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.dashboard.image.repository }}:{{ tpl .Values.dashboard.image.tag . }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          - name: GRAPHQL_SCHEMA_URL
+            value: "{{ .Values.api.ingress.host_prefix }}.{{ .Values.global.cluster_endpoint }}"
+          ports:
+            - name: {{ .Values.dashboard.service.name }}
+              containerPort: {{ .Values.dashboard.service.port }}
+              protocol: {{ .Values.dashboard.service.protocol }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.dashboard.service.name }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.dashboard.service.name }}
+          resources:
+      {{- toYaml .Values.dashboard.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+    {{- toYaml . | nindent 8 }}
+  {{- end }}
+  {{- end -}}
