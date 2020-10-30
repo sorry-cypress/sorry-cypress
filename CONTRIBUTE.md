@@ -15,11 +15,13 @@ Starting the services with exposed ports by including the `docker-compose.dev.ym
 `docker-compose -f docker-compose.full.yml -f docker-compose.dev.yml up`
 
 
-## Releasing a new version to dockerhub
+## Releasing a new version
 
 We use semver.
 
 Every commit to master triggers [CI via GH Actions](https://github.com/sorry-cypress/sorry-cypress/tree/master/.github/workflows), which builds new docker images, assign tags and pusher the new images to dockerhub.
+
+After pushing a new tagged please go ahead and create a new Github [release](https://github.com/sorry-cypress/sorry-cypress/releases) with a summary and attributions. 
 
 ### Prevent CI
 
