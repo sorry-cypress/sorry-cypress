@@ -26,6 +26,7 @@ api:
     annotations:
       kubernetes.io/ingress.class: traefik
       traefik.ingress.kubernetes.io/router.tls: 'true'
+      traefik.ingress.kubernetes.io/router.middlewares: traefik-forward-auth-sso-forward-auth@kubernetescrd
   resources:
     requests:
       cpu: 100m
@@ -51,6 +52,7 @@ dashboard:
     annotations:
       kubernetes.io/ingress.class: traefik
       traefik.ingress.kubernetes.io/router.tls: 'true'
+      traefik.ingress.kubernetes.io/router.middlewares: traefik-forward-auth-sso-forward-auth@kubernetescrd
   resources:
     requests:
       cpu: 100m
