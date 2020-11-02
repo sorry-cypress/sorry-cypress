@@ -80,6 +80,12 @@ jobs:
 workflows:
   build-and-push:
     jobs:
-      - build-director-and-push
-      - build-api-and-push
-      - build-dashboard-and-push
+      - build-director-and-push:
+          context:
+            - REGISTRY
+      - build-api-and-push:
+          context:
+            - REGISTRY
+      - build-dashboard-and-push:
+          context:
+            - REGISTRY
