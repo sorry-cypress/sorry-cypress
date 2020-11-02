@@ -45,7 +45,6 @@ spec:
             timeoutSeconds: 5
           resources:
       {{- toYaml .Values.mongo.resources | nindent 12 }}
-      {{- with .Values.nodeSelector }}
           volumeMounts:
             - name: {{ include "sorrycypress.fullname" . }}-mongo-storage
               mountPath: /data/db
@@ -53,6 +52,7 @@ spec:
         - name: {{ include "sorrycypress.fullname" . }}-mongo-storage
           persistentVolumeClaim:
             claimName: {{ include "sorrycypress.fullname" . }}-mongo-storage-claim
+      {{- with .Values.nodeSelector }}
       nodeSelector:
       {{- toYaml . | nindent 8 }}
       {{- end }}
