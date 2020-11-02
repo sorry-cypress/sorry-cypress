@@ -69,11 +69,11 @@ spec:
               protocol: {{ .Values.director.service.protocol }}
           livenessProbe:
             httpGet:
-              path: /
+              path: /health-check
               port: {{ .Values.director.service.name }}
           readinessProbe:
             httpGet:
-              path: /
+              path: /health-check
               port: {{ .Values.director.service.name }}
           resources:
       {{- toYaml .Values.director.resources | nindent 12 }}
