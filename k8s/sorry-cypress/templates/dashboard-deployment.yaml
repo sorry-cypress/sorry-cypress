@@ -34,7 +34,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
           - name: GRAPHQL_SCHEMA_URL
-            value: "{{ .Values.api.ingress.host_prefix }}.{{ .Values.global.cluster_endpoint }}"
+            value: "https://{{ .Values.api.ingress.host_prefix }}.{{ .Values.global.cluster_endpoint }}"
           ports:
             - name: {{ .Values.dashboard.service.name }}
               containerPort: {{ .Values.dashboard.service.port }}

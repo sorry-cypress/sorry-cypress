@@ -34,7 +34,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: DASHBOARD_URL
-              value: "{{ .Values.dashboard.ingress.host_prefix }}.{{ .Values.global.cluster_endpoint }}"
+              value: "https://{{ .Values.dashboard.ingress.host_prefix }}.{{ .Values.global.cluster_endpoint }}"
             - name: EXECUTION_DRIVER
               value: ../execution/mongo/driver
             - name: MONGODB_DATABASE
