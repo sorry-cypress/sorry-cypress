@@ -22,22 +22,15 @@ jobs:
           name: build docker image
           no_output_timeout: 1h
           command: |
-            TAG=${CIRCLE_SHA1%"${CIRCLE_SHA1#??????????}"}
-            SHORT_TAG=${CIRCLE_SHA1%"${CIRCLE_SHA1#???????}"}
             FULL_TAG=${CIRCLE_SHA1}
-            docker login ${DOCKER_REGISTRY_HOSTNAME} -u ${DOCKER_REGISTRY_USER} -p ${DOCKER_REGISTRY_PASSWORD}
+            docker login ${ACR_HOST} -u ${ACR_PUSH_USER} -p ${ACR_PUSH_PASSWORD}
+
             # Build and push DIRECTOR
             cd ~/project/packages/director/
-            if ! docker image pull ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-director:$TAG ; then
-              docker build --progress plain -t ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-director:$TAG .
-              docker tag ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-director:$TAG ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-director:$SHORT_TAG
-              docker tag ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-director:$TAG ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-director:$FULL_TAG
-              docker push ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-director:$TAG
-              docker push ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-director:$SHORT_TAG
-              docker push ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-director:$FULL_TAG
+            if ! docker image pull ${ACR_HOST}/padoa-tools/sorry-cypress-director:$FULL_TAG ; then
+              docker build --progress plain -t ${ACR_HOST}/padoa-tools/sorry-cypress-director:$FULL_TAG .
+              docker push ${ACR_HOST}/padoa-tools/sorry-cypress-director:$FULL_TAG
             fi
-            docker tag ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-director:$TAG ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-director:$CIRCLE_BRANCH
-            docker push ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-director:$CIRCLE_BRANCH
 
   build-api-and-push:
     machine:
@@ -52,24 +45,15 @@ jobs:
           name: build docker image
           no_output_timeout: 1h
           command: |
-            TAG=${CIRCLE_SHA1%"${CIRCLE_SHA1#??????????}"}
-            SHORT_TAG=${CIRCLE_SHA1%"${CIRCLE_SHA1#???????}"}
             FULL_TAG=${CIRCLE_SHA1}
-            docker login ${DOCKER_REGISTRY_HOSTNAME} -u ${DOCKER_REGISTRY_USER} -p ${DOCKER_REGISTRY_PASSWORD}
+            docker login ${ACR_HOST} -u ${ACR_PUSH_USER} -p ${ACR_PUSH_PASSWORD}
 
             # Build and push API
             cd ~/project/packages/api/
-            if ! docker image pull ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-api:$TAG ; then
-              docker build --progress plain -t ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-api:$TAG .
-              
-              docker tag ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-api:$TAG ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-api:$SHORT_TAG
-              docker tag ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-api:$TAG ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-api:$FULL_TAG
-              docker push ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-api:$TAG
-              docker push ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-api:$SHORT_TAG
-              docker push ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-api:$FULL_TAG
+            if ! docker image pull ${ACR_HOST}/padoa-tools/sorry-cypress-api:$FULL_TAG ; then
+              docker build --progress plain -t ${ACR_HOST}/padoa-tools/sorry-cypress-api:$FULL_TAG .
+              docker push ${ACR_HOST}/padoa-tools/sorry-cypress-api:$FULL_TAG
             fi
-            docker tag ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-api:$TAG ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-api:$CIRCLE_BRANCH
-            docker push ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-api:$CIRCLE_BRANCH
 
   build-dashboard-and-push:
     machine:
@@ -84,24 +68,15 @@ jobs:
           name: build docker image
           no_output_timeout: 1h
           command: |
-            TAG=${CIRCLE_SHA1%"${CIRCLE_SHA1#??????????}"}
-            SHORT_TAG=${CIRCLE_SHA1%"${CIRCLE_SHA1#???????}"}
             FULL_TAG=${CIRCLE_SHA1}
-            docker login ${DOCKER_REGISTRY_HOSTNAME} -u ${DOCKER_REGISTRY_USER} -p ${DOCKER_REGISTRY_PASSWORD}
+            docker login ${ACR_HOST} -u ${ACR_PUSH_USER} -p ${ACR_PUSH_PASSWORD}
 
             # Build and push DASHBOARD
             cd ~/project/packages/dashboard/
-            if ! docker image pull ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-dashboard:$TAG ; then
-              docker build --progress plain -t ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-dashboard:$TAG .
-              
-              docker tag ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-dashboard:$TAG ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-dashboard:$SHORT_TAG
-              docker tag ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-dashboard:$TAG ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-dashboard:$FULL_TAG
-              docker push ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-dashboard:$TAG
-              docker push ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-dashboard:$SHORT_TAG
-              docker push ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-dashboard:$FULL_TAG
+            if ! docker image pull ${ACR_HOST}/padoa-tools/sorry-cypress-dashboard:$FULL_TAG ; then
+              docker build --progress plain -t ${ACR_HOST}/padoa-tools/sorry-cypress-dashboard:$FULL_TAG .
+              docker push ${ACR_HOST}/padoa-tools/sorry-cypress-dashboard:$FULL_TAG
             fi
-            docker tag ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-dashboard:$TAG ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-dashboard:$CIRCLE_BRANCH
-            docker push ${DOCKER_REGISTRY_HOSTNAME}/padoa/sorry-cypress-dashboard:$CIRCLE_BRANCH
 workflows:
   build-and-push:
     jobs:
