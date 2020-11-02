@@ -13,7 +13,7 @@ api:
   enabled: true
   replicaCount: 1
   image:
-    repository: registry.padoa.fr/padoa/sorry-cypress-api
+    repository: padoa.azurecr.io/padoa-tools/sorry-cypress-api
     tag: '{{ .Values.global.sorry_cypress_tag }}'
   service:
     name: api-http
@@ -38,7 +38,7 @@ dashboard:
   enabled: true
   replicaCount: 1
   image:
-    repository: registry.padoa.fr/padoa/sorry-cypress-dashboard
+    repository: padoa.azurecr.io/padoa-tools/sorry-cypress-dashboard
     tag: '{{ .Values.global.sorry_cypress_tag }}'
   service:
     name: dashboard-http
@@ -63,7 +63,7 @@ director:
   enabled: true
   replicaCount: 1
   image:
-    repository: registry.padoa.fr/padoa/sorry-cypress-director
+    repository: padoa.azurecr.io/padoa-tools/sorry-cypress-director
     tag: '{{ .Values.global.sorry_cypress_tag }}'
   service:
     name: director-http
