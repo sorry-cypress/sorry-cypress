@@ -1,0 +1,20 @@
+{{- if .Values.dashboard.enabled -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "sorrycypress.fullname" . }}-dashboard
+  labels:
+    {{- include "sorrycypress.labels" . | nindent 4 }}
+    component: dashboard
+spec:
+  type: {{ .Values.dashboard.service.type }}
+  ports:
+    - port: {{ .Values.dashboard.service.port }}
+      targetPort: {{ .Values.dashboard.service.port }}
+      protocol: {{ .Values.dashboard.service.protocol }}
+      name: {{ .Values.dashboard.service.name }}
+  selector:
+    {{- include "sorrycypress.selectorLabels" . | nindent 4 }}
+    component: dashboard
+{{- end -}}

@@ -1,0 +1,67 @@
+{{- if .Values.mongo.enabled -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "sorrycypress.fullname" . }}-mongo
+  labels:
+    component: mongo
+  {{- include "sorrycypress.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.mongo.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "sorrycypress.selectorLabels" . | nindent 6 }}
+      component: mongo
+  template:
+    metadata:
+      labels:
+        {{- include "sorrycypress.selectorLabels" . | nindent 8 }}
+        component: mongo
+    spec:
+      serviceAccountName: {{ include "sorrycypress.serviceAccountName" . }}
+      securityContext:
+      {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.mongo.image.repository }}:{{ tpl .Values.mongo.image.tag . }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: {{ .Values.mongo.service.name }}
+              containerPort: {{ .Values.mongo.service.port }}
+              protocol: {{ .Values.mongo.service.protocol }}
+          readinessProbe:
+            exec:
+              command:
+              - mongo
+              - --eval
+              - db.adminCommand('ping')
+            failureThreshold: 6
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          resources:
+      {{- toYaml .Values.mongo.resources | nindent 12 }}
+          volumeMounts:
+            - name: {{ include "sorrycypress.fullname" . }}-mongo-storage
+              mountPath: /data/db
+      volumes:
+        - name: {{ include "sorrycypress.fullname" . }}-mongo-storage
+          persistentVolumeClaim:
+            claimName: {{ include "sorrycypress.fullname" . }}-mongo-storage-claim
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+  {{- toYaml . | nindent 8 }}
+  {{- end }}
+  {{- end -}}

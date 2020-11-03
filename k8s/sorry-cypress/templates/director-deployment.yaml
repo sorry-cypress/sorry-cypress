@@ -1,0 +1,92 @@
+{{- if .Values.director.enabled -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "sorrycypress.fullname" . }}-director
+  labels:
+    component: director
+  {{- include "sorrycypress.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.director.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "sorrycypress.selectorLabels" . | nindent 6 }}
+      component: director
+  template:
+    metadata:
+      labels:
+        {{- include "sorrycypress.selectorLabels" . | nindent 8 }}
+        component: director
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "sorrycypress.serviceAccountName" . }}
+      securityContext:
+      {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.director.image.repository }}:{{ tpl .Values.director.image.tag . }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: DASHBOARD_URL
+              value: "https://{{ .Values.dashboard.ingress.host_prefix }}.{{ .Values.global.cluster_endpoint }}"
+            - name: EXECUTION_DRIVER
+              value: ../execution/mongo/driver
+            - name: MONGODB_DATABASE
+              value: sorry-cypress
+            - name: MONGODB_URI
+              value: "mongodb://{{ include "sorrycypress.fullname" . }}-mongo:{{ .Values.mongo.service.port }}"
+            - name: SCREENSHOTS_DRIVER
+              value: ../screenshots/s3.driver
+            - name: S3_BUCKET
+              value: {{ .Values.bucket.name }}
+            - name: S3_REGION
+              value: {{ .Values.bucket.region}}
+            - name: S3_ENDPOINT
+              value: {{ .Values.bucket.endpoint }}
+            - name: S3_FORCE_PATH_STYLE
+              value: "false"
+            - name: FILES_EXPIRATION
+              value: "{{ .Values.bucket.expiration }}"
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: sorry-cypress-secrets
+                  key: aws_access_key_id
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: sorry-cypress-secrets
+                  key: aws_secret_access_key
+          ports:
+            - name: {{ .Values.director.service.name }}
+              containerPort: {{ .Values.director.service.port }}
+              protocol: {{ .Values.director.service.protocol }}
+          livenessProbe:
+            httpGet:
+              path: /health-check
+              port: {{ .Values.director.service.name }}
+          readinessProbe:
+            httpGet:
+              path: /health-check
+              port: {{ .Values.director.service.name }}
+          resources:
+      {{- toYaml .Values.director.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+  {{- toYaml . | nindent 8 }}
+  {{- end }}
+  {{- end -}}

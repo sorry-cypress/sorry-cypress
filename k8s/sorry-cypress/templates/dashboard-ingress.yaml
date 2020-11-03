@@ -1,0 +1,28 @@
+{{- if .Values.dashboard.enabled | and .Values.dashboard.ingress.enabled -}}
+  {{- $fullName := include "sorrycypress.fullname" . -}}
+  {{- $svcPort := .Values.dashboard.service.port -}}
+  {{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+  {{- else -}}
+apiVersion: extensions/v1beta1
+  {{- end }}
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-dashboard
+  labels:
+    {{- include "sorrycypress.labels" . | nindent 4 }}
+    component: dashboard
+  {{- with .Values.dashboard.ingress.annotations }}
+  annotations:
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  rules:
+    - host: "{{ .Values.dashboard.ingress.host_prefix }}.{{ .Values.global.cluster_endpoint }}"
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: {{ $fullName }}-dashboard
+              servicePort: {{ $svcPort }}
+  {{- end }}

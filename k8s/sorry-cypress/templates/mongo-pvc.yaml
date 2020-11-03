@@ -1,0 +1,13 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ include "sorrycypress.fullname" . }}-mongo-storage-claim
+  labels:
+    component: mongo-storage-claim
+  {{- include "sorrycypress.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.storage.size }}

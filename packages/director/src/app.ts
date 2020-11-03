@@ -25,6 +25,10 @@ app.get('/', (_, res) =>
   res.redirect('https://github.com/agoldis/sorry-cypress')
 );
 
+app.get('/health-check', (_, res) =>
+  res.status(200).send('Sorry Cypress Director OK')
+);
+
 app.post('/runs', async (req, res) => {
   const { recordKey, ciBuildId } = req.body;
 
