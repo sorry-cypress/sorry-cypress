@@ -12,6 +12,6 @@ export const generateRunIdHash = ({
 export const generateGroupId = (
   platform: PlatformData,
   ciBuildId: string
-): string => `${platform.osName}-${platform.osVersion}-${ciBuildId}`;
+): string => `${ciBuildId}`;
 
 export const generateUUID = () => uuid();
