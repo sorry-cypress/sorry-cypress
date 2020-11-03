@@ -3,7 +3,9 @@ import { ThemeProvider } from 'bold-ui';
 import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Content } from './components/layout/content';
+import { Footer } from './components/layout/footer';
 import { Header } from './components/layout/header';
+import { Layout } from './components/layout/layout';
 import { client } from './lib/apolloClient';
 import { theme } from './theme/theme';
 import { InstanceDetailsView } from './views/InstanceDetailsView';
@@ -57,23 +59,26 @@ export const Root = () => {
       <ThemeProvider theme={theme}>
         <Router>
           <ErrorBoundary>
-            <Header />
-            <Content>
-              <Route path="/" exact component={ProjectsView} />
+            <Layout>
+              <Header />
+              <Content>
+                <Route path="/" exact component={ProjectsView} />
 
-              <Route path="/:projectId/runs" component={RunsView} />
-              <Route path="/:projectId/edit" component={ProjectEditView} />
-              <Route path="/run/:id" component={RunDetailsView} />
-              <Route
-                path="/instance/:id"
-                component={InstanceDetailsView}
-                exact
-              />
-              <Route
-                path="/instance/:instanceId/test/:testId"
-                component={TestDetailsView}
-              />
-            </Content>
+                <Route path="/:projectId/runs" component={RunsView} />
+                <Route path="/:projectId/edit" component={ProjectEditView} />
+                <Route path="/run/:id" component={RunDetailsView} />
+                <Route
+                  path="/instance/:id"
+                  component={InstanceDetailsView}
+                  exact
+                />
+                <Route
+                  path="/instance/:instanceId/test/:testId"
+                  component={TestDetailsView}
+                />
+              </Content>
+              <Footer />
+            </Layout>
           </ErrorBoundary>
         </Router>
       </ThemeProvider>

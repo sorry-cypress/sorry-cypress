@@ -7,6 +7,7 @@ export const Content = ({ children }: PropsWithChildren<unknown>) => {
     <section
       className={css`
         padding: 32px;
+        overflow: auto;
       `}
     >
       {children}
