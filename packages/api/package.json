@@ -38,7 +38,7 @@
     "@graphql-codegen/typescript-resolvers": "^1.13.4",
     "@types/graphql-iso-date": "^3.4.0",
     "@types/lodash": "^4.14.161",
-    "@types/mongodb": "^3.5.27",
+    "@types/mongodb": "^3.5.32",
     "@types/node": "^14.11.2",
     "@types/uuid": "^8.3.0",
     "babel-plugin-module-resolver": "^4.0.0",

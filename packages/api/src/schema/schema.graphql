@@ -13,6 +13,7 @@ type Query {
   runFeed(cursor: String, filters: [Filters] = null): RunFeed!
   run(id: ID!): Run
   instance(id: ID!): Instance
+  specStats(spec: String!, filters: [Filters] = null): SpecStats
 }
 
 ### Mutations
@@ -32,6 +33,13 @@ type DeleteRunResponse {
   success: Boolean!
   message: String!
   runIds: [ID]!
+}
+
+### SpecStats
+type SpecStats {
+  spec: String!
+  avgWallClockDuration: Int!
+  count: Int!
 }
 
 ### Project

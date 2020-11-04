@@ -2,12 +2,13 @@ import { Project } from '@src/duplicatedFromDirector/project.types';
 import { GraphQLDateTime } from 'graphql-iso-date';
 import { AppDatasources } from '@src/datasources/types';
 import { ProjectsAPI } from '@src/datasources/projects';
+import { RunsAPI } from '@src/datasources/runs';
+import { SpecsAPI } from '@src/datasources/specs';
 import {
   InstanceTest,
   InstanceTestV5,
   OrderingOptions,
 } from '@src/generated/graphql';
-import { RunsAPI } from '@src/datasources/runs';
 
 export const resolvers = {
   DateTime: GraphQLDateTime,
@@ -50,6 +51,11 @@ export const resolvers = {
       { id }: { id: string },
       { dataSources }: { dataSources: AppDatasources }
     ) => dataSources.runsAPI.getRunById(id),
+    specStats: (
+      _: any,
+      args: Parameters<SpecsAPI['getSpecStats']>[0],
+      { dataSources }: { dataSources: AppDatasources }
+    ) => dataSources.specsAPI.getSpecStats(args),
     instance: (
       _: any,
       { id }: { id: string },

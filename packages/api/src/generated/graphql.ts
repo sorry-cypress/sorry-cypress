@@ -21,6 +21,7 @@ export type Query = {
   runFeed: RunFeed;
   run?: Maybe<Run>;
   instance?: Maybe<Instance>;
+  specStats?: Maybe<SpecStats>;
 };
 
 
@@ -55,6 +56,12 @@ export type QueryRunArgs = {
 
 export type QueryInstanceArgs = {
   id: Scalars['ID'];
+};
+
+
+export type QuerySpecStatsArgs = {
+  spec: Scalars['String'];
+  filters?: Maybe<Array<Maybe<Filters>>>;
 };
 
 export type Mutation = {
@@ -103,6 +110,13 @@ export type DeleteRunResponse = {
   success: Scalars['Boolean'];
   message: Scalars['String'];
   runIds: Array<Maybe<Scalars['ID']>>;
+};
+
+export type SpecStats = {
+  __typename?: 'SpecStats';
+  spec: Scalars['String'];
+  avgWallClockDuration: Scalars['Int'];
+  count: Scalars['Int'];
 };
 
 export type Hook = {
@@ -401,6 +415,8 @@ export type ResolversTypes = {
   Mutation: ResolverTypeWrapper<{}>;
   DeleteRunResponse: ResolverTypeWrapper<DeleteRunResponse>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  SpecStats: ResolverTypeWrapper<SpecStats>;
+  Int: ResolverTypeWrapper<Scalars['Int']>;
   Hook: ResolverTypeWrapper<Hook>;
   Project: ResolverTypeWrapper<Project>;
   HookInput: HookInput;
@@ -416,7 +432,6 @@ export type ResolversTypes = {
   RunSpec: ResolverTypeWrapper<RunSpec>;
   InstanceResults: ResolverTypeWrapper<Omit<InstanceResults, 'tests'> & { tests?: Maybe<Array<Maybe<ResolversTypes['InstanceTestUnion']>>> }>;
   InstanceStats: ResolverTypeWrapper<InstanceStats>;
-  Int: ResolverTypeWrapper<Scalars['Int']>;
   CypressConfig: ResolverTypeWrapper<CypressConfig>;
   InstanceScreeshot: ResolverTypeWrapper<InstanceScreeshot>;
   ReporterStats: ResolverTypeWrapper<ReporterStats>;
@@ -438,6 +453,8 @@ export type ResolversParentTypes = {
   Mutation: {};
   DeleteRunResponse: DeleteRunResponse;
   Boolean: Scalars['Boolean'];
+  SpecStats: SpecStats;
+  Int: Scalars['Int'];
   Hook: Hook;
   Project: Project;
   HookInput: HookInput;
@@ -453,7 +470,6 @@ export type ResolversParentTypes = {
   RunSpec: RunSpec;
   InstanceResults: Omit<InstanceResults, 'tests'> & { tests?: Maybe<Array<Maybe<ResolversParentTypes['InstanceTestUnion']>>> };
   InstanceStats: InstanceStats;
-  Int: Scalars['Int'];
   CypressConfig: CypressConfig;
   InstanceScreeshot: InstanceScreeshot;
   ReporterStats: ReporterStats;
@@ -473,6 +489,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   runFeed?: Resolver<ResolversTypes['RunFeed'], ParentType, ContextType, RequireFields<QueryRunFeedArgs, 'filters'>>;
   run?: Resolver<Maybe<ResolversTypes['Run']>, ParentType, ContextType, RequireFields<QueryRunArgs, 'id'>>;
   instance?: Resolver<Maybe<ResolversTypes['Instance']>, ParentType, ContextType, RequireFields<QueryInstanceArgs, 'id'>>;
+  specStats?: Resolver<Maybe<ResolversTypes['SpecStats']>, ParentType, ContextType, RequireFields<QuerySpecStatsArgs, 'spec' | 'filters'>>;
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
@@ -488,6 +505,13 @@ export type DeleteRunResponseResolvers<ContextType = any, ParentType extends Res
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   runIds?: Resolver<Array<Maybe<ResolversTypes['ID']>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type SpecStatsResolvers<ContextType = any, ParentType extends ResolversParentTypes['SpecStats'] = ResolversParentTypes['SpecStats']> = {
+  spec?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  avgWallClockDuration?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -687,6 +711,7 @@ export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   DeleteRunResponse?: DeleteRunResponseResolvers<ContextType>;
+  SpecStats?: SpecStatsResolvers<ContextType>;
   Hook?: HookResolvers<ContextType>;
   Project?: ProjectResolvers<ContextType>;
   DeleteProjectResponse?: DeleteProjectResponseResolvers<ContextType>;

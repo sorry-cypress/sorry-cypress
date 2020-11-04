@@ -20,6 +20,7 @@ export type Query = {
   runFeed: RunFeed;
   run?: Maybe<Run>;
   instance?: Maybe<Instance>;
+  specStats?: Maybe<SpecStats>;
 };
 
 
@@ -54,6 +55,12 @@ export type QueryRunArgs = {
 
 export type QueryInstanceArgs = {
   id: Scalars['ID'];
+};
+
+
+export type QuerySpecStatsArgs = {
+  spec: Scalars['String'];
+  filters?: Maybe<Array<Maybe<Filters>>>;
 };
 
 export type Mutation = {
@@ -102,6 +109,13 @@ export type DeleteRunResponse = {
   success: Scalars['Boolean'];
   message: Scalars['String'];
   runIds: Array<Maybe<Scalars['ID']>>;
+};
+
+export type SpecStats = {
+  __typename?: 'SpecStats';
+  spec: Scalars['String'];
+  avgWallClockDuration: Scalars['Int'];
+  count: Scalars['Int'];
 };
 
 export type Hook = {
@@ -490,34 +504,6 @@ export type GetRunQuery = (
   )> }
 );
 
-export type GetRunsByProjectIdLimitedToTimingQueryVariables = Exact<{
-  orderDirection?: Maybe<OrderingOptions>;
-  filters?: Maybe<Array<Maybe<Filters>>>;
-}>;
-
-
-export type GetRunsByProjectIdLimitedToTimingQuery = (
-  { __typename?: 'Query' }
-  & { runs: Array<Maybe<(
-    { __typename?: 'Run' }
-    & Pick<Run, 'runId' | 'createdAt'>
-    & { meta?: Maybe<(
-      { __typename?: 'RunMeta' }
-      & Pick<RunMeta, 'ciBuildId' | 'projectId'>
-    )>, specs: Array<(
-      { __typename?: 'FullRunSpec' }
-      & Pick<FullRunSpec, 'spec'>
-      & { results?: Maybe<(
-        { __typename?: 'InstanceResults' }
-        & { stats: (
-          { __typename?: 'InstanceStats' }
-          & Pick<InstanceStats, 'wallClockDuration'>
-        ) }
-      )> }
-    )> }
-  )>> }
-);
-
 export type GetRunsFeedQueryVariables = Exact<{
   cursor?: Maybe<Scalars['String']>;
   filters?: Maybe<Array<Maybe<Filters>>>;
@@ -562,6 +548,19 @@ export type GetRunsFeedQuery = (
       )> }
     )> }
   ) }
+);
+
+export type GetSpecStatsQueryVariables = Exact<{
+  spec: Scalars['String'];
+}>;
+
+
+export type GetSpecStatsQuery = (
+  { __typename?: 'Query' }
+  & { specStats?: Maybe<(
+    { __typename?: 'SpecStats' }
+    & Pick<SpecStats, 'spec' | 'count' | 'avgWallClockDuration'>
+  )> }
 );
 
 export type UpdateProjectMutationVariables = Exact<{
@@ -958,53 +957,6 @@ export function useGetRunLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Get
 export type GetRunQueryHookResult = ReturnType<typeof useGetRunQuery>;
 export type GetRunLazyQueryHookResult = ReturnType<typeof useGetRunLazyQuery>;
 export type GetRunQueryResult = Apollo.QueryResult<GetRunQuery, GetRunQueryVariables>;
-export const GetRunsByProjectIdLimitedToTimingDocument = gql`
-    query getRunsByProjectIdLimitedToTiming($orderDirection: OrderingOptions, $filters: [Filters]) {
-  runs(orderDirection: $orderDirection, filters: $filters) {
-    runId
-    createdAt
-    meta {
-      ciBuildId
-      projectId
-    }
-    specs {
-      spec
-      results {
-        stats {
-          wallClockDuration
-        }
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useGetRunsByProjectIdLimitedToTimingQuery__
- *
- * To run a query within a React component, call `useGetRunsByProjectIdLimitedToTimingQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetRunsByProjectIdLimitedToTimingQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetRunsByProjectIdLimitedToTimingQuery({
- *   variables: {
- *      orderDirection: // value for 'orderDirection'
- *      filters: // value for 'filters'
- *   },
- * });
- */
-export function useGetRunsByProjectIdLimitedToTimingQuery(baseOptions?: Apollo.QueryHookOptions<GetRunsByProjectIdLimitedToTimingQuery, GetRunsByProjectIdLimitedToTimingQueryVariables>) {
-        return Apollo.useQuery<GetRunsByProjectIdLimitedToTimingQuery, GetRunsByProjectIdLimitedToTimingQueryVariables>(GetRunsByProjectIdLimitedToTimingDocument, baseOptions);
-      }
-export function useGetRunsByProjectIdLimitedToTimingLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRunsByProjectIdLimitedToTimingQuery, GetRunsByProjectIdLimitedToTimingQueryVariables>) {
-          return Apollo.useLazyQuery<GetRunsByProjectIdLimitedToTimingQuery, GetRunsByProjectIdLimitedToTimingQueryVariables>(GetRunsByProjectIdLimitedToTimingDocument, baseOptions);
-        }
-export type GetRunsByProjectIdLimitedToTimingQueryHookResult = ReturnType<typeof useGetRunsByProjectIdLimitedToTimingQuery>;
-export type GetRunsByProjectIdLimitedToTimingLazyQueryHookResult = ReturnType<typeof useGetRunsByProjectIdLimitedToTimingLazyQuery>;
-export type GetRunsByProjectIdLimitedToTimingQueryResult = Apollo.QueryResult<GetRunsByProjectIdLimitedToTimingQuery, GetRunsByProjectIdLimitedToTimingQueryVariables>;
 export const GetRunsFeedDocument = gql`
     query getRunsFeed($cursor: String, $filters: [Filters]) {
   runFeed(cursor: $cursor, filters: $filters) {
@@ -1089,6 +1041,41 @@ export function useGetRunsFeedLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type GetRunsFeedQueryHookResult = ReturnType<typeof useGetRunsFeedQuery>;
 export type GetRunsFeedLazyQueryHookResult = ReturnType<typeof useGetRunsFeedLazyQuery>;
 export type GetRunsFeedQueryResult = Apollo.QueryResult<GetRunsFeedQuery, GetRunsFeedQueryVariables>;
+export const GetSpecStatsDocument = gql`
+    query getSpecStats($spec: String!) {
+  specStats(spec: $spec) {
+    spec
+    count
+    avgWallClockDuration
+  }
+}
+    `;
+
+/**
+ * __useGetSpecStatsQuery__
+ *
+ * To run a query within a React component, call `useGetSpecStatsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSpecStatsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSpecStatsQuery({
+ *   variables: {
+ *      spec: // value for 'spec'
+ *   },
+ * });
+ */
+export function useGetSpecStatsQuery(baseOptions?: Apollo.QueryHookOptions<GetSpecStatsQuery, GetSpecStatsQueryVariables>) {
+        return Apollo.useQuery<GetSpecStatsQuery, GetSpecStatsQueryVariables>(GetSpecStatsDocument, baseOptions);
+      }
+export function useGetSpecStatsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSpecStatsQuery, GetSpecStatsQueryVariables>) {
+          return Apollo.useLazyQuery<GetSpecStatsQuery, GetSpecStatsQueryVariables>(GetSpecStatsDocument, baseOptions);
+        }
+export type GetSpecStatsQueryHookResult = ReturnType<typeof useGetSpecStatsQuery>;
+export type GetSpecStatsLazyQueryHookResult = ReturnType<typeof useGetSpecStatsLazyQuery>;
+export type GetSpecStatsQueryResult = Apollo.QueryResult<GetSpecStatsQuery, GetSpecStatsQueryVariables>;
 export const UpdateProjectDocument = gql`
     mutation updateProject($project: ProjectInput!) {
   updateProject(project: $project) {
