@@ -7,7 +7,7 @@ bucket:
   expiration: '604800'
 
 storage:
-  size: 1Gi
+  size: 5Gi
 
 api:
   enabled: true
