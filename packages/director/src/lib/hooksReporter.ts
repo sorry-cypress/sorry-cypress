@@ -86,7 +86,7 @@ function getRunTestsOverall(run: any) {
   );
 }
 
-async function reportStatusToGithub({
+export async function reportStatusToGithub({
   hook,
   reportData,
   hookEvent,
