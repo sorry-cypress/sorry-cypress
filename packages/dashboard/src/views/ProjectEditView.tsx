@@ -25,7 +25,11 @@ import clone from 'lodash.clone';
 import clonedeep from 'lodash.clonedeep';
 import capitalize from 'lodash.capitalize';
 import { hookEvents, hookTypes } from '@src/duplicatedFromDirector/hooksEnums';
-import { Project } from '@src/duplicatedFromDirector/project.types';
+import {
+  Hook,
+  HookType,
+  Project,
+} from '@src/duplicatedFromDirector/project.types';
 import { navStructure } from '@src/lib/navigation';
 
 type ProjectEditViewProps = {
@@ -70,7 +74,7 @@ export function ProjectEditView({
   const [createError, setCreateError] = useState<string | null>(null);
   const [updating, setUpdating] = useState(false);
   const [updateError, setUpdateError] = useState<string | null>(null);
-  const [formState, setFormState] = useState({ projectId: '' });
+  const [formState, setFormState] = useState<any>({ projectId: '' });
 
   const { loading, error, data } = useGetProjectQuery({
     variables: {
@@ -87,7 +91,6 @@ export function ProjectEditView({
 
   const [startUpdateProjectMutation] = useUpdateProjectMutation();
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function updateProject() {
     setUpdating(true);
     const project = formatProjectForSaving(formState);
@@ -124,11 +127,12 @@ export function ProjectEditView({
         } else {
           history.push(`/${result.data?.createProject.projectId}/runs`);
         }
-        setCreating(false);
       })
       .catch((error) => {
-        setCreating(false);
         setCreateError(error.toString());
+      })
+      .finally(() => {
+        setCreating(false);
       });
   }
 
@@ -158,7 +162,7 @@ export function ProjectEditView({
       element &&
       (element.type === 'checkbox' ? element.checked : element.value);
 
-    setFormState((state) =>
+    setFormState((state: any) =>
       setWith(
         clone(state),
         path,
@@ -208,7 +212,7 @@ export function ProjectEditView({
                       justifyContent: 'space-between',
                     }}
                   >
-                    <div style={{ fontWeight: '100' }}>Hooks</div>
+                    <div style={{ fontWeight: 100 }}>Hooks</div>
                     <Button
                       size="small"
                       skin="ghost"
@@ -219,7 +223,7 @@ export function ProjectEditView({
                             ...(formState?.hooks || []),
                             ...[
                               {
-                                hookType: hookTypes.GENERIC_HOOK,
+                                hookType: hookTypes.GENERIC_HOOK as HookType,
                               },
                             ],
                           ],
@@ -231,251 +235,260 @@ export function ProjectEditView({
                         size={1.3}
                         style={{ marginRight: '5px' }}
                       />
-                      <span style={{ fontWeight: '100' }}>Add Hook</span>
+                      <span style={{ fontWeight: 100 }}>Add Hook</span>
                     </Button>
                   </div>
                 </TableHeader>
               </TableRow>
             </TableHead>
             <TableBody>
-              {formState?.hooks?.map((hook, index) => {
-                const isNewHook = !hook.hookId;
-                return (
-                  <React.Fragment key={index}>
-                    <TableRow
-                      onClick={() => {
-                        setFormState((state) =>
-                          setWith(
-                            clone(state),
-                            `hooks[${index}]._expanded`,
-                            !hook._expanded,
-                            clone
-                          )
-                        );
-                      }}
-                    >
-                      <TableCell>
-                        <div
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            fontWeight: 'bold',
-                          }}
-                        >
-                          {hook._expanded ? (
-                            <Icon icon="angleDown" size={1.5} />
-                          ) : (
-                            <Icon icon="angleRight" size={1.5} />
-                          )}
-                          {hook.url || 'New Hook'}
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                    {hook._expanded ? (
-                      <TableRow>
-                        <TableCell style={{ padding: '20px 30px 30px 30px' }}>
-                          <div style={{ marginBottom: '20px' }}>
-                            <Select
-                              itemToString={(item) => {
-                                return capitalize(item).replace(/_/g, ' ');
-                              }}
-                              items={Object.keys(hookTypes)}
-                              label="Hook Type"
-                              name="hookType"
-                              onChange={handleChange(
-                                `hooks[${index}].hookType`
-                              )}
-                              value={hook.hookType}
-                              clearable={false}
-                            />
-                          </div>
-                          {hook.hookType === hookTypes.GITHUB_STATUS_HOOK ? (
-                            <>
-                              <div
-                                style={{
-                                  marginBottom: '20px',
-                                  position: 'relative',
-                                }}
-                              >
-                                <TextField
-                                  name="url"
-                                  label="url"
-                                  placeholder="Enter your github project url"
-                                  value={hook.url}
-                                  onChange={handleChange(`hooks[${index}].url`)}
-                                  disabled={creating || updating || loading}
-                                  required
-                                />
-                                <div
-                                  style={{
-                                    position: 'absolute',
-                                    right: '-71px',
-                                    top: '29px',
-                                  }}
-                                >
-                                  <Tooltip text="This is the url you would use if you are looking at your github repository root in a web browser. This url will be broken up into protocol, domain, organization, and repository. When api calls are made to update pr status these are the variables that will be used.">
-                                    <Icon icon="infoCircleOutline" />
-                                  </Tooltip>
-                                </div>
-                              </div>
-                              <div
-                                style={{
-                                  marginBottom: '32px',
-                                  position: 'relative',
-                                }}
-                              >
-                                <TextField
-                                  name="githubToken"
-                                  label={
-                                    <span>
-                                      Github Token &nbsp;
-                                      <a
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        href="https://github.com/settings/tokens/new?scopes=repo&description=Sorry-cypress-status"
-                                      >
-                                        (Create One)
-                                      </a>
-                                    </span>
-                                  }
-                                  placeholder={
-                                    isNewHook
-                                      ? 'Enter a github token with repo:status access.'
-                                      : 'Using a previously saved token. You may enter a new one.'
-                                  }
-                                  value={hook.githubToken}
-                                  onChange={handleChange(
-                                    `hooks[${index}].githubToken`
-                                  )}
-                                  disabled={creating || updating || loading}
-                                  required={isNewHook}
-                                />
-                                <div
-                                  style={{
-                                    position: 'absolute',
-                                    right: '-71px',
-                                    top: '29px',
-                                  }}
-                                >
-                                  <Tooltip text="You will need to generate this token on github. Once this token is saved you will not be able to see it again. You will alwayse be able to update it.">
-                                    <Icon icon="infoCircleOutline" />
-                                  </Tooltip>
-                                </div>
-                              </div>
-                            </>
-                          ) : null}
-                          {hook.hookType === hookTypes.GENERIC_HOOK ? (
-                            <>
-                              <div
-                                style={{
-                                  marginBottom: '20px',
-                                  position: 'relative',
-                                }}
-                              >
-                                <TextField
-                                  name="url"
-                                  label="url"
-                                  placeholder="Enter the server url for POST calls"
-                                  value={hook.url}
-                                  onChange={handleChange(`hooks[${index}].url`)}
-                                  disabled={creating || updating || loading}
-                                  required
-                                />
-                                <div
-                                  style={{
-                                    position: 'absolute',
-                                    right: '-71px',
-                                    top: '29px',
-                                  }}
-                                >
-                                  <Tooltip text="This url must be resolveable from the sever where sorry-cypress running.">
-                                    <Icon icon="infoCircleOutline" />
-                                  </Tooltip>
-                                </div>
-                              </div>
-                              <div
-                                style={{
-                                  marginBottom: '20px',
-                                  position: 'relative',
-                                }}
-                              >
-                                <TextField
-                                  name="headers"
-                                  label="Headers (optional)"
-                                  placeholder="Enter a JSON object with key values for POST call headers"
-                                  value={hook.headers}
-                                  onChange={handleChange(
-                                    `hooks[${index}].headers`
-                                  )}
-                                  disabled={creating || updating || loading}
-                                />
-                                <div
-                                  style={{
-                                    position: 'absolute',
-                                    right: '-71px',
-                                    top: '29px',
-                                  }}
-                                >
-                                  <Tooltip text='You can use this to pass a basic auth token or any other headers needed by your api. This must be structured as JSON. ex: {"X-api-key":"tough-key"}'>
-                                    <Icon icon="infoCircleOutline" />
-                                  </Tooltip>
-                                </div>
-                              </div>
-                              <div
-                                style={{
-                                  marginBottom: '32px',
-                                  position: 'relative',
-                                }}
-                              >
-                                <Select
-                                  itemIsEqual={(a, b) => {
-                                    return a === b;
-                                  }}
-                                  itemToString={(item) => {
-                                    return capitalize(item).replace(/_/g, ' ');
-                                  }}
-                                  multiple={true}
-                                  items={Object.keys(hookEvents)}
-                                  label="Hook Events"
-                                  name="hookEvents"
-                                  onChange={handleChange(
-                                    `hooks[${index}].hookEvents`
-                                  )}
-                                  value={hook.hookEvents}
-                                />
-                                <div
-                                  style={{
-                                    position: 'absolute',
-                                    right: '-71px',
-                                    top: '29px',
-                                  }}
-                                >
-                                  <Tooltip text="These are the events that will trigger an xhr POST call to the provided url. Leaving this feild blank has the same effect as selecting all hook events.">
-                                    <Icon icon="infoCircleOutline" />
-                                  </Tooltip>
-                                </div>
-                              </div>
-                            </>
-                          ) : null}
-                          <Button
-                            kind="danger"
-                            skin="outline"
-                            onClick={() => {
-                              formState.hooks.splice(index, 1);
-                              setFormState({
-                                ...formState,
-                                hooks: formState.hooks,
-                              });
+              {formState?.hooks?.map(
+                (hook: Hook & { _expanded: boolean }, index: number) => {
+                  const isNewHook = !hook.hookId;
+                  return (
+                    <React.Fragment key={index}>
+                      <TableRow
+                        onClick={() => {
+                          setFormState((state: any) =>
+                            setWith(
+                              clone(state),
+                              `hooks[${index}]._expanded`,
+                              !hook._expanded,
+                              clone
+                            )
+                          );
+                        }}
+                      >
+                        <TableCell>
+                          <div
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              fontWeight: 'bold',
                             }}
                           >
-                            Remove Hook
-                          </Button>
+                            {hook._expanded ? (
+                              <Icon icon="angleDown" size={1.5} />
+                            ) : (
+                              <Icon icon="angleRight" size={1.5} />
+                            )}
+                            {hook.url || 'New Hook'}
+                          </div>
                         </TableCell>
                       </TableRow>
-                    ) : null}
-                  </React.Fragment>
-                );
-              })}
+                      {hook._expanded ? (
+                        <TableRow>
+                          <TableCell style={{ padding: '20px 30px 30px 30px' }}>
+                            <div style={{ marginBottom: '20px' }}>
+                              <Select
+                                itemToString={(item) => {
+                                  return capitalize(item).replace(/_/g, ' ');
+                                }}
+                                items={Object.keys(hookTypes)}
+                                label="Hook Type"
+                                name="hookType"
+                                onChange={handleChange(
+                                  `hooks[${index}].hookType`
+                                )}
+                                value={hook.hookType}
+                                clearable={false}
+                              />
+                            </div>
+                            {hook.hookType === hookTypes.GITHUB_STATUS_HOOK ? (
+                              <>
+                                <div
+                                  style={{
+                                    marginBottom: '20px',
+                                    position: 'relative',
+                                  }}
+                                >
+                                  <TextField
+                                    name="url"
+                                    label="url"
+                                    placeholder="Enter your GitHub repo url"
+                                    value={hook.url}
+                                    onChange={handleChange(
+                                      `hooks[${index}].url`
+                                    )}
+                                    disabled={creating || updating || loading}
+                                    required
+                                  />
+                                  <div
+                                    style={{
+                                      position: 'absolute',
+                                      right: '-71px',
+                                      top: '29px',
+                                    }}
+                                  >
+                                    <Tooltip text="This is the GitHub repository URL, e.g. https://github.com/sorry-cypress/sorry-cypress">
+                                      <Icon icon="infoCircleOutline" />
+                                    </Tooltip>
+                                  </div>
+                                </div>
+                                <div
+                                  style={{
+                                    marginBottom: '32px',
+                                    position: 'relative',
+                                  }}
+                                >
+                                  <TextField
+                                    name="githubToken"
+                                    label={
+                                      <span>
+                                        Github Token &nbsp;
+                                        <a
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          href="https://github.com/settings/tokens/new?scopes=repo&description=Sorry-cypress-status"
+                                        >
+                                          (Create One)
+                                        </a>
+                                      </span>
+                                    }
+                                    placeholder={
+                                      isNewHook
+                                        ? 'Enter a github token with repo:status access.'
+                                        : 'Using a previously saved token. You may enter a new one.'
+                                    }
+                                    value={hook.githubToken}
+                                    onChange={handleChange(
+                                      `hooks[${index}].githubToken`
+                                    )}
+                                    disabled={creating || updating || loading}
+                                    required={isNewHook}
+                                  />
+                                  <div
+                                    style={{
+                                      position: 'absolute',
+                                      right: '-71px',
+                                      top: '29px',
+                                    }}
+                                  >
+                                    <Tooltip text="You will need to generate this token on github. Once this token is saved you will not be able to see it again. You will alwayse be able to update it.">
+                                      <Icon icon="infoCircleOutline" />
+                                    </Tooltip>
+                                  </div>
+                                </div>
+                              </>
+                            ) : null}
+                            {hook.hookType === hookTypes.GENERIC_HOOK ? (
+                              <>
+                                <div
+                                  style={{
+                                    marginBottom: '20px',
+                                    position: 'relative',
+                                  }}
+                                >
+                                  <TextField
+                                    name="url"
+                                    label="url"
+                                    placeholder="Enter the server url for POST calls"
+                                    value={hook.url}
+                                    onChange={handleChange(
+                                      `hooks[${index}].url`
+                                    )}
+                                    disabled={creating || updating || loading}
+                                    required
+                                  />
+                                  <div
+                                    style={{
+                                      position: 'absolute',
+                                      right: '-71px',
+                                      top: '29px',
+                                    }}
+                                  >
+                                    <Tooltip text="This url must be resolvable from the sever where sorry-cypress running.">
+                                      <Icon icon="infoCircleOutline" />
+                                    </Tooltip>
+                                  </div>
+                                </div>
+                                <div
+                                  style={{
+                                    marginBottom: '20px',
+                                    position: 'relative',
+                                  }}
+                                >
+                                  <TextField
+                                    name="headers"
+                                    label="Headers (optional)"
+                                    placeholder="Enter a JSON object with key values for POST call headers"
+                                    value={hook.headers}
+                                    onChange={handleChange(
+                                      `hooks[${index}].headers`
+                                    )}
+                                    disabled={creating || updating || loading}
+                                  />
+                                  <div
+                                    style={{
+                                      position: 'absolute',
+                                      right: '-71px',
+                                      top: '29px',
+                                    }}
+                                  >
+                                    <Tooltip text='You can use this to pass a basic auth token or any other headers needed by your api. This must be structured as JSON. ex: {"X-api-key":"tough-key"}'>
+                                      <Icon icon="infoCircleOutline" />
+                                    </Tooltip>
+                                  </div>
+                                </div>
+                                <div
+                                  style={{
+                                    marginBottom: '32px',
+                                    position: 'relative',
+                                  }}
+                                >
+                                  <Select
+                                    itemIsEqual={(a, b) => {
+                                      return a === b;
+                                    }}
+                                    itemToString={(item) => {
+                                      return capitalize(item).replace(
+                                        /_/g,
+                                        ' '
+                                      );
+                                    }}
+                                    multiple={true}
+                                    items={Object.keys(hookEvents)}
+                                    label="Hook Events"
+                                    name="hookEvents"
+                                    onChange={handleChange(
+                                      `hooks[${index}].hookEvents`
+                                    )}
+                                    value={hook.hookEvents}
+                                  />
+                                  <div
+                                    style={{
+                                      position: 'absolute',
+                                      right: '-71px',
+                                      top: '29px',
+                                    }}
+                                  >
+                                    <Tooltip text="These are the events that will trigger an XHR POST call to the provided url. Leaving this feild blank has the same effect as selecting all hook events.">
+                                      <Icon icon="infoCircleOutline" />
+                                    </Tooltip>
+                                  </div>
+                                </div>
+                              </>
+                            ) : null}
+                            <Button
+                              kind="danger"
+                              skin="outline"
+                              onClick={() => {
+                                formState.hooks?.splice(index, 1);
+                                setFormState({
+                                  ...formState,
+                                  hooks: formState.hooks,
+                                });
+                              }}
+                            >
+                              Remove Hook
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ) : null}
+                    </React.Fragment>
+                  );
+                }
+              )}
             </TableBody>
           </Table>
         </Cell>
