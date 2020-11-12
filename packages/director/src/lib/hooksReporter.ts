@@ -97,10 +97,13 @@ export async function reportStatusToGithub({
 }) {
   const GITHUB_COM_DOMAIN = 'github.com';
   const GITHUB_COM_ENDPOINT = 'api.github.com';
-  
+
   const [githubProtocol, restOfGithubUrl] = hook.url.split('://');
   const [githubDomain, githubProject, githubRepo] = restOfGithubUrl.split('/');
-  const githubEndpoint = githubDomain === GITHUB_COM_DOMAIN ? GITHUB_COM_ENDPOINT : `${githubDomain}/api/v3`
+  const githubEndpoint =
+    githubDomain === GITHUB_COM_DOMAIN
+      ? GITHUB_COM_ENDPOINT
+      : `${githubDomain}/api/v3`;
   const fullStatusPostUrl = `${githubProtocol}://${githubEndpoint}/repos/${githubProject}/${githubRepo}/statuses/${reportData.run.meta.commit.sha}`;
 
   const data = {
@@ -146,7 +149,7 @@ export async function reportStatusToGithub({
           password: hook.githubToken,
         },
         headers: {
-          'Accept': 'application/vnd.github.v3+json'
+          Accept: 'application/vnd.github.v3+json',
         },
         data,
       }).catch((err) => {

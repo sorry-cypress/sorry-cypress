@@ -3,8 +3,6 @@
   "url": "https://github.com/test-company/test-project/",
   "githubToken": "testGithubToken",
   "headers": "",
-  "hookEvents": [
-    ""
-  ],
+  "hookEvents": [""],
   "hookType": "GITHUB_STATUS_HOOK"
 }
