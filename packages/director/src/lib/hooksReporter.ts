@@ -3,7 +3,7 @@ import axios from 'axios';
 import { getDashboardRunURL } from '@src/lib/urls';
 import { Instance } from '@src/types/instance.types';
 import { Run, RunSpec } from '@src/types/run.types';
-import { Project, Hook } from '@src/types/project.types';
+import { Project, HookEvent, Hook } from '@src/types/project.types';
 import { hookReportSchema } from '@src/lib/schemas';
 import Ajv from 'ajv';
 import { cloneDeep } from 'lodash';
@@ -169,7 +169,7 @@ async function reportToGenericWebHook({
 }: {
   hook: Hook;
   reportData: any;
-  hookEvent: string;
+  hookEvent: HookEvent;
 }) {
   if (
     // if no hooks are specified we should trigger the hook call on all events
@@ -197,7 +197,7 @@ export function reportToHook({
   reportData,
   project,
 }: {
-  hookEvent: string;
+  hookEvent: HookEvent;
   reportData: ReportData;
   project: Project;
 }): Promise<any> {

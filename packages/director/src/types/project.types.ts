@@ -1,5 +1,5 @@
-type HookType = 'GITHUB_STATUS_HOOK' | 'GENERIC_HOOK';
-type HookEvent =
+export type HookType = 'GITHUB_STATUS_HOOK' | 'GENERIC_HOOK';
+export type HookEvent =
   | 'RUN_START'
   | 'RUN_FINISH'
   | 'INSTANCE_START'
@@ -16,5 +16,5 @@ export type Hook = {
 export interface Project {
   projectId: string;
   createdAt: string;
-  hooks: Hook[] | null;
+  hooks?: Hook[] | null;
 }
