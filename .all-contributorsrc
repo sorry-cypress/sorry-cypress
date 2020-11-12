@@ -177,6 +177,15 @@
         "code",
         "doc"
       ]
+    },
+    {
+      "login": "DeniDoman",
+      "name": "Denis",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/3439929?v=4",
+      "profile": "https://github.com/DeniDoman",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
