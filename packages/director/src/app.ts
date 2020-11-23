@@ -12,6 +12,7 @@ import { RUN_NOT_EXIST } from '@src/lib/errors';
 import { UpdateInstanseResponse } from './types/response.types';
 
 export const app = express();
+let appHealthy = true;
 
 const isKeyAllowed = (recordKey: string) => ALLOWED_KEYS ? ALLOWED_KEYS.includes(recordKey) : true;
 
@@ -26,7 +27,7 @@ app.get('/', (_, res) =>
 );
 
 app.get('/health-check', (_, res) =>
-  res.status(200).send('Sorry Cypress Director OK')
+  appHealthy ? res.status(200).send('Sorry Cypress Director OK') : res.status(500).send('Sorry Cypress Director not OK')
 );
 
 app.post('/runs', async (req, res) => {
@@ -42,7 +43,14 @@ app.post('/runs', async (req, res) => {
 
   console.log(`>> Machine is joining a run`, { ciBuildId });
 
-  const response = await app.get('executionDriver').createRun(req.body);
+  let response
+  try {
+    response = await app.get('executionDriver').createRun(req.body);
+  } catch (error) {
+    response = {"error":"director not healthy"}
+    console.error(error)
+    appHealthy=false
+  }
 
   console.log(`<< Responding to machine`, response);
   return res.json(response);
