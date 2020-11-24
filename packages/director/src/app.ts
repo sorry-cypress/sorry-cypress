@@ -165,7 +165,7 @@ app.get('/ping', (_, res) => {
   res.send(`${Date.now()}: sorry-cypress-director is live`);
 });
 
-app.use(function handleDatabaseError(error, request, response, next) {
+app.use(function handleDatabaseError(error: any, request: any, response: any, next: any) {
   if (error instanceof MongoError || !appHealthy) {
     appHealthy=false
     return response.status(503).json({
