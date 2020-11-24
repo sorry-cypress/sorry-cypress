@@ -10,8 +10,10 @@ import {
 import { ALLOWED_KEYS } from '@src/config';
 import { RUN_NOT_EXIST } from '@src/lib/errors';
 import { UpdateInstanseResponse } from './types/response.types';
+import { MongoError } from 'mongodb';
 
 export const app = express();
+let appHealthy = true;
 
 const isKeyAllowed = (recordKey: string) => ALLOWED_KEYS ? ALLOWED_KEYS.includes(recordKey) : true;
 
@@ -161,4 +163,15 @@ app.put('/instances/:instanceId/stdout', (req, res) => {
 
 app.get('/ping', (_, res) => {
   res.send(`${Date.now()}: sorry-cypress-director is live`);
+});
+
+app.use(function handleDatabaseError(error: any, request: any, response: any, next: any) {
+  if (error instanceof MongoError || !appHealthy) {
+    appHealthy=false
+    return response.status(503).json({
+      type: 'MongoError',
+      message: error.message
+    });
+  }
+  next(error);
 });
