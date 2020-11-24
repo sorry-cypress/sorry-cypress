@@ -10,6 +10,7 @@ import {
 import { ALLOWED_KEYS } from '@src/config';
 import { RUN_NOT_EXIST } from '@src/lib/errors';
 import { UpdateInstanseResponse } from './types/response.types';
+import { MongoError } from 'mongodb';
 
 export const app = express();
 let appHealthy = true;
@@ -21,19 +22,6 @@ app.use(
     limit: '50mb'
   })
 );
-
-app.use((req, res, next) => {
-  try {
-    next();
-  } catch (error) {
-    console.error(error)
-    appHealthy=false
-  }
-
-  if (!appHealthy) {
-    return res.status(503).send("Director not healthy !");
-  }
-});
 
 app.get('/', (_, res) =>
   res.redirect('https://github.com/agoldis/sorry-cypress')
@@ -175,4 +163,15 @@ app.put('/instances/:instanceId/stdout', (req, res) => {
 
 app.get('/ping', (_, res) => {
   res.send(`${Date.now()}: sorry-cypress-director is live`);
+});
+
+app.use(function handleDatabaseError(error, request, response, next) {
+  if (error instanceof MongoError || !appHealthy) {
+    appHealthy=false
+    return response.status(503).json({
+      type: 'MongoError',
+      message: error.message
+    });
+  }
+  next(error);
 });
