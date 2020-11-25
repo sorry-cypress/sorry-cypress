@@ -28,7 +28,7 @@ app.get('/', (_, res) =>
 );
 
 app.get('/health-check', (_, res) =>
-  res.status(200).send('Sorry Cypress Director OK')
+  appHealthy ? res.status(200).send('Sorry Cypress Director OK') : res.status(503).send('Sorry Cypress Director unhealthy')
 );
 
 app.post('/runs', async (req, res) => {
@@ -166,12 +166,10 @@ app.get('/ping', (_, res) => {
 });
 
 app.use(function handleDatabaseError(error: any, request: any, response: any, next: any) {
-  if (error instanceof MongoError || !appHealthy) {
-    appHealthy=false
-    return response.status(503).json({
-      type: 'MongoError',
-      message: error.message
-    });
-  }
+  appHealthy=false
+  response.status(503).json({
+    type: 'MongoError',
+    message: error.message
+  });
   next(error);
 });
