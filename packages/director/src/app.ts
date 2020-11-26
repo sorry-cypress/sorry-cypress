@@ -44,7 +44,14 @@ app.post('/runs', async (req, res) => {
 
   console.log(`>> Machine is joining a run`, { ciBuildId });
 
-  const response = await app.get('executionDriver').createRun(req.body);
+  let response
+  try {
+    response = await app.get('executionDriver').createRun(req.body);
+  } catch(error) {
+    appHealthy = false
+    process.exit(1)
+  }
+  
 
   console.log(`<< Responding to machine`, response);
   return res.json(response);
