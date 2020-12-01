@@ -101,10 +101,10 @@ mongo:
   resources:
     requests:
       cpu: 100m
-      memory: 200Mi
+      memory: 2048Mi
     limits:
       cpu: 1.0
-      memory: 550Mi
+      memory: 2048Mi
 
 imagePullSecrets:
   - name: registry-secret
