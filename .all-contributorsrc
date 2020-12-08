@@ -186,6 +186,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "lucasltinoco",
+      "name": "Lucas Tinoco",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/42158644?v=4",
+      "profile": "http://lucasltinoco.github.io",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
