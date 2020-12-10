@@ -5,6 +5,7 @@ export type Hook = {
   hookEvents: string[];
   hookType: string;
   githubToken: string;
+  githubContext: string;
 };
 
 export interface Project {

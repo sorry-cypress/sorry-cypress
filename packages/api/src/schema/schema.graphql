@@ -50,6 +50,7 @@ type Hook {
   hookEvents: [String]
   hookType: String
   githubToken: String
+  githubContext: String
 }
 
 type Project {
@@ -64,6 +65,7 @@ input HookInput {
   hookEvents: [String]
   hookType: String
   githubToken: String
+  githubContext: String
 }
 
 input ProjectInput {

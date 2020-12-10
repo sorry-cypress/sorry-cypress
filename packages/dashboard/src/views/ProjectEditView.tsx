@@ -304,8 +304,8 @@ export function ProjectEditView({
                                 >
                                   <TextField
                                     name="url"
-                                    label="url"
-                                    placeholder="Enter your GitHub repo url"
+                                    label="URL"
+                                    placeholder="Enter your GitHub repo URL"
                                     value={hook.url}
                                     onChange={handleChange(
                                       `hooks[${index}].url`
@@ -327,7 +327,7 @@ export function ProjectEditView({
                                 </div>
                                 <div
                                   style={{
-                                    marginBottom: '32px',
+                                    marginBottom: '20px',
                                     position: 'relative',
                                   }}
                                 >
@@ -365,6 +365,34 @@ export function ProjectEditView({
                                     }}
                                   >
                                     <Tooltip text="You will need to generate this token on github. Once this token is saved you will not be able to see it again. You will alwayse be able to update it.">
+                                      <Icon icon="infoCircleOutline" />
+                                    </Tooltip>
+                                  </div>
+                                </div>
+                                <div
+                                  style={{
+                                    marginBottom: '32px',
+                                    position: 'relative',
+                                  }}
+                                >
+                                  <TextField
+                                    name="githubContext"
+                                    label="Github Context"
+                                    placeholder="Enter custom string to differentiate this status from others"
+                                    value={hook.githubContext}
+                                    onChange={handleChange(
+                                      `hooks[${index}].githubContext`
+                                    )}
+                                    disabled={creating || updating || loading}
+                                  />
+                                  <div
+                                    style={{
+                                      position: 'absolute',
+                                      right: '-71px',
+                                      top: '29px',
+                                    }}
+                                  >
+                                    <Tooltip text='This string will be used as a status name in Github to differentiate this project status from others. Default value is "Sorry-Cypress-Tests".'>
                                       <Icon icon="infoCircleOutline" />
                                     </Tooltip>
                                   </div>
