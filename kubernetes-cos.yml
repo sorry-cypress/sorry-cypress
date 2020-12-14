@@ -139,7 +139,7 @@ spec:
               secretKeyRef:
                 name: cypress-cos-secrets
                 key: COS_SECRETKEY
-        image: juanjosepb/sorry-cypress-director:v0.3
+        image: juanjosepb/sorry-cypress-director:v0.1
         imagePullPolicy: "Always"
         name: director
         ports:

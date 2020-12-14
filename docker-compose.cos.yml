@@ -5,7 +5,7 @@ services:
     image: mongo:4.0
 
   director:
-    image: kenaz201/sorry-cypress:v0.3
+    image: juanjosepb/sorry-cypress-director:v0.1
     environment:
       DASHBOARD_URL: http://localhost:8080
       MONGODB_URI: 'mongodb://mongo:27017'
