@@ -49,6 +49,7 @@ function removeHiddenKeysFromObject(subject: any) {
 function formatProjectForSaving(project: Project) {
   project = clonedeep(project);
   removeHiddenKeysFromObject(project);
+  project.projectId = encodeURIComponent(project.projectId);
   project?.hooks?.forEach((hook: Hook) => {
     removeHiddenKeysFromObject(hook);
   });
@@ -177,7 +178,7 @@ export function ProjectEditView({
             name="projectId"
             label="Project Id"
             placeholder='Enter your "projectId"'
-            value={formState.projectId}
+            value={decodeURIComponent(formState.projectId)}
             onChange={(e) =>
               dispatch({
                 type: 'SET_PROJECT_NAME',

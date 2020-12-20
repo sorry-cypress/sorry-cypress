@@ -45,7 +45,7 @@ export const Footer = () => {
         </li>
         <li>
           <a
-            href="https://opencollective.com/sorry-cypress"
+            href="https://github.com/sponsors/agoldis"
             target="_blank"
             rel="noreferrer"
             className={css`
