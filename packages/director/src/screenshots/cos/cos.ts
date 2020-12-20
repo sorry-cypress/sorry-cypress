@@ -5,22 +5,21 @@ import {
   COS_REGION,
   COS_BUCKET,
   COS_IMAGE_KEY_PREFIX,
-  COS_VIDEO_KEY_PREFIX
+  COS_VIDEO_KEY_PREFIX,
 } from './config';
 import { S3SignedUploadResult } from './types';
 import { AssetUploadInstruction } from '@src/types';
-import { sanitizeS3KeyPrefix } from './utils';
+import { sanitizeS3KeyPrefix } from '../utils';
 
 const BUCKET_URL = `https://s3.${COS_REGION}.cloud-object-storage.appdomain.cloud`;
 const COS_READ_ENDPOINT = `https://${COS_BUCKET}.s3.${COS_REGION}.cloud-object-storage.appdomain.cloud`;
 const ImageContentType = 'image/png';
 const VideoContentType = 'video/mp4';
 
-
 const s3 = new ibm.S3({
   endpoint: BUCKET_URL,
   credentials: new ibm.Credentials(COS_ACCESSKEY, COS_SECRETKEY, null),
-  signatureVersion: 'v4'
+  signatureVersion: 'v4',
 });
 
 interface GetUploadURLParams {
@@ -42,14 +41,12 @@ export const getUploadUrl = async ({
   };
 
   return new Promise((resolve, reject) => {
-      console.log("Trying get signed URL");
-      console.log("Sengind with: "+JSON.stringify(s3Params));
     s3.getSignedUrl(
       'putObject',
       s3Params,
       (error: Error, uploadUrl: string) => {
         if (error) {
-          console.log("errors from signed request: "+error)
+          console.log('errors from signed request: ' + error);
           return reject(error);
         }
         return resolve({
