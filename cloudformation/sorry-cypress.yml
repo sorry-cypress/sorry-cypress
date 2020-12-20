@@ -433,6 +433,8 @@ Resources:
               Value: mongodb://sorry-cypress:sorry-cypress@127.0.0.1:27017
             - Name: S3_BUCKET
               Value: !Join ['-', [!Ref 'AWS::StackName', 'test-results']]
+            - Name: S3_REGION
+              Value: !Ref 'AWS::Region'
           DependsOn:
             - ContainerName: mongo
               Condition: START

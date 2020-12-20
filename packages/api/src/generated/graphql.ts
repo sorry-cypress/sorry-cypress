@@ -15,12 +15,13 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
-  projects: Array<Maybe<Project>>;
+  projects: Array<Project>;
   project?: Maybe<Project>;
   runs: Array<Maybe<Run>>;
   runFeed: RunFeed;
   run?: Maybe<Run>;
   instance?: Maybe<Instance>;
+  specStats?: Maybe<SpecStats>;
 };
 
 
@@ -55,6 +56,12 @@ export type QueryRunArgs = {
 
 export type QueryInstanceArgs = {
   id: Scalars['ID'];
+};
+
+
+export type QuerySpecStatsArgs = {
+  spec: Scalars['String'];
+  filters?: Maybe<Array<Maybe<Filters>>>;
 };
 
 export type Mutation = {
@@ -105,6 +112,13 @@ export type DeleteRunResponse = {
   runIds: Array<Maybe<Scalars['ID']>>;
 };
 
+export type SpecStats = {
+  __typename?: 'SpecStats';
+  spec: Scalars['String'];
+  avgWallClockDuration: Scalars['Int'];
+  count: Scalars['Int'];
+};
+
 export type Hook = {
   __typename?: 'Hook';
   hookId?: Maybe<Scalars['String']>;
@@ -147,7 +161,7 @@ export type Run = {
   runId: Scalars['ID'];
   createdAt: Scalars['DateTime'];
   meta?: Maybe<RunMeta>;
-  specs: Array<Maybe<FullRunSpec>>;
+  specs: Array<FullRunSpec>;
 };
 
 export type FullRunSpec = {
@@ -156,6 +170,8 @@ export type FullRunSpec = {
   instanceId: Scalars['String'];
   claimed: Scalars['Boolean'];
   claimedAt?: Maybe<Scalars['String']>;
+  machineId?: Maybe<Scalars['String']>;
+  groupId?: Maybe<Scalars['String']>;
   results?: Maybe<InstanceResults>;
 };
 
@@ -171,7 +187,6 @@ export type Commit = {
 
 export type RunMeta = {
   __typename?: 'RunMeta';
-  groupId?: Maybe<Scalars['String']>;
   ciBuildId?: Maybe<Scalars['String']>;
   projectId?: Maybe<Scalars['String']>;
   commit?: Maybe<Commit>;
@@ -207,6 +222,8 @@ export type RunSpec = {
   instanceId: Scalars['String'];
   claimed: Scalars['Boolean'];
   claimedAt?: Maybe<Scalars['String']>;
+  groupId?: Maybe<Scalars['String']>;
+  machineId?: Maybe<Scalars['String']>;
 };
 
 export type InstanceResults = {
@@ -311,6 +328,7 @@ export enum OrderingOptions {
 export type Filters = {
   key?: Maybe<Scalars['String']>;
   value?: Maybe<Scalars['String']>;
+  like?: Maybe<Scalars['String']>;
 };
 
 
@@ -397,6 +415,8 @@ export type ResolversTypes = {
   Mutation: ResolverTypeWrapper<{}>;
   DeleteRunResponse: ResolverTypeWrapper<DeleteRunResponse>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  SpecStats: ResolverTypeWrapper<SpecStats>;
+  Int: ResolverTypeWrapper<Scalars['Int']>;
   Hook: ResolverTypeWrapper<Hook>;
   Project: ResolverTypeWrapper<Project>;
   HookInput: HookInput;
@@ -412,7 +432,6 @@ export type ResolversTypes = {
   RunSpec: ResolverTypeWrapper<RunSpec>;
   InstanceResults: ResolverTypeWrapper<Omit<InstanceResults, 'tests'> & { tests?: Maybe<Array<Maybe<ResolversTypes['InstanceTestUnion']>>> }>;
   InstanceStats: ResolverTypeWrapper<InstanceStats>;
-  Int: ResolverTypeWrapper<Scalars['Int']>;
   CypressConfig: ResolverTypeWrapper<CypressConfig>;
   InstanceScreeshot: ResolverTypeWrapper<InstanceScreeshot>;
   ReporterStats: ResolverTypeWrapper<ReporterStats>;
@@ -434,6 +453,8 @@ export type ResolversParentTypes = {
   Mutation: {};
   DeleteRunResponse: DeleteRunResponse;
   Boolean: Scalars['Boolean'];
+  SpecStats: SpecStats;
+  Int: Scalars['Int'];
   Hook: Hook;
   Project: Project;
   HookInput: HookInput;
@@ -449,7 +470,6 @@ export type ResolversParentTypes = {
   RunSpec: RunSpec;
   InstanceResults: Omit<InstanceResults, 'tests'> & { tests?: Maybe<Array<Maybe<ResolversParentTypes['InstanceTestUnion']>>> };
   InstanceStats: InstanceStats;
-  Int: Scalars['Int'];
   CypressConfig: CypressConfig;
   InstanceScreeshot: InstanceScreeshot;
   ReporterStats: ReporterStats;
@@ -463,12 +483,13 @@ export type ResolversParentTypes = {
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  projects?: Resolver<Array<Maybe<ResolversTypes['Project']>>, ParentType, ContextType, RequireFields<QueryProjectsArgs, 'orderDirection' | 'filters'>>;
+  projects?: Resolver<Array<ResolversTypes['Project']>, ParentType, ContextType, RequireFields<QueryProjectsArgs, 'orderDirection' | 'filters'>>;
   project?: Resolver<Maybe<ResolversTypes['Project']>, ParentType, ContextType, RequireFields<QueryProjectArgs, 'id'>>;
   runs?: Resolver<Array<Maybe<ResolversTypes['Run']>>, ParentType, ContextType, RequireFields<QueryRunsArgs, 'orderDirection' | 'cursor' | 'filters'>>;
   runFeed?: Resolver<ResolversTypes['RunFeed'], ParentType, ContextType, RequireFields<QueryRunFeedArgs, 'filters'>>;
   run?: Resolver<Maybe<ResolversTypes['Run']>, ParentType, ContextType, RequireFields<QueryRunArgs, 'id'>>;
   instance?: Resolver<Maybe<ResolversTypes['Instance']>, ParentType, ContextType, RequireFields<QueryInstanceArgs, 'id'>>;
+  specStats?: Resolver<Maybe<ResolversTypes['SpecStats']>, ParentType, ContextType, RequireFields<QuerySpecStatsArgs, 'spec' | 'filters'>>;
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
@@ -484,6 +505,13 @@ export type DeleteRunResponseResolvers<ContextType = any, ParentType extends Res
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   runIds?: Resolver<Array<Maybe<ResolversTypes['ID']>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type SpecStatsResolvers<ContextType = any, ParentType extends ResolversParentTypes['SpecStats'] = ResolversParentTypes['SpecStats']> = {
+  spec?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  avgWallClockDuration?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -514,7 +542,7 @@ export type RunResolvers<ContextType = any, ParentType extends ResolversParentTy
   runId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   meta?: Resolver<Maybe<ResolversTypes['RunMeta']>, ParentType, ContextType>;
-  specs?: Resolver<Array<Maybe<ResolversTypes['FullRunSpec']>>, ParentType, ContextType>;
+  specs?: Resolver<Array<ResolversTypes['FullRunSpec']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -523,6 +551,8 @@ export type FullRunSpecResolvers<ContextType = any, ParentType extends Resolvers
   instanceId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   claimed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   claimedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  machineId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  groupId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   results?: Resolver<Maybe<ResolversTypes['InstanceResults']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -538,7 +568,6 @@ export type CommitResolvers<ContextType = any, ParentType extends ResolversParen
 };
 
 export type RunMetaResolvers<ContextType = any, ParentType extends ResolversParentTypes['RunMeta'] = ResolversParentTypes['RunMeta']> = {
-  groupId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   ciBuildId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   projectId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   commit?: Resolver<Maybe<ResolversTypes['Commit']>, ParentType, ContextType>;
@@ -574,6 +603,8 @@ export type RunSpecResolvers<ContextType = any, ParentType extends ResolversPare
   instanceId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   claimed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   claimedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  groupId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  machineId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -680,6 +711,7 @@ export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   DeleteRunResponse?: DeleteRunResponseResolvers<ContextType>;
+  SpecStats?: SpecStatsResolvers<ContextType>;
   Hook?: HookResolvers<ContextType>;
   Project?: ProjectResolvers<ContextType>;
   DeleteProjectResponse?: DeleteProjectResponseResolvers<ContextType>;

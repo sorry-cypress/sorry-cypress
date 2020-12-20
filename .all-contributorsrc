@@ -130,11 +130,76 @@
         "doc",
         "ideas"
       ]
+    },
+    {
+      "login": "tico24",
+      "name": "Tim Collins",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/45351296?v=4",
+      "profile": "https://github.com/tico24",
+      "contributions": [
+        "content",
+        "example"
+      ]
+    },
+    {
+      "login": "webdevotion",
+      "name": "Bram Plessers",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/50583?v=4",
+      "profile": "http://www.webdevotion.be",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "nilsmartel",
+      "name": "Nils Martel",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/28377948?v=4",
+      "profile": "https://github.com/nilsmartel",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "dlavrenuek",
+      "name": "dlavrenuek",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/20122620?v=4",
+      "profile": "https://github.com/dlavrenuek",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Upgreydd",
+      "name": "Kacper",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/579481?v=4",
+      "profile": "https://github.com/Upgreydd",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "DeniDoman",
+      "name": "Denis",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/3439929?v=4",
+      "profile": "https://github.com/DeniDoman",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "lucasltinoco",
+      "name": "Lucas Tinoco",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/42158644?v=4",
+      "profile": "http://lucasltinoco.github.io",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
   "projectName": "sorry-cypress",
-  "projectOwner": "agoldis",
+  "projectOwner": "sorry-cypress",
   "repoType": "github",
   "repoHost": "https://github.com",
   "skipCi": true

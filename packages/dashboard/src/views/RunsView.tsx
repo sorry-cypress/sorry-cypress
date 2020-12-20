@@ -1,8 +1,8 @@
+import RunList from '@src/components/run/RunList';
+import PageControls from '@src/components/ui/PageControls';
+import SearchField from '@src/components/ui/SearchField';
 import { getProjectPath, navStructure } from '@src/lib/navigation';
-import { Button } from 'bold-ui';
-import React, { useLayoutEffect } from 'react';
-import { RunSummary } from '../components/run/summary';
-import { useGetRunsFeedQuery } from '../generated/graphql';
+import React, { useLayoutEffect, useState } from 'react';
 
 type RunsViewProps = {
   match: {
@@ -17,6 +17,8 @@ export function RunsView({
     params: { projectId },
   },
 }: RunsViewProps) {
+  const [search, setSearch] = useState('');
+
   useLayoutEffect(() => {
     navStructure([
       {
@@ -26,59 +28,15 @@ export function RunsView({
     ]);
   }, []);
 
-  const { fetchMore, loading, error, data } = useGetRunsFeedQuery({
-    variables: {
-      filters: [
-        {
-          key: 'meta.projectId',
-          value: projectId,
-        },
-      ],
-      cursor: '',
-    },
-  });
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error.toString()}</p>;
-  if (!data) {
-    return <p>No data</p>;
-  }
-
-  const runFeed = data.runFeed;
-
-  function loadMore() {
-    return fetchMore({
-      variables: {
-        filters: [
-          {
-            key: 'meta.projectId',
-            value: projectId,
-          },
-        ],
-        cursor: runFeed.cursor,
-      },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        return {
-          runFeed: {
-            __typename: prev.runFeed.__typename,
-            hasMore: fetchMoreResult?.runFeed.hasMore,
-            cursor: fetchMoreResult?.runFeed.cursor,
-            runs: [...prev.runFeed.runs, ...fetchMoreResult?.runFeed.runs],
-          },
-        };
-      },
-    });
-  }
-
-  if (!runFeed.runs.length) {
-    return <div>No runs have started on this project.</div>;
-  }
   return (
     <>
-      {runFeed.runs.map((run) => (
-        <RunSummary run={run} key={run.runId} />
-      ))}
-      {runFeed.hasMore && <Button onClick={loadMore}>Load More</Button>}
+      <PageControls>
+        <SearchField
+          placeholder="Enter run build id"
+          onSearch={(value) => setSearch(value)}
+        />
+      </PageControls>
+      <RunList projectId={projectId} search={search} />
     </>
   );
 }

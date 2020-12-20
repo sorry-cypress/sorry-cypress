@@ -8,6 +8,7 @@ export const getProjectById = async (id: string) =>
 
 export const createProject = async (project: Project) => {
   try {
+    // TODO: there's a potential race condition here when running on two machines / serverless environments
     const storedProject = await getProjectById(project.projectId);
     if (!storedProject) {
       const { result } = await getMongoDB()

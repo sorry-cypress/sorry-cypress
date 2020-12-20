@@ -19,6 +19,8 @@ query getRun($runId: ID!) {
       instanceId
       claimed
       claimedAt
+      machineId
+      groupId
       results {
         cypressConfig {
           video

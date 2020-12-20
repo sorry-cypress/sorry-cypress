@@ -16,8 +16,13 @@ function isOnMaster() {
   [ "${BRANCH}" = "master" ]
 }
 
+function getCleanTags() {
+  echo $(echo ${GITHUB_REF} | sed -e "s/refs\/tags\///g")
+}
 function isSemver() {
-  echo "${1}" | grep -Eq '^refs/tags/v?([0-9]+)\.([0-9+])\.([0-9]+)$'
+  local cleanTags="$(getCleanTags)"
+  local isSemver=$(./scripts/isSemver.js $cleanTags)
+  [ "$isSemver" == "true" ]
 }
 
 function setDockerTags() {
@@ -26,7 +31,8 @@ function setDockerTags() {
   fi;
 
   if isGitTag && isSemver "${GITHUB_REF}"; then
-    TAGS="$TAGS $(echo ${GITHUB_REF} | sed -e "s/refs\/tags\///g" | sed -E "s/v?([0-9]+)\.([0-9+])\.([0-9]+)/\1.\2.\3 \1.\2 \1/g")"
+    local cleanTags="$(getCleanTags)"
+    TAGS=$(./scripts/generateSemverTags.js $cleanTags)
   fi;
 }
 
@@ -64,12 +70,13 @@ do
     esac
 done
 
-echo "Tag: $explicitTag";
 
 if [ -z "${BRANCH}" ]
 then
+  echo "Explicit tag: $explicitTag";
   TAGS=${explicitTag}
 else
+  echo "Gettings tags from git data"
   setDockerTags
 fi
 

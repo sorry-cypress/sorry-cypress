@@ -1,6 +1,6 @@
 {
   "name": "sorry-cypress",
-  "version": "0.6.1",
+  "version": "1.0.0-beta.10",
   "author": {
     "name": "Andrew Goldis",
     "email": "agoldis@gmail.com"
@@ -15,6 +15,8 @@
     "packages/*"
   ],
   "scripts": {
+    "release": "./scripts/release-github.sh",
+    "release-packages": "wsrun release",
     "test": "yarn workspaces run test",
     "lint": "yarn workspaces run lint",
     "start": "yarn workspace @sorry-cypress/director start",
@@ -25,7 +27,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn run lint && pretty-quick"
+      "pre-commit": "yarn run lint && pretty-quick --staged"
     }
   },
   "dependencies": {
@@ -41,6 +43,8 @@
     "prettier": "^2.1.2",
     "pretty-quick": "^3.0.2",
     "rimraf": "^3.0.2",
-    "typescript": "^4.0.3"
+    "semver": "^7.3.2",
+    "typescript": "^4.0.3",
+    "wsrun": "^5.2.4"
   }
 }

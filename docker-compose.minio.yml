@@ -3,8 +3,6 @@ version: '3.6'
 services:
   mongo:
     image: mongo:4.0
-    ports:
-      - 27017:27017
 
   storage:
     image: minio/minio
@@ -46,7 +44,7 @@ services:
       MINIO_ACCESS_KEY: 'MW32h3gd6HvjBEgTRx'
       MINIO_SECRET_KEY: 't6NgQWUcEyG2AzaDCVkN6sbWcvDCVkN6sGiZ7'
       MINIO_ENDPOINT: 'storage'
-      MINIO_URL: 'http://storage'
+      MINIO_URL: 'http://localhost'
       MINIO_PORT: '9000'
       MINIO_USESSL: 'false'
       MINIO_BUCKET: sorry-cypress

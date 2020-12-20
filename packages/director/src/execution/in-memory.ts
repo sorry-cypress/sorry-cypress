@@ -8,6 +8,7 @@ import {
   ExecutionDriver,
   CreateRunResponse,
   CreateRunParameters,
+  CreateRunWarning,
 } from '@src/types';
 import { getDashboardRunURL } from '@src/lib/urls';
 import { AppError, RUN_NOT_EXIST, INSTANCE_NOT_EXIST } from '@src/lib/errors';
@@ -16,6 +17,13 @@ import {
   generateGroupId,
   generateUUID,
 } from '@src/lib/hash';
+import {
+  getClaimedSpecs,
+  getFirstUnclaimedSpec,
+  getNewSpecsInGroup,
+  getSpecsForGroup,
+  enhanceSpec,
+} from './utils';
 
 const projects: { [key: string]: Project } = {};
 const runs: { [key: string]: Run } = {};
@@ -28,21 +36,49 @@ const createProject = (project: Project) => {
   return project;
 };
 
-const createRun = async (
+const createRun: ExecutionDriver['createRun'] = async (
   params: CreateRunParameters
 ): Promise<CreateRunResponse> => {
   const runId = generateRunIdHash(params);
-  const groupId = generateGroupId(params.platform, params.ciBuildId);
+  const machineId = generateUUID();
+
+  const groupId =
+    params.group ?? generateGroupId(params.platform, params.ciBuildId);
+  const enhaceSpecForThisRun = enhanceSpec(groupId);
 
   const response = {
     groupId,
-    machineId: generateUUID(),
+    machineId,
     runId,
     runUrl: getDashboardRunURL(runId),
-    warnings: [] as string[],
+    warnings: [] as CreateRunWarning[],
   };
 
   if (runs[runId]) {
+    // update new specs for a new group
+    const newSpecs = getNewSpecsInGroup({
+      run: runs[runId],
+      groupId,
+      candidateSpecs: params.specs,
+    });
+    if (!newSpecs.length) {
+      return response;
+    }
+
+    const existingGroupSpecs = getSpecsForGroup(runs[runId], groupId);
+    if (newSpecs.length && existingGroupSpecs.length) {
+      response.warnings.push({
+        message: `Group ${groupId} has different specs for the same run. Make sure each group in run has the same specs.`,
+        originalSpecs: existingGroupSpecs.map((spec) => spec.spec).join(', '),
+        newSpecs: newSpecs.join(','),
+      });
+      return response;
+    }
+
+    runs[runId].specs = [
+      ...runs[runId].specs,
+      ...newSpecs.map(enhaceSpecForThisRun),
+    ];
     return response;
   }
 
@@ -63,23 +99,23 @@ const createRun = async (
       projectId: params.projectId,
       platform: params.platform,
     } as RunMetaData,
-    specs: params.specs.map((spec) => ({
-      spec,
-      instanceId: generateUUID(),
-      claimed: false,
-    })),
+    specs: params.specs.map(enhaceSpecForThisRun),
   };
 
   return response;
 };
 
-const getNextTask = async (runId: string): Promise<Task> => {
+const getNextTask: ExecutionDriver['getNextTask'] = async ({
+  runId,
+  groupId,
+}): Promise<Task> => {
   if (!runs[runId]) {
     throw new AppError(RUN_NOT_EXIST);
   }
 
-  const unclaimedSpecIndex = runs[runId].specs.findIndex((s) => !s.claimed);
-  if (unclaimedSpecIndex === -1) {
+  const unclaimedSpec = getFirstUnclaimedSpec(runs[runId], groupId);
+
+  if (!unclaimedSpec) {
     return {
       instance: null,
       claimedInstances: runs[runId].specs.length,
@@ -87,18 +123,26 @@ const getNextTask = async (runId: string): Promise<Task> => {
     };
   }
 
-  const spec = runs[runId].specs[unclaimedSpecIndex];
-
-  spec.claimed = true;
-  instances[spec.instanceId] = {
+  const unclaimedSpecIndex = runs[runId].specs.findIndex(
+    (s) => s === unclaimedSpec
+  );
+  runs[runId].specs[unclaimedSpecIndex].claimed = true;
+  instances[unclaimedSpec.instanceId] = {
     runId,
-    instanceId: spec.instanceId,
+    instanceId: unclaimedSpec.instanceId,
   };
 
   return {
-    instance: runs[runId].specs[unclaimedSpecIndex],
-    claimedInstances: runs[runId].specs.filter((s) => s.claimed).length,
-    totalInstances: runs[runId].specs.length,
+    instance: unclaimedSpec,
+    claimedInstances: getClaimedSpecs(runs[runId], groupId).length + 1,
+    totalInstances: getSpecsForGroup(runs[runId], groupId).length,
+  };
+};
+
+const getRunWithSpecs: ExecutionDriver['getRunWithSpecs'] = async (runId) => {
+  return {
+    ...runs[runId],
+    specsFull: runs[runId].specs.map((spec) => instances[spec.instanceId]),
   };
 };
 
@@ -116,7 +160,7 @@ export const driver: ExecutionDriver = {
   init: () => Promise.resolve(),
   getProjectById: (projectId: string) => Promise.resolve(projects[projectId]),
   getRunById: (runId: string) => Promise.resolve(runs[runId]),
-  getRunWithSpecs: (runId: string) => Promise.resolve(runs[runId]),
+  getRunWithSpecs,
   getInstanceById: (instanceId: string) =>
     Promise.resolve(instances[instanceId]),
   createRun,

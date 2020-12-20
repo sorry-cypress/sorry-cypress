@@ -3,31 +3,8 @@ import { getProjectPath, getRunPath, navStructure } from '@src/lib/navigation';
 import React, { useLayoutEffect } from 'react';
 import { RunDetails } from '../components/run/details';
 import { RunSummary } from '../components/run/summary';
-import {
-  GetRunsByProjectIdLimitedToTimingQuery,
-  useGetRunQuery,
-  useGetRunsByProjectIdLimitedToTimingQuery,
-} from '../generated/graphql';
+import { useGetRunQuery } from '../generated/graphql';
 
-function getSpecTimingsList(
-  runsWithTimingData: GetRunsByProjectIdLimitedToTimingQuery
-) {
-  return runsWithTimingData.runs.reduce<Record<string, number[]>>(
-    (accumulator, runData) => {
-      runData?.specs.forEach((spec) => {
-        if (!spec) {
-          return accumulator;
-        }
-        accumulator[spec.spec] = accumulator[spec.spec] || [];
-        if (spec?.results?.stats?.wallClockDuration) {
-          accumulator[spec.spec].push(spec?.results?.stats?.wallClockDuration);
-        }
-      });
-      return accumulator;
-    },
-    {}
-  );
-}
 type RunDetailsViewProps = {
   match: {
     params: {
@@ -51,18 +28,6 @@ export function RunDetailsView({
     pollInterval: shouldAutoRefresh ? 1500 : undefined,
   });
 
-  const {
-    data: runsWithTimingData,
-  } = useGetRunsByProjectIdLimitedToTimingQuery({
-    variables: {
-      filters: [
-        {
-          key: 'meta.projectId',
-          value: runData?.run?.meta?.projectId,
-        },
-      ],
-    },
-  });
   useLayoutEffect(() => {
     if (!runData?.run) {
       navStructure([]);
@@ -91,12 +56,7 @@ export function RunDetailsView({
   return (
     <>
       <RunSummary run={runData.run} />
-      <RunDetails
-        run={runData.run}
-        propertySpecHeuristics={
-          runsWithTimingData ? getSpecTimingsList(runsWithTimingData) : {}
-        }
-      />
+      <RunDetails run={runData.run} />
     </>
   );
 }

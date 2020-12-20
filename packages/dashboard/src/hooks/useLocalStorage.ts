@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 // https://usehooks.com/useLocalStorage/
-interface SetLocalStorageValue<T> {
+export interface SetLocalStorageValue<T> {
   (value: T): void;
   (value: (valueS: T) => T): void;
 }

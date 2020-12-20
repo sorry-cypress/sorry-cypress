@@ -4,13 +4,13 @@ import {
   InstanceResult,
   ScreenshotUploadInstruction,
   Screenshot,
-  AssetUploadInstruction
+  AssetUploadInstruction,
 } from '@src/types';
 
 import { isInstanceFailed } from '@src/lib/results';
 import {
   getImageUploadUrl,
-  getVideoUploadUrl as s3getVideoUploadUrl
+  getVideoUploadUrl as s3getVideoUploadUrl,
 } from './s3';
 
 const getScreenshotUploadInstruction = (namespace: string) => async (
@@ -19,7 +19,7 @@ const getScreenshotUploadInstruction = (namespace: string) => async (
   const key = md5(`${namespace}:${screenshot.screenshotId}`);
   return {
     ...(await getImageUploadUrl(key)),
-    screenshotId: screenshot.screenshotId
+    screenshotId: screenshot.screenshotId,
   };
 };
 
@@ -27,7 +27,7 @@ export const getVideoUploadUrl = async (
   instanceId: string,
   result: InstanceResult
 ): Promise<AssetUploadInstruction | null> => {
-  if (!result.cypressConfig.video) {
+  if (!result.cypressConfig?.video) {
     return null;
   }
   if (!isInstanceFailed(result) && !result.cypressConfig.videoUploadOnPasses) {
@@ -53,5 +53,5 @@ export const driver: ScreenshotsDriver = {
   id: 's3',
   init: () => Promise.resolve(),
   getScreenshotsUploadUrls,
-  getVideoUploadUrl
+  getVideoUploadUrl,
 };

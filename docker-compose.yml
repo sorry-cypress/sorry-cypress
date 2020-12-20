@@ -3,15 +3,12 @@ version: '3.6'
 services:
   mongo:
     image: mongo:4.0
-    ports:
-      - 27017:27017
 
   api:
     build:
       context: $PWD/packages/api
       dockerfile: Dockerfile.dev
     ports:
-      - 9230:9230
       - 4000:4000
     volumes:
       - $PWD/packages/api/src:/app/src
@@ -28,7 +25,6 @@ services:
       SCREENSHOTS_DRIVER: '../screenshots/s3.driver'
       S3_BUCKET: sorry-cypress
     ports:
-      - 9229:9229
       - 1234:1234
     volumes:
       - $PWD/packages/director/src:/app/src
