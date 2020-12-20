@@ -15,7 +15,7 @@ Documentation has moved to https://sorry-cypress.dev/
 
 Please help us by taking a short 1-minute [survey](https://forms.gle/qxoTPFiokLWuc6eZ7). 
 
-Show us your ❤️ at [Open Collective](https://opencollective.com/sorry-cypress).
+Show us your ❤️ at [GitHub Sponsors](https://github.com/sponsors/agoldis).
 
 Thank you!
 
