@@ -38,7 +38,8 @@
     "md5": "^2.2.1",
     "minio": "^7.0.15",
     "mongodb": "^3.3.0",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "ibm-cos-sdk": "^1.8.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.11.6",
