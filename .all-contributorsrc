@@ -195,6 +195,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "juanjopb",
+      "name": "JuanJose Perez",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/44626438?v=4",
+      "profile": "https://github.com/juanjopb",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

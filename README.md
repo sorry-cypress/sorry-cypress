@@ -99,6 +99,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/Upgreydd"><img src="https://avatars3.githubusercontent.com/u/579481?v=4" width="100px;" alt=""/><br /><sub><b>Kacper</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=Upgreydd" title="Code">💻</a> <a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=Upgreydd" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/DeniDoman"><img src="https://avatars3.githubusercontent.com/u/3439929?v=4" width="100px;" alt=""/><br /><sub><b>Denis</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=DeniDoman" title="Code">💻</a></td>
     <td align="center"><a href="http://lucasltinoco.github.io"><img src="https://avatars2.githubusercontent.com/u/42158644?v=4" width="100px;" alt=""/><br /><sub><b>Lucas Tinoco</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=lucasltinoco" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/juanjopb"><img src="https://avatars3.githubusercontent.com/u/44626438?v=4" width="100px;" alt=""/><br /><sub><b>JuanJose Perez</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=juanjopb" title="Code">💻</a></td>
   </tr>
 </table>
 
