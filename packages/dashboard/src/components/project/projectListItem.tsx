@@ -101,7 +101,7 @@ export function ProjectListItem({
       <Paper>
         <FlexRow>
           <HeaderLink to={`/${project.projectId}/runs`}>
-            {project.projectId}
+            {decodeURIComponent(project.projectId)}
           </HeaderLink>
           <div>
             <Button

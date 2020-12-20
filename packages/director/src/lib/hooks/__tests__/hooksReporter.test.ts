@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { reportStatusToGithub } from '../hooksReporter';
+import { reportStatusToGithub } from '../githubReporter';
 import { hookEvents } from '../hooksEnums';
 
 import githubHook from './fixtures/githubHooks.json';
@@ -10,7 +10,7 @@ jest.mock('axios');
 
 describe('test reportStatusToGithub', () => {
   beforeEach(() => {
-    axios.mockResolvedValueOnce({ status: 200 });
+    ((axios as unknown) as jest.Mock).mockResolvedValueOnce({ status: 200 });
   });
 
   afterEach(() => {

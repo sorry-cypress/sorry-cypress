@@ -34,6 +34,7 @@ const removeUnusedHookDataFromProject = (project: Project) => {
   project.hooks = project.hooks.map((hook) => {
     if (hook.hookType === hookTypes.GENERIC_HOOK) {
       delete hook.githubToken;
+      delete hook.githubContext;
     }
     if (hook.hookType === hookTypes.GITHUB_STATUS_HOOK) {
       delete hook.headers;
