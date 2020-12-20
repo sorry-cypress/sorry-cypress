@@ -9,7 +9,7 @@ import { Layout } from './components/layout/layout';
 import { client } from './lib/apolloClient';
 import { theme } from './theme/theme';
 import { InstanceDetailsView } from './views/InstanceDetailsView';
-import { ProjectEditView } from './views/ProjectEditView';
+import { ProjectEditView } from './project/ProjectEditView';
 import { ProjectsView } from './views/ProjectsView';
 import { RunDetailsView } from './views/RunDetailsView';
 import { RunsView } from './views/RunsView';
