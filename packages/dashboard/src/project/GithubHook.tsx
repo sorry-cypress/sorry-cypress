@@ -103,6 +103,42 @@ export const GithubHook = ({ hook, disabled, dispatch }: GithubHookPros) => {
           </Tooltip>
         </div>
       </div>
+      <div
+        style={{
+          marginBottom: '20px',
+          position: 'relative',
+        }}
+      >
+        <TextField
+          name="githubContext"
+          label="Github Context"
+          placeholder="Enter custom string to differentiate this status from others"
+          value={hook.githubContext}
+          onChange={(e) =>
+            dispatch({
+              type: 'SET_HOOK_FIELD',
+              payload: {
+                hookId: hook.hookId,
+                data: {
+                  githubContext: e.target.value.trim(),
+                },
+              },
+            })
+          }
+          disabled={disabled}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            right: '-71px',
+            top: '29px',
+          }}
+        >
+          <Tooltip text='This string will be used as a status name in Github to differentiate this project status from others. Default value is "Sorry-Cypress-Tests".'>
+            <Icon icon="infoCircleOutline" />
+          </Tooltip>
+        </div>
+      </div>
     </>
   );
 };

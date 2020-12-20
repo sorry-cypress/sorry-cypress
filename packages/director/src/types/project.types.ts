@@ -23,6 +23,7 @@ export type GenericHook = BaseHook & {
 export type GithubHook = BaseHook & {
   hookType: 'GITHUB_STATUS_HOOK';
   githubToken?: string;
+  githubContext?: string;
 };
 
 export type Hook = SlackHook | GenericHook | GithubHook;
