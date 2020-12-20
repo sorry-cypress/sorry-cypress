@@ -1,7 +1,7 @@
 import { getExecutionDriver, getScreenshotsDriver } from '@src/drivers';
 import { RUN_NOT_EXIST } from '@src/lib/errors';
-import { hookEvents } from '@src/lib/hooksEnums';
-import { reportToHook } from '@src/lib/hooksReporter';
+import { hookEvents } from '@src/lib/hooks/hooksEnums';
+import { reportToHook } from '@src/lib/hooks/hooksReporter';
 import { RequestHandler } from 'express';
 import {
   InstanceResult,
