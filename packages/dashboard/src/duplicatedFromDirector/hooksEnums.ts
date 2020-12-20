@@ -5,7 +5,8 @@ export const hookEvents = {
   INSTANCE_FINISH: 'INSTANCE_FINISH',
 };
 
-export const hookTypes = {
-  GITHUB_STATUS_HOOK: 'GITHUB_STATUS_HOOK',
-  GENERIC_HOOK: 'GENERIC_HOOK',
-};
+export enum hookType {
+  GITHUB_STATUS_HOOK = 'GITHUB_STATUS_HOOK',
+  GENERIC_HOOK = 'GENERIC_HOOK',
+  SLACK_HOOK = 'SLACK_HOOK',
+}

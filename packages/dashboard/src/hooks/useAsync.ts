@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 export const useAsync = <T, E extends Error = Error>(
-  fn: Function,
+  fn: (...args: any) => any,
   immediate = false,
   ...immediateArgs: any[]
 ) => {

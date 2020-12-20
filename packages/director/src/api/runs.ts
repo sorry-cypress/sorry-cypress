@@ -1,7 +1,7 @@
 import { getExecutionDriver } from '@src/drivers';
 import { isKeyAllowed } from '@src/lib/allowedKeys';
-import { hookEvents } from '@src/lib/hooksEnums';
-import { reportToHook } from '@src/lib/hooksReporter';
+import { hookEvents } from '@src/lib/hooks/hooksEnums';
+import { reportToHook } from '@src/lib/hooks/hooksReporter';
 import { CreateRunParameters } from '@src/types';
 import { RequestHandler } from 'express';
 export const blockKeys: RequestHandler = (req, res, next) => {
