@@ -36,7 +36,7 @@ export async function reportStatusToGithub({
     target_url: getDashboardRunURL(
       reportData?.run?.runId || reportData.instance.runId
     ),
-    context: hook.githubContext || 'Sorry-Cypress-Tests',
+    context: 'Sorry-Cypress-Tests',
   };
 
   if (hookEvent === hookEvents.RUN_START) {
