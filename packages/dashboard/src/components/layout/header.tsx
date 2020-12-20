@@ -25,9 +25,12 @@ export const Header: React.FC = () => {
           <Link to="/">All Projects</Link>
           {/*breadcrumb removes hover event from the last crumb so the there is a little hackery to get the tooltip working*/}
           {nav.map((navItem) => (
-            <Tooltip text={navItem.label ?? ''} key={navItem.link}>
+            <Tooltip
+              text={decodeURIComponent(navItem.label ?? '')}
+              key={navItem.link}
+            >
               <Link to={`/${navItem.link}`}>
-                {truncate(navItem.label ?? '')}
+                {truncate(decodeURIComponent(navItem.label ?? ''))}
               </Link>
             </Tooltip>
           ))}
@@ -39,9 +42,9 @@ export const Header: React.FC = () => {
           flex: 1;
         `}
       >
-        <Tooltip text={lastNavItem?.label ?? ''}>
+        <Tooltip text={decodeURIComponent(lastNavItem?.label ?? '')}>
           <Link to={`/${lastNavItem?.link}`}>
-            {truncate(lastNavItem?.label ?? '')}
+            {truncate(decodeURIComponent(lastNavItem?.label ?? ''))}
           </Link>
         </Tooltip>
       </div>
