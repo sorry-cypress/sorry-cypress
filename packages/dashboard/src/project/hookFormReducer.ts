@@ -1,5 +1,6 @@
 import { hookType } from '@src/duplicatedFromDirector/hooksEnums';
 import { Hook } from '@src/duplicatedFromDirector/project.types';
+import { nanoid } from 'nanoid';
 
 type SetProjectName = {
   type: 'SET_PROJECT_NAME';
@@ -78,8 +79,8 @@ export const hookFormReducer = (
         hooks: [
           ...state.hooks,
           {
-            hookId: 'some',
             hookType: hookType.GENERIC_HOOK,
+            hookId: nanoid(),
           },
         ],
       } as HooksFormState;
