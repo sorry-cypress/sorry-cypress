@@ -8,28 +8,45 @@ import {
   Tooltip,
   useCss,
 } from 'bold-ui';
-import mean from 'lodash/mean';
-import React, { useState } from 'react';
+import React from 'react';
 import { generatePath } from 'react-router-dom';
 import { FullRunSpec, Run } from '../../generated/graphql';
+import { useHideSuccessfulSpecs } from '../../hooks/useHideSuccessfulSpecs';
 import { getFullRunSpecState } from '../../lib/executionState';
 import { shortEnglishHumanizerWithMsIfNeeded } from '../../lib/utis';
 import { SpecState } from '../common';
 import RenderOnInterval from '../renderOnInterval/renderOnInterval';
+import { useGetSpecStatsQuery } from '@src/generated/graphql';
+import stringHash from 'string-hash';
 
+function getMachineName(machineId: string) {
+  return (stringHash(machineId) % 10000) + 1;
+}
 type RunDetailsProps = {
   run: Partial<Run>;
-  propertySpecHeuristics: Record<string, number[]>;
 };
 
-export function RunDetails({
-  run,
-  propertySpecHeuristics = {},
-}: RunDetailsProps) {
+const SpecAvg = ({ specName }: { specName: string }) => {
+  const { data, error, loading } = useGetSpecStatsQuery({
+    variables: { spec: specName },
+  });
+  if (loading) {
+    return null;
+  }
+  if (error) {
+    console.error(error);
+    return 'erorr';
+  }
+
+  return shortEnglishHumanizerWithMsIfNeeded(
+    data?.specStats?.avgWallClockDuration ?? 0
+  );
+};
+export function RunDetails({ run }: RunDetailsProps) {
   const { css } = useCss();
   const { specs } = run;
 
-  const [isPassedHidden, setHidePassedSpecs] = useState(false);
+  const [isPassedHidden, setHidePassedSpecs] = useHideSuccessfulSpecs();
 
   if (!specs) {
     return null;
@@ -47,6 +64,7 @@ export function RunDetails({
         <strong>Spec files</strong>
         <Switch
           label="Hide successful specs"
+          checked={isPassedHidden}
           onChange={() => setHidePassedSpecs(!isPassedHidden)}
         />
       </HFlow>
@@ -72,6 +90,27 @@ export function RunDetails({
               render: (spec: FullRunSpec) => (
                 <SpecState state={getFullRunSpecState(spec)} />
               ),
+            },
+            {
+              name: 'machine',
+              header: (
+                <Tooltip text="Random but consistent">
+                  <Text>Machine #</Text>
+                </Tooltip>
+              ),
+              sortable: false,
+              render: (spec: FullRunSpec) => {
+                if (spec.machineId) {
+                  return getMachineName(spec.machineId);
+                }
+                return null;
+              },
+            },
+            {
+              name: 'group',
+              header: 'Group',
+              sortable: false,
+              render: (spec: FullRunSpec) => spec.groupId,
             },
             {
               name: 'link',
@@ -126,11 +165,10 @@ export function RunDetails({
               header: 'Average Duration',
               sortable: false,
               render: (spec: FullRunSpec) => {
-                if (spec?.spec) {
-                  return shortEnglishHumanizerWithMsIfNeeded(
-                    mean(propertySpecHeuristics[spec?.spec] || [])
-                  );
+                if (!spec.spec) {
+                  return null;
                 }
+                return <SpecAvg specName={spec.spec} />;
               },
             },
             {

@@ -1,17 +1,14 @@
 ---
 name: Feature Request
 about: Create a feature request for Sorry Cypress
-
 ---
 
-# What is this feature about? (1 sentence)
+- [ ] I have seached issues for similar feature requests
 
+## What is this feature about (1 sentence)
 
-# Why is it needed? What is the value? For whom do we build it?
+## Why is it needed? What is the value? For whom do we build it?
 
+## High-level feature overview
 
-# High-level overview of the feature
-- 
-
-# Other things
-- 
+## Other

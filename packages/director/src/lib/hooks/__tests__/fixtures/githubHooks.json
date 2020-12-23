@@ -1,0 +1,9 @@
+{
+  "hookId": "testHook",
+  "url": "https://github.com/test-company/test-project/",
+  "githubToken": "testGithubToken",
+  "githubContext": "testGithubContext",
+  "headers": "",
+  "hookEvents": [""],
+  "hookType": "GITHUB_STATUS_HOOK"
+}

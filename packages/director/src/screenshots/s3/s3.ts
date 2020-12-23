@@ -9,7 +9,7 @@ import {
 } from './config';
 import { S3SignedUploadResult } from './types';
 import { AssetUploadInstruction } from '@src/types';
-import { sanitizeS3KeyPrefix } from './utils';
+import { sanitizeS3KeyPrefix } from '../utils/';
 
 const BUCKET_URL = `https://${S3_BUCKET}.s3.amazonaws.com`;
 const ImageContentType = 'image/png';

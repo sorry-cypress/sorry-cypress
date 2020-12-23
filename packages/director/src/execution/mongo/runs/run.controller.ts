@@ -3,6 +3,7 @@ import {
   getRunById,
   createRun as storageCreateRun,
   setSpecClaimed,
+  addSpecsToRun,
 } from './run.model';
 
 import { createInstance } from '../instances/instance.controller';
@@ -13,7 +14,6 @@ import {
   RUN_EXISTS,
   RUN_NOT_EXIST,
   CLAIM_FAILED,
-  PROJECT_CREATE_FAILED,
 } from '@src/lib/errors';
 
 import {
@@ -21,22 +21,31 @@ import {
   generateGroupId,
   generateUUID,
 } from '@src/lib/hash';
-import { CreateRunParameters, CreateRunResponse, Run, Task } from '@src/types';
+import { ExecutionDriver, Task, CreateRunWarning } from '@src/types';
+import {
+  enhanceSpec,
+  getClaimedSpecs,
+  getFirstUnclaimedSpec,
+  getNewSpecsInGroup,
+  getSpecsForGroup,
+} from '../../utils';
 
 export const getById = getRunById;
 
-export const createRun = async (
-  params: CreateRunParameters
-): Promise<CreateRunResponse> => {
+export const createRun: ExecutionDriver['createRun'] = async (params) => {
   const runId = generateRunIdHash(params);
-  const groupId = generateGroupId(params.platform, params.ciBuildId);
+  const groupId =
+    params.group ?? generateGroupId(params.platform, params.ciBuildId);
+
+  const machineId = generateUUID();
+  const enhaceSpecForThisRun = enhanceSpec(groupId);
 
   const response = {
     groupId,
-    machineId: generateUUID(),
+    machineId,
     runId,
     runUrl: getDashboardRunURL(runId),
-    warnings: [] as string[],
+    warnings: [] as CreateRunWarning[],
   };
 
   try {
@@ -44,59 +53,75 @@ export const createRun = async (
       projectId: params.projectId,
       createdAt: new Date().toISOString(),
     });
-  } catch (error) {
-    if (error.code && error.code === PROJECT_CREATE_FAILED) {
-      return response;
-    }
-    throw error;
-  }
-
-  try {
     await storageCreateRun({
       runId,
       createdAt: new Date().toISOString(),
       meta: {
-        groupId,
         ciBuildId: params.ciBuildId,
         commit: params.commit,
         projectId: params.projectId,
         platform: params.platform,
       },
-      specs: params.specs.map((spec) => ({
-        spec,
-        instanceId: generateUUID(),
-        claimed: false,
-      })),
+      specs: params.specs.map(enhaceSpecForThisRun),
     });
     return response;
   } catch (error) {
     if (error.code && error.code === RUN_EXISTS) {
+      // update new specs for a new group
+      // TODO: prone to race condition on serverless
+      const run = await getRunById(runId);
+
+      const newSpecs = getNewSpecsInGroup({
+        run,
+        groupId,
+        candidateSpecs: params.specs,
+      });
+
+      if (!newSpecs.length) {
+        return response;
+      }
+
+      // if the same group has different specs - no-no-no!
+      const existingGroupSpecs = getSpecsForGroup(run, groupId);
+      if (newSpecs.length && existingGroupSpecs.length) {
+        response.warnings.push({
+          message: `Group ${groupId} has different specs for the same run. Make sure each group in run has the same specs.`,
+          originalSpecs: existingGroupSpecs.map((spec) => spec.spec).join(', '),
+          newSpecs: newSpecs.join(','),
+        });
+        return response;
+      }
+
+      await addSpecsToRun(runId, newSpecs.map(enhaceSpecForThisRun));
+
       return response;
     }
     throw error;
   }
 };
 
-const getClaimedSpecs = (run: Run) => run.specs.filter((s) => s.claimed);
-const getFirstUnclaimedSpec = (run: Run) => run.specs.find((s) => !s.claimed);
-const getAllSpecs = (run: Run) => run.specs;
-
-export const getNextTask = async (runId: string): Promise<Task> => {
+export const getNextTask: ExecutionDriver['getNextTask'] = async ({
+  runId,
+  groupId,
+  machineId,
+}): Promise<Task> => {
   const run = await getById(runId);
   if (!run) {
     throw new AppError(RUN_NOT_EXIST);
   }
-  if (!getFirstUnclaimedSpec(run)) {
+
+  // all specs claimed
+  if (!getFirstUnclaimedSpec(run, groupId)) {
     return {
       instance: null,
-      claimedInstances: getClaimedSpecs(run).length,
-      totalInstances: getAllSpecs(run).length,
+      claimedInstances: getClaimedSpecs(run, runId).length,
+      totalInstances: getSpecsForGroup(run, groupId).length,
     };
   }
 
-  const spec = getFirstUnclaimedSpec(run);
+  const spec = getFirstUnclaimedSpec(run, groupId);
   try {
-    await setSpecClaimed(runId, spec.instanceId);
+    await setSpecClaimed(runId, spec.instanceId, machineId);
     await createInstance({
       runId,
       instanceId: spec.instanceId,
@@ -104,12 +129,13 @@ export const getNextTask = async (runId: string): Promise<Task> => {
     });
     return {
       instance: spec,
-      claimedInstances: getClaimedSpecs(run).length + 1,
-      totalInstances: getAllSpecs(run).length,
+      claimedInstances: getClaimedSpecs(run, groupId).length + 1,
+      totalInstances: getSpecsForGroup(run, groupId).length,
     };
   } catch (error) {
     if (error.code && error.code === CLAIM_FAILED) {
-      return await getNextTask(runId);
+      // just try to get next available spec
+      return await getNextTask({ runId, machineId, groupId });
     }
     throw error;
   }

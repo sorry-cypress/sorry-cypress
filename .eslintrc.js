@@ -47,7 +47,6 @@ module.exports = {
     'no-fallthrough': 'warn',
     'no-useless-escape': 'warn',
     'max-depth': ['error', 4],
-    'max-lines-per-function': ['warn', 100],
     camelcase: 'off',
     quotes: ['off', 'single'],
     semi: 0,

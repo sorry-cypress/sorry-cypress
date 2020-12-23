@@ -11,9 +11,13 @@
 
 # Hello 👋🏻
 
-We've launched a new documentation site: https://sorry-cypress.dev 🎉
+Documentation has moved to https://sorry-cypress.dev/
 
-Please help us by taking a short 1-minute [survey](https://forms.gle/qxoTPFiokLWuc6eZ7). Thank you!
+Please help us by taking a short 1-minute [survey](https://forms.gle/qxoTPFiokLWuc6eZ7). 
+
+Show us your ❤️ at [GitHub Sponsors](https://github.com/sponsors/agoldis).
+
+Thank you!
 
 ## Table of contents
 
@@ -52,7 +56,7 @@ I was upset because:
 
 ### Is it legal?
 
-Yes, Cypress is an [open source software](https://github.com/cypress-io/cypress/blob/develop/LICENSE).
+Yes, Cypress is [MIT licensed open source software](https://github.com/cypress-io/cypress/blob/develop/LICENSE).
 
 ### Is it production-ready?
 
@@ -87,6 +91,15 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/adityatr"><img src="https://avatars0.githubusercontent.com/u/9066230?v=4" width="100px;" alt=""/><br /><sub><b>Aditya Trivedi</b></sub></a><br /><a href="#content-adityatr" title="Content">🖋</a></td>
     <td align="center"><a href="https://github.com/StefanS-O"><img src="https://avatars2.githubusercontent.com/u/1253938?v=4" width="100px;" alt=""/><br /><sub><b>Stefan Schulte-Ortbeck</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=StefanS-O" title="Code">💻</a> <a href="#example-StefanS-O" title="Examples">💡</a> <a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=StefanS-O" title="Documentation">📖</a> <a href="#ideas-StefanS-O" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://github.com/tico24"><img src="https://avatars2.githubusercontent.com/u/45351296?v=4" width="100px;" alt=""/><br /><sub><b>Tim Collins</b></sub></a><br /><a href="#content-tico24" title="Content">🖋</a> <a href="#example-tico24" title="Examples">💡</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="http://www.webdevotion.be"><img src="https://avatars3.githubusercontent.com/u/50583?v=4" width="100px;" alt=""/><br /><sub><b>Bram Plessers</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=webdevotion" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/nilsmartel"><img src="https://avatars1.githubusercontent.com/u/28377948?v=4" width="100px;" alt=""/><br /><sub><b>Nils Martel</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=nilsmartel" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/dlavrenuek"><img src="https://avatars3.githubusercontent.com/u/20122620?v=4" width="100px;" alt=""/><br /><sub><b>dlavrenuek</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=dlavrenuek" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/Upgreydd"><img src="https://avatars3.githubusercontent.com/u/579481?v=4" width="100px;" alt=""/><br /><sub><b>Kacper</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=Upgreydd" title="Code">💻</a> <a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=Upgreydd" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/DeniDoman"><img src="https://avatars3.githubusercontent.com/u/3439929?v=4" width="100px;" alt=""/><br /><sub><b>Denis</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=DeniDoman" title="Code">💻</a></td>
+    <td align="center"><a href="http://lucasltinoco.github.io"><img src="https://avatars2.githubusercontent.com/u/42158644?v=4" width="100px;" alt=""/><br /><sub><b>Lucas Tinoco</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=lucasltinoco" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/juanjopb"><img src="https://avatars3.githubusercontent.com/u/44626438?v=4" width="100px;" alt=""/><br /><sub><b>JuanJose Perez</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=juanjopb" title="Code">💻</a></td>
   </tr>
 </table>
 

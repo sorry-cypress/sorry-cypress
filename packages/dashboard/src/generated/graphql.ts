@@ -16,12 +16,13 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
-  projects: Array<Maybe<Project>>;
+  projects: Array<Project>;
   project?: Maybe<Project>;
   runs: Array<Maybe<Run>>;
   runFeed: RunFeed;
   run?: Maybe<Run>;
   instance?: Maybe<Instance>;
+  specStats?: Maybe<SpecStats>;
 };
 
 export type QueryProjectsArgs = {
@@ -50,6 +51,11 @@ export type QueryRunArgs = {
 
 export type QueryInstanceArgs = {
   id: Scalars['ID'];
+};
+
+export type QuerySpecStatsArgs = {
+  spec: Scalars['String'];
+  filters?: Maybe<Array<Maybe<Filters>>>;
 };
 
 export type Mutation = {
@@ -94,6 +100,13 @@ export type DeleteRunResponse = {
   runIds: Array<Maybe<Scalars['ID']>>;
 };
 
+export type SpecStats = {
+  __typename?: 'SpecStats';
+  spec: Scalars['String'];
+  avgWallClockDuration: Scalars['Int'];
+  count: Scalars['Int'];
+};
+
 export type Hook = {
   __typename?: 'Hook';
   hookId?: Maybe<Scalars['String']>;
@@ -102,6 +115,7 @@ export type Hook = {
   hookEvents?: Maybe<Array<Maybe<Scalars['String']>>>;
   hookType?: Maybe<Scalars['String']>;
   githubToken?: Maybe<Scalars['String']>;
+  githubContext?: Maybe<Scalars['String']>;
 };
 
 export type Project = {
@@ -117,6 +131,7 @@ export type HookInput = {
   hookEvents?: Maybe<Array<Maybe<Scalars['String']>>>;
   hookType?: Maybe<Scalars['String']>;
   githubToken?: Maybe<Scalars['String']>;
+  githubContext?: Maybe<Scalars['String']>;
 };
 
 export type ProjectInput = {
@@ -136,7 +151,7 @@ export type Run = {
   runId: Scalars['ID'];
   createdAt: Scalars['DateTime'];
   meta?: Maybe<RunMeta>;
-  specs: Array<Maybe<FullRunSpec>>;
+  specs: Array<FullRunSpec>;
 };
 
 export type FullRunSpec = {
@@ -145,6 +160,8 @@ export type FullRunSpec = {
   instanceId: Scalars['String'];
   claimed: Scalars['Boolean'];
   claimedAt?: Maybe<Scalars['String']>;
+  machineId?: Maybe<Scalars['String']>;
+  groupId?: Maybe<Scalars['String']>;
   results?: Maybe<InstanceResults>;
 };
 
@@ -160,7 +177,6 @@ export type Commit = {
 
 export type RunMeta = {
   __typename?: 'RunMeta';
-  groupId?: Maybe<Scalars['String']>;
   ciBuildId?: Maybe<Scalars['String']>;
   projectId?: Maybe<Scalars['String']>;
   commit?: Maybe<Commit>;
@@ -196,6 +212,8 @@ export type RunSpec = {
   instanceId: Scalars['String'];
   claimed: Scalars['Boolean'];
   claimedAt?: Maybe<Scalars['String']>;
+  groupId?: Maybe<Scalars['String']>;
+  machineId?: Maybe<Scalars['String']>;
 };
 
 export type InstanceResults = {
@@ -299,6 +317,7 @@ export enum OrderingOptions {
 export type Filters = {
   key?: Maybe<Scalars['String']>;
   value?: Maybe<Scalars['String']>;
+  like?: Maybe<Scalars['String']>;
 };
 
 export type CreateProjectMutationVariables = Exact<{
@@ -312,7 +331,12 @@ export type CreateProjectMutation = { __typename?: 'Mutation' } & {
           Maybe<
             { __typename?: 'Hook' } & Pick<
               Hook,
-              'hookId' | 'url' | 'headers' | 'hookEvents' | 'hookType'
+              | 'hookId'
+              | 'url'
+              | 'headers'
+              | 'hookEvents'
+              | 'hookType'
+              | 'githubContext'
             >
           >
         >
@@ -459,7 +483,12 @@ export type GetProjectQuery = { __typename?: 'Query' } & {
             Maybe<
               { __typename?: 'Hook' } & Pick<
                 Hook,
-                'hookId' | 'url' | 'headers' | 'hookEvents' | 'hookType'
+                | 'hookId'
+                | 'url'
+                | 'headers'
+                | 'hookEvents'
+                | 'hookType'
+                | 'githubContext'
               >
             >
           >
@@ -474,9 +503,7 @@ export type GetProjectsQueryVariables = Exact<{
 }>;
 
 export type GetProjectsQuery = { __typename?: 'Query' } & {
-  projects: Array<
-    Maybe<{ __typename?: 'Project' } & Pick<Project, 'projectId'>>
-  >;
+  projects: Array<{ __typename?: 'Project' } & Pick<Project, 'projectId'>>;
 };
 
 export type GetRunQueryVariables = Exact<{
@@ -505,109 +532,76 @@ export type GetRunQuery = { __typename?: 'Query' } & {
             }
         >;
         specs: Array<
-          Maybe<
-            { __typename?: 'FullRunSpec' } & Pick<
-              FullRunSpec,
-              'spec' | 'instanceId' | 'claimed' | 'claimedAt'
-            > & {
-                results?: Maybe<
-                  { __typename?: 'InstanceResults' } & Pick<
-                    InstanceResults,
-                    'videoUrl'
-                  > & {
-                      cypressConfig?: Maybe<
-                        { __typename?: 'CypressConfig' } & Pick<
-                          CypressConfig,
-                          'video' | 'videoUploadOnPasses'
+          { __typename?: 'FullRunSpec' } & Pick<
+            FullRunSpec,
+            | 'spec'
+            | 'instanceId'
+            | 'claimed'
+            | 'claimedAt'
+            | 'machineId'
+            | 'groupId'
+          > & {
+              results?: Maybe<
+                { __typename?: 'InstanceResults' } & Pick<
+                  InstanceResults,
+                  'videoUrl'
+                > & {
+                    cypressConfig?: Maybe<
+                      { __typename?: 'CypressConfig' } & Pick<
+                        CypressConfig,
+                        'video' | 'videoUploadOnPasses'
+                      >
+                    >;
+                    tests?: Maybe<
+                      Array<
+                        Maybe<
+                          | ({ __typename?: 'InstanceTest' } & Pick<
+                              InstanceTest,
+                              | 'title'
+                              | 'state'
+                              | 'wallClockDuration'
+                              | 'wallClockStartedAt'
+                            >)
+                          | ({ __typename?: 'InstanceTestV5' } & Pick<
+                              InstanceTestV5,
+                              'title' | 'state'
+                            > & {
+                                attempts: Array<
+                                  { __typename?: 'TestAttempt' } & Pick<
+                                    TestAttempt,
+                                    | 'state'
+                                    | 'wallClockDuration'
+                                    | 'wallClockStartedAt'
+                                  > & {
+                                      error?: Maybe<
+                                        { __typename?: 'TestError' } & Pick<
+                                          TestError,
+                                          'name' | 'message' | 'stack'
+                                        >
+                                      >;
+                                    }
+                                >;
+                              })
                         >
-                      >;
-                      tests?: Maybe<
-                        Array<
-                          Maybe<
-                            | ({ __typename?: 'InstanceTest' } & Pick<
-                                InstanceTest,
-                                | 'title'
-                                | 'state'
-                                | 'wallClockDuration'
-                                | 'wallClockStartedAt'
-                              >)
-                            | ({ __typename?: 'InstanceTestV5' } & Pick<
-                                InstanceTestV5,
-                                'title' | 'state'
-                              > & {
-                                  attempts: Array<
-                                    { __typename?: 'TestAttempt' } & Pick<
-                                      TestAttempt,
-                                      | 'state'
-                                      | 'wallClockDuration'
-                                      | 'wallClockStartedAt'
-                                    > & {
-                                        error?: Maybe<
-                                          { __typename?: 'TestError' } & Pick<
-                                            TestError,
-                                            'name' | 'message' | 'stack'
-                                          >
-                                        >;
-                                      }
-                                  >;
-                                })
-                          >
-                        >
-                      >;
-                      stats: { __typename?: 'InstanceStats' } & Pick<
-                        InstanceStats,
-                        | 'tests'
-                        | 'pending'
-                        | 'passes'
-                        | 'failures'
-                        | 'skipped'
-                        | 'suites'
-                        | 'wallClockDuration'
-                        | 'wallClockStartedAt'
-                        | 'wallClockEndedAt'
-                      >;
-                    }
-                >;
-              }
-          >
+                      >
+                    >;
+                    stats: { __typename?: 'InstanceStats' } & Pick<
+                      InstanceStats,
+                      | 'tests'
+                      | 'pending'
+                      | 'passes'
+                      | 'failures'
+                      | 'skipped'
+                      | 'suites'
+                      | 'wallClockDuration'
+                      | 'wallClockStartedAt'
+                      | 'wallClockEndedAt'
+                    >;
+                  }
+              >;
+            }
         >;
       }
-  >;
-};
-
-export type GetRunsByProjectIdLimitedToTimingQueryVariables = Exact<{
-  orderDirection?: Maybe<OrderingOptions>;
-  filters?: Maybe<Array<Maybe<Filters>>>;
-}>;
-
-export type GetRunsByProjectIdLimitedToTimingQuery = {
-  __typename?: 'Query';
-} & {
-  runs: Array<
-    Maybe<
-      { __typename?: 'Run' } & Pick<Run, 'runId' | 'createdAt'> & {
-          meta?: Maybe<
-            { __typename?: 'RunMeta' } & Pick<
-              RunMeta,
-              'ciBuildId' | 'projectId'
-            >
-          >;
-          specs: Array<
-            Maybe<
-              { __typename?: 'FullRunSpec' } & Pick<FullRunSpec, 'spec'> & {
-                  results?: Maybe<
-                    { __typename?: 'InstanceResults' } & {
-                      stats: { __typename?: 'InstanceStats' } & Pick<
-                        InstanceStats,
-                        'wallClockDuration'
-                      >;
-                    }
-                  >;
-                }
-            >
-          >;
-        }
-    >
   >;
 };
 
@@ -639,56 +633,67 @@ export type GetRunsFeedQuery = { __typename?: 'Query' } & {
                 }
             >;
             specs: Array<
-              Maybe<
-                { __typename?: 'FullRunSpec' } & Pick<
-                  FullRunSpec,
-                  'spec' | 'instanceId' | 'claimed'
-                > & {
-                    results?: Maybe<
-                      { __typename?: 'InstanceResults' } & Pick<
-                        InstanceResults,
-                        'videoUrl'
-                      > & {
-                          cypressConfig?: Maybe<
-                            { __typename?: 'CypressConfig' } & Pick<
-                              CypressConfig,
-                              'video' | 'videoUploadOnPasses'
+              { __typename?: 'FullRunSpec' } & Pick<
+                FullRunSpec,
+                'spec' | 'instanceId' | 'claimed'
+              > & {
+                  results?: Maybe<
+                    { __typename?: 'InstanceResults' } & Pick<
+                      InstanceResults,
+                      'videoUrl'
+                    > & {
+                        cypressConfig?: Maybe<
+                          { __typename?: 'CypressConfig' } & Pick<
+                            CypressConfig,
+                            'video' | 'videoUploadOnPasses'
+                          >
+                        >;
+                        tests?: Maybe<
+                          Array<
+                            Maybe<
+                              | ({ __typename?: 'InstanceTest' } & Pick<
+                                  InstanceTest,
+                                  'title' | 'state'
+                                >)
+                              | ({ __typename?: 'InstanceTestV5' } & Pick<
+                                  InstanceTestV5,
+                                  'title' | 'state'
+                                >)
                             >
-                          >;
-                          tests?: Maybe<
-                            Array<
-                              Maybe<
-                                | ({ __typename?: 'InstanceTest' } & Pick<
-                                    InstanceTest,
-                                    'title' | 'state'
-                                  >)
-                                | ({ __typename?: 'InstanceTestV5' } & Pick<
-                                    InstanceTestV5,
-                                    'title' | 'state'
-                                  >)
-                              >
-                            >
-                          >;
-                          stats: { __typename?: 'InstanceStats' } & Pick<
-                            InstanceStats,
-                            | 'tests'
-                            | 'pending'
-                            | 'passes'
-                            | 'failures'
-                            | 'skipped'
-                            | 'suites'
-                            | 'wallClockDuration'
-                            | 'wallClockStartedAt'
-                            | 'wallClockEndedAt'
-                          >;
-                        }
-                    >;
-                  }
-              >
+                          >
+                        >;
+                        stats: { __typename?: 'InstanceStats' } & Pick<
+                          InstanceStats,
+                          | 'tests'
+                          | 'pending'
+                          | 'passes'
+                          | 'failures'
+                          | 'skipped'
+                          | 'suites'
+                          | 'wallClockDuration'
+                          | 'wallClockStartedAt'
+                          | 'wallClockEndedAt'
+                        >;
+                      }
+                  >;
+                }
             >;
           }
       >;
     };
+};
+
+export type GetSpecStatsQueryVariables = Exact<{
+  spec: Scalars['String'];
+}>;
+
+export type GetSpecStatsQuery = { __typename?: 'Query' } & {
+  specStats?: Maybe<
+    { __typename?: 'SpecStats' } & Pick<
+      SpecStats,
+      'spec' | 'count' | 'avgWallClockDuration'
+    >
+  >;
 };
 
 export type UpdateProjectMutationVariables = Exact<{
@@ -702,7 +707,12 @@ export type UpdateProjectMutation = { __typename?: 'Mutation' } & {
           Maybe<
             { __typename?: 'Hook' } & Pick<
               Hook,
-              'hookId' | 'url' | 'headers' | 'hookEvents' | 'hookType'
+              | 'hookId'
+              | 'url'
+              | 'headers'
+              | 'hookEvents'
+              | 'hookType'
+              | 'githubContext'
             >
           >
         >
@@ -720,6 +730,7 @@ export const CreateProjectDocument = gql`
         headers
         hookEvents
         hookType
+        githubContext
       }
     }
   }
@@ -1001,6 +1012,7 @@ export const GetProjectDocument = gql`
         headers
         hookEvents
         hookType
+        githubContext
       }
     }
   }
@@ -1129,6 +1141,8 @@ export const GetRunDocument = gql`
         instanceId
         claimed
         claimedAt
+        machineId
+        groupId
         results {
           cypressConfig {
             video
@@ -1211,79 +1225,6 @@ export type GetRunLazyQueryHookResult = ReturnType<typeof useGetRunLazyQuery>;
 export type GetRunQueryResult = Apollo.QueryResult<
   GetRunQuery,
   GetRunQueryVariables
->;
-export const GetRunsByProjectIdLimitedToTimingDocument = gql`
-  query getRunsByProjectIdLimitedToTiming(
-    $orderDirection: OrderingOptions
-    $filters: [Filters]
-  ) {
-    runs(orderDirection: $orderDirection, filters: $filters) {
-      runId
-      createdAt
-      meta {
-        ciBuildId
-        projectId
-      }
-      specs {
-        spec
-        results {
-          stats {
-            wallClockDuration
-          }
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useGetRunsByProjectIdLimitedToTimingQuery__
- *
- * To run a query within a React component, call `useGetRunsByProjectIdLimitedToTimingQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetRunsByProjectIdLimitedToTimingQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetRunsByProjectIdLimitedToTimingQuery({
- *   variables: {
- *      orderDirection: // value for 'orderDirection'
- *      filters: // value for 'filters'
- *   },
- * });
- */
-export function useGetRunsByProjectIdLimitedToTimingQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    GetRunsByProjectIdLimitedToTimingQuery,
-    GetRunsByProjectIdLimitedToTimingQueryVariables
-  >
-) {
-  return Apollo.useQuery<
-    GetRunsByProjectIdLimitedToTimingQuery,
-    GetRunsByProjectIdLimitedToTimingQueryVariables
-  >(GetRunsByProjectIdLimitedToTimingDocument, baseOptions);
-}
-export function useGetRunsByProjectIdLimitedToTimingLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    GetRunsByProjectIdLimitedToTimingQuery,
-    GetRunsByProjectIdLimitedToTimingQueryVariables
-  >
-) {
-  return Apollo.useLazyQuery<
-    GetRunsByProjectIdLimitedToTimingQuery,
-    GetRunsByProjectIdLimitedToTimingQueryVariables
-  >(GetRunsByProjectIdLimitedToTimingDocument, baseOptions);
-}
-export type GetRunsByProjectIdLimitedToTimingQueryHookResult = ReturnType<
-  typeof useGetRunsByProjectIdLimitedToTimingQuery
->;
-export type GetRunsByProjectIdLimitedToTimingLazyQueryHookResult = ReturnType<
-  typeof useGetRunsByProjectIdLimitedToTimingLazyQuery
->;
-export type GetRunsByProjectIdLimitedToTimingQueryResult = Apollo.QueryResult<
-  GetRunsByProjectIdLimitedToTimingQuery,
-  GetRunsByProjectIdLimitedToTimingQueryVariables
 >;
 export const GetRunsFeedDocument = gql`
   query getRunsFeed($cursor: String, $filters: [Filters]) {
@@ -1390,6 +1331,64 @@ export type GetRunsFeedQueryResult = Apollo.QueryResult<
   GetRunsFeedQuery,
   GetRunsFeedQueryVariables
 >;
+export const GetSpecStatsDocument = gql`
+  query getSpecStats($spec: String!) {
+    specStats(spec: $spec) {
+      spec
+      count
+      avgWallClockDuration
+    }
+  }
+`;
+
+/**
+ * __useGetSpecStatsQuery__
+ *
+ * To run a query within a React component, call `useGetSpecStatsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSpecStatsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSpecStatsQuery({
+ *   variables: {
+ *      spec: // value for 'spec'
+ *   },
+ * });
+ */
+export function useGetSpecStatsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetSpecStatsQuery,
+    GetSpecStatsQueryVariables
+  >
+) {
+  return Apollo.useQuery<GetSpecStatsQuery, GetSpecStatsQueryVariables>(
+    GetSpecStatsDocument,
+    baseOptions
+  );
+}
+export function useGetSpecStatsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetSpecStatsQuery,
+    GetSpecStatsQueryVariables
+  >
+) {
+  return Apollo.useLazyQuery<GetSpecStatsQuery, GetSpecStatsQueryVariables>(
+    GetSpecStatsDocument,
+    baseOptions
+  );
+}
+export type GetSpecStatsQueryHookResult = ReturnType<
+  typeof useGetSpecStatsQuery
+>;
+export type GetSpecStatsLazyQueryHookResult = ReturnType<
+  typeof useGetSpecStatsLazyQuery
+>;
+export type GetSpecStatsQueryResult = Apollo.QueryResult<
+  GetSpecStatsQuery,
+  GetSpecStatsQueryVariables
+>;
 export const UpdateProjectDocument = gql`
   mutation updateProject($project: ProjectInput!) {
     updateProject(project: $project) {
@@ -1400,6 +1399,7 @@ export const UpdateProjectDocument = gql`
         headers
         hookEvents
         hookType
+        githubContext
       }
     }
   }
