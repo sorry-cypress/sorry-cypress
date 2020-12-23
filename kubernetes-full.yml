@@ -126,7 +126,7 @@ spec:
         - name: SCREENSHOTS_DRIVER
           value: ../screenshots/s3.driver
         - name: S3_BUCKET
-          value: sendible-cypress
+          value: [bucket-name]
         - name: S3_REGION
           value: us-east-1
         - name: AWS_ACCESS_KEY_ID
