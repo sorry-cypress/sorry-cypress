@@ -1,0 +1,167 @@
+# Default values for sorry-cypress-helm.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+api:
+  image:
+    repository: agoldis/sorry-cypress-api
+    pullPolicy: Always
+    # Overrides the image tag whose default is the chart appVersion.
+    #tag: "latest"
+
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  service:
+    port: 4000
+
+  ingress:
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    hosts:
+      - host: api.chart-example.local
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+
+dashboard:
+  image:
+    repository: agoldis/sorry-cypress-dashboard
+    pullPolicy: Always
+    # Overrides the image tag whose default is the chart appVersion.
+    #tag: "latest"
+
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  environmentVariables:
+    # https://sorry-cypress.dev/dashboard#configuration
+    ciUrl: ""
+
+  service:
+    port: 8080
+
+  ingress:
+    enabled: true
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    hosts:
+      - host: dashboard.chart-example.local
+        paths: /
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+
+director:
+  image:
+    repository: agoldis/sorry-cypress-director
+    pullPolicy: Always
+    # Overrides the image tag whose default is the chart appVersion.
+    #tag: "latest"
+
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  environmentVariables:
+    # In memory, or Mongo.
+      # Valid options are:
+      # "../execution/in-memory"
+      # "../execution/mongo/driver"
+    executionDriver: "../execution/in-memory"
+
+    # Ignored if mongo.environmentVariables.executionDriver is set to "../execution/in-memory"
+    mongodbDatabase: sorry-cypress
+
+    # Dummy or S3
+      # Valid options are:
+      # "../screenshots/dummy.driver"
+      # "../screenshots/s3.driver"
+    screenshotsDriver: "../screenshots/dummy.driver"
+
+    # https://sorry-cypress.dev/director/configuration
+    allowedKeys: ""
+
+  # Ignored if mongo.environmentVariables.screenshotsDriver is set to "../screenshots/dummy.driver"
+  s3:
+    bucketName: example-bucket
+    region: us-east-1
+    accessKeyId: abc
+    secretAccessKey: zyx
+
+  service:
+    port: 1234
+
+  ingress:
+    enabled: true
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    hosts:
+      - host: director.chart-example.local
+        paths: /
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+mongo:
+  # You need to ensure that mongo.environmentVariables.executionDriver is set to "../execution/mongo/driver" if you want mongo.enabled to be true.
+  enabled: false
+
+  image:
+    repository: mongo
+    pullPolicy: Always
+    tag: "4.0"
+
+  persistence:
+    enabled: false
+    accessMode: "ReadWriteOnce"
+    size: "1Gi"
+
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  service:
+    port: 27017
