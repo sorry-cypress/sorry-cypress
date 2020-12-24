@@ -1,15 +1,6 @@
 apiVersion: v2
 name: sorry-cypress
 description: A Helm chart for Sorry Cypress
-
-# A chart can be either an 'application' or a 'library' chart.
-#
-# Application charts are a collection of templates that can be packaged into versioned archives
-# to be deployed.
-#
-# Library charts provide useful utilities or functions for the chart developer. They're included as
-# a dependency of application charts to inject those utilities and functions into the rendering
-# pipeline. Library charts do not define any templates and therefore cannot be deployed.
 type: application
 
 # This is the chart version. This version number should be incremented each time you make changes
@@ -21,3 +12,8 @@ version: 0.1.0
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning. They should reflect the version the application is using.
 appVersion: 1.16.0
+
+home: https://sorry-cypress.dev/
+sources:
+- https://github.com/sorry-cypress/sorry-cypress
+icon: https://sorry-cypress.dev/public/octolumbercat.png
