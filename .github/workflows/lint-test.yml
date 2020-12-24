@@ -17,7 +17,7 @@ jobs:
         uses: helm/chart-testing-action@v1.0.0
         with:
           command: lint
-          config: lint.yaml
+          config: charts/sorry-cypress/lint.yaml
 
       - name: Create kind cluster
         uses: helm/kind-action@v1.0.0
@@ -29,4 +29,4 @@ jobs:
         uses: helm/chart-testing-action@v1.0.0
         with:
           command: install
-          config: test.yaml
+          config: charts/sorry-cypress/test.yaml
