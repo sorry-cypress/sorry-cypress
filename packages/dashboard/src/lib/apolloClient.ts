@@ -1,22 +1,32 @@
-import { ApolloClient } from 'apollo-client';
-import { InMemoryCache } from 'apollo-cache-inmemory';
-import { HttpLink } from 'apollo-link-http';
-import { initialState } from '../state/initialState';
+import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client';
 import { environment } from '../state/environment';
+import { navStructure } from './navigation';
 
-const cache = new InMemoryCache();
-cache.writeData({
-  data: initialState
+const cache = new InMemoryCache({
+  typePolicies: {
+    Run: {
+      keyFields: ['runId'],
+    },
+    Query: {
+      fields: {
+        navStructure: {
+          read() {
+            return navStructure();
+          },
+        },
+      },
+    },
+  },
 });
 
-const link = new HttpLink({
-  uri: environment.GRAPHQL_SCHEMA_URL
+const link = createHttpLink({
+  uri: environment.GRAPHQL_SCHEMA_URL,
 });
 
 export const client = new ApolloClient({
   cache,
   link,
-  resolvers: {}
+  resolvers: {},
 });
 
-client.onResetStore(async () => cache.writeData({ data: initialState }));
+client.onResetStore(async () => navStructure([]));

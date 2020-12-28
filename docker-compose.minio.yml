@@ -1,0 +1,74 @@
+version: '3.6'
+
+services:
+  mongo:
+    image: mongo:4.0
+
+  storage:
+    image: minio/minio
+    hostname: 'storage'
+    environment:
+      MINIO_ACCESS_KEY: 'MW32h3gd6HvjBEgTRx'
+      MINIO_SECRET_KEY: 't6NgQWUcEyG2AzaDCVkN6sbWcvDCVkN6sGiZ7'
+    volumes:
+      - ./data/data-minio-cypress:/data
+    command: server /data
+    ports:
+      - 9000:9000
+
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      - storage
+    entrypoint: >
+      /bin/sh -c "
+      sleep 3;
+      /usr/bin/mc config host add myminio http://storage:9000 MW32h3gd6HvjBEgTRx t6NgQWUcEyG2AzaDCVkN6sbWcvDCVkN6sGiZ7;
+      /usr/bin/mc rm -r --dangerous --force myminio/sorry-cypress;
+      /usr/bin/mc mb myminio/sorry-cypress;
+      /usr/bin/mc policy set download myminio/sorry-cypress;
+      /usr/bin/mc policy set public myminio/sorry-cypress;
+      exit 0;
+      "
+  director:
+    image: agoldis/sorry-cypress-director:latest
+    links:
+      - 'storage:storage'
+    environment:
+      DASHBOARD_URL: http://localhost:8080
+      EXECUTION_DRIVER: '../execution/mongo/driver'
+      MONGODB_URI: 'mongodb://mongo:27017'
+      MONGODB_DATABASE: 'sorry-cypress'
+
+      SCREENSHOTS_DRIVER: '../screenshots/minio.driver'
+      MINIO_ACCESS_KEY: 'MW32h3gd6HvjBEgTRx'
+      MINIO_SECRET_KEY: 't6NgQWUcEyG2AzaDCVkN6sbWcvDCVkN6sGiZ7'
+      MINIO_ENDPOINT: 'storage'
+      MINIO_URL: 'http://localhost'
+      MINIO_PORT: '9000'
+      MINIO_USESSL: 'false'
+      MINIO_BUCKET: sorry-cypress
+    ports:
+      - 1234:1234
+    depends_on:
+      - mongo
+      - storage
+  api:
+    image: agoldis/sorry-cypress-api:latest
+    environment:
+      MONGODB_URI: 'mongodb://mongo:27017'
+      MONGODB_DATABASE: 'sorry-cypress'
+    ports:
+      - 4000:4000
+    depends_on:
+      - mongo
+
+  dashboard:
+    image: agoldis/sorry-cypress-dashboard:latest
+    environment:
+      GRAPHQL_SCHEMA_URL: http://localhost:4000
+    ports:
+      - 8080:8080
+    depends_on:
+      - mongo
+      - api

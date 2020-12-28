@@ -1,12 +1,7 @@
-FROM node:11.5.0
+FROM node:12-alpine3.12
 WORKDIR /app
 
 COPY package*.json ./
-
-
-RUN npm cache clean --force
-RUN npm cache verify
-
 RUN npm install
 
 COPY tsconfig.json ./

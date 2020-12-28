@@ -1,7 +1,8 @@
-import { gql } from 'apollo-server';
-import { importSchema } from 'graphql-import';
+import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
+import { loadTypedefsSync } from '@graphql-tools/load';
 import path from 'path';
 
-export const typeDefs = gql(
-  importSchema(path.resolve(__dirname, './schema.graphql'))
-);
+const sources = loadTypedefsSync(path.resolve(__dirname, './schema.graphql'), {
+  loaders: [new GraphQLFileLoader()],
+});
+export const typeDefs = sources.map((source) => source.document);

@@ -1,9 +1,9 @@
-import React from 'react';
+import { useAutoRefresh } from '@src/hooks/useAutoRefresh';
+import { getProjectPath, getRunPath, navStructure } from '@src/lib/navigation';
+import React, { useLayoutEffect } from 'react';
 import { RunDetails } from '../components/run/details';
 import { RunSummary } from '../components/run/summary';
 import { useGetRunQuery } from '../generated/graphql';
-import { useApolloClient } from '@apollo/react-hooks';
-import { environment } from '@src/state/environment';
 
 type RunDetailsViewProps = {
   match: {
@@ -16,48 +16,47 @@ export function RunDetailsView({
   match: {
     params: { id },
   },
-}: RunDetailsViewProps): React.ReactNode {
-  const apollo = useApolloClient();
+}: RunDetailsViewProps) {
+  const [shouldAutoRefresh] = useAutoRefresh();
 
-  const { loading, error, data } = useGetRunQuery({
+  const {
+    loading: runLoading,
+    error: runError,
+    data: runData,
+  } = useGetRunQuery({
     variables: { runId: id },
+    pollInterval: shouldAutoRefresh ? 1500 : undefined,
   });
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error.toString()}</p>;
-  if (!data) return <p>No data</p>;
+  useLayoutEffect(() => {
+    if (!runData?.run) {
+      navStructure([]);
+      return;
+    }
 
-  if (!data.run) {
-    apollo.writeData({
-      data: {
-        navStructure: [
-          {
-            __typename: 'NavStructureItem',
-            label: 'Non-existing run',
-            link: `run/missing`,
-          },
-        ],
+    navStructure([
+      {
+        label: runData.run.meta?.projectId,
+        link: getProjectPath(runData.run.meta?.projectId),
       },
-    });
-    return 'Cannot find this run does not exist';
-  }
+      {
+        label: runData?.run?.meta?.ciBuildId,
+        link: getRunPath(runData?.run?.runId),
+      },
+    ]);
+  }, [runData]);
 
-  apollo.writeData({
-    data: {
-      navStructure: [
-        {
-          __typename: 'NavStructureItem',
-          label: data.run!.meta!.ciBuildId,
-          link: `run/${data.run!.runId}`,
-        },
-      ],
-    },
-  });
+  if (runLoading) return <p>Loading...</p>;
+  if (runError) return <p>{runError.toString()}</p>;
+  if (!runData) return <p>No data</p>;
+  if (!runData?.run) {
+    return 'Non-existing run';
+  }
 
   return (
     <>
-      <RunSummary run={data.run} />
-      <RunDetails run={data.run} />
+      <RunSummary run={runData.run} />
+      <RunDetails run={runData.run} />
     </>
   );
 }

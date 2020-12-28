@@ -1,205 +1,247 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Commit } from '@src/components/commit/commit';
+import FlexRow from '@src/components/ui/FlexRow';
+import HeaderLink from '@src/components/ui/HeaderLink';
+import { useAsync } from '@src/hooks/useAsync';
+import { getRunTestsOverall } from '@src/lib/run';
 import {
-  Heading,
+  Alert,
+  Button,
   Cell,
   Grid,
-  Text,
-  Button,
+  Heading,
   HFlow,
   Icon,
   Modal,
   ModalBody,
   ModalFooter,
+  Text,
+  Tooltip,
+  useCss,
 } from 'bold-ui';
+import React, { useEffect, useState } from 'react';
+import { useRouteMatch } from 'react-router-dom';
 import {
-  getRunTestsOverall,
-  updateCacheOnDeleteRun,
-  getRunMetaData,
-} from '@src/lib/run';
-import './summary.css';
-import { Commit } from '@src/components/commit/commit';
-import { Paper } from '../common/';
-import {
+  FullRunSpec,
+  GetRunsFeedDocument,
   Run,
   useDeleteRunMutation,
-  FullRunSpec,
 } from '../../generated/graphql';
-import { environment } from '@src/state/environment';
+import { shortEnglishHumanizerWithMsIfNeeded } from '../../lib/utis';
+import { Paper } from '../common/';
+import { FormattedDate } from '../common/date';
+import RenderOnInterval from '../renderOnInterval/renderOnInterval';
+import { CiUrl } from '@src/components/ci/ci';
+import { theme } from '@src/theme/theme';
 
 type RunSummaryProps = {
   run: Partial<Run> & { runId: string; specs: Array<FullRunSpec> };
 };
 
-export function RunSummary({ run }: RunSummaryProps): React.ReactNode {
-  const { meta, runId, specs, createdAt } = run;
-  const [startDeleteRunMutation] = useDeleteRunMutation({
+const DeleteButton = ({
+  runId,
+  ciBuildId,
+}: {
+  runId: string;
+  ciBuildId: string;
+}) => {
+  const {
+    params: { projectId },
+  } = useRouteMatch<{ projectId: string }>();
+
+  const [deleteRunMutation] = useDeleteRunMutation({
     variables: {
       runId,
     },
-    update: updateCacheOnDeleteRun,
+    refetchQueries: [
+      {
+        query: GetRunsFeedDocument,
+        variables: {
+          filters: [
+            {
+              key: 'meta.projectId',
+              value: projectId,
+            },
+          ],
+          cursor: '',
+        },
+      },
+    ],
   });
-  const [deleting, setDeleting] = useState(false);
-  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [startDeleteRun, deleting, deleteResult, deleteError] = useAsync(
+    deleteRunMutation
+  );
   const [shouldShowModal, setShowModal] = useState(false);
 
+  function deleteRun() {
+    startDeleteRun();
+  }
   useEffect(() => {
-    let mounted = true;
-    if (!deleting) {
+    if (!deleteResult) {
       return;
     }
-    setDeleting(true);
-
-    startDeleteRunMutation()
-      .then((result) => {
-        if (!mounted) {
-          return;
-        }
-        if (result.errors) {
-          setDeleteError(result.errors[0].message);
-          setDeleting(false);
-        } else {
-          setDeleting(false);
-          setShowModal(false);
-        }
-      })
-      .catch((error) => {
-        if (!mounted) {
-          return;
-        }
-        setDeleting(false);
-        setDeleteError(error.toString());
-      });
-    return () => {
-      mounted = false;
-    };
-  }, [deleting]);
-
-  function deleteRun() {
-    setDeleting(true);
-  }
-
-  const overall = getRunTestsOverall(run);
-  const metaData = getRunMetaData(run);
-
+    setShowModal(false);
+  }, [deleteResult]);
   return (
     <>
-      {/* <Modal
-                size="small"
-                onClose={() => setShowModal(false)}
-                open={shouldShowModal}
-            >
-                <ModalBody>
-                    <HFlow alignItems="center">
-                        <Icon
-                            icon="exclamationTriangleFilled"
-                            style={{ marginRight: '0.5rem' }}
-                            size={3}
-                            fill="danger"
-                        />
-                        <div>
-                            <Heading level={1}>Delete run {run.meta?.ciBuildId}?</Heading>
-                            <Heading level={5}>
-                                Deleting run will permanently delete the associated data (run,
-                                instances, test results). Running tests associated with the run
-                                will fail.
-                            </Heading>
-                            {deleteError && <p>Delete error: {deleteError}</p>}
-                        </div>
-                    </HFlow>
-                </ModalBody>
-                <ModalFooter>
-                    <HFlow justifyContent="flex-end">
-                        <Button
-                            kind="normal"
-                            skin="ghost"
-                            onClick={() => setShowModal(false)}
-                        >
-                            <Text color="inherit">Cancel</Text>
-                        </Button>
-                        <Button
-                            kind="danger"
-                            skin="ghost"
-                            onClick={deleteRun}
-                            disabled={deleting}
-                        >
-                            <Icon icon="trashOutline" style={{ marginRight: '0.5rem' }}/>
-                            <Text color="inherit">{deleting ? 'Deleting' : 'Delete'}</Text>
-                        </Button>
-                    </HFlow>
-                </ModalFooter>
-            </Modal> */}
-
-      <div className={'t-element'}>
-        <span className={`t-state t-state--${overall.state}`}></span>
-        <div className={'t-title'}>
-          <img
-            className={'t-is-front-img'}
-            src={
-              metaData.isTriggeredFromFront
-                ? 'https://angular.io/assets/images/logos/angular/angular.svg'
-                : 'https://nodejs.org/static/images/logo.svg'
-            }
-          />
-          <span className={`t-tag t-tag--${metaData.tag}`}>{metaData.tag}</span>
-          <h1 style={{ flexGrow: 1 }}>
-            <a
-              href={`${environment.BASE_URL}/run/${runId}`}
-              style={{ marginRight: '24px' }}
-            >
-              {metaData?.commitSha}
-            </a>
-            {metaData?.commitMsg}
-          </h1>
-          {/* <Button kind="danger" skin="ghost" onClick={() => setShowModal(true)}>
-                        <Icon icon="trashOutline" style={{ marginRight: '0.5rem' }}/>
-                    </Button> */}
-        </div>
-        <HFlow
-          alignItems="center"
-          style={{ marginBottom: '12px', marginLeft: '24px' }}
-        >
-          <h4>
-            Branch:{' '}
-            <a href={`${environment.BASE_URL}/?branch=${metaData?.branch}`}>
-              {metaData?.branch ?? 'unknown branch'}
-            </a>
-          </h4>
-          <h4>Author: {metaData.commitAuthor}</h4>
-          <h4>created at: {new Date(run.createdAt).toLocaleString()}</h4>
-        </HFlow>
-        <Grid>
-          <Cell xs={12} md={6}>
-            <ul>
-              <li>
-                <Text>Tests: {overall.tests}</Text>
-              </li>
-              <li>
-                <Text>Passes: {overall.passes}</Text>
-              </li>
-              <li>
-                <Text color={overall.failures ? 'danger' : 'normal'}>
-                  Failures: {overall.failures}
-                </Text>
-              </li>
-              <li>
-                <Text color={overall.pending ? 'disabled' : 'normal'}>
-                  Skipped: {overall.pending}
-                </Text>
-              </li>
-            </ul>
-          </Cell>
-          <Cell xs={12} md={6}>
+      <Modal
+        size="small"
+        onClose={() => setShowModal(false)}
+        open={shouldShowModal}
+      >
+        <ModalBody>
+          <HFlow alignItems="center">
+            <Icon
+              icon="exclamationTriangleFilled"
+              style={{ marginRight: '0.5rem' }}
+              size={3}
+              fill="danger"
+            />
             <div>
-              <strong>Spec files</strong>
-              <ul>
-                <li>Overall: {specs.length}</li>
-                <li>Claimed: {specs.filter((s) => s?.claimed).length}</li>
-              </ul>
+              <Heading level={1}>Delete run {ciBuildId}?</Heading>
+              <Heading level={5}>
+                Deleting run will permanently delete the associated data (run,
+                instances, test results). Running tests associated with the run
+                will fail.
+              </Heading>
+              {deleteError && (
+                <Alert type="danger" style={{ margin: '1rem' }}>
+                  Delete error: {deleteError.toString()}
+                </Alert>
+              )}
             </div>
-          </Cell>
-        </Grid>
-      </div>
+          </HFlow>
+        </ModalBody>
+        <ModalFooter>
+          <HFlow justifyContent="flex-end">
+            <Button
+              kind="normal"
+              skin="ghost"
+              onClick={() => setShowModal(false)}
+            >
+              <Text color="inherit">Cancel</Text>
+            </Button>
+            <Button
+              kind="danger"
+              skin="ghost"
+              onClick={deleteRun}
+              disabled={deleting}
+            >
+              <Icon icon="trashOutline" style={{ marginRight: '0.5rem' }} />
+              <Text color="inherit">{deleting ? 'Deleting' : 'Delete'}</Text>
+            </Button>
+          </HFlow>
+        </ModalFooter>
+      </Modal>
+      <Button kind="danger" skin="ghost" onClick={() => setShowModal(true)}>
+        <Icon icon="trashOutline" style={{ marginRight: '0.5rem' }} />
+        <Text color="inherit">Delete</Text>
+      </Button>
     </>
+  );
+};
+
+export function RunSummary({ run }: RunSummaryProps) {
+  const { css } = useCss();
+  const centeredIconClassName = css(`{
+    display: flex;
+    align-items: center;
+  }`);
+  const { meta, runId, specs } = run;
+
+  const overall = getRunTestsOverall(run);
+  return (
+    <Paper>
+      <FlexRow>
+        <HeaderLink to={`/run/${runId}`}><b>{meta?.commit.branch}:</b> {meta?.commit.message}</HeaderLink>
+        <DeleteButton runId={runId} ciBuildId={meta?.ciBuildId || ''} />
+      </FlexRow>
+      <Grid>
+        <Cell xs={12} md={6}>
+          <div>
+            <Text>
+              Started At: <FormattedDate value={overall.wallClockStartedAt} />
+            </Text>
+          </div>
+          <div>
+            <Text>
+              Duration:{' '}
+              {overall?.wallClockDuration ? (
+                <Text>
+                  {shortEnglishHumanizerWithMsIfNeeded(
+                    overall?.wallClockDuration
+                  )}
+                </Text>
+              ) : null}
+              {!overall?.wallClockDuration && overall.wallClockStartedAt ? (
+                <Text>
+                  <RenderOnInterval
+                    live
+                    refreshIntervalInSeconds={1}
+                    renderChild={() => {
+                      return `${shortEnglishHumanizerWithMsIfNeeded(
+                        Date.now() -
+                          new Date(overall.wallClockStartedAt).getTime()
+                      )}`;
+                    }}
+                  />
+                </Text>
+              ) : null}
+            </Text>
+          </div>
+          <div style={{ display: 'flex' }}>
+            <Text style={{ marginRight: '10px' }}>
+              <Tooltip text="Total Tests">
+                <span className={centeredIconClassName}>
+                  <Icon icon="fileWithItensOutline" size={1} />
+                  {overall.tests}
+                </span>
+              </Tooltip>
+            </Text>
+            <Text color="success" style={{ marginRight: '10px' }}>
+              <Tooltip text="Successful">
+                <span className={centeredIconClassName}>
+                  <Icon icon="checkCircleOutline" size={1} />
+                  {overall.passes}
+                </span>
+              </Tooltip>
+            </Text>
+            <Text
+              color={overall.failures ? 'danger' : 'normal'}
+              style={{ marginRight: '10px' }}
+            >
+              <Tooltip text="Failed">
+                <span className={centeredIconClassName}>
+                  <Icon icon="exclamationTriangleOutline" size={1} />
+                  {overall.failures}
+                </span>
+              </Tooltip>
+            </Text>
+            <Text
+              color={overall.pending ? 'disabled' : 'normal'}
+              style={{ marginRight: '10px' }}
+            >
+              <Tooltip text="Skipped Tests">
+                <span className={centeredIconClassName}>
+                  <Icon icon="timesOutline" size={1} />
+                  {overall.pending}
+                </span>
+              </Tooltip>
+            </Text>
+          </div>
+
+          <div style={{ marginTop: theme.sizes.text }}>
+            <strong>Spec files</strong>
+            <ul>
+              <li>Overall: {specs.length}</li>
+              <li>Claimed: {specs.filter((s) => s?.claimed).length}</li>
+            </ul>
+          </div>
+        </Cell>
+        <Cell xs={12} md={6}>
+          <Commit commit={meta?.commit} />
+          <CiUrl ciBuildId={meta?.ciBuildId} projectId={meta?.projectId} />
+        </Cell>
+      </Grid>
+    </Paper>
   );
 }

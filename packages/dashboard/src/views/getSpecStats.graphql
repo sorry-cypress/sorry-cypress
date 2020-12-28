@@ -1,0 +1,8 @@
+# Write your query or mutation here
+query getSpecStats($spec: String!) {
+  specStats(spec: $spec) {
+    spec
+    count
+    avgWallClockDuration
+  }
+}

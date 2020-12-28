@@ -1,9 +1,14 @@
-import React from 'react';
-import { InstanceSummary } from '../components/instance/summary';
+import { useAutoRefresh } from '@src/hooks/useAutoRefresh';
+import {
+  getInstancePath,
+  getProjectPath,
+  getRunPath,
+  navStructure,
+} from '@src/lib/navigation';
+import React, { useLayoutEffect } from 'react';
 import { InstanceDetails } from '../components/instance/details';
+import { InstanceSummary } from '../components/instance/summary';
 import { useGetInstanceQuery } from '../generated/graphql';
-import { useApolloClient } from '@apollo/react-hooks';
-import { environment } from '@src/state/environment';
 
 type InstanceDetailsViewProps = {
   match: {
@@ -16,11 +21,33 @@ export function InstanceDetailsView({
   match: {
     params: { id },
   },
-}: InstanceDetailsViewProps): React.ReactNode {
+}: InstanceDetailsViewProps) {
+  const [shouldAutoRefresh] = useAutoRefresh();
+
   const { loading, error, data } = useGetInstanceQuery({
     variables: { instanceId: id },
+    pollInterval: shouldAutoRefresh ? 1500 : undefined,
   });
-  const apollo = useApolloClient();
+
+  useLayoutEffect(() => {
+    if (!data?.instance) {
+      return;
+    }
+    navStructure([
+      {
+        label: data.instance?.run?.meta?.projectId,
+        link: getProjectPath(data.instance?.run?.meta?.projectId),
+      },
+      {
+        label: data.instance.run?.meta?.ciBuildId,
+        link: getRunPath(data.instance?.runId),
+      },
+      {
+        label: data.instance.spec,
+        link: getInstancePath(data.instance.instanceId),
+      },
+    ]);
+  }, [data]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error.toString()}</p>;
@@ -30,23 +57,7 @@ export function InstanceDetailsView({
     return <p>No data reported so far</p>;
   }
 
-  apollo.writeData({
-    data: {
-      navStructure: [
-        {
-          __typename: 'NavStructureItem',
-          label: data.instance!.run!.meta!.ciBuildId,
-          link: `run/${data.instance!.runId}`,
-        },
-        {
-          __typename: 'NavStructureItem',
-          label: data.instance.spec,
-          link: `instance/${data.instance.instanceId}`,
-        },
-      ],
-    },
-  });
-  if (!data.instance.results) {
+  if (!data.instance?.results) {
     return (
       <div>
         No results yet for spec <strong>{data.instance.spec}</strong>

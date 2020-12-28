@@ -1,9 +1,9 @@
 import aws from 'aws-sdk';
 import {
+  S3_BUCKET,
   S3_REGION,
   S3_IMAGE_KEY_PREFIX,
   S3_VIDEO_KEY_PREFIX,
-  S3_BUCKET,
   FILES_EXPIRATION,
   S3_ENDPOINT,
   S3_FORCE_PATH_STYLE,
@@ -12,6 +12,7 @@ import { S3SignedUploadResult } from './types';
 import { AssetUploadInstruction } from '@src/types';
 import { sanitizeS3KeyPrefix } from './utils';
 
+const BUCKET_URL = `https://${S3_BUCKET}.s3.amazonaws.com`;
 const ImageContentType = 'image/png';
 const VideoContentType = 'video/mp4';
 
@@ -33,17 +34,24 @@ export const getUploadUrl = async ({
   ContentType = ImageContentType,
   Expires = FILES_EXPIRATION,
 }: GetUploadURLParams): Promise<S3SignedUploadResult> => {
-  const s3ParamsRead = {
+  const s3Params = {
     Bucket: S3_BUCKET,
-    Expires,
     Key: key,
-  };
-
-  const s3ParamsUpload = {
     Expires,
     ContentType,
-    ...s3ParamsRead,
   };
+
+  const s3ParamsRead = {
+      Bucket: S3_BUCKET,
+      Expires,
+      Key: key,
+    };
+  
+    const s3ParamsUpload = {
+      Expires,
+      ContentType,
+      ...s3ParamsRead,
+    };
 
   return new Promise((resolve, reject) => {
     const signedReadURL = s3.getSignedUrl('getObject', s3ParamsRead);

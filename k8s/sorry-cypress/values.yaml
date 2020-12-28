@@ -22,7 +22,7 @@ api:
     protocol: TCP
   ingress:
     enabled: true
-    host_prefix: sorry-cypress-api
+    host_prefix: sorry-cypress-api-new
     annotations:
       kubernetes.io/ingress.class: traefik
       traefik.ingress.kubernetes.io/router.tls: 'true'
@@ -47,7 +47,7 @@ dashboard:
     protocol: TCP
   ingress:
     enabled: true
-    host_prefix: sorry-cypress-dashboard
+    host_prefix: sorry-cypress-dashboard-new
     annotations:
       kubernetes.io/ingress.class: traefik
       traefik.ingress.kubernetes.io/router.tls: 'true'
@@ -73,7 +73,7 @@ director:
     protocol: TCP
   ingress:
     enabled: true
-    host_prefix: sorry-cypress-director
+    host_prefix: sorry-cypress-director-new
     annotations:
       kubernetes.io/ingress.class: traefik
       traefik.ingress.kubernetes.io/router.tls: 'true'

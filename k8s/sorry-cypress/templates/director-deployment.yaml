@@ -67,14 +67,14 @@ spec:
             - name: {{ .Values.director.service.name }}
               containerPort: {{ .Values.director.service.port }}
               protocol: {{ .Values.director.service.protocol }}
-          livenessProbe:
-            httpGet:
-              path: /health-check
-              port: {{ .Values.director.service.name }}
-          readinessProbe:
-            httpGet:
-              path: /health-check
-              port: {{ .Values.director.service.name }}
+          # livenessProbe:
+          #   httpGet:
+          #     path: /health-check
+          #     port: {{ .Values.director.service.name }}
+          # readinessProbe:
+          #   httpGet:
+          #     path: /health-check
+          #     port: {{ .Values.director.service.name }}
           resources:
       {{- toYaml .Values.director.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

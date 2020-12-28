@@ -1,104 +1,83 @@
+import { Project } from '@src/duplicatedFromDirector/project.types';
 import { GraphQLDateTime } from 'graphql-iso-date';
 import { AppDatasources } from '@src/datasources/types';
+import { ProjectsAPI } from '@src/datasources/projects';
+import { RunsAPI } from '@src/datasources/runs';
+import { SpecsAPI } from '@src/datasources/specs';
+import {
+  InstanceTest,
+  InstanceTestV5,
+  OrderingOptions,
+} from '@src/generated/graphql';
 
 export const resolvers = {
   DateTime: GraphQLDateTime,
-  Run: {
-    runId: (parent) => parent._id,
-    tests: (parent) => {
-      return parent.specs.reduce((acc, spec) => {
-        if (!spec.results) return acc;
-        return acc + (spec.results.stats.tests || 0);
-      }, 0);
-    },
-    failures: (parent) => {
-      return parent.specs.reduce((acc, spec) => {
-        if (!spec.results) return acc;
-        return acc + (spec.results.stats.failures || 0);
-      }, 0);
-    },
-    passes: (parent) => {
-      return parent.specs.reduce((acc, spec) => {
-        if (!spec.results) return acc;
-        return acc + (spec.results.stats.passes || 0);
-      }, 0);
-    },
-    pending: (parent) => {
-      return parent.specs.reduce((acc, spec) => {
-        if (!spec.results) return acc;
-        return acc + (spec.results.stats.pending || 0);
-      }, 0);
-    },
-    skipped: (parent) => {
-      return parent.specs.reduce((acc, spec) => {
-        if (!spec.results) return acc;
-        return acc + (spec.results.stats.skipped || 0);
-      }, 0);
+  InstanceTestUnion: {
+    __resolveType(obj: InstanceTestV5 & InstanceTest) {
+      if (obj.attempts) {
+        return 'InstanceTestV5';
+      }
+
+      return 'InstanceTest';
     },
   },
   Query: {
-    runs: (
-      _,
-      { orderDirection }: { orderDirection: any },
-      { dataSources }: { dataSources: AppDatasources }
-    ) => dataSources.runsAPI.getAllRuns({ orderDirection }),
-    runFeed: async (
-      _,
-      { cursor, branch }: { cursor?: string; branch?: string },
+    projects: (
+      _: any,
+      { orderDirection, filters }: Parameters<ProjectsAPI['getProjects']>[0],
       { dataSources }: { dataSources: AppDatasources }
     ) => {
-      const res = await dataSources.runsAPI.getRunFeed({
-        cursor: cursor || false,
-        branch: branch || null,
-      });
-      return res;
+      return dataSources.projectsAPI.getProjects({ orderDirection, filters });
     },
-    specsRandom: async (
-      _,
-      { branch }: { branch?: string },
-      { dataSources }: { dataSources: AppDatasources }
-    ) => {
-      const res = await dataSources.runsAPI.getSpecsRandom({
-        branch: branch || null,
-      });
-      return res;
-    },
-    run: async (
-      _,
+    project: (
+      _: any,
       { id }: { id: string },
       { dataSources }: { dataSources: AppDatasources }
+    ) => dataSources.projectsAPI.getProjectById(id),
+    runs: (
+      _: any,
+      { orderDirection, filters }: Parameters<RunsAPI['getAllRuns']>[0],
+      { dataSources }: { dataSources: AppDatasources }
     ) => {
-      const res = await dataSources.runsAPI.getRunById(id);
-      return res;
+      return dataSources.runsAPI.getAllRuns({ orderDirection, filters });
     },
+    runFeed: (
+      _: any,
+      { cursor, filters }: Parameters<RunsAPI['getRunFeed']>[0],
+      { dataSources }: { dataSources: AppDatasources }
+    ) => dataSources.runsAPI.getRunFeed({ cursor: cursor || false, filters }),
+    run: (
+      _: any,
+      { id }: { id: string },
+      { dataSources }: { dataSources: AppDatasources }
+    ) => dataSources.runsAPI.getRunById(id),
+    specStats: (
+      _: any,
+      args: Parameters<SpecsAPI['getSpecStats']>[0],
+      { dataSources }: { dataSources: AppDatasources }
+    ) => dataSources.specsAPI.getSpecStats(args),
     instance: (
-      _,
+      _: any,
       { id }: { id: string },
       { dataSources }: { dataSources: AppDatasources }
     ) => dataSources.instancesAPI.getInstanceById(id),
-
-    branches: (_, args, { dataSources }: { dataSources: AppDatasources }) =>
-      dataSources.runsAPI.getBranches(),
   },
   Mutation: {
     deleteRun: async (
-      _,
+      _: any,
       { runId }: { runId: string },
       { dataSources }: { dataSources: AppDatasources }
     ) => {
-      const instancesDeleteResponse = await dataSources.instancesAPI.deleteInstancesByRunIds(
-        [runId]
+      return resolvers.Mutation.deleteRuns(
+        _,
+        { runIds: [runId] },
+        { dataSources }
       );
-      if (instancesDeleteResponse.success) {
-        return dataSources.runsAPI.deleteRunsByIds([runId]);
-      } else {
-        return instancesDeleteResponse;
-      }
     },
     deleteRuns: async (
-      _,
+      _: any,
       { runIds }: { runIds: string[] },
-      { dataSources }
+      { dataSources }: { dataSources: AppDatasources }
     ) => {
       const instancesDeleteResponse = await dataSources.instancesAPI.deleteInstancesByRunIds(
         runIds
@@ -110,7 +89,7 @@ export const resolvers = {
       }
     },
     deleteRunsInDateRange: async (
-      _,
+      _: any,
       { startDate, endDate }: { startDate: Date; endDate: Date },
       { dataSources }: { dataSources: AppDatasources }
     ) => {
@@ -122,6 +101,42 @@ export const resolvers = {
         return dataSources.runsAPI.deleteRunsInDateRange(startDate, endDate);
       } else {
         return instancesDeleteResponse;
+      }
+    },
+    createProject: (
+      _: any,
+      { project }: { project: Project },
+      { dataSources }: { dataSources: AppDatasources }
+    ) => dataSources.projectsAPI.createProject(project),
+    updateProject: (
+      _: any,
+      { project }: { project: Project },
+      { dataSources }: { dataSources: AppDatasources }
+    ) => dataSources.projectsAPI.updateProject(project),
+    deleteProject: async (
+      _: any,
+      { projectId }: Project,
+      { dataSources }: { dataSources: AppDatasources }
+    ) => {
+      const runsMatchingProjectResponse = await dataSources.runsAPI.getAllRuns({
+        orderDirection: OrderingOptions.Desc,
+        filters: [
+          {
+            key: 'meta.projectId',
+            value: projectId,
+          },
+        ],
+      });
+
+      const runsDeleteResponse = await resolvers.Mutation.deleteRuns(
+        _,
+        { runIds: runsMatchingProjectResponse.map((run) => run.runId) },
+        { dataSources }
+      );
+      if (runsDeleteResponse.success) {
+        return dataSources.projectsAPI.deleteProjectsByIds([projectId]);
+      } else {
+        return runsDeleteResponse;
       }
     },
   },

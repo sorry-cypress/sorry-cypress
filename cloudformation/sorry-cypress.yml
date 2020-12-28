@@ -1,0 +1,542 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description:
+  A stack for deploying containerized sorry-cypress applications in AWS Fargate.
+  An open-source, on-premise, self-hosted alternative to Cypress dashboard. Read more at https://github.com/agoldis/sorry-cypress
+
+Parameters:
+  StackName:
+    Type: String
+    Default: sorry-cypress-unique
+    Description: The unique name of the stack that you are creating. Necessary to scope and identify resources created by that stack.
+
+  TaskCpu:
+    Type: Number
+    Default: 1024
+    Description: How much CPU to give the task. 1024 is 1 CPU
+
+  TaskMemory:
+    Type: Number
+    Default: 2048
+    Description: How much memory in megabytes to give the task
+
+  DirectorPort:
+    Type: Number
+    Default: 8080
+    Description: What port number to use for accessing director service
+
+Mappings:
+  # Hard values for the subnet masks. These masks define
+  # the range of internal IP addresses that can be assigned.
+  # The VPC can have all IP's from 10.0.0.0 to 10.0.255.255
+  # There are two subnets which cover the ranges:
+  #
+  # 10.0.0.0 - 10.0.0.255
+  # 10.0.1.0 - 10.0.1.255
+  #
+  # If you need more IP addresses (perhaps you have so many
+  # instances that you run out) then you can customize these
+  # ranges to add more
+  SubnetConfig:
+    VPC:
+      CIDR: '10.0.0.0/16'
+    PublicOne:
+      CIDR: '10.0.0.0/24'
+    PublicTwo:
+      CIDR: '10.0.1.0/24'
+Resources:
+  # VPC in which containers will be networked.
+  # It has two public subnets
+  # We distribute the subnets across the first two available subnets
+  # for the region, for high availability.
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      CidrBlock: !FindInMap ['SubnetConfig', 'VPC', 'CIDR']
+
+  # Two public subnets, where containers can have public IP addresses
+  PublicSubnetOne:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone:
+        Fn::Select:
+          - 0
+          - Fn::GetAZs: { Ref: 'AWS::Region' }
+      VpcId: !Ref 'VPC'
+      CidrBlock: !FindInMap ['SubnetConfig', 'PublicOne', 'CIDR']
+      MapPublicIpOnLaunch: true
+  PublicSubnetTwo:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone:
+        Fn::Select:
+          - 1
+          - Fn::GetAZs: { Ref: 'AWS::Region' }
+      VpcId: !Ref 'VPC'
+      CidrBlock: !FindInMap ['SubnetConfig', 'PublicTwo', 'CIDR']
+      MapPublicIpOnLaunch: true
+
+  # Setup networking resources for the public subnets. Containers
+  # in the public subnets have public IP addresses and the routing table
+  # sends network traffic via the internet gateway.
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+  GatewayAttachement:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref 'VPC'
+      InternetGatewayId: !Ref 'InternetGateway'
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref 'VPC'
+  PublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: GatewayAttachement
+    Properties:
+      RouteTableId: !Ref 'PublicRouteTable'
+      DestinationCidrBlock: '0.0.0.0/0'
+      GatewayId: !Ref 'InternetGateway'
+  PublicSubnetOneRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnetOne
+      RouteTableId: !Ref PublicRouteTable
+  PublicSubnetTwoRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnetTwo
+      RouteTableId: !Ref PublicRouteTable
+
+  # ECS Resources
+  ECSCluster:
+    Type: AWS::ECS::Cluster
+
+  # A security group for the containers we will run in Fargate.
+  # Two rules, allowing network traffic from a public facing load
+  # balancer and from other members of the security group.
+  #
+  # Remove any of the following ingress rules that are not needed.
+  # If you want to make direct requests to a container using its
+  # public IP address you'll need to add a security group rule
+  # to allow traffic from all IP addresses.
+  FargateContainerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId: !Ref 'VPC'
+      GroupName: !Join [':', [!Ref 'AWS::StackName', 'fargate-sg']]
+      GroupDescription: Access to the Fargate containers
+
+  PublicLoadBalancerSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId: !Ref 'VPC'
+      GroupName: !Join [':', [!Ref 'AWS::StackName', 'load-balancer-sg']]
+      GroupDescription: Access to the public facing load balancer
+      SecurityGroupIngress:
+        # Allow access to ALB from anywhere on the internet
+        - CidrIp: 0.0.0.0/0
+          IpProtocol: -1
+
+  EcsSecurityGroupIngressFromPublicALB:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      Description: Ingress from the public ALB
+      GroupId: !Ref 'FargateContainerSecurityGroup'
+      IpProtocol: -1
+      SourceSecurityGroupId: !Ref 'PublicLoadBalancerSG'
+
+  EcsSecurityGroupIngressFromSelf:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      Description: Ingress from other containers in the same security group
+      GroupId: !Ref 'FargateContainerSecurityGroup'
+      IpProtocol: -1
+      SourceSecurityGroupId: !Ref 'FargateContainerSecurityGroup'
+
+  # Load balancers for getting traffic to containers.
+  # This sample template creates one load balancer:
+  #
+  # - One public load balancer, hosted in public subnets that is accessible
+  #   to the public, and is intended to route traffic to one or more public
+  #   facing services.
+
+  # A public facing load balancer, this is used for accepting traffic from the public
+  # internet and directing it to public facing microservices
+  PublicLoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: !Ref 'AWS::StackName'
+      Scheme: internet-facing
+      LoadBalancerAttributes:
+        - Key: idle_timeout.timeout_seconds
+          Value: '30'
+      Subnets:
+        # The load balancer is placed into the public subnets, so that traffic
+        # from the internet can reach the load balancer directly via the internet gateway
+        - !Ref PublicSubnetOne
+        - !Ref PublicSubnetTwo
+      SecurityGroups: [!Ref 'PublicLoadBalancerSG']
+
+  PublicLoadBalancerListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    DependsOn:
+      - PublicLoadBalancer
+    Properties:
+      DefaultActions:
+        - TargetGroupArn: !Ref 'TargetGroupDashboard'
+          Type: 'forward'
+      LoadBalancerArn: !Ref 'PublicLoadBalancer'
+      Port: 80
+      Protocol: HTTP
+
+  PublicLoadBalancerListenerDirector:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    DependsOn:
+      - PublicLoadBalancer
+    Properties:
+      DefaultActions:
+        - TargetGroupArn: !Ref 'TargetGroupDirector'
+          Type: 'forward'
+      LoadBalancerArn: !Ref 'PublicLoadBalancer'
+      Port: !Ref 'DirectorPort'
+      Protocol: HTTP
+
+  ### Routing load balancer to services
+  # Director
+  TargetGroupDirector:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckIntervalSeconds: 6
+      HealthCheckPath: /
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 2
+      TargetType: ip
+      Name: !Join ['-', [!Ref 'AWS::StackName', 'director-tg']]
+      Port: 1234
+      Matcher:
+        HttpCode: 302
+      Protocol: HTTP
+      UnhealthyThresholdCount: 2
+      VpcId: !Ref VPC
+
+  # API
+  TargetGroupAPI:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckIntervalSeconds: 6
+      HealthCheckPath: /
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 2
+      TargetType: ip
+      Name: !Join ['-', [!Ref 'AWS::StackName', 'api-tg']]
+      Port: 4000
+      Matcher:
+        HttpCode: 400
+      Protocol: HTTP
+      UnhealthyThresholdCount: 2
+      VpcId: !Ref VPC
+
+  # Dashboard
+  TargetGroupDashboard:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckIntervalSeconds: 6
+      HealthCheckPath: /
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 2
+      TargetType: ip
+      Name: !Join ['-', [!Ref 'AWS::StackName', 'dashboard-tg']]
+      Port: !Ref 'DirectorPort'
+      Protocol: HTTP
+      UnhealthyThresholdCount: 2
+      VpcId: !Ref VPC
+
+  LoadBalancerRuleAPI:
+    Type: AWS::ElasticLoadBalancingV2::ListenerRule
+    Properties:
+      Actions:
+        - TargetGroupArn: !Ref 'TargetGroupAPI'
+          Type: 'forward'
+      Conditions:
+        - Field: path-pattern
+          Values:
+            - /api
+      ListenerArn: !Ref 'PublicLoadBalancerListener'
+      Priority: 2
+
+  # This is an IAM role which authorizes ECS to manage resources on your
+  # account on your behalf, such as updating your load balancer with the
+  # details of where your containers are, so that traffic can reach your
+  # containers.
+  ECSRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: [ecs.amazonaws.com]
+            Action: ['sts:AssumeRole']
+      Path: /
+      Policies:
+        - PolicyName: ecs-service
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  # Rules which allow ECS to attach network interfaces to instances
+                  # on your behalf in order for awsvpc networking mode to work right
+                  - 'ec2:AttachNetworkInterface'
+                  - 'ec2:CreateNetworkInterface'
+                  - 'ec2:CreateNetworkInterfacePermission'
+                  - 'ec2:DeleteNetworkInterface'
+                  - 'ec2:DeleteNetworkInterfacePermission'
+                  - 'ec2:Describe*'
+                  - 'ec2:DetachNetworkInterface'
+
+                  # Rules which allow ECS to update load balancers on your behalf
+                  # with the information sabout how to send traffic to your containers
+                  - 'elasticloadbalancing:DeregisterInstancesFromLoadBalancer'
+                  - 'elasticloadbalancing:DeregisterTargets'
+                  - 'elasticloadbalancing:Describe*'
+                  - 'elasticloadbalancing:RegisterInstancesWithLoadBalancer'
+                  - 'elasticloadbalancing:RegisterTargets'
+                Resource: '*'
+
+  # Screenshots bucket
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Join ['-', [!Ref 'AWS::StackName', 'test-results']]
+      AccessControl: PublicRead
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+              - '*'
+            AllowedMethods:
+              - 'POST'
+              - 'GET'
+              - 'PUT'
+              - 'DELETE'
+              - 'HEAD'
+            AllowedOrigins:
+              - '*'
+
+  # This is a role that's used by container payload
+  TaskRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: [ecs-tasks.amazonaws.com]
+            Action: ['sts:AssumeRole']
+      Path: /
+      Policies:
+        - PolicyName: !Join ['-', [!Ref 'AWS::StackName', 's3-write']]
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  # Allow ECS task to upload new objects
+                  - 's3:PutObject'
+                  - 's3:PutObjectAcl'
+                Resource: !Join ['', [!GetAtt 'S3Bucket.Arn', '/*']]
+
+  # This is a role which is used by the ECS agent
+  ECSTaskExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: [ecs-tasks.amazonaws.com]
+            Action: ['sts:AssumeRole']
+      Path: /
+      Policies:
+        - PolicyName: AmazonECSTaskExecutionRolePolicy
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  # Allow the ECS Tasks to download images from ECR
+                  - 'ecr:GetAuthorizationToken'
+                  - 'ecr:BatchCheckLayerAvailability'
+                  - 'ecr:GetDownloadUrlForLayer'
+                  - 'ecr:BatchGetImage'
+
+                  # Allow the ECS tasks to upload logs to CloudWatch
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource: '*'
+
+  CloudWatchGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Join ['/', ['/ecs', !Ref 'AWS::StackName', 'logs']]
+      RetentionInDays: 7
+
+  EcsTaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: 'sorry-cypress-bundle-cf'
+      NetworkMode: awsvpc
+      Memory: !Ref 'TaskMemory'
+      Cpu: !Ref 'TaskCpu'
+      TaskRoleArn: !GetAtt 'TaskRole.Arn'
+      ExecutionRoleArn: !GetAtt 'ECSTaskExecutionRole.Arn'
+      RequiresCompatibilities:
+        - FARGATE
+      ContainerDefinitions:
+        - Image: docker.io/mongo:4
+          Essential: true
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref CloudWatchGroup
+              awslogs-region: !Ref 'AWS::Region'
+              awslogs-stream-prefix: ecs
+          Environment:
+            - Name: MONGO_INITDB_ROOT_PASSWORD
+              Value: sorry-cypress
+            - Name: MONGO_INITDB_ROOT_USERNAME
+              Value: sorry-cypress
+          Name: mongo
+
+        - Image: docker.io/agoldis/sorry-cypress-director
+          Essential: true
+          PortMappings:
+            - ContainerPort: 1234
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref CloudWatchGroup
+              awslogs-region: !Ref 'AWS::Region'
+              awslogs-stream-prefix: ecs
+          Environment:
+            - Name: DASHBOARD_URL
+              Value: !Join ['', ['http://', !GetAtt PublicLoadBalancer.DNSName]]
+            - Name: EXECUTION_DRIVER
+              Value: ../execution/mongo/driver
+            - Name: SCREENSHOTS_DRIVER
+              Value: ../screenshots/s3.driver
+            - Name: MONGODB_DATABASE
+              Value: sorry-cypress
+            - Name: MONGODB_URI
+              Value: mongodb://sorry-cypress:sorry-cypress@127.0.0.1:27017
+            - Name: S3_BUCKET
+              Value: !Join ['-', [!Ref 'AWS::StackName', 'test-results']]
+            - Name: S3_REGION
+              Value: !Ref 'AWS::Region'
+          DependsOn:
+            - ContainerName: mongo
+              Condition: START
+          Name: director
+
+        - Image: docker.io/agoldis/sorry-cypress-api
+          PortMappings:
+            - ContainerPort: 4000
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref CloudWatchGroup
+              awslogs-region: !Ref 'AWS::Region'
+              awslogs-stream-prefix: ecs
+          Environment:
+            - Name: MONGODB_DATABASE
+              Value: sorry-cypress
+            - Name: MONGODB_URI
+              Value: mongodb://sorry-cypress:sorry-cypress@127.0.0.1:27017
+          DependsOn:
+            - ContainerName: director
+              Condition: START
+          Name: api
+
+        - Image: docker.io/agoldis/sorry-cypress-dashboard
+          PortMappings:
+            - ContainerPort: !Ref 'DirectorPort'
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref CloudWatchGroup
+              awslogs-region: !Ref 'AWS::Region'
+              awslogs-stream-prefix: ecs
+          Environment:
+            - Name: GRAPHQL_SCHEMA_URL
+              Value: /api
+          DependsOn:
+            - ContainerName: api
+              Condition: START
+          Name: dashboard
+
+  # The service. The service is a resource which allows you to run multiple
+  # copies of a type of task, and gather up their logs and metrics, as well
+  # as monitor the number of running tasks and replace any that have crashed
+  EcsService:
+    Type: AWS::ECS::Service
+    DependsOn:
+      - EcsTaskDefinition
+      - LoadBalancerRuleAPI
+    Properties:
+      ServiceName: !Join ['-', [!Ref 'AWS::StackName', 'ecs-service']]
+      Cluster: !Ref 'ECSCluster'
+      LaunchType: FARGATE
+      DeploymentConfiguration:
+        MaximumPercent: 200
+        MinimumHealthyPercent: 100
+      DesiredCount: 1
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: ENABLED
+          SecurityGroups:
+            - !Ref 'FargateContainerSecurityGroup'
+          Subnets:
+            - !Ref 'PublicSubnetOne'
+            - !Ref 'PublicSubnetTwo'
+      TaskDefinition: !Ref 'EcsTaskDefinition'
+      LoadBalancers:
+        - ContainerName: director
+          ContainerPort: 1234
+          TargetGroupArn: !Ref 'TargetGroupDirector'
+        - ContainerName: api
+          ContainerPort: 4000
+          TargetGroupArn: !Ref 'TargetGroupAPI'
+        - ContainerName: dashboard
+          ContainerPort: !Ref 'DirectorPort'
+          TargetGroupArn: !Ref 'TargetGroupDashboard'
+
+# These are the values output by the CloudFormation template. Be careful
+# about changing any of them, because of them are exported with specific
+# names so that the other task related CF templates can use them.
+Outputs:
+  DirectorURL:
+    Description: DirectorURL
+    Value:
+      !Join [
+        '',
+        [
+          'http://',
+          !GetAtt 'PublicLoadBalancer.DNSName',
+          ':',
+          !Ref 'DirectorPort',
+        ],
+      ]
+    Export:
+      Name: !Join [':', [!Ref 'AWS::StackName', 'DirectorURL']]
+  DashboardURL:
+    Description: DashboardURL
+    Value: !Join ['', ['http://', !GetAtt 'PublicLoadBalancer.DNSName']]
+    Export:
+      Name: !Join [':', [!Ref 'AWS::StackName', 'DashboardURL']]
+  ApiURL:
+    Description: ApiURL
+    Value: !Join ['', ['http://', !GetAtt 'PublicLoadBalancer.DNSName', '/api']]
+    Export:
+      Name: !Join [':', [!Ref 'AWS::StackName', 'ApiURL']]

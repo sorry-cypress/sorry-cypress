@@ -1,4 +1,4 @@
-import mongodb, { MongoClient } from 'mongodb';
+import mongodb from 'mongodb';
 import { MONGODB_URI, MONGODB_DATABASE } from '@src/config';
 
 let db: mongodb.Db;
@@ -9,16 +9,14 @@ export const init = async () => {
     return;
   }
 
-  client = new MongoClient(process.env.MONGODB_URI);
-  await client.connect();
+  client = await mongodb.connect(MONGODB_URI, { useNewUrlParser: true });
   console.log('Successfully connected to MongoDB server');
 
   db = client.db(MONGODB_DATABASE);
 
   db.collection('runs').createIndex({ runId: 1 }, { unique: true });
   db.collection('instances').createIndex({ instanceId: 1 }, { unique: true });
-  db.collection('runs').createIndex({ createdAt: 1 });
-  db.collection('runs').createIndex({ 'meta.commit.branch': 1 });
+  db.collection('projects').createIndex({ projectId: 1 }, { unique: true });
 };
 
 export const getMongoDB = () => db;

@@ -1,9 +1,17 @@
 import {
+  Instance,
   InstanceResult,
   ScreenshotUploadInstruction,
-  AssetUploadInstruction
+  AssetUploadInstruction,
 } from './instance.types';
-import { CreateRunParameters, CreateRunResponse, Task } from './run.types';
+import { Project } from './project.types';
+import {
+  CreateRunParameters,
+  CreateRunResponse,
+  Run,
+  RunWithSpecs,
+  Task,
+} from './run.types';
 
 interface Driver {
   id: string;
@@ -21,9 +29,18 @@ export interface ScreenshotsDriver extends Driver {
   ) => Promise<ScreenshotUploadInstruction[]>;
 }
 
+interface GetNextTaskParams {
+  runId: string;
+  machineId: string;
+  groupId: string;
+}
 export interface ExecutionDriver extends Driver {
+  getRunWithSpecs: (runId: string) => Promise<RunWithSpecs>;
+  getProjectById: (projectId: string) => Promise<Project>;
+  getRunById: (runId: string) => Promise<Run>;
+  getInstanceById: (instanceId: string) => Promise<Instance>;
   createRun: (params: CreateRunParameters) => Promise<CreateRunResponse>;
-  getNextTask: (runId: string) => Promise<Task>;
+  getNextTask: (params: GetNextTaskParams) => Promise<Task>;
   setInstanceResults: (
     instanceId: string,
     results: InstanceResult

@@ -1,6 +1,7 @@
 export interface Instance {
   instanceId: string;
-  results: InstanceResult;
+  runId: string;
+  results?: InstanceResult;
 }
 
 export interface Screenshot {
@@ -33,10 +34,10 @@ export interface CypressConfig {
 
 export interface InstanceResult {
   stats: InstanceResultStats;
-  tests: object[];
+  tests: Record<string, unknown>[];
   error: null | string;
-  reporterStats: object;
-  cypressConfig: CypressConfig;
+  reporterStats: Record<string, unknown>;
+  cypressConfig?: CypressConfig;
   screenshots: Screenshot[];
   video: boolean;
   videoUrl?: string;

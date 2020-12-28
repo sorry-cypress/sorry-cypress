@@ -1,0 +1,4 @@
+# Ignore artifacts:
+/dist
+/node_modules
+/src/generated

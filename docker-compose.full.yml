@@ -1,0 +1,41 @@
+version: '3.6'
+
+services:
+  mongo:
+    image: mongo:4.0
+
+  director:
+    image: agoldis/sorry-cypress-director:latest
+    environment:
+      DASHBOARD_URL: http://localhost:8080
+      MONGODB_URI: 'mongodb://mongo:27017'
+      MONGODB_DATABASE: 'sorry-cypress'
+      EXECUTION_DRIVER: '../execution/mongo/driver'
+      SCREENSHOTS_DRIVER: '../screenshots/s3.driver'
+      AWS_ACCESS_KEY_ID: 'key'
+      AWS_SECRET_ACCESS_KEY: 'secret'
+      S3_BUCKET: sorry-cypress
+    ports:
+      - 1234:1234
+    depends_on:
+      - mongo
+
+  api:
+    image: agoldis/sorry-cypress-api:latest
+    environment:
+      MONGODB_URI: 'mongodb://mongo:27017'
+      MONGODB_DATABASE: 'sorry-cypress'
+    ports:
+      - 4000:4000
+    depends_on:
+      - mongo
+
+  dashboard:
+    image: agoldis/sorry-cypress-dashboard:latest
+    environment:
+      GRAPHQL_SCHEMA_URL: http://localhost:4000
+    ports:
+      - 8080:8080
+    depends_on:
+      - mongo
+      - api

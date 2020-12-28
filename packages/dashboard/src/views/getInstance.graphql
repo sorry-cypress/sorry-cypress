@@ -6,6 +6,7 @@ query getInstance($instanceId: ID!) {
     run {
       meta {
         ciBuildId
+        projectId
         commit {
           sha
           branch
@@ -25,14 +26,35 @@ query getInstance($instanceId: ID!) {
         skipped
         failures
         wallClockDuration
+        wallClockStartedAt
+        wallClockEndedAt
       }
       tests {
-        testId
-        wallClockDuration
-        state
-        error
-        stack
-        title
+        ... on InstanceTest {
+          testId
+          title
+          state
+          wallClockDuration
+          wallClockStartedAt
+          error
+          stack
+        }
+        ... on InstanceTestV5 {
+          testId
+          title
+          state
+          displayError
+          attempts {
+            state
+            wallClockDuration
+            wallClockStartedAt
+            error {
+              name
+              message
+              stack
+            }
+          }
+        }
       }
       screenshots {
         testId

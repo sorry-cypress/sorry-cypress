@@ -1,8 +1,7 @@
-import React from 'react';
-import { Paper as UIPaper, useStyles, Tag } from 'bold-ui';
-import { SpecStateType } from '../../lib/spec';
+import { Paper as UIPaper, Tag, useCss, useStyles } from 'bold-ui';
+import React, { FC, PropsWithChildren } from 'react';
 
-export const Paper: React.FC = (props) => {
+export const Paper: FC = (props) => {
   const { css } = useStyles();
   return (
     <UIPaper
@@ -20,11 +19,10 @@ export const Paper: React.FC = (props) => {
 type TestStates = 'failed' | 'passed' | 'pending' | 'skipped' | 'unknown';
 
 type TestStateProps = {
-  state: TestStates;
+  state?: TestStates | null;
 };
-export const TestState: React.FC<TestStateProps> = ({
-  state,
-}: TestStateProps) => {
+
+export const VisualState = ({ state }: TestStateProps) => {
   switch (state) {
     case 'failed':
       return <Tag type="danger">Failed</Tag>;
@@ -40,12 +38,10 @@ export const TestState: React.FC<TestStateProps> = ({
 };
 
 type SpecStateProps = {
-  state: SpecStateType;
+  state: TestStates & 'running';
 };
 
-export const SpecState: React.FC<SpecStateProps> = ({
-  state,
-}: SpecStateProps) => {
+export const SpecState: FC<SpecStateProps> = ({ state }: SpecStateProps) => {
   switch (state) {
     case 'failed':
       return <Tag type="danger">Failed</Tag>;
@@ -58,4 +54,21 @@ export const SpecState: React.FC<SpecStateProps> = ({
     default:
       return <Tag type="normal">Unknown</Tag>;
   }
+};
+
+export const CenteredContent: FC = ({
+  children,
+}: PropsWithChildren<unknown>) => {
+  const { css } = useCss();
+
+  return (
+    <div
+      className={css`
+        text-align: center;
+        padding: 2rem 1rem;
+      `}
+    >
+      {children}
+    </div>
+  );
 };
