@@ -204,6 +204,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "slinstaedt",
+      "name": "Sven Linstaedt",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/682090?v=4",
+      "profile": "https://github.com/slinstaedt",
+      "contributions": [
+        "code",
+        "infra"
+      ]
     }
   ],
   "contributorsPerLine": 7,
