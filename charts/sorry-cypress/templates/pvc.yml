@@ -1,0 +1,14 @@
+{{- if .Values.mongo.persistence.enabled -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ include "sorry-cypress-helm.fullname" . }}-mongo-storage-claim
+  labels:
+    app: {{ include "sorry-cypress-helm.fullname" . }}-mongo-storage-claim
+spec:
+  accessModes:
+    - {{ .Values.mongo.persistence.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.mongo.persistence.size }}
+{{- end }}

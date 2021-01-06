@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "sorry-cypress-helm.fullname" . }}-director
+spec:
+  ports:
+  - name: "1234"
+    port: {{ .Values.director.service.port }}
+    targetPort: {{ .Values.director.service.port }}
+  selector:
+    app: {{ include "sorry-cypress-helm.fullname" . }}-director
