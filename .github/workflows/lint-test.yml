@@ -39,7 +39,7 @@ jobs:
         uses: helm/chart-testing-action@v2.0.1
         with:
           command: ct lint
-          config: charts/lint.yaml
+          config: helm-charts/lint.yaml
 
       - name: Create kind cluster
         uses: helm/kind-action@v1.0.0
@@ -48,4 +48,4 @@ jobs:
         if: steps.lint.outputs.changed == 'true'
 
       - name: Run chart-testing (install)
-        run: ct install --config charts/test.yaml
+        run: ct install --config helm-charts/test.yaml
