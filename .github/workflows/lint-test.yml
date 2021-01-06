@@ -38,7 +38,7 @@ jobs:
         id: lint
         uses: helm/chart-testing-action@v2.0.1
         with:
-          command: ct lint
+          command: ct lint --debug
           config: charts/lint.yaml
 
       - name: Create kind cluster
