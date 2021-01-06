@@ -15,5 +15,5 @@ appVersion: 1.16.0
 
 home: https://sorry-cypress.dev/
 sources:
-- https://github.com/sorry-cypress/sorry-cypress
+  - https://github.com/sorry-cypress/sorry-cypress
 icon: https://sorry-cypress.dev/public/octolumbercat.png
