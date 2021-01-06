@@ -1,9 +1,7 @@
 name: Release Charts
 
 on:
-  pull_request:
-    branches:
-      - master
+  push:
 
 jobs:
   release:
