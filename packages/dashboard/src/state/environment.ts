@@ -3,7 +3,10 @@ export interface Environment {
   CI_URL: string;
 }
 
-export const environment: Environment = (window.__sorryCypressEnvironment as Environment) || {
-  GRAPHQL_SCHEMA_URL: 'http://localhost:4000',
-  CI_URL: '',
+export const environment: Environment = {
+  ...{
+    GRAPHQL_SCHEMA_URL: 'http://localhost:4000',
+    CI_URL: '',
+  },
+  ...((window.__sorryCypressEnvironment as Environment) || {}),
 };

@@ -23,38 +23,38 @@ spec:
   template:
     metadata:
       name: mongo
-      labels: 
+      labels:
         app: mongo
     spec:
       containers:
-      - image: mongo:4.0
-        imagePullPolicy: "Always"
-        name: mongo
-        ports:
-        - containerPort: 27017
-        readinessProbe:
-          exec:
-            command:
-            - mongo
-            - --eval
-            - db.adminCommand('ping')
-          failureThreshold: 6
-          initialDelaySeconds: 60
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 5
-        resources:
-          requests:
-            memory: "128M"
-            cpu: 0.2
-          limits:
-            memory: "512M"
-            cpu: 0.5
-        volumeMounts:
-          - name: mongo-storage
-            mountPath: /data/db
+        - image: mongo:4.0
+          imagePullPolicy: 'Always'
+          name: mongo
+          ports:
+            - containerPort: 27017
+          readinessProbe:
+            exec:
+              command:
+                - mongo
+                - --eval
+                - db.adminCommand('ping')
+            failureThreshold: 6
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          resources:
+            requests:
+              memory: '128M'
+              cpu: 0.2
+            limits:
+              memory: '512M'
+              cpu: 0.5
+          volumeMounts:
+            - name: mongo-storage
+              mountPath: /data/db
       restartPolicy: Always
-      serviceAccountName: ""
+      serviceAccountName: ''
       volumes:
         - name: mongo-storage
           persistentVolumeClaim:
@@ -77,25 +77,25 @@ spec:
       name: api
     spec:
       containers:
-      - env:
-        - name: MONGODB_DATABASE
-          value: sorry-cypress
-        - name: MONGODB_URI
-          value: mongodb://mongo-service:27017
-        image: agoldis/sorry-cypress-api:latest
-        imagePullPolicy: "Always"
-        name: api
-        ports:
-        - containerPort: 4000
-        resources:
-          requests:
-            memory: "128M"
-            cpu: 0.2
-          limits:
-            memory: "512M"
-            cpu: 0.5
+        - env:
+            - name: MONGODB_DATABASE
+              value: sorry-cypress
+            - name: MONGODB_URI
+              value: mongodb://mongo-service:27017
+          image: agoldis/sorry-cypress-api:latest
+          imagePullPolicy: 'Always'
+          name: api
+          ports:
+            - containerPort: 4000
+          resources:
+            requests:
+              memory: '128M'
+              cpu: 0.2
+            limits:
+              memory: '512M'
+              cpu: 0.5
       restartPolicy: Always
-      serviceAccountName: ""
+      serviceAccountName: ''
       volumes: null
 ---
 apiVersion: apps/v1
@@ -114,53 +114,53 @@ spec:
       name: director
     spec:
       containers:
-      - env:
-        - name: DASHBOARD_URL
-          value: [YOUR-DASHBOARD-URL-HERE]
-        - name: EXECUTION_DRIVER
-          value: ../execution/mongo/driver
-        - name: MONGODB_DATABASE
-          value: sorry-cypress
-        - name: MONGODB_URI
-          value: mongodb://mongo-service:27017
-        - name: SCREENSHOTS_DRIVER
-          value: ../screenshots/cos.driver
-        - name: COS_BUCKET
-          value: sorry-cypress-test
-        - name: COS_REGION
-          value: us-south
-        - name: COS_ACCESSKEY
-          valueFrom:
-              secretKeyRef:
-                name: cypress-cos-secrets
-                key: COS_ACCESSKEY
-        - name: COS_SECRETKEY
-          valueFrom:
-              secretKeyRef:
-                name: cypress-cos-secrets
-                key: COS_SECRETKEY
-        image: juanjosepb/sorry-cypress-director:v0.1
-        imagePullPolicy: "Always"
-        name: director
-        ports:
-        - containerPort: 1234
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 1234
-          periodSeconds: 10
-          timeoutSeconds: 5
-          successThreshold: 2
-          failureThreshold: 5
-        resources:
-          requests:
-            memory: "128M"
-            cpu: 0.2
-          limits:
-            memory: "512M"
-            cpu: 0.5
+        - env:
+            - name: DASHBOARD_URL
+              value: [YOUR-DASHBOARD-URL-HERE]
+            - name: EXECUTION_DRIVER
+              value: ../execution/mongo/driver
+            - name: MONGODB_DATABASE
+              value: sorry-cypress
+            - name: MONGODB_URI
+              value: mongodb://mongo-service:27017
+            - name: SCREENSHOTS_DRIVER
+              value: ../screenshots/cos.driver
+            - name: COS_BUCKET
+              value: sorry-cypress-test
+            - name: COS_REGION
+              value: us-south
+            - name: COS_ACCESSKEY
+              valueFrom:
+                secretKeyRef:
+                  name: cypress-cos-secrets
+                  key: COS_ACCESSKEY
+            - name: COS_SECRETKEY
+              valueFrom:
+                secretKeyRef:
+                  name: cypress-cos-secrets
+                  key: COS_SECRETKEY
+          image: juanjosepb/sorry-cypress-director:v0.1
+          imagePullPolicy: 'Always'
+          name: director
+          ports:
+            - containerPort: 1234
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 1234
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 2
+            failureThreshold: 5
+          resources:
+            requests:
+              memory: '128M'
+              cpu: 0.2
+            limits:
+              memory: '512M'
+              cpu: 0.5
       restartPolicy: Always
-      serviceAccountName: ""
+      serviceAccountName: ''
       volumes: null
 ---
 apiVersion: apps/v1
@@ -179,31 +179,35 @@ spec:
       name: dashboard
     spec:
       containers:
-      - env:
-        - name: GRAPHQL_SCHEMA_URL
-          value: [YOUR-API-URL-HERE]
-        image: agoldis/sorry-cypress-dashboard:latest
-        imagePullPolicy: "Always"
-        name: dashboard
-        ports:
-        - containerPort: 8080
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 8080
-          periodSeconds: 10
-          timeoutSeconds: 5
-          successThreshold: 2
-          failureThreshold: 5
-        resources:
-          requests:
-            memory: "128M"
-            cpu: 0.2
-          limits:
-            memory: "512M"
-            cpu: 0.5
+        - env:
+            - name: GRAPHQL_SCHEMA_URL
+              value: [YOUR-API-URL-HERE]
+            - name: PORT
+              value: 8080
+            - name: CI_URL
+              value: ''
+          image: agoldis/sorry-cypress-dashboard:latest
+          imagePullPolicy: 'Always'
+          name: dashboard
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 2
+            failureThreshold: 5
+          resources:
+            requests:
+              memory: '128M'
+              cpu: 0.2
+            limits:
+              memory: '512M'
+              cpu: 0.5
       restartPolicy: Always
-      serviceAccountName: ""
+      serviceAccountName: ''
       volumes: null
 ---
 apiVersion: v1
@@ -212,9 +216,9 @@ metadata:
   name: dashboard-service
 spec:
   ports:
-  - name: "8080"
-    port: 8080
-    targetPort: 8080
+    - name: '8080'
+      port: 8080
+      targetPort: 8080
   selector:
     app: dashboard
 ---
@@ -224,9 +228,9 @@ metadata:
   name: api-service
 spec:
   ports:
-  - name: "4000"
-    port: 4000
-    targetPort: 4000
+    - name: '4000'
+      port: 4000
+      targetPort: 4000
   selector:
     app: api
 ---
@@ -236,9 +240,9 @@ metadata:
   name: mongo-service
 spec:
   ports:
-  - name: "27017"
-    port: 27017
-    targetPort: 27017
+    - name: '27017'
+      port: 27017
+      targetPort: 27017
   selector:
     app: mongo
 ---
@@ -248,9 +252,9 @@ metadata:
   name: director-service
 spec:
   ports:
-  - name: "1234"
-    port: 1234
-    targetPort: 1234
+    - name: '1234'
+      port: 1234
+      targetPort: 1234
   selector:
     app: director
 ---
@@ -270,21 +274,21 @@ metadata:
   name: cypress-ingresses
 spec:
   rules:
-  - host: [YOUR-DASHBOARD-URL-HERE]
-    http:
-      paths:
-      - backend:
-          serviceName: dashboard-service
-          servicePort: 8080
-  - host: [YOUR-API-URL-HERE]
-    http:
-      paths:
-      - backend:
-          serviceName: api-service
-          servicePort: 4000
-  - host: [YOUR-DIRECTOR-URL-HERE]
-    http:
-      paths:
-      - backend:
-          serviceName: director-service
-          servicePort: 1234
+    - host: [YOUR-DASHBOARD-URL-HERE]
+      http:
+        paths:
+          - backend:
+              serviceName: dashboard-service
+              servicePort: 8080
+    - host: [YOUR-API-URL-HERE]
+      http:
+        paths:
+          - backend:
+              serviceName: api-service
+              servicePort: 4000
+    - host: [YOUR-DIRECTOR-URL-HERE]
+      http:
+        paths:
+          - backend:
+              serviceName: director-service
+              servicePort: 1234
