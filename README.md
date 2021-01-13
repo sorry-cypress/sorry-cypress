@@ -103,6 +103,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/slinstaedt"><img src="https://avatars1.githubusercontent.com/u/682090?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Sven Linstaedt</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=slinstaedt" title="Code">💻</a> <a href="#infra-slinstaedt" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
+    <td align="center"><a href="https://github.com/fsmaia"><img src="https://avatars0.githubusercontent.com/u/968790?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Fernando Maia</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=fsmaia" title="Code">💻</a></td>
   </tr>
 </table>
 
