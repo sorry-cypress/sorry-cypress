@@ -251,7 +251,7 @@ Resources:
       HealthyThresholdCount: 2
       TargetType: ip
       Name: !Join ['-', [!Ref 'AWS::StackName', 'dashboard-tg']]
-      Port: !Ref 'DirectorPort'
+      Port: 8080
       Protocol: HTTP
       UnhealthyThresholdCount: 2
       VpcId: !Ref VPC
@@ -461,7 +461,7 @@ Resources:
 
         - Image: docker.io/agoldis/sorry-cypress-dashboard
           PortMappings:
-            - ContainerPort: !Ref 'DirectorPort'
+            - ContainerPort: 8080
           LogConfiguration:
             LogDriver: awslogs
             Options:
@@ -471,6 +471,10 @@ Resources:
           Environment:
             - Name: GRAPHQL_SCHEMA_URL
               Value: /api
+            - Name: PORT
+              Value: 8080
+            - Name: CI_URL
+              Value: ''
           DependsOn:
             - ContainerName: api
               Condition: START
@@ -509,7 +513,7 @@ Resources:
           ContainerPort: 4000
           TargetGroupArn: !Ref 'TargetGroupAPI'
         - ContainerName: dashboard
-          ContainerPort: !Ref 'DirectorPort'
+          ContainerPort: 8080
           TargetGroupArn: !Ref 'TargetGroupDashboard'
 
 # These are the values output by the CloudFormation template. Be careful
