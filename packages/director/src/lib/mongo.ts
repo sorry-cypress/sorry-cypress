@@ -1,5 +1,11 @@
-import mongodb from 'mongodb';
-import { MONGODB_URI, MONGODB_DATABASE } from '@src/config';
+import mongodb, { MongoClientOptions } from 'mongodb';
+import {
+  MONGODB_AUTH_MECHANISM,
+  MONGODB_DATABASE,
+  MONGODB_PASSWORD,
+  MONGODB_URI,
+  MONGODB_USER,
+} from '@src/config';
 
 let db: mongodb.Db;
 let client: mongodb.MongoClient;
@@ -9,7 +15,16 @@ export const init = async () => {
     return;
   }
 
-  client = await mongodb.connect(MONGODB_URI, { useNewUrlParser: true });
+  const options: MongoClientOptions = {
+    useNewUrlParser: true,
+  };
+
+  if (MONGODB_AUTH_MECHANISM != undefined) {
+    options.authMechanism = MONGODB_AUTH_MECHANISM;
+    options.auth = { user: MONGODB_USER, password: MONGODB_PASSWORD };
+  }
+
+  client = await mongodb.connect(MONGODB_URI, options);
   console.log('Successfully connected to MongoDB server');
 
   db = client.db(MONGODB_DATABASE);
