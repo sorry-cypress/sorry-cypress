@@ -47,13 +47,13 @@ function removeHiddenKeysFromObject(subject: any) {
 }
 
 function formatProjectForSaving(project: Project) {
-  project = clonedeep(project);
-  removeHiddenKeysFromObject(project);
-  project.projectId = encodeURIComponent(project.projectId);
-  project?.hooks?.forEach((hook: Hook) => {
+  const result = clonedeep(project);
+  removeHiddenKeysFromObject(result);
+  project.projectId = encodeURIComponent(result.projectId);
+  result?.hooks?.forEach((hook: Hook) => {
     removeHiddenKeysFromObject(hook);
   });
-  return project;
+  return result;
 }
 
 export function ProjectEditView({
@@ -68,9 +68,8 @@ export function ProjectEditView({
     navStructure([]);
   }, []);
 
-  const [creating, setCreating] = useState(false);
+  const [busy, setBusy] = useState(false);
   const [createError, setCreateError] = useState<string | null>(null);
-  const [updating, setUpdating] = useState(false);
   const [updateError, setUpdateError] = useState<string | null>(null);
   const [formState, dispatch] = useReducer(
     hookFormReducer,
@@ -82,12 +81,17 @@ export function ProjectEditView({
       projectId: projectId,
     },
     onCompleted: (data) => {
-      if (data?.project) {
-        dispatch({
-          type: 'SET_STATE',
-          payload: data.project as HooksFormState,
-        });
+      if (!data?.project) {
+        return;
       }
+      // data.project.hooks = data.project.hooks ?? [];
+      dispatch({
+        type: 'SET_STATE',
+        payload: {
+          projectId: data.project.projectId,
+          hooks: (data.project.hooks as Hook[]) || [],
+        },
+      });
     },
   });
 
@@ -95,11 +99,10 @@ export function ProjectEditView({
   const [startUpdateProjectMutation] = useUpdateProjectMutation();
 
   function updateProject() {
-    setUpdating(true);
-    const project = formatProjectForSaving(formState);
+    setBusy(true);
     startUpdateProjectMutation({
       variables: {
-        project,
+        project: formatProjectForSaving(formState),
       },
     })
       .then((result) => {
@@ -113,16 +116,15 @@ export function ProjectEditView({
         setUpdateError(error.toString());
       })
       .finally(() => {
-        setUpdating(false);
+        setBusy(false);
       });
   }
 
   function createProject() {
-    setCreating(true);
-    const project = formatProjectForSaving(formState);
+    setBusy(true);
     startCreateProjectMutation({
       variables: {
-        project,
+        project: formatProjectForSaving(formState),
       },
     })
       .then((result) => {
@@ -136,7 +138,7 @@ export function ProjectEditView({
         setCreateError(error.toString());
       })
       .finally(() => {
-        setCreating(false);
+        setBusy(false);
       });
   }
 
@@ -166,7 +168,7 @@ export function ProjectEditView({
     });
   }
 
-  const disabled = creating || updating || loading;
+  const disabled = busy || loading;
   return (
     <form onSubmit={handleSubmit}>
       {createError || updateError ? (
@@ -242,15 +244,11 @@ export function ProjectEditView({
           style={{ marginRight: '15px' }}
           component="a"
           href="/"
-          disabled={creating || updating}
+          disabled={disabled}
         >
           Cancel
         </Button>
-        <Button
-          type="submit"
-          kind="primary"
-          disabled={creating || updating || loading}
-        >
+        <Button type="submit" kind="primary" disabled={disabled}>
           Save
         </Button>
       </div>

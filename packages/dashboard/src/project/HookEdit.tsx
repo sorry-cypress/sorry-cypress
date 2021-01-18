@@ -1,6 +1,6 @@
 import { Hook } from '@src/duplicatedFromDirector/project.types';
 import { useSwitch } from '@src/hooks/useSwitch';
-import React, { useState } from 'react';
+import React from 'react';
 import {
   isGithubHook,
   isGenericHook,

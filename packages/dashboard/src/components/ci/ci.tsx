@@ -23,6 +23,10 @@ export const CiUrl: React.FunctionComponent<CiLinkProps> = ({
   }
 
   const [name, url] = environment.CI_URL.split(',', 2);
+  if (!name || !url) {
+    return null;
+  }
+
   const parsedUrl = url
     .replace('{project_id}', projectId)
     .replace('{build_id}', ciBuildId);

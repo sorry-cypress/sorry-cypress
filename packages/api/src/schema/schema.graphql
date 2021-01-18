@@ -55,7 +55,7 @@ type Hook {
 
 type Project {
   projectId: String!
-  hooks: [Hook]
+  hooks: [Hook!]
 }
 
 input HookInput {
