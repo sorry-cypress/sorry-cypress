@@ -31,13 +31,15 @@ async function start() {
       res.sendStatus(503);
   });
 
-  server.applyMiddleware({ app });
+  server.applyMiddleware({ app, path: '/' });
 
   app.listen({ port: PORT }, () => {
     console.log(`🚀 Apollo server is listening on port ${PORT}`);
   }).on('error', (error) => {
     throw error
   });
+
+  server.
 }
 
 start().catch((error) => {
