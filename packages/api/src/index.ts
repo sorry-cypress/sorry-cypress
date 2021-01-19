@@ -38,8 +38,6 @@ async function start() {
   }).on('error', (error) => {
     throw error
   });
-
-  server.
 }
 
 start().catch((error) => {
