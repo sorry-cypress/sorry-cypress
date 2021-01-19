@@ -158,6 +158,7 @@ const setInstanceResults = async (
 export const driver: ExecutionDriver = {
   id: 'in-memory',
   init: () => Promise.resolve(),
+  pingDB: () => Promise.resolve(true),
   getProjectById: (projectId: string) => Promise.resolve(projects[projectId]),
   getRunById: (runId: string) => Promise.resolve(runs[runId]),
   getRunWithSpecs,
