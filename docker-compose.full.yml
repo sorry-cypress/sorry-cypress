@@ -5,7 +5,7 @@ services:
     image: mongo:4.0
 
   director:
-    image: agoldis/sorry-cypress-director:latest
+    image: padoa.azurecr.io/padoa-tools/sorry-cypress-director:b57530082dbf38e94ea39fcb8709d32e83e29642
     environment:
       DASHBOARD_URL: http://localhost:8080
       MONGODB_URI: 'mongodb://mongo:27017'
@@ -21,7 +21,7 @@ services:
       - mongo
 
   api:
-    image: agoldis/sorry-cypress-api:latest
+    image: padoa.azurecr.io/padoa-tools/sorry-cypress-api:16e39057a778cbc1b238faffb3e23d08582307fb
     environment:
       MONGODB_URI: 'mongodb://mongo:27017'
       MONGODB_DATABASE: 'sorry-cypress'
@@ -31,7 +31,7 @@ services:
       - mongo
 
   dashboard:
-    image: agoldis/sorry-cypress-dashboard:latest
+    image: padoa.azurecr.io/padoa-tools/sorry-cypress-dashboard:16e39057a778cbc1b238faffb3e23d08582307fb
     environment:
       GRAPHQL_SCHEMA_URL: http://localhost:4000
     ports:

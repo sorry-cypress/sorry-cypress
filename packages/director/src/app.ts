@@ -2,6 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import { blockKeys, handleCreateRun } from './api/runs';
 import { handleCreateInstance, handleUpdateInstance } from './api/instances';
+import { getExecutionDriver } from '@src/drivers';
 
 export const app = express();
 
@@ -14,6 +15,13 @@ app.use(
 app.get('/', (_, res) =>
   res.redirect('https://github.com/agoldis/sorry-cypress')
 );
+
+app.get('/health-check-mongo', async (_, res) => {
+  const executionDriver = await getExecutionDriver();
+  (await executionDriver.pingDB()) ?
+    res.sendStatus(200) :
+    res.sendStatus(503);
+});
 
 app.post('/runs', blockKeys, handleCreateRun);
 app.post('/runs/:runId/instances', handleCreateInstance);

@@ -25,3 +25,16 @@ export const init = async () => {
 };
 
 export const getMongoDB = () => db;
+
+export const pingDB = async () => {
+  try {
+    if (!db) {
+      await init();
+    }
+    const mongoResponse = await getMongoDB().command({ ping: 1 });
+    return mongoResponse.ok === 1;
+  } catch (e) {
+    console.log(`Error while pinging MongoDB : ${e}`);
+    return false;
+  }
+}
