@@ -41,6 +41,14 @@ spec:
             - name: {{ .Values.api.service.name }}
               containerPort: {{ .Values.api.service.port }}
               protocol: {{ .Values.api.service.protocol }}
+          livenessProbe:
+            httpGet:
+              path: /health-check-mongo
+              port: {{ .Values.api.service.port }}
+          readinessProbe:
+            httpGet:
+              path: /health-check-mongo
+              port: {{ .Values.api.service.port }}
           resources:
       {{- toYaml .Values.api.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

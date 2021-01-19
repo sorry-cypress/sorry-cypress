@@ -63,6 +63,14 @@ spec:
                 secretKeyRef:
                   name: sorry-cypress-secrets
                   key: aws_secret_access_key
+          livenessProbe:
+            httpGet:
+              path: /health-check-mongo
+              port: {{ .Values.api.service.port }}
+          readinessProbe:
+            httpGet:
+              path: /health-check-mongo
+              port: {{ .Values.api.service.port }}
           ports:
             - name: {{ .Values.director.service.name }}
               containerPort: {{ .Values.director.service.port }}
