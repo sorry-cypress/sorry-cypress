@@ -17,8 +17,9 @@ app.get('/', (_, res) =>
 );
 
 app.get('health-check', async (_, res) => {
-    const mongoResponse = await getMongoDB().command({ ping: 1 });
-    console.log()
+  const mongoResponse = await getMongoDB().command({ ping: 1 });
+  console.log(mongoResponse);
+  res.sendStatus(200);
 });
 
 app.post('/runs', blockKeys, handleCreateRun);
