@@ -2,6 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import { blockKeys, handleCreateRun } from './api/runs';
 import { handleCreateInstance, handleUpdateInstance } from './api/instances';
+import { getMongoDB } from "@src/lib/mongo";
 
 export const app = express();
 
@@ -14,6 +15,11 @@ app.use(
 app.get('/', (_, res) =>
   res.redirect('https://github.com/agoldis/sorry-cypress')
 );
+
+app.get('health-check', async (_, res) => {
+    const mongoResponse = await getMongoDB().command({ ping: 1 });
+    console.log()
+});
 
 app.post('/runs', blockKeys, handleCreateRun);
 app.post('/runs/:runId/instances', handleCreateInstance);
