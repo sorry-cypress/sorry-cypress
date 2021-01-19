@@ -20,3 +20,9 @@ export const init = async () => {
 };
 
 export const getMongoDB = () => db;
+
+export const pingDB = async () => {
+  const mongoResponse = await getMongoDB().command({ ping: 1 });
+  console.log(mongoResponse);
+  return true;
+}

@@ -1,4 +1,4 @@
-import { init } from '@src/lib/mongo';
+import { init, pingDB } from '@src/lib/mongo';
 import { ExecutionDriver } from '@src/types';
 import * as mongoRunController from './runs/run.controller';
 import * as mongoInstanceController from './instances/instance.controller';
@@ -9,6 +9,7 @@ import * as mongoProjectModel from './projects/project.model';
 export const driver: ExecutionDriver = {
   id: 'stateful-mongo',
   init,
+  pingDB: pingDB,
   getProjectById: mongoProjectModel.getProjectById,
   getRunById: mongoRunModel.getRunById,
   getRunWithSpecs: mongoRunModel.getRunWithSpecs,

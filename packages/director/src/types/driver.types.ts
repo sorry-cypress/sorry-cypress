@@ -35,6 +35,7 @@ interface GetNextTaskParams {
   groupId: string;
 }
 export interface ExecutionDriver extends Driver {
+  pingDB: () => Promise<boolean>;
   getRunWithSpecs: (runId: string) => Promise<RunWithSpecs>;
   getProjectById: (projectId: string) => Promise<Project>;
   getRunById: (runId: string) => Promise<Run>;
