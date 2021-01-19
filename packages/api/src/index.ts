@@ -7,8 +7,6 @@ import { RunsAPI } from './datasources/runs';
 import { SpecsAPI } from './datasources/specs';
 import { resolvers } from './resolvers';
 import { typeDefs } from './schema/schema';
-import { getExecutionDriver } from "@sorry-cypress/director/src/drivers";
-import { app } from "@sorry-cypress/director/src/app";
 import { pingDB } from "@src/lib/mongo";
 
 async function start() {
