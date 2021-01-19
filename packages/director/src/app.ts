@@ -16,7 +16,7 @@ app.get('/', (_, res) =>
   res.redirect('https://github.com/agoldis/sorry-cypress')
 );
 
-app.get('health-check', async (_, res) => {
+app.get('/health-check', async (_, res) => {
   const mongoResponse = await getMongoDB().command({ ping: 1 });
   console.log(mongoResponse);
   res.sendStatus(200);
