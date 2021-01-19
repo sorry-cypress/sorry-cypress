@@ -16,7 +16,6 @@ import { getFullRunSpecState } from '../../lib/executionState';
 import { shortEnglishHumanizerWithMsIfNeeded } from '../../lib/utis';
 import { SpecState } from '../common';
 import RenderOnInterval from '../renderOnInterval/renderOnInterval';
-import { useGetSpecStatsQuery } from '@src/generated/graphql';
 import stringHash from 'string-hash';
 
 function getMachineName(machineId: string) {
@@ -26,22 +25,6 @@ type RunDetailsProps = {
   run: Partial<Run>;
 };
 
-const SpecAvg = ({ specName }: { specName: string }) => {
-  const { data, error, loading } = useGetSpecStatsQuery({
-    variables: { spec: specName },
-  });
-  if (loading) {
-    return null;
-  }
-  if (error) {
-    console.error(error);
-    return 'erorr';
-  }
-
-  return shortEnglishHumanizerWithMsIfNeeded(
-    data?.specStats?.avgWallClockDuration ?? 0
-  );
-};
 export function RunDetails({ run }: RunDetailsProps) {
   const { css } = useCss();
   const { specs } = run;
@@ -158,17 +141,6 @@ export function RunDetails({ run }: RunDetailsProps) {
                 } else {
                   return '';
                 }
-              },
-            },
-            {
-              name: 'average-duration',
-              header: 'Average Duration',
-              sortable: false,
-              render: (spec: FullRunSpec) => {
-                if (!spec.spec) {
-                  return null;
-                }
-                return <SpecAvg specName={spec.spec} />;
               },
             },
             {
