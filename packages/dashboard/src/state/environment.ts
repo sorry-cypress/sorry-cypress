@@ -6,7 +6,7 @@ export interface Environment {
 
 export const environment: Environment = {
   ...{
-    GRAPHQL_CLIENT_CREDENTIALS: undefined,
+    GRAPHQL_CLIENT_CREDENTIALS: '',
     GRAPHQL_SCHEMA_URL: 'http://localhost:4000',
     CI_URL: '',
   },
