@@ -21,6 +21,7 @@ const cache = new InMemoryCache({
 
 const link = createHttpLink({
   uri: environment.GRAPHQL_SCHEMA_URL,
+  credentials: environment.GRAPHQL_CLIENT_CREDENTIALS || undefined,
 });
 
 export const client = new ApolloClient({
