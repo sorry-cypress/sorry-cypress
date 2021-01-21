@@ -46,15 +46,17 @@ const createRun: ExecutionDriver['createRun'] = async (
     params.group ?? generateGroupId(params.platform, params.ciBuildId);
   const enhaceSpecForThisRun = enhanceSpec(groupId);
 
-  const response = {
+  const response: CreateRunResponse = {
     groupId,
     machineId,
     runId,
     runUrl: getDashboardRunURL(runId),
+    isNewRun: true,
     warnings: [] as CreateRunWarning[],
   };
 
   if (runs[runId]) {
+    response.isNewRun = false;
     // update new specs for a new group
     const newSpecs = getNewSpecsInGroup({
       run: runs[runId],

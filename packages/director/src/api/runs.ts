@@ -30,13 +30,16 @@ export const handleCreateRun: RequestHandler<
   const response = await executionDriver.createRun(req.body);
   const runWithSpecs = await executionDriver.getRunWithSpecs(response.runId);
 
-  reportToHook({
-    hookEvent: hookEvents.RUN_START,
-    reportData: { run: runWithSpecs },
-    project: await executionDriver.getProjectById(runWithSpecs.meta.projectId),
-  });
-
-  console.log(`<< RUN_START hook called`, response);
+  if (response.isNewRun) {
+    reportToHook({
+      hookEvent: hookEvents.RUN_START,
+      reportData: { run: runWithSpecs },
+      project: await executionDriver.getProjectById(
+        runWithSpecs.meta.projectId
+      ),
+    });
+    console.log(`<< RUN_START hook called`);
+  }
 
   console.log(`<< Responding to machine`, response);
   return res.json(response);
