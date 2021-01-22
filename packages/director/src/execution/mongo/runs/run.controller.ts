@@ -21,7 +21,12 @@ import {
   generateGroupId,
   generateUUID,
 } from '@src/lib/hash';
-import { ExecutionDriver, Task, CreateRunWarning } from '@src/types';
+import {
+  ExecutionDriver,
+  Task,
+  CreateRunWarning,
+  CreateRunResponse,
+} from '@src/types';
 import {
   enhanceSpec,
   getClaimedSpecs,
@@ -40,11 +45,12 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
   const machineId = generateUUID();
   const enhaceSpecForThisRun = enhanceSpec(groupId);
 
-  const response = {
+  const response: CreateRunResponse = {
     groupId,
     machineId,
     runId,
     runUrl: getDashboardRunURL(runId),
+    isNewRun: true,
     warnings: [] as CreateRunWarning[],
   };
 
@@ -67,6 +73,7 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
     return response;
   } catch (error) {
     if (error.code && error.code === RUN_EXISTS) {
+      response.isNewRun = false;
       // update new specs for a new group
       // TODO: prone to race condition on serverless
       const run = await getRunById(runId);

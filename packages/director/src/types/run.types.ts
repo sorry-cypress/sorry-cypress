@@ -25,6 +25,7 @@ export interface CreateRunResponse {
   runId: string;
   runUrl: string;
   warnings?: CreateRunWarning[];
+  isNewRun: boolean;
 }
 
 export interface RunMetaData {
