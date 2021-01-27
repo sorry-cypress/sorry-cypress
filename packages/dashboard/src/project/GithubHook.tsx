@@ -3,6 +3,7 @@ import React from 'react';
 import { Icon, Tooltip, TextField } from 'bold-ui';
 import { GithubHook as GithubHookType } from '@src/duplicatedFromDirector/project.types';
 import { HookFormAction } from './hookFormReducer';
+import { useSwitch } from '@src/hooks/useSwitch';
 
 interface GithubHookPros {
   hook: GithubHookType;
@@ -11,6 +12,7 @@ interface GithubHookPros {
 }
 export const GithubHook = ({ hook, disabled, dispatch }: GithubHookPros) => {
   const isNewHook = !hook.hookId;
+  const [showToken, toggleToken] = useSwitch();
 
   return (
     <>
@@ -58,7 +60,11 @@ export const GithubHook = ({ hook, disabled, dispatch }: GithubHookPros) => {
         }}
       >
         <TextField
+          autoComplete="off"
+          icon={showToken ? 'eyeFilled' : 'eyeHiddenFilled'}
+          onIconClick={() => toggleToken()}
           name="githubToken"
+          type={showToken ? 'text' : 'password'}
           label={
             <span>
               Github Token &nbsp;
