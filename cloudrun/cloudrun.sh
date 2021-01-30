@@ -33,11 +33,12 @@ for i in director api dashboard; do
   gcloud run deploy $fullname --image gcr.io/${project}/$fullname --platform managed --allow-unauthenticated; 
 done
 
+echo "🏁  Finished deployment to Google Cloud Run"
+
 for i in director api dashboard; do
   fullname=$name-$i
   url=`gcloud run services describe test001-dashboard --platform managed | grep Traffic | awk '{ print $2 }'`
   echo "$fullname: $url"
 done;
 
-echo "🏁  Finished deployment to Google Cloud Run"
 
