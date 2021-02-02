@@ -33,7 +33,7 @@
     "@babel/node": "^7.10.5",
     "@babel/preset-env": "^7.11.5",
     "@babel/preset-typescript": "^7.10.4",
-    "@graphql-codegen/cli": "^1.13.4",
+    "@graphql-codegen/cli": "^1.20.1",
     "@graphql-codegen/typescript": "^1.13.4",
     "@graphql-codegen/typescript-resolvers": "^1.13.4",
     "@types/graphql-iso-date": "^3.4.0",

@@ -19,6 +19,7 @@ async function start() {
     typeDefs,
     resolvers,
     dataSources: () => dataSources,
+    onHealthCheck: async () => 'true',
   });
 
   server
