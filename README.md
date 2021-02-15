@@ -39,11 +39,9 @@ Thank you!
 
 ## Quickstart
 
-![Running Cypress test in parallel demo](https://sorry-cypress.dev/public/demo.gif)
-
 It takes just 5 minutes to setup sorry-cypress 🚀
 
-Follow our [Quickstart Guide](https://sorry-cypress.dev/quickstart).
+Follow our [Guide](https://docs.sorry-cypress.dev/guide/get-started).
 
 ## FAQ
 
