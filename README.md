@@ -34,8 +34,15 @@ Thank you!
 - upload screenshots and videos to your own storage
 - browse test results, screenshots and video recordings
 - self-hosted - use your own infrastructure, own your data
-- integrate with GitHub or anything else via webhooks
-- ready to use Docker images, Kubernetes and AWS Cloud formation template
+- integrate with GitHub, Slack or anything else via webhooks
+- works on popular cloud platforms and your data center:
+  - Docker images
+  - Docker compose files
+  - Kubernetes Helm Charts
+  - AWS
+  - Heroku
+  - Google Cloud
+  - Azure
 
 ## Quickstart
 
@@ -45,21 +52,18 @@ Follow our [Guide](https://docs.sorry-cypress.dev/guide/get-started).
 
 ## FAQ
 
-### Why?
-
-I was upset because:
-
-- official dashboard crashes and blocks test runs
-- no on-prem solution, I want to own my data
-- parallelization stops working after paid plan has reached its limit
-
-### Is it legal?
-
-Yes, Cypress is [MIT licensed open source software](https://github.com/cypress-io/cypress/blob/develop/LICENSE).
-
 ### Is it production-ready?
 
-Yes.
+Yes. Have been used by dozens of companies of different sizes around the globe.
+
+### I need help, what do I do?
+
+Check out our [Support](https://docs.sorry-cypress.dev/support) options
+
+### I want to help, how?
+
+Checkout out our [Contribution](https://docs.sorry-cypress.dev/contributions) guide
+
 
 ## License
 
