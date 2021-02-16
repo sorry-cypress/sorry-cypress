@@ -26,7 +26,15 @@ export type GithubHook = BaseHook & {
   githubContext?: string;
 };
 
-export type Hook = SlackHook | GenericHook | GithubHook;
+export type BitBucketHook = BaseHook & {
+  hookType: 'BITBUCKET_STATUS_HOOK';
+  bitbucketUsername: string;
+  bitbucketToken?: string;
+  bitbucketBuildName?: string;
+  bitbucketBuildKey?: string;
+};
+
+export type Hook = SlackHook | GenericHook | GithubHook | BitBucketHook;
 
 export interface Project {
   projectId: string;
