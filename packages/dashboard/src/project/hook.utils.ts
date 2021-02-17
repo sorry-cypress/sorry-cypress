@@ -4,7 +4,6 @@ import {
   GithubHook,
   Hook,
   SlackHook,
-  BitBucketHook,
 } from '@src/duplicatedFromDirector/project.types';
 import { capitalize } from 'lodash';
 
