@@ -51,6 +51,10 @@ type Hook {
   hookType: String
   githubToken: String
   githubContext: String
+  bitbucketUsername: String
+  bitbucketToken: String
+  bitbucketBuildName: String
+  bitbucketBuildKey: String
 }
 
 type Project {
@@ -66,6 +70,10 @@ input HookInput {
   hookType: String
   githubToken: String
   githubContext: String
+  bitbucketUsername: String
+  bitbucketToken: String
+  bitbucketBuildName: String
+  bitbucketBuildKey: String
 }
 
 input ProjectInput {

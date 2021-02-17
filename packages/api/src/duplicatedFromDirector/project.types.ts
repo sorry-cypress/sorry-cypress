@@ -6,6 +6,10 @@ export type Hook = {
   hookType: string;
   githubToken: string;
   githubContext: string;
+  bitbucketUsername: string;
+  bitbucketToken: string;
+  bitbucketBuildName: string;
+  bitbucketBuildKey: string;
 };
 
 export interface Project {
