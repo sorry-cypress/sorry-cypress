@@ -10,6 +10,7 @@
   },
   "data": {
     "context": "testGithubContext",
+    "description": "fa:0 pa:1 pe:0 sk:0",
     "state": "pending",
     "target_url": "http://localhost:8080/run/testRunId"
   }
