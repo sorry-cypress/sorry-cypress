@@ -6,6 +6,7 @@ import {
   isGenericHook,
   isSlackHook,
   hookTypeToString,
+  isBitbucketHook,
 } from './hook.utils';
 import { Button, Icon, TableRow, TableCell, Select } from 'bold-ui';
 import { hookType } from '@src/duplicatedFromDirector/hooksEnums';
@@ -13,6 +14,7 @@ import { GithubHook } from './GithubHook';
 import { GenericHook } from './GenericHook';
 import { HookFormAction } from './hookFormReducer';
 import { SlackHook } from './SlackHook';
+import { BitbucketHook } from './BitbucketHook';
 
 const Toggler = ({ toggleExpanded, isExpanded, title }: any) => {
   return (
@@ -92,6 +94,13 @@ export const HookEdit = ({
             )}
             {isSlackHook(hook) && (
               <SlackHook dispatch={dispatch} disabled={disabled} hook={hook} />
+            )}
+            {isBitbucketHook(hook) && (
+              <BitbucketHook
+                dispatch={dispatch}
+                disabled={disabled}
+                hook={hook}
+              />
             )}
             <Button
               kind="danger"

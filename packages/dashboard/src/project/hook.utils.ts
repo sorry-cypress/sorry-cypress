@@ -4,11 +4,16 @@ import {
   GithubHook,
   Hook,
   SlackHook,
+  BitBucketHook,
 } from '@src/duplicatedFromDirector/project.types';
 import { capitalize } from 'lodash';
 
 export function isGenericHook(hook: Hook): hook is GenericHook {
   return hook.hookType === hookType.GENERIC_HOOK;
+}
+
+export function isBitbucketHook(hook: Hook): hook is GenericHook {
+  return hook.hookType === hookType.BITBUCKET_STATUS_HOOK;
 }
 
 export function isGithubHook(hook: Hook): hook is GithubHook {
