@@ -2,6 +2,7 @@ import {
   isGenericHook,
   isGithubHook,
   isSlackHook,
+  isBitbucketHook,
 } from '@src/lib/hooks/hooksEnums';
 
 import { Instance } from '@src/types/instance.types';
@@ -12,6 +13,7 @@ import { getRunTestsOverall } from './getRunTestOverall';
 import { getCleanHookReportData } from './cleanHooksData';
 import { reportStatusToGithub } from './githubReporter';
 import { reportToGenericWebHook } from './genericReporter';
+import { reportStatusToBitbucket } from './bitbucketReporter';
 import { reportToSlack } from './slackReporter';
 
 type ReportData = {
@@ -53,6 +55,14 @@ export function reportToHook({
 
       if (isGenericHook(hook)) {
         return reportToGenericWebHook({
+          hook,
+          reportData: cleanReportData,
+          hookEvent,
+        });
+      }
+
+      if (isBitbucketHook(hook)) {
+        return reportStatusToBitbucket({
           hook,
           reportData: cleanReportData,
           hookEvent,
