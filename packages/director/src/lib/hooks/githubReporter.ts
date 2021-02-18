@@ -2,6 +2,7 @@ import { hookEvents } from '@src/lib/hooks/hooksEnums';
 import axios from 'axios';
 import { getDashboardRunURL } from '@src/lib/urls';
 import { GithubHook } from '@src/types/project.types';
+import { RunSummaryForHooks } from './types';
 
 const getGithubHookUrl = (url: string, sha: string) => {
   const GITHUB_COM_DOMAIN = 'github.com';
@@ -18,24 +19,23 @@ const getGithubHookUrl = (url: string, sha: string) => {
 
 export async function reportStatusToGithub({
   hook,
-  reportData,
+  runId,
+  runSummary,
+  sha,
   hookEvent,
 }: {
   hook: GithubHook;
-  reportData: any;
+  runId: string;
+  sha: string;
+  runSummary: RunSummaryForHooks;
   hookEvent: string;
 }) {
-  const fullStatusPostUrl = getGithubHookUrl(
-    hook.url,
-    reportData.run.meta.commit.sha
-  );
+  const fullStatusPostUrl = getGithubHookUrl(hook.url, sha);
 
   const data = {
     state: '',
-    description: `fa:${reportData.currentResults.failures} pa:${reportData.currentResults.passes} pe:${reportData.currentResults.pending} sk:${reportData.currentResults.skipped}`,
-    target_url: getDashboardRunURL(
-      reportData?.run?.runId || reportData.instance.runId
-    ),
+    description: `fa:${runSummary.failures} pa:${runSummary.passes} pe:${runSummary.pending} sk:${runSummary.skipped}`,
+    target_url: getDashboardRunURL(runId),
     context: hook.githubContext || 'Sorry-Cypress-Tests',
   };
 
@@ -55,7 +55,7 @@ export async function reportStatusToGithub({
     });
 
     data.state = 'success';
-    if (reportData.currentResults.failures > 0) {
+    if (runSummary.failures > 0) {
       data.state = 'failure';
     }
   }

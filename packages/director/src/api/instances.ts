@@ -1,7 +1,5 @@
 import { getExecutionDriver, getScreenshotsDriver } from '@src/drivers';
 import { RUN_NOT_EXIST } from '@src/lib/errors';
-import { hookEvents } from '@src/lib/hooks/hooksEnums';
-import { reportToHook } from '@src/lib/hooks/hooksReporter';
 import { RequestHandler } from 'express';
 import {
   InstanceResult,
@@ -9,6 +7,12 @@ import {
   AssetUploadInstruction,
   UpdateInstanceResponse,
 } from '@src/types';
+
+import {
+  emitInstanceFinish,
+  emitInstanceStart,
+  emitRunFinish,
+} from '@src/lib/hooks/events';
 
 export const handleCreateInstance: RequestHandler = async (req, res) => {
   const { groupId, machineId } = req.body;
@@ -29,7 +33,7 @@ export const handleCreateInstance: RequestHandler = async (req, res) => {
     } = await executionDriver.getNextTask({ runId, machineId, groupId });
 
     if (instance === null) {
-      console.log(`<< All tasks claimed`, { runId, machineId });
+      console.log(`<< All tasks claimed`, { runId, machineId, groupId });
       return res.json({
         spec: null,
         instanceId: null,
@@ -38,17 +42,9 @@ export const handleCreateInstance: RequestHandler = async (req, res) => {
       });
     }
 
-    const run = await executionDriver.getRunWithSpecs(runId);
-    reportToHook({
-      hookEvent: hookEvents.INSTANCE_START,
-      reportData: {
-        run,
-        instance,
-      },
-      project: await executionDriver.getProjectById(run.meta.projectId),
+    emitInstanceStart({
+      runId,
     });
-
-    console.log(`<< INSTANCE_START hook called`, instance.instanceId);
 
     //Instance Start
     console.log(`<< Sending new task to machine`, instance);
@@ -74,11 +70,14 @@ export const handleUpdateInstance: RequestHandler = async (req, res) => {
 
   console.log(`>> Received instance result`, { instanceId });
   await executionDriver.setInstanceResults(instanceId, result);
-
   const instance = await executionDriver.getInstanceById(instanceId);
   const run = await executionDriver.getRunWithSpecs(instance.runId);
-  const project = await executionDriver.getProjectById(run.meta.projectId);
 
+  emitInstanceFinish({
+    runId: run.runId,
+  });
+
+  // TODO: Fix isRunStillRunning duplication
   const isRunStillRunning = run.specs.reduce(
     (wasRunning, currentSpec, index) => {
       return (
@@ -88,29 +87,11 @@ export const handleUpdateInstance: RequestHandler = async (req, res) => {
     false
   );
 
-  reportToHook({
-    hookEvent: hookEvents.INSTANCE_FINISH,
-    reportData: {
-      run,
-      instance,
-    },
-    project,
-  }).then(() => {
-    console.log(`<< INSTANCE_FINISH hook called`, instance.instanceId);
-    // We should probably add a flag to the actual run here aswell
-    // We should also probably do a check to see if all specs passed and set a flag of success or fail
-    if (!isRunStillRunning) {
-      reportToHook({
-        hookEvent: hookEvents.RUN_FINISH,
-        reportData: {
-          run,
-          instance,
-        },
-        project,
-      });
-      console.log(`<< RUN_FINISH hook called`, run.runId);
-    }
-  });
+  // We should probably add a flag to the actual run here aswell
+  // We should also probably do a check to see if all specs passed and set a flag of success or fail
+  if (!isRunStillRunning) {
+    emitRunFinish({ runId: run.runId });
+  }
 
   const screenshotUploadUrls: ScreenshotUploadInstruction[] = await screenshotsDriver.getScreenshotsUploadUrls(
     instanceId,

@@ -1,8 +1,11 @@
+import { RunWithSpecs } from '@src/types';
+
 // this is duplicated from dashboard since there is no easy way to share code.
-export function getRunTestsOverall(run: any) {
+export function getRunTestsOverall(run: RunWithSpecs) {
+  // TODO: Fix is still running
   const isStillRunning = run.specs.reduce(
-    (wasRunning: boolean, currentSpec: { claimed: any; results: any }) => {
-      return !currentSpec.claimed || !currentSpec.results || wasRunning;
+    (wasRunning: boolean, currentSpec) => {
+      return !currentSpec.claimed || wasRunning;
     },
     false
   );

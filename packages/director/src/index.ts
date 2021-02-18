@@ -1,6 +1,6 @@
 import { app } from './app';
 import { PORT } from './config';
-export * from './types';
+import '@src/lib/hooks/init';
 
 async function main() {
   app.on('error', (error) => {
@@ -15,3 +15,5 @@ main().catch((error) => {
   console.error(error);
   process.exit(1);
 });
+
+export * from './types';

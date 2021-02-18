@@ -4,8 +4,6 @@ import {
   isSlackHook,
 } from '@src/lib/hooks/hooksEnums';
 
-import { Instance } from '@src/types/instance.types';
-import { Run, RunSpec } from '@src/types/run.types';
 import { Project, HookEvent } from '@src/types/project.types';
 
 import { getRunTestsOverall } from './getRunTestOverall';
@@ -13,40 +11,36 @@ import { getCleanHookReportData } from './cleanHooksData';
 import { reportStatusToGithub } from './githubReporter';
 import { reportToGenericWebHook } from './genericReporter';
 import { reportToSlack } from './slackReporter';
-
-type ReportData = {
-  run: Run;
-  instance?: Instance | RunSpec;
-  reportUrl?: string;
-  hookEvent?: string;
-  currentResults?: any;
-};
+import { RunWithSpecs } from '@src/types';
 
 export function reportToHook({
   hookEvent,
-  reportData,
+  run,
   project,
 }: {
   hookEvent: HookEvent;
-  reportData: ReportData;
+  run: RunWithSpecs;
   project: Project;
 }): Promise<any> {
   try {
-    reportData.currentResults = getRunTestsOverall(reportData.run);
-    const cleanReportData = getCleanHookReportData(reportData);
+    const runSummary = getCleanHookReportData(getRunTestsOverall(run));
 
     project?.hooks?.forEach((hook) => {
       if (isSlackHook(hook)) {
         return reportToSlack({
           hook,
-          reportData: cleanReportData,
+          runSummary,
+          runId: run.runId,
+          ciBuildId: run.meta.ciBuildId,
           hookEvent,
         });
       }
       if (isGithubHook(hook)) {
         return reportStatusToGithub({
           hook,
-          reportData: cleanReportData,
+          sha: run.meta.commit.sha,
+          runId: run.runId,
+          runSummary,
           hookEvent,
         });
       }
@@ -54,7 +48,8 @@ export function reportToHook({
       if (isGenericHook(hook)) {
         return reportToGenericWebHook({
           hook,
-          reportData: cleanReportData,
+          runId: run.runId,
+          runSummary,
           hookEvent,
         });
       }

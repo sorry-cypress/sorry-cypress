@@ -6,6 +6,7 @@ import {
   GithubHook,
   SlackHook,
 } from '@src/types';
+
 export const hookEvents = {
   RUN_START: 'RUN_START',
   RUN_FINISH: 'RUN_FINISH',
