@@ -76,7 +76,7 @@ describe('test reportStatusToBitbucket', () => {
     expect(axios).toBeCalledWith({
       ...bitbucketReportStatusRequest,
       url:
-        'https://api.bitbucket.org/2.0/testcompany/testrepo/commit/testCommitSha/statuses/build',
+        'https://api.bitbucket.org/2.0/repositories/testcompany/testrepo/commit/testCommitSha/statuses/build',
     });
   });
 });

@@ -18,7 +18,7 @@ const getBitbucketUrl = (url: string, sha: string) => {
     bitBucketDomain === BITBUCKET_DOMAIN
       ? BITBUCKET_API_ENDPOINT
       : `${bitBucketDomain}`;
-  return `${bitbucketProtocol}://${bitbucketEndpoint}/2.0/${bitBucketRepo}/${bitBucketProjectStripped}/commit/${sha}/statuses/build`;
+  return `${bitbucketProtocol}://${bitbucketEndpoint}/2.0/repositories/${bitBucketRepo}/${bitBucketProjectStripped}/commit/${sha}/statuses/build`;
 };
 
 export async function reportStatusToBitbucket({

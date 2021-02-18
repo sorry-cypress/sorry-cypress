@@ -1,6 +1,6 @@
 {
   "method": "post",
-  "url": "https://bitbucket.org/testcompnay/2.0/testcompany/testrepo/commit/testCommitSha/statuses/build",
+  "url": "https://bitbucket.org/testcompnay/2.0/repositories/testcompany/testrepo/commit/testCommitSha/statuses/build",
   "auth": {
     "password": "testBitbucketToken",
     "username": "sorry-cypress"
