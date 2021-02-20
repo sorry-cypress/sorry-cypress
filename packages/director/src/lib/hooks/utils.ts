@@ -1,4 +1,46 @@
+import { Hook, HookEvent, isGithubHook } from '@sorry-cypress/common';
 import { RunWithSpecs } from '@src/types';
+import { hookReportSchema } from '@src/lib/schemas';
+import { cloneDeep } from 'lodash';
+import Ajv from 'ajv';
+
+const ajv = new Ajv({ removeAdditional: 'all' });
+const cleanHookReportData = ajv.compile(hookReportSchema);
+
+export interface RunSummaryForHooks {
+  failures: number;
+  passes: number;
+  skipped: number;
+  tests: number;
+  pending: number;
+  wallClockStartedAt: Date;
+  wallClockDuration: number;
+}
+
+export const getCleanHookReportData = (
+  runSummary: RunSummaryForHooks
+): RunSummaryForHooks => {
+  const cloned = cloneDeep(runSummary);
+  // TODO: this fn mutates the data, replace with pure
+  cleanHookReportData(cloned);
+  return cloned;
+};
+
+export function shouldHookHandleEvent(event: HookEvent, hook: Hook) {
+  if (isGithubHook(hook)) {
+    return true;
+  }
+
+  if (!hook.hookEvents || !hook.hookEvents.length) {
+    return true;
+  }
+
+  if (hook.hookEvents.includes(event)) {
+    return true;
+  }
+
+  return false;
+}
 
 // this is duplicated from dashboard since there is no easy way to share code.
 export function getRunTestsOverall(run: RunWithSpecs) {

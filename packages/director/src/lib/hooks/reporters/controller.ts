@@ -2,16 +2,13 @@ import {
   isGenericHook,
   isGithubHook,
   isSlackHook,
-} from '@src/lib/hooks/hooksEnums';
+} from '@sorry-cypress/common';
 
-import { Project, HookEvent } from '@src/types/project.types';
-
-import { getRunTestsOverall } from './getRunTestOverall';
-import { getCleanHookReportData } from './cleanHooksData';
-import { reportStatusToGithub } from './githubReporter';
-import { reportToGenericWebHook } from './genericReporter';
-import { reportToSlack } from './slackReporter';
-import { RunWithSpecs } from '@src/types';
+import { Project, HookEvent, RunWithSpecs } from '@sorry-cypress/common';
+import { getCleanHookReportData, getRunTestsOverall } from '../utils';
+import { reportStatusToGithub } from './github';
+import { reportToGenericWebHook } from './generic';
+import { reportToSlack } from './slack';
 
 export function reportToHook({
   hookEvent,

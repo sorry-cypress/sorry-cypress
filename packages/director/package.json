@@ -26,6 +26,7 @@
     "release": "yarn version --no-git-tag-version"
   },
   "dependencies": {
+    "@sorry-cypress/common": "1.0.0",
     "ajv": "^6.12.5",
     "aws-sdk": "^2.518.0",
     "axios": "^0.21.1",
@@ -59,6 +60,7 @@
     "@types/uuid": "^3.4.5",
     "babel-plugin-module-resolver": "^4.0.0",
     "jest": "^25.5.4",
+    "microbundle": "^0.13.0",
     "npm-run-all": "^4.1.5",
     "typescript": "^4.0.3"
   }

@@ -1,10 +1,13 @@
 import axios from 'axios';
 import { getDashboardRunURL } from '@src/lib/urls';
+import {
+  HookEvent,
+  SlackHook,
+  hookEvents,
+  RunSummaryForHooks,
+} from '@sorry-cypress/common';
 
-import { HookEvent, SlackHook } from '@src/types/project.types';
-import { hookEvents } from './hooksEnums';
-import { RunSummaryForHooks } from './types';
-import { shouldHookHandleEvent } from './hookHasEvent';
+import { shouldHookHandleEvent } from '../utils';
 
 export async function reportToSlack({
   hook,

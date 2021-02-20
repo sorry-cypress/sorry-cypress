@@ -1,8 +1,7 @@
 import axios from 'axios';
 import { getDashboardRunURL } from '@src/lib/urls';
-import { HookEvent, GenericHook } from '@src/types/project.types';
-import { RunSummaryForHooks } from './types';
-import { shouldHookHandleEvent } from './hookHasEvent';
+import { HookEvent, GenericHook } from '@sorry-cypress/common';
+import { RunSummaryForHooks, shouldHookHandleEvent } from '../utils';
 
 export async function reportToGenericWebHook({
   hook,

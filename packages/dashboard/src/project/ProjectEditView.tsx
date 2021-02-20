@@ -19,15 +19,11 @@ import {
 } from 'bold-ui';
 import { useHistory } from 'react-router-dom';
 import clonedeep from 'lodash.clonedeep';
-import { Hook, Project } from '@src/duplicatedFromDirector/project.types';
+import { Hook, Project } from '@sorry-cypress/common';
 import { navStructure } from '@src/lib/navigation';
 
 import { HookEdit } from './HookEdit';
-import {
-  HooksFormState,
-  hookFormReducer,
-  hooksFormInitialState,
-} from './hookFormReducer';
+import { hookFormReducer, hooksFormInitialState } from './hookFormReducer';
 
 type ProjectEditViewProps = {
   match: {

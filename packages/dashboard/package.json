@@ -27,6 +27,7 @@
     "release": "yarn version --no-git-tag-version"
   },
   "dependencies": {
+    "@sorry-cypress/common": "1.0.0",
     "@apollo/client": "^3.2.0",
     "@popperjs/core": "^2.4.0",
     "bold-ui": "^1.0.0-beta.40",

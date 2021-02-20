@@ -1,4 +1,4 @@
-import { Instance } from './instance.types';
+import { Instance } from '../instance/types';
 
 export interface CommitData {
   sha: string;

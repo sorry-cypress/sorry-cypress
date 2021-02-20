@@ -1,14 +1,16 @@
-import { Hook } from '@src/duplicatedFromDirector/project.types';
-import { useSwitch } from '@src/hooks/useSwitch';
-import React from 'react';
 import {
   isGithubHook,
   isGenericHook,
   isSlackHook,
-  hookTypeToString,
-} from './hook.utils';
+  Hook,
+  hookTypes,
+  HookType,
+} from '@sorry-cypress/common';
+import { useSwitch } from '@src/hooks/useSwitch';
+import React from 'react';
+import { hookTypeToString } from './hook.utils';
 import { Button, Icon, TableRow, TableCell, Select } from 'bold-ui';
-import { hookType } from '@src/duplicatedFromDirector/hooksEnums';
+
 import { GithubHook } from './GithubHook';
 import { GenericHook } from './GenericHook';
 import { HookFormAction } from './hookFormReducer';
@@ -62,10 +64,10 @@ export const HookEdit = ({
             <div style={{ marginBottom: '20px' }}>
               <Select
                 itemToString={hookTypeToString}
-                items={Object.keys(hookType)}
+                items={Object.keys(hookTypes)}
                 label="Hook Type"
                 name="hookType"
-                onChange={(value: hookType) => {
+                onChange={(value: HookType) => {
                   dispatch({
                     type: 'SET_HOOK_FIELD',
                     payload: {

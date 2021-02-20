@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Icon, Tooltip, TextField } from 'bold-ui';
-import { GithubHook as GithubHookType } from '@src/duplicatedFromDirector/project.types';
+import { GithubHook as GithubHookType } from '@sorry-cypress/common';
 import { HookFormAction } from './hookFormReducer';
 import { useSwitch } from '@src/hooks/useSwitch';
 

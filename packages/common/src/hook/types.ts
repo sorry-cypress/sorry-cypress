@@ -1,3 +1,18 @@
+export interface HookEventPayload {
+  runId: string;
+}
+
+export interface RunSummaryForHooks {
+  failures: number;
+  passes: number;
+  skipped: number;
+  tests: number;
+  pending: number;
+  wallClockStartedAt: Date;
+  wallClockDuration: number;
+}
+
+export type HookType = 'GITHUB_STATUS_HOOK' | 'GENERIC_HOOK' | 'SLACK_HOOK';
 export type HookEvent =
   | 'RUN_START'
   | 'RUN_FINISH'
@@ -26,9 +41,3 @@ export type GithubHook = BaseHook & {
 };
 
 export type Hook = SlackHook | GenericHook | GithubHook;
-
-export interface Project {
-  projectId: string;
-  createdAt?: string;
-  hooks?: Hook[];
-}

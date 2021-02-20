@@ -3,15 +3,13 @@ import {
   InstanceResult,
   ScreenshotUploadInstruction,
   AssetUploadInstruction,
-} from './instance.types';
-import { Project } from './project.types';
-import {
+  Project,
   CreateRunParameters,
   CreateRunResponse,
   Run,
   RunWithSpecs,
   Task,
-} from './run.types';
+} from '@sorry-cypress/common';
 
 interface Driver {
   id: string;

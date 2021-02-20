@@ -1,5 +1,4 @@
-import { hookType } from '@src/duplicatedFromDirector/hooksEnums';
-import { Hook } from '@src/duplicatedFromDirector/project.types';
+import { HookType, Hook, hookTypes } from '@sorry-cypress/common';
 import { nanoid } from 'nanoid';
 
 type SetProjectName = {
@@ -17,7 +16,7 @@ type SetHookType = {
   type: 'SET_HOOK_TYPE';
   payload: {
     hookId: string;
-    type: hookType;
+    type: HookType;
   };
 };
 
@@ -79,7 +78,7 @@ export const hookFormReducer = (
         hooks: [
           ...state.hooks,
           {
-            hookType: hookType.GENERIC_HOOK,
+            hookType: hookTypes.GENERIC_HOOK,
             hookId: nanoid(),
           },
         ],

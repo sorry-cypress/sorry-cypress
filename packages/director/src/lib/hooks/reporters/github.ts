@@ -1,8 +1,7 @@
-import { hookEvents } from '@src/lib/hooks/hooksEnums';
+import { GithubHook, hookEvents } from '@sorry-cypress/common';
 import axios from 'axios';
 import { getDashboardRunURL } from '@src/lib/urls';
-import { GithubHook } from '@src/types/project.types';
-import { RunSummaryForHooks } from './types';
+import { RunSummaryForHooks } from '../utils';
 
 const getGithubHookUrl = (url: string, sha: string) => {
   const GITHUB_COM_DOMAIN = 'github.com';

@@ -1,17 +1,12 @@
 import React from 'react';
 import { Icon, Tooltip, Select } from 'bold-ui';
-import { hookEvents } from '@src/duplicatedFromDirector/hooksEnums';
 import { isEqual } from 'lodash';
-import {
-  GenericHook as GenericHookType,
-  HookEvent,
-  SlackHook,
-} from '@src/duplicatedFromDirector/project.types';
+import { GithubHook, Hook, HookEvent, hookEvents } from '@sorry-cypress/common';
 import { HookFormAction } from './hookFormReducer';
 import { hookTypeToString } from './hook.utils';
 
 interface EditHookEventsProps {
-  hook: GenericHookType | SlackHook;
+  hook: Exclude<Hook, GithubHook>;
   dispatch: React.Dispatch<HookFormAction>;
   disabled: boolean;
 }

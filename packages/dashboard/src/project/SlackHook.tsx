@@ -1,5 +1,5 @@
 import React from 'react';
-import { SlackHook as SlackHookType } from '@src/duplicatedFromDirector/project.types';
+import { SlackHook as SlackHookType } from '@sorry-cypress/common';
 import { Icon, Tooltip, TextField } from 'bold-ui';
 import { HookFormAction } from './hookFormReducer';
 import { EditHookEvents } from './EditHookEvents';

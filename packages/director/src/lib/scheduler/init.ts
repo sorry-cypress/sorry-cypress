@@ -5,12 +5,11 @@
  * An proper alternative would be an external service
  * that invokes inactivity check after a timeout
  */
-import { hookEvents } from '../hooks/hooksEnums';
+import { hookEvents } from '@sorry-cypress/common';
 import { pubsub } from '../pubsub';
-import { HookEventPayload } from '../hooks/types';
+import { emitRunFinish, PubSubHookEventPayload } from '../hooks/events';
 import { getExecutionDriver } from '@src/drivers';
 import { INACTIVITY_TIMEOUT_MS } from '@src/config';
-import { emitRunFinish } from '../hooks/events';
 
 const jobs: Record<string, NodeJS.Timeout> = {};
 
@@ -36,7 +35,7 @@ const getInactivityTimeoutHandler = (
   emitRunFinish({ runId });
 };
 
-const handleSchedulerEvent = async ({ runId }: HookEventPayload) => {
+const handleSchedulerEvent = async ({ runId }: PubSubHookEventPayload) => {
   const jobName = `${runId}_inactivity_timeout`;
 
   if (jobs[jobName]) {
