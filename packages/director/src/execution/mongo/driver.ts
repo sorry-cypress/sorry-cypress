@@ -18,4 +18,5 @@ export const driver: ExecutionDriver = {
   setVideoUrl: mongoInstanceController.setVideoUrl,
   setScreenshotUrl: mongoInstanceController.setScreenshotUrl,
   setInstanceResults: mongoInstanceController.setInstanceResults,
+  setRunInactivityTimeout: mongoRunModel.setRunInactivityTimeout,
 };

@@ -129,3 +129,23 @@ export const setSpecClaimed = async (
     throw new AppError(CLAIM_FAILED);
   }
 };
+
+export const setRunInactivityTimeout: ExecutionDriver['setRunInactivityTimeout'] = async ({
+  runId,
+  timeoutMs,
+}) => {
+  getMongoDB()
+    .collection('runs')
+    .updateOne(
+      {
+        runId,
+      },
+      {
+        $set: {
+          inactivityTimeout: {
+            timeoutMs,
+          },
+        },
+      }
+    );
+};

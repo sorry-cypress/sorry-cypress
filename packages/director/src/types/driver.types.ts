@@ -34,6 +34,11 @@ interface GetNextTaskParams {
   machineId: string;
   groupId: string;
 }
+
+interface SetRunInactivityTimeoutParams {
+  runId: string;
+  timeoutMs: number;
+}
 export interface ExecutionDriver extends Driver {
   getRunWithSpecs: (runId: string) => Promise<RunWithSpecs>;
   getProjectById: (projectId: string) => Promise<Project>;
@@ -41,6 +46,9 @@ export interface ExecutionDriver extends Driver {
   getInstanceById: (instanceId: string) => Promise<Instance>;
   createRun: (params: CreateRunParameters) => Promise<CreateRunResponse>;
   getNextTask: (params: GetNextTaskParams) => Promise<Task>;
+  setRunInactivityTimeout: (
+    params: SetRunInactivityTimeoutParams
+  ) => Promise<void>;
   setInstanceResults: (
     instanceId: string,
     results: InstanceResult

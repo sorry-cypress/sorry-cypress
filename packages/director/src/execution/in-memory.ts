@@ -157,6 +157,7 @@ const setInstanceResults = async (
   }
   instances[instanceId] = { ...instances[instanceId], results };
 };
+
 export const driver: ExecutionDriver = {
   id: 'in-memory',
   init: () => Promise.resolve(),
@@ -170,4 +171,5 @@ export const driver: ExecutionDriver = {
   setInstanceResults,
   setScreenshotUrl: () => Promise.resolve(),
   setVideoUrl: () => Promise.resolve(),
+  setRunInactivityTimeout: () => Promise.resolve(),
 };
