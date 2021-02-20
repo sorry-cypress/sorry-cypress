@@ -55,9 +55,7 @@ const handleSchedulerEvent = async ({ runId }: HookEventPayload) => {
   }, timeoutMs);
 };
 
-export async function initScheduler() {
-  console.log('🎧 Initializing listeners for scheduler...');
-  [hookEvents.RUN_START, hookEvents.INSTANCE_START].forEach((event) => {
-    pubsub.on(event, handleSchedulerEvent);
-  });
-}
+console.log('🎧 Initializing listeners for scheduler...');
+[hookEvents.RUN_START, hookEvents.INSTANCE_START].forEach((event) => {
+  pubsub.on(event, handleSchedulerEvent);
+});
