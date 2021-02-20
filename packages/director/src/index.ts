@@ -1,6 +1,7 @@
 import { app } from './app';
 import { PORT } from './config';
 import '@src/lib/hooks/init';
+import '@src/lib/scheduler/init';
 
 async function main() {
   app.on('error', (error) => {
