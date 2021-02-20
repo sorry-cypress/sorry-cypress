@@ -5,16 +5,22 @@ import { ProjectsAPI } from '@src/datasources/projects';
 import { RunsAPI } from '@src/datasources/runs';
 import { SpecsAPI } from '@src/datasources/specs';
 import {
-  InstanceTest,
+  InstanceTestUnion,
   InstanceTestV5,
   OrderingOptions,
 } from '@src/generated/graphql';
 
+function isInstanceV5(
+  candidate: InstanceTestUnion
+): candidate is InstanceTestV5 {
+  return !!(candidate as InstanceTestV5).attempts;
+}
+
 export const resolvers = {
   DateTime: GraphQLDateTime,
   InstanceTestUnion: {
-    __resolveType(obj: InstanceTestV5 & InstanceTest) {
-      if (obj.attempts) {
+    __resolveType(obj: InstanceTestUnion) {
+      if (isInstanceV5(obj)) {
         return 'InstanceTestV5';
       }
 
