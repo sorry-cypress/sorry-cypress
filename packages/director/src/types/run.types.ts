@@ -46,6 +46,11 @@ export interface Run {
   createdAt: string;
   meta: RunMetaData;
   specs: RunSpec[];
+  inactivityTimeout?: RunInactivityTimeout;
+}
+
+interface RunInactivityTimeout {
+  timeoutMs: number;
 }
 export interface Task {
   instance: RunSpec | null;
