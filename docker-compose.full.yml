@@ -3,6 +3,8 @@ version: '3.6'
 services:
   mongo:
     image: mongo:4.0
+    volumes:
+      - ./data/data-mongo-cypress:/data/db
 
   director:
     image: agoldis/sorry-cypress-director:latest
