@@ -1,0 +1,19 @@
+query getRunsFeed($cursor: String, $filters: [Filters]) {
+  runFeed(cursor: $cursor, filters: $filters) {
+    cursor
+    hasMore
+    runs {
+      runId
+      createdAt
+      meta {
+        ...RunSummaryMeta
+      }
+      inactivityTimeout {
+        timeoutMs
+      }
+      specs {
+        ...RunSummarySpec
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+fragment RunSummaryMeta on RunMeta {
+  ciBuildId
+  projectId
+  commit {
+    sha
+    branch
+    remoteOrigin
+    message
+    authorEmail
+    authorName
+  }
+}

@@ -1,5 +1,5 @@
 import { CenteredContent } from '@src/components/common';
-import { RunSummary } from '@src/run/summary';
+import { RunSummary } from '@src/run/runSummary/summary';
 import { useGetRunsFeedQuery } from '@src/generated/graphql';
 import { Button } from 'bold-ui';
 import React from 'react';
@@ -9,7 +9,7 @@ type RunListProps = {
   search?: string;
 };
 
-export const RunList = ({ projectId, search = '' }: RunListProps) => {
+export const RunsFeed = ({ projectId, search = '' }: RunListProps) => {
   const { fetchMore, loading, error, data } = useGetRunsFeedQuery({
     variables: {
       filters: getFilters(projectId, search),
@@ -69,7 +69,13 @@ export const RunList = ({ projectId, search = '' }: RunListProps) => {
   return (
     <>
       {runs.map((run) => (
-        <RunSummary run={run} key={run.runId} />
+        <RunSummary
+          runCreatedAt={run.createdAt}
+          runSpecs={run.specs}
+          runId={run.runId}
+          runMeta={run.meta}
+          key={run.runId}
+        />
       ))}
       {runFeed.hasMore && <Button onClick={loadMore}>Load More</Button>}
     </>

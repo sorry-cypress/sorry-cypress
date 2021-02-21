@@ -1,14 +1,13 @@
-import { RunWithSpecs, RunSummary } from './types';
+import { InstanceResultStats } from '../instance';
+import { RunSummary } from './types';
 
-export function getRunSummary(run: RunWithSpecs): RunSummary {
+export function getRunSummary(specs: InstanceResultStats[]): RunSummary {
   // TODO: Fix is still running
-  const isStillRunning = run.specs.reduce(
-    (wasRunning: boolean, currentSpec) => {
-      return !currentSpec.claimed || wasRunning;
-    },
-    false
-  );
-  const duration = run.specs.reduce(
+  // const isStillRunning = specs.reduce((wasRunning: boolean, currentSpec) => {
+  //   return !currentSpec.claimed || wasRunning;
+  // }, false);
+  const isStillRunning = false;
+  const duration = specs.reduce(
     (dates: any, currentSpec: any, index: number) => {
       if (currentSpec.results) {
         if (
@@ -26,7 +25,7 @@ export function getRunSummary(run: RunWithSpecs): RunSummary {
           dates.lastEnd = currentSpec.results.stats.wallClockEndedAt;
         }
       }
-      if (index + 1 === run.specs.length) {
+      if (index + 1 === specs.length) {
         return dates.lastEnd
           ? Number(new Date(dates.lastEnd)) - Number(new Date(dates.firstStart))
           : 0;
@@ -35,7 +34,7 @@ export function getRunSummary(run: RunWithSpecs): RunSummary {
     },
     {}
   );
-  return run.specs.reduce(
+  return specs.reduce(
     (agg: any, spec: any) => {
       if (!spec.results) {
         return agg;
@@ -47,7 +46,6 @@ export function getRunSummary(run: RunWithSpecs): RunSummary {
         passes: agg.passes + spec.results.stats.passes,
         pending: agg.pending + spec.results.stats.pending,
         skipped: agg.skipped + spec.results.stats.skipped,
-        wallClockStartedAt: new Date(run.createdAt),
         wallClockDuration: isStillRunning ? 0 : duration || 0,
       };
     },
@@ -57,7 +55,6 @@ export function getRunSummary(run: RunWithSpecs): RunSummary {
       skipped: 0,
       tests: 0,
       pending: 0,
-      wallClockStartedAt: new Date(run.createdAt),
       wallClockDuration: 0,
     }
   );

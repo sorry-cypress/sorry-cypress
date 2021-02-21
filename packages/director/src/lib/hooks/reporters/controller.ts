@@ -25,7 +25,9 @@ export function reportToHook({
   project: Project;
 }): Promise<any> {
   try {
-    const runSummary = getCleanHookReportData(getRunSummary(run));
+    const runSummary = getCleanHookReportData(
+      getRunSummary(run.specsFull.map((s) => s.results?.stats))
+    );
 
     project?.hooks?.forEach((hook) => {
       if (isSlackHook(hook)) {

@@ -7,15 +7,13 @@
     {
       "type": "node",
       "request": "attach",
-      "name": "Docker: Attach to Node",
-      "remoteRoot": "/app"
+      "name": "Docker: Attach to Node"
     },
 
     {
       "type": "node",
       "request": "attach",
       "name": "Attach to API",
-      "remoteRoot": "/app",
       "address": "0.0.0.0",
       "port": 9230
     },
@@ -23,7 +21,6 @@
       "type": "node",
       "request": "attach",
       "name": "Attach to director",
-      "remoteRoot": "~/sorry-cypress/app/",
       "port": 9229
     }
   ]

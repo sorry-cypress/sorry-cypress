@@ -2,7 +2,7 @@ import { useAutoRefresh } from '@src/hooks/useAutoRefresh';
 import { getProjectPath, getRunPath, navStructure } from '@src/lib/navigation';
 import React, { useLayoutEffect } from 'react';
 import { RunDetails } from './details';
-import { RunSummary } from '@src/run/summary';
+import { RunSummary } from '@src/run/runSummary/summary';
 import { useGetRunQuery } from '@src/generated/graphql';
 
 type RunDetailsViewProps = {

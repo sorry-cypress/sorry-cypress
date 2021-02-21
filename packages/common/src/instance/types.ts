@@ -21,8 +21,8 @@ export interface InstanceResultStats {
   pending: number;
   skipped: number;
   failures: number;
-  wallClockStartedAt: Date;
-  wallClockEndedAt: Date;
+  wallClockStartedAt: string;
+  wallClockEndedAt: string;
   wallClockDuration: number;
 }
 

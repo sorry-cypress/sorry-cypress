@@ -85,8 +85,13 @@ type DeleteProjectResponse {
 type Run {
   runId: ID!
   createdAt: DateTime!
-  meta: RunMeta
+  meta: RunMeta!
   specs: [FullRunSpec!]!
+  inactivityTimeout: RunInactivityTimeout
+}
+
+type RunInactivityTimeout {
+  timeoutMs: Int!
 }
 
 # Full spec data, including execution results
@@ -110,8 +115,8 @@ type Commit {
 }
 
 type RunMeta {
-  ciBuildId: String
-  projectId: String
+  ciBuildId: String!
+  projectId: String!
   commit: Commit
 }
 
@@ -162,15 +167,15 @@ type InstanceResults {
 
 # Aggregated stats for instance
 type InstanceStats {
-  suites: Int
-  tests: Int
-  passes: Int
-  pending: Int
-  skipped: Int
-  failures: Int
-  wallClockStartedAt: String
-  wallClockEndedAt: String
-  wallClockDuration: Int
+  suites: Int!
+  tests: Int!
+  passes: Int!
+  pending: Int!
+  skipped: Int!
+  failures: Int!
+  wallClockStartedAt: String!
+  wallClockEndedAt: String!
+  wallClockDuration: Int!
 }
 
 type CypressConfig {
