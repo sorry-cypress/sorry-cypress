@@ -22,11 +22,6 @@ query getRun($runId: ID!) {
       machineId
       groupId
       results {
-        cypressConfig {
-          video
-          videoUploadOnPasses
-        }
-        videoUrl
         tests {
           ... on InstanceTest {
             title

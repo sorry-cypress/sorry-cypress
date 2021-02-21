@@ -1,18 +1,17 @@
 import {
-  isGithubHook,
-  isGenericHook,
-  isSlackHook,
   Hook,
-  hookTypes,
   HookType,
+  hookTypes,
+  isGenericHook,
+  isGithubHook,
+  isSlackHook,
 } from '@sorry-cypress/common';
 import { useSwitch } from '@src/hooks/useSwitch';
+import { Button, Icon, Select, TableCell, TableRow } from 'bold-ui';
 import React from 'react';
-import { hookTypeToString } from './hook.utils';
-import { Button, Icon, TableRow, TableCell, Select } from 'bold-ui';
-
-import { GithubHook } from './GithubHook';
 import { GenericHook } from './GenericHook';
+import { GithubHook } from './GithubHook';
+import { hookTypeToString } from './hook.utils';
 import { HookFormAction } from './hookFormReducer';
 import { SlackHook } from './SlackHook';
 

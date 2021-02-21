@@ -1,6 +1,6 @@
+import { Commit as CommitDef } from '@src/generated/graphql';
+import { getGithubBranchURL, getGithubCommitURL } from '@src/lib/github';
 import React from 'react';
-import { getGithubCommitURL, getGithubBranchURL } from '../../lib/github';
-import { Commit as CommitDef } from '../../generated/graphql';
 
 type CommitProps = {
   commit: CommitDef | null | undefined;

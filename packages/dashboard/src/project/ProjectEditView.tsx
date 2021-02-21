@@ -1,33 +1,32 @@
-import React, { useState, useLayoutEffect, useReducer } from 'react';
+import { Hook } from '@sorry-cypress/common';
 import {
-  useGetProjectQuery,
-  useCreateProjectMutation,
-  useUpdateProjectMutation,
   ProjectInput,
-} from '../generated/graphql';
+  useCreateProjectMutation,
+  useGetProjectQuery,
+  useUpdateProjectMutation,
+} from '@src/generated/graphql';
+import { navStructure } from '@src/lib/navigation';
 import {
   Button,
-  Icon,
-  Tooltip,
-  TextField,
-  Grid,
   Cell,
+  Grid,
+  Icon,
   Table,
-  TableHead,
-  TableRow,
-  TableHeader,
   TableBody,
+  TableHead,
+  TableHeader,
+  TableRow,
+  TextField,
+  Tooltip,
 } from 'bold-ui';
+import React, { useLayoutEffect, useReducer, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Hook } from '@sorry-cypress/common';
-import { navStructure } from '@src/lib/navigation';
-
-import { HookEdit } from './HookEdit';
+import { HookEdit } from './hook/HookEdit';
 import {
   hookFormReducer,
   hooksFormInitialState,
   HooksFormState,
-} from './hookFormReducer';
+} from './hook/hookFormReducer';
 
 type ProjectEditViewProps = {
   match: {

@@ -1,4 +1,5 @@
-import HeaderLink from '@src/components/ui/HeaderLink';
+import { FlexRow, HeaderLink, Paper } from '@src/components/';
+import { Project, useDeleteProjectMutation } from '@src/generated/graphql';
 import {
   Button,
   Heading,
@@ -10,9 +11,6 @@ import {
   Text,
 } from 'bold-ui';
 import React, { useState } from 'react';
-import { Project, useDeleteProjectMutation } from '@src/generated/graphql';
-import { Paper } from '@src/components/common';
-import FlexRow from '@src/components/ui/FlexRow';
 
 type ProjectListItemProps = {
   project: Project;

@@ -1,6 +1,6 @@
-import { CenteredContent } from '@src/components/common';
-import { ProjectListItem } from '@src/project/projectListItem';
+import { CenteredContent } from '@src/components';
 import { useGetProjectsQuery } from '@src/generated/graphql';
+import { ProjectListItem } from '@src/project/projectListItem';
 import { Heading } from 'bold-ui';
 import React from 'react';
 

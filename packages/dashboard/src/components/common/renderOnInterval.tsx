@@ -40,4 +40,4 @@ class RenderOnInterval extends React.PureComponent<
   }
 }
 
-export default RenderOnInterval;
+export { RenderOnInterval };

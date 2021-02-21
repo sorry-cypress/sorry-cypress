@@ -2,18 +2,15 @@ import { ApolloProvider } from '@apollo/client';
 import { ThemeProvider } from 'bold-ui';
 import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { Content } from './components/layout/content';
-import { Footer } from './components/layout/footer';
-import { Header } from './components/layout/header';
-import { Layout } from './components/layout/layout';
-import { client } from './lib/apolloClient';
-import { theme } from './theme/theme';
+import { Content, Footer, Header, Layout } from './components/';
 import { InstanceDetailsView } from './instance/InstanceDetailsView';
+import { client } from './lib/apolloClient';
 import { ProjectEditView } from './project/ProjectEditView';
 import { ProjectsView } from './project/ProjectsView';
-import { RunDetailsView } from './run/RunDetailsView';
+import { RunDetailsView } from './run/runDetails/RunDetailsView';
 import { RunsView } from './run/RunsView';
 import { TestDetailsView } from './testItem/TestDetailsView';
+import { theme } from './theme/';
 
 class ErrorBoundary extends React.Component<
   unknown,

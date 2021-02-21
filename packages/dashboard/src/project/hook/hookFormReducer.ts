@@ -1,5 +1,4 @@
-import { HookType, Hook, hookTypes, Project } from '@sorry-cypress/common';
-import {} from '@src/generated/graphql';
+import { Hook, HookType, hookTypes } from '@sorry-cypress/common';
 import { nanoid } from 'nanoid';
 
 export type HooksFormState = {

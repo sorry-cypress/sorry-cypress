@@ -6,10 +6,7 @@ type CiLinkProps = {
   ciBuildId: string | null | undefined;
   projectId: string | null | undefined;
 };
-export const CiUrl: React.FunctionComponent<CiLinkProps> = ({
-  ciBuildId,
-  projectId,
-}: CiLinkProps) => {
+export const CiUrl = ({ ciBuildId, projectId }: CiLinkProps) => {
   if (typeof environment.CI_URL !== 'string') {
     return null;
   }

@@ -1,9 +1,9 @@
+import { useGetRunQuery } from '@src/generated/graphql';
 import { useAutoRefresh } from '@src/hooks/useAutoRefresh';
 import { getProjectPath, getRunPath, navStructure } from '@src/lib/navigation';
+import { RunSummary } from '@src/run/runSummary/summary';
 import React, { useLayoutEffect } from 'react';
 import { RunDetails } from './details';
-import { RunSummary } from '@src/run/runSummary/summary';
-import { useGetRunQuery } from '@src/generated/graphql';
 
 type RunDetailsViewProps = {
   match: {
@@ -19,44 +19,40 @@ export function RunDetailsView({
 }: RunDetailsViewProps) {
   const [shouldAutoRefresh] = useAutoRefresh();
 
-  const {
-    loading: runLoading,
-    error: runError,
-    data: runData,
-  } = useGetRunQuery({
+  const { loading, error, data } = useGetRunQuery({
     variables: { runId: id },
     pollInterval: shouldAutoRefresh ? 1500 : undefined,
   });
 
   useLayoutEffect(() => {
-    if (!runData?.run) {
+    if (!data?.run) {
       navStructure([]);
       return;
     }
 
     navStructure([
       {
-        label: runData.run.meta?.projectId,
-        link: getProjectPath(runData.run.meta?.projectId),
+        label: data.run.meta.projectId,
+        link: getProjectPath(data.run.meta.projectId),
       },
       {
-        label: runData?.run?.meta?.ciBuildId,
-        link: getRunPath(runData?.run?.runId),
+        label: data.run.meta.ciBuildId,
+        link: getRunPath(data.run.runId),
       },
     ]);
-  }, [runData]);
+  }, [data]);
 
-  if (runLoading) return <p>Loading...</p>;
-  if (runError) return <p>{runError.toString()}</p>;
-  if (!runData) return <p>No data</p>;
-  if (!runData?.run) {
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{error.toString()}</p>;
+  if (!data) return <p>No data</p>;
+  if (!data.run) {
     return 'Non-existing run';
   }
 
   return (
     <>
-      <RunSummary run={runData.run} />
-      <RunDetails run={runData.run} />
+      <RunSummary run={data.run} />
+      <RunDetails run={data.run} />
     </>
   );
 }

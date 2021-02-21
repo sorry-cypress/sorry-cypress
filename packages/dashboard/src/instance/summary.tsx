@@ -1,9 +1,9 @@
+import { Paper, VisualTestState } from '@src/components';
+import { GetInstanceQuery, InstanceStats } from '@src/generated/graphql';
+import { getInstanceState } from '@src/lib/executionState';
 import { Cell, Grid, Heading, HFlow, Text } from 'bold-ui';
 import { capitalize } from 'lodash';
 import React from 'react';
-import { GetInstanceQuery, InstanceStats } from '@src/generated/graphql';
-import { getInstanceState } from '@src/lib/executionState';
-import { Paper, VisualTestState } from '@src/components/common';
 
 const getInstanceStatLabel = (statusItem: keyof InstanceStats): string =>
   statusItem === 'pending' ? 'skipped' : statusItem;

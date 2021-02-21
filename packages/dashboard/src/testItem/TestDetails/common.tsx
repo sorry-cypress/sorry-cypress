@@ -1,7 +1,7 @@
+import { Paper } from '@src/components';
+import { InstanceScreeshot } from '@src/generated/graphql';
 import { Alert, useCss } from 'bold-ui';
 import React from 'react';
-import { InstanceScreeshot } from '@src/generated/graphql';
-import { Paper } from '@src/components/common';
 
 export const TestError = ({
   error,

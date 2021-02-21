@@ -1,6 +1,6 @@
-import { CenteredContent } from '@src/components/common';
-import { RunSummary } from '@src/run/runSummary/summary';
+import { CenteredContent } from '@src/components';
 import { useGetRunsFeedQuery } from '@src/generated/graphql';
+import { RunSummary } from '@src/run/runSummary/summary';
 import { Button } from 'bold-ui';
 import React from 'react';
 

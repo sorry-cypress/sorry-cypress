@@ -1,9 +1,8 @@
-import React from 'react';
-import { Icon, Tooltip, TextField } from 'bold-ui';
-
 import { GenericHook as GenericHookType } from '@sorry-cypress/common';
-import { HookFormAction } from './hookFormReducer';
+import { Icon, TextField, Tooltip } from 'bold-ui';
+import React from 'react';
 import { EditHookEvents } from './EditHookEvents';
+import { HookFormAction } from './hookFormReducer';
 
 interface GenericHookProps {
   hook: GenericHookType;

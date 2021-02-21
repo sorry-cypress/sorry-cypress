@@ -1,5 +1,5 @@
 import { TextField, useCss } from 'bold-ui';
-import React, { ChangeEvent, FC, useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import useDebounce from '../../hooks/useDebounce';
 
 export type OnSearch = (value: string) => unknown;
@@ -10,11 +10,7 @@ type SearchFieldProps = {
   disabled?: boolean;
 };
 
-const SearchField: FC<SearchFieldProps> = ({
-  placeholder,
-  onSearch,
-  disabled,
-}: SearchFieldProps) => {
+const SearchField = ({ placeholder, onSearch, disabled }: SearchFieldProps) => {
   const { css } = useCss();
   const debounce = useDebounce();
   const [value, setValue] = useState('');
@@ -49,4 +45,4 @@ const SearchField: FC<SearchFieldProps> = ({
   );
 };
 
-export default SearchField;
+export { SearchField };

@@ -1,23 +1,23 @@
-import { Commit } from '@src/components/commit/commit';
-import FlexRow from '@src/components/ui/FlexRow';
-import HeaderLink from '@src/components/ui/HeaderLink';
-
-import { Cell, Grid, Icon, Text, Tooltip, useCss } from 'bold-ui';
-import React from 'react';
-
+import { getRunSummary } from '@sorry-cypress/common';
 import {
+  CiUrl,
+  FlexRow,
+  FormattedDate,
+  HeaderLink,
+  Paper,
+  RenderOnInterval,
+} from '@src/components/';
+import {
+  RunSummaryInstanceStatsFragment,
   RunSummaryMetaFragment,
   RunSummarySpecFragment,
-  RunSummaryInstanceStatsFragment,
 } from '@src/generated/graphql';
 import { shortEnglishHumanizerWithMsIfNeeded } from '@src/lib/utis';
-import { Paper } from '@src/components/common';
-import { FormattedDate } from '@src/components/common/date';
-import RenderOnInterval from '@src/components/renderOnInterval/renderOnInterval';
-import { CiUrl } from '@src/components/ci/ci';
-import { theme } from '@src/theme/theme';
-import { getRunSummary } from '@sorry-cypress/common';
-import { DeleteRunButton } from '../DeleteRunButton';
+import { theme } from '@src/theme';
+import { Cell, Grid, Icon, Text, Tooltip, useCss } from 'bold-ui';
+import React from 'react';
+import { Commit } from '../commit';
+import { DeleteRunButton } from '../deleteRun/DeleteRunButton';
 
 type RunSummaryProps = {
   runSpecs: RunSummarySpecFragment[];

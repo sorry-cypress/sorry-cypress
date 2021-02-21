@@ -1,9 +1,9 @@
-import React from 'react';
-import { Icon, Tooltip, Select } from 'bold-ui';
-import { isEqual } from 'lodash';
 import { GithubHook, Hook, HookEvent, hookEvents } from '@sorry-cypress/common';
-import { HookFormAction } from './hookFormReducer';
+import { Icon, Select, Tooltip } from 'bold-ui';
+import { isEqual } from 'lodash';
+import React from 'react';
 import { hookTypeToString } from './hook.utils';
+import { HookFormAction } from './hookFormReducer';
 
 interface EditHookEventsProps {
   hook: Exclude<Hook, GithubHook>;

@@ -1,9 +1,8 @@
-import React from 'react';
-
-import { Icon, Tooltip, TextField } from 'bold-ui';
 import { GithubHook as GithubHookType } from '@sorry-cypress/common';
-import { HookFormAction } from './hookFormReducer';
 import { useSwitch } from '@src/hooks/useSwitch';
+import { Icon, TextField, Tooltip } from 'bold-ui';
+import React from 'react';
+import { HookFormAction } from './hookFormReducer';
 
 interface GithubHookPros {
   hook: GithubHookType;

@@ -1,4 +1,8 @@
-import { useAsync } from '@src/hooks/useAsync';
+import {
+  GetRunsFeedDocument,
+  useDeleteRunMutation,
+} from '@src/generated/graphql';
+import { useAsync } from '@src/hooks/';
 import {
   Alert,
   Button,
@@ -12,10 +16,6 @@ import {
 } from 'bold-ui';
 import React, { useEffect, useState } from 'react';
 import { useRouteMatch } from 'react-router-dom';
-import {
-  GetRunsFeedDocument,
-  useDeleteRunMutation,
-} from '@src/generated/graphql';
 
 export const DeleteRunButton = ({
   runId,

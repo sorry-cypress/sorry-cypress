@@ -28,4 +28,4 @@ const FlexRow = ({
   );
 };
 
-export default FlexRow;
+export { FlexRow };

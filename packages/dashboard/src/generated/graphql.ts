@@ -367,19 +367,19 @@ export type DeleteRunMutationVariables = Exact<{
 
 export type DeleteRunMutation = { deleteRun: { success: boolean, message: string, runIds: Array<Maybe<string>> } };
 
-export type GetRunQueryVariables = Exact<{
-  runId: Scalars['ID'];
-}>;
-
-
-export type GetRunQuery = { run?: Maybe<{ runId: string, createdAt: any, meta: { ciBuildId: string, projectId: string, commit?: Maybe<{ sha?: Maybe<string>, branch?: Maybe<string>, remoteOrigin?: Maybe<string>, message?: Maybe<string>, authorEmail?: Maybe<string>, authorName?: Maybe<string> }> }, specs: Array<{ spec: string, instanceId: string, claimed: boolean, claimedAt?: Maybe<string>, machineId?: Maybe<string>, groupId?: Maybe<string>, results?: Maybe<{ videoUrl?: Maybe<string>, cypressConfig?: Maybe<{ video: boolean, videoUploadOnPasses: boolean }>, tests?: Maybe<Array<Maybe<{ title?: Maybe<Array<Maybe<string>>>, state?: Maybe<string>, wallClockDuration?: Maybe<number>, wallClockStartedAt?: Maybe<string> } | { title?: Maybe<Array<Maybe<string>>>, state?: Maybe<string>, attempts: Array<{ state?: Maybe<string>, wallClockDuration?: Maybe<number>, wallClockStartedAt?: Maybe<string>, error?: Maybe<{ name: string, message: string, stack: string }> }> }>>>, stats: { tests: number, pending: number, passes: number, failures: number, skipped: number, suites: number, wallClockDuration: number, wallClockStartedAt: string, wallClockEndedAt: string } }> }> }> };
-
 export type GetSpecStatsQueryVariables = Exact<{
   spec: Scalars['String'];
 }>;
 
 
 export type GetSpecStatsQuery = { specStats?: Maybe<{ spec: string, count: number, avgWallClockDuration: number }> };
+
+export type GetRunQueryVariables = Exact<{
+  runId: Scalars['ID'];
+}>;
+
+
+export type GetRunQuery = { run?: Maybe<{ runId: string, createdAt: any, meta: { ciBuildId: string, projectId: string, commit?: Maybe<{ sha?: Maybe<string>, branch?: Maybe<string>, remoteOrigin?: Maybe<string>, message?: Maybe<string>, authorEmail?: Maybe<string>, authorName?: Maybe<string> }> }, specs: Array<{ spec: string, instanceId: string, claimed: boolean, claimedAt?: Maybe<string>, machineId?: Maybe<string>, groupId?: Maybe<string>, results?: Maybe<{ tests?: Maybe<Array<Maybe<{ title?: Maybe<Array<Maybe<string>>>, state?: Maybe<string>, wallClockDuration?: Maybe<number>, wallClockStartedAt?: Maybe<string> } | { title?: Maybe<Array<Maybe<string>>>, state?: Maybe<string>, attempts: Array<{ state?: Maybe<string>, wallClockDuration?: Maybe<number>, wallClockStartedAt?: Maybe<string>, error?: Maybe<{ name: string, message: string, stack: string }> }> }>>>, stats: { tests: number, pending: number, passes: number, failures: number, skipped: number, suites: number, wallClockDuration: number, wallClockStartedAt: string, wallClockEndedAt: string } }> }> }> };
 
 export type RunSummaryInstanceStatsFragment = { tests: number, pending: number, passes: number, failures: number, skipped: number, suites: number, wallClockDuration: number, wallClockStartedAt: string, wallClockEndedAt: string };
 
@@ -757,6 +757,41 @@ export function useDeleteRunMutation(baseOptions?: Apollo.MutationHookOptions<De
 export type DeleteRunMutationHookResult = ReturnType<typeof useDeleteRunMutation>;
 export type DeleteRunMutationResult = Apollo.MutationResult<DeleteRunMutation>;
 export type DeleteRunMutationOptions = Apollo.BaseMutationOptions<DeleteRunMutation, DeleteRunMutationVariables>;
+export const GetSpecStatsDocument = gql`
+    query getSpecStats($spec: String!) {
+  specStats(spec: $spec) {
+    spec
+    count
+    avgWallClockDuration
+  }
+}
+    `;
+
+/**
+ * __useGetSpecStatsQuery__
+ *
+ * To run a query within a React component, call `useGetSpecStatsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSpecStatsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSpecStatsQuery({
+ *   variables: {
+ *      spec: // value for 'spec'
+ *   },
+ * });
+ */
+export function useGetSpecStatsQuery(baseOptions: Apollo.QueryHookOptions<GetSpecStatsQuery, GetSpecStatsQueryVariables>) {
+        return Apollo.useQuery<GetSpecStatsQuery, GetSpecStatsQueryVariables>(GetSpecStatsDocument, baseOptions);
+      }
+export function useGetSpecStatsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSpecStatsQuery, GetSpecStatsQueryVariables>) {
+          return Apollo.useLazyQuery<GetSpecStatsQuery, GetSpecStatsQueryVariables>(GetSpecStatsDocument, baseOptions);
+        }
+export type GetSpecStatsQueryHookResult = ReturnType<typeof useGetSpecStatsQuery>;
+export type GetSpecStatsLazyQueryHookResult = ReturnType<typeof useGetSpecStatsLazyQuery>;
+export type GetSpecStatsQueryResult = Apollo.QueryResult<GetSpecStatsQuery, GetSpecStatsQueryVariables>;
 export const GetRunDocument = gql`
     query getRun($runId: ID!) {
   run(id: $runId) {
@@ -782,11 +817,6 @@ export const GetRunDocument = gql`
       machineId
       groupId
       results {
-        cypressConfig {
-          video
-          videoUploadOnPasses
-        }
-        videoUrl
         tests {
           ... on InstanceTest {
             title
@@ -851,41 +881,6 @@ export function useGetRunLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Get
 export type GetRunQueryHookResult = ReturnType<typeof useGetRunQuery>;
 export type GetRunLazyQueryHookResult = ReturnType<typeof useGetRunLazyQuery>;
 export type GetRunQueryResult = Apollo.QueryResult<GetRunQuery, GetRunQueryVariables>;
-export const GetSpecStatsDocument = gql`
-    query getSpecStats($spec: String!) {
-  specStats(spec: $spec) {
-    spec
-    count
-    avgWallClockDuration
-  }
-}
-    `;
-
-/**
- * __useGetSpecStatsQuery__
- *
- * To run a query within a React component, call `useGetSpecStatsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetSpecStatsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetSpecStatsQuery({
- *   variables: {
- *      spec: // value for 'spec'
- *   },
- * });
- */
-export function useGetSpecStatsQuery(baseOptions: Apollo.QueryHookOptions<GetSpecStatsQuery, GetSpecStatsQueryVariables>) {
-        return Apollo.useQuery<GetSpecStatsQuery, GetSpecStatsQueryVariables>(GetSpecStatsDocument, baseOptions);
-      }
-export function useGetSpecStatsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSpecStatsQuery, GetSpecStatsQueryVariables>) {
-          return Apollo.useLazyQuery<GetSpecStatsQuery, GetSpecStatsQueryVariables>(GetSpecStatsDocument, baseOptions);
-        }
-export type GetSpecStatsQueryHookResult = ReturnType<typeof useGetSpecStatsQuery>;
-export type GetSpecStatsLazyQueryHookResult = ReturnType<typeof useGetSpecStatsLazyQuery>;
-export type GetSpecStatsQueryResult = Apollo.QueryResult<GetSpecStatsQuery, GetSpecStatsQueryVariables>;
 export const GetRunsFeedDocument = gql`
     query getRunsFeed($cursor: String, $filters: [Filters]) {
   runFeed(cursor: $cursor, filters: $filters) {

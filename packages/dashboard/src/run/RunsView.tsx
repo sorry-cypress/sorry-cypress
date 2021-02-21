@@ -1,5 +1,4 @@
-import PageControls from '@src/components/ui/PageControls';
-import SearchField from '@src/components/ui/SearchField';
+import { PageControls, SearchField } from '@src/components';
 import { getProjectPath, navStructure } from '@src/lib/navigation';
 import React, { useLayoutEffect, useState } from 'react';
 import { RunsFeed } from './runsFeed/RunsFeed';

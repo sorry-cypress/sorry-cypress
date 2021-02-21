@@ -27,4 +27,4 @@ const HeaderLink = ({ to, children }: HeaderLinkProps) => {
   );
 };
 
-export default HeaderLink;
+export { HeaderLink };
