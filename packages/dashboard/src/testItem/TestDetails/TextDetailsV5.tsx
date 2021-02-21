@@ -15,7 +15,7 @@ import {
   InstanceScreeshot,
   InstanceTestV5,
   TestAttempt,
-} from '../../../generated/graphql';
+} from '@src/generated/graphql';
 import { Screenshot, TestError } from './common';
 
 const TestAttemptView = ({

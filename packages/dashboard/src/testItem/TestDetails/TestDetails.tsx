@@ -7,7 +7,7 @@ import {
 import { isTestGteV5 } from '@src/lib/version';
 import { Heading, HFlow } from 'bold-ui';
 import React from 'react';
-import { VisualState } from '../../common';
+import { VisualTestState } from '@src/components/common';
 import { Screenshot, TestError } from './common';
 import { TestDetailsV5 } from './TextDetailsV5';
 
@@ -57,7 +57,7 @@ export function TestDetails({ test, screenshots }: TestDetailsProps) {
   return (
     <>
       <HFlow>
-        <VisualState state={test.state} />
+        <VisualTestState state={test.state} />
         <Heading level={1}>{title}</Heading>
       </HFlow>
       <hr />

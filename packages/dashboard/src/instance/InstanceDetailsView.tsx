@@ -6,9 +6,9 @@ import {
   navStructure,
 } from '@src/lib/navigation';
 import React, { useLayoutEffect } from 'react';
-import { InstanceDetails } from '../components/instance/details';
-import { InstanceSummary } from '../components/instance/summary';
-import { useGetInstanceQuery } from '../generated/graphql';
+import { InstanceDetails } from './details';
+import { InstanceSummary } from './summary';
+import { useGetInstanceQuery } from '@src/generated/graphql';
 
 type InstanceDetailsViewProps = {
   match: {

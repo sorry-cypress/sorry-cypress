@@ -8,12 +8,12 @@ import { Header } from './components/layout/header';
 import { Layout } from './components/layout/layout';
 import { client } from './lib/apolloClient';
 import { theme } from './theme/theme';
-import { InstanceDetailsView } from './views/InstanceDetailsView';
+import { InstanceDetailsView } from './instance/InstanceDetailsView';
 import { ProjectEditView } from './project/ProjectEditView';
-import { ProjectsView } from './views/ProjectsView';
-import { RunDetailsView } from './views/RunDetailsView';
-import { RunsView } from './views/RunsView';
-import { TestDetailsView } from './views/TestDetailsView';
+import { ProjectsView } from './project/ProjectsView';
+import { RunDetailsView } from './run/RunDetailsView';
+import { RunsView } from './run/RunsView';
+import { TestDetailsView } from './testItem/TestDetailsView';
 
 class ErrorBoundary extends React.Component<
   unknown,

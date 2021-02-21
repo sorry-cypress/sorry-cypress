@@ -25,11 +25,11 @@ import {
   GetRunsFeedDocument,
   Run,
   useDeleteRunMutation,
-} from '../../generated/graphql';
-import { shortEnglishHumanizerWithMsIfNeeded } from '../../lib/utis';
-import { Paper } from '../common/';
-import { FormattedDate } from '../common/date';
-import RenderOnInterval from '../renderOnInterval/renderOnInterval';
+} from '../generated/graphql';
+import { shortEnglishHumanizerWithMsIfNeeded } from '@src/lib/utis';
+import { Paper } from '@src/components/common';
+import { FormattedDate } from '@src/components/common/date';
+import RenderOnInterval from '@src/components/renderOnInterval/renderOnInterval';
 import { CiUrl } from '@src/components/ci/ci';
 import { theme } from '@src/theme/theme';
 

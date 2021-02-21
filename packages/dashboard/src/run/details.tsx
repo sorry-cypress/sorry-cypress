@@ -10,12 +10,12 @@ import {
 } from 'bold-ui';
 import React from 'react';
 import { generatePath } from 'react-router-dom';
-import { FullRunSpec, Run } from '../../generated/graphql';
-import { useHideSuccessfulSpecs } from '../../hooks/useHideSuccessfulSpecs';
-import { getFullRunSpecState } from '../../lib/executionState';
-import { shortEnglishHumanizerWithMsIfNeeded } from '../../lib/utis';
-import { SpecState } from '../common';
-import RenderOnInterval from '../renderOnInterval/renderOnInterval';
+import { FullRunSpec, Run } from '../generated/graphql';
+import { useHideSuccessfulSpecs } from '../hooks/useHideSuccessfulSpecs';
+import { getFullRunSpecState } from '../lib/executionState';
+import { shortEnglishHumanizerWithMsIfNeeded } from '../lib/utis';
+import { SpecState } from '../components/common';
+import RenderOnInterval from '../components/renderOnInterval/renderOnInterval';
 import { useGetSpecStatsQuery } from '@src/generated/graphql';
 import stringHash from 'string-hash';
 

@@ -3,6 +3,7 @@ import { environment } from '../state/environment';
 import { navStructure } from './navigation';
 
 const cache = new InMemoryCache({
+  addTypename: false,
   typePolicies: {
     Run: {
       keyFields: ['runId'],

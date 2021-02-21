@@ -8,8 +8,8 @@ import {
 } from '@src/lib/navigation';
 import React, { useLayoutEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { TestDetails } from '../components/test';
-import { useGetInstanceQuery } from '../generated/graphql';
+import { TestDetails } from './TestDetails';
+import { useGetInstanceQuery } from '@src/generated/graphql';
 
 export function TestDetailsView() {
   const { instanceId, testId } = useParams<{

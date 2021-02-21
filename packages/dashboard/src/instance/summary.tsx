@@ -1,9 +1,9 @@
 import { Cell, Grid, Heading, HFlow, Text } from 'bold-ui';
 import { capitalize } from 'lodash';
 import React from 'react';
-import { GetInstanceQuery, InstanceStats } from '../../generated/graphql';
-import { getInstanceState } from '../../lib/executionState';
-import { Paper, VisualState } from '../common/';
+import { GetInstanceQuery, InstanceStats } from '@src/generated/graphql';
+import { getInstanceState } from '@src/lib/executionState';
+import { Paper, VisualTestState } from '@src/components/common';
 
 const getInstanceStatLabel = (statusItem: keyof InstanceStats): string =>
   statusItem === 'pending' ? 'skipped' : statusItem;
@@ -22,7 +22,7 @@ export function InstanceSummary({ instance }: InstanceSummaryProps) {
       <Grid>
         <Cell xs={12} lg={6}>
           <HFlow>
-            <VisualState state={getInstanceState(instance)} />
+            <VisualTestState state={getInstanceState(instance)} />
             <Heading level={1}>{instance.spec}</Heading>
           </HFlow>
           <ul>

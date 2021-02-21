@@ -1,13 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { InstanceTest } from '../../generated/graphql';
-import { VisualState } from '../common';
+import { InstanceTest } from '@src/generated/graphql';
+import { VisualTestState } from '@src/components/common';
 
 export function CorruptedTest() {
   return (
     <div>
       <strong>
-        <VisualState state={'unknown'} />
+        <VisualTestState state={'unknown'} />
       </strong>{' '}
       Cannot read test data
     </div>
@@ -22,7 +22,7 @@ export function Test({ instanceId, test }: TestProps) {
   return (
     <div>
       <strong>
-        <VisualState state={test.state} />
+        <VisualTestState state={test.state} />
       </strong>{' '}
       {test.wallClockDuration && `[${test.wallClockDuration} msec]`}{' '}
       <Link to={`/instance/${instanceId}/test/${test.testId}`}>

@@ -3,6 +3,7 @@ import {
   useGetProjectQuery,
   useCreateProjectMutation,
   useUpdateProjectMutation,
+  ProjectInput,
 } from '../generated/graphql';
 import {
   Button,
@@ -18,12 +19,15 @@ import {
   TableBody,
 } from 'bold-ui';
 import { useHistory } from 'react-router-dom';
-import clonedeep from 'lodash.clonedeep';
-import { Hook, Project } from '@sorry-cypress/common';
+import { Hook } from '@sorry-cypress/common';
 import { navStructure } from '@src/lib/navigation';
 
 import { HookEdit } from './HookEdit';
-import { hookFormReducer, hooksFormInitialState } from './hookFormReducer';
+import {
+  hookFormReducer,
+  hooksFormInitialState,
+  HooksFormState,
+} from './hookFormReducer';
 
 type ProjectEditViewProps = {
   match: {
@@ -33,23 +37,12 @@ type ProjectEditViewProps = {
   };
 };
 
-function removeHiddenKeysFromObject(subject: any) {
-  return Object.keys(subject).forEach((key) => {
-    if (key.indexOf('_') === 0) {
-      // remove "hidden" keys from subjects
-      delete subject[key];
-    }
-  });
-}
-
-function formatProjectForSaving(project: Project) {
-  const result = clonedeep(project);
-  removeHiddenKeysFromObject(result);
-  project.projectId = encodeURIComponent(result.projectId);
-  result?.hooks?.forEach((hook: Hook) => {
-    removeHiddenKeysFromObject(hook);
-  });
-  return result;
+function formatProjectForSaving(formValues: HooksFormState): ProjectInput {
+  return {
+    ...formValues,
+    projectId: encodeURIComponent(formValues.projectId),
+    inactivityTimeoutSeconds: Number(formValues.inactivityTimeoutSeconds),
+  };
 }
 
 export function ProjectEditView({
@@ -64,13 +57,20 @@ export function ProjectEditView({
     navStructure([]);
   }, []);
 
-  const [busy, setBusy] = useState(false);
   const [createError, setCreateError] = useState<string | null>(null);
   const [updateError, setUpdateError] = useState<string | null>(null);
   const [formState, dispatch] = useReducer(
     hookFormReducer,
     hooksFormInitialState
   );
+  const [
+    startCreateProjectMutation,
+    { loading: creating },
+  ] = useCreateProjectMutation();
+  const [
+    startUpdateProjectMutation,
+    { loading: updating },
+  ] = useUpdateProjectMutation();
 
   const { loading, error, data } = useGetProjectQuery({
     variables: {
@@ -80,22 +80,20 @@ export function ProjectEditView({
       if (!data?.project) {
         return;
       }
-      // data.project.hooks = data.project.hooks ?? [];
       dispatch({
         type: 'SET_STATE',
         payload: {
           projectId: data.project.projectId,
+          inactivityTimeoutSeconds: data.project.inactivityTimeoutSeconds
+            ? data.project.inactivityTimeoutSeconds.toString()
+            : '',
           hooks: (data.project.hooks as Hook[]) || [],
         },
       });
     },
   });
 
-  const [startCreateProjectMutation] = useCreateProjectMutation();
-  const [startUpdateProjectMutation] = useUpdateProjectMutation();
-
   function updateProject() {
-    setBusy(true);
     startUpdateProjectMutation({
       variables: {
         project: formatProjectForSaving(formState),
@@ -110,14 +108,10 @@ export function ProjectEditView({
       })
       .catch((error) => {
         setUpdateError(error.toString());
-      })
-      .finally(() => {
-        setBusy(false);
       });
   }
 
   function createProject() {
-    setBusy(true);
     startCreateProjectMutation({
       variables: {
         project: formatProjectForSaving(formState),
@@ -132,9 +126,6 @@ export function ProjectEditView({
       })
       .catch((error) => {
         setCreateError(error.toString());
-      })
-      .finally(() => {
-        setBusy(false);
       });
   }
 
@@ -164,7 +155,8 @@ export function ProjectEditView({
     });
   }
 
-  const disabled = busy || loading;
+  const disabled = creating || updating || loading;
+
   return (
     <form onSubmit={handleSubmit}>
       {createError || updateError ? (
@@ -181,7 +173,7 @@ export function ProjectEditView({
               dispatch({
                 type: 'SET_PROJECT_NAME',
                 payload: {
-                  name: e.target.value,
+                  name: e.target.value.trim(),
                 },
               })
             }
@@ -191,6 +183,29 @@ export function ProjectEditView({
         </Cell>
         <Cell alignSelf="flex-end">
           <Tooltip text='This must match the "projectId" value in your cypress.json configuration.'>
+            <Icon icon="infoCircleOutline" />
+          </Tooltip>
+        </Cell>
+        <Cell xs={8}>
+          <TextField
+            name="inactivityTimeoutSeconds"
+            label="Inactivity Timeout (seconds)"
+            placeholder="Inactivity timeout in seconds"
+            type="number"
+            value={formState.inactivityTimeoutSeconds}
+            onChange={(e) =>
+              dispatch({
+                type: 'SET_PROJECT_INACTIVITY_TIMEOUT',
+                payload: {
+                  timeout: e.target.value.trim(),
+                },
+              })
+            }
+            disabled={disabled}
+          />
+        </Cell>
+        <Cell alignSelf="flex-end">
+          <Tooltip text="If any test runs longer than this value, the whole run will be considered as timed out">
             <Icon icon="infoCircleOutline" />
           </Tooltip>
         </Cell>

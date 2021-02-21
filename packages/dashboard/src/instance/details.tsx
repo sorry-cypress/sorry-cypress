@@ -7,12 +7,12 @@ import {
   GetInstanceQuery,
   InstanceTest,
   InstanceTestV5,
-} from '../../generated/graphql';
-import { shortEnglishHumanizerWithMsIfNeeded } from '../../lib/utis';
-import { VisualState } from '../common';
+} from '@src/generated/graphql';
+import { shortEnglishHumanizerWithMsIfNeeded } from '@src/lib/utis';
+import { VisualTestState } from '@src/components/common';
 
 function TestStatus(test: InstanceTest) {
-  return <VisualState state={test.state} />;
+  return <VisualTestState state={test.state} />;
 }
 function TestDuration(test: InstanceTest) {
   if (test?.wallClockDuration) {

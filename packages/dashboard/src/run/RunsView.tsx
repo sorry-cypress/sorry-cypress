@@ -1,4 +1,4 @@
-import RunList from '@src/components/run/RunList';
+import RunList from '@src/run/RunList';
 import PageControls from '@src/components/ui/PageControls';
 import SearchField from '@src/components/ui/SearchField';
 import { getProjectPath, navStructure } from '@src/lib/navigation';

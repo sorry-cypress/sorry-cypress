@@ -1,4 +1,4 @@
-import ProjectsList from '@src/components/project/ProjectList';
+import ProjectsList from '@src/project/ProjectList';
 import PageControls from '@src/components/ui/PageControls';
 import SearchField from '@src/components/ui/SearchField';
 import { navStructure } from '@src/lib/navigation';

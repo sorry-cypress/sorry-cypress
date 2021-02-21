@@ -10,9 +10,9 @@ import {
   Text,
 } from 'bold-ui';
 import React, { useState } from 'react';
-import { Project, useDeleteProjectMutation } from '../../generated/graphql';
-import { Paper } from '../common';
-import FlexRow from '../ui/FlexRow';
+import { Project, useDeleteProjectMutation } from '@src/generated/graphql';
+import { Paper } from '@src/components/common';
+import FlexRow from '@src/components/ui/FlexRow';
 
 type ProjectListItemProps = {
   project: Project;

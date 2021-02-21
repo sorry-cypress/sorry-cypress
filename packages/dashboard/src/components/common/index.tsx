@@ -22,7 +22,7 @@ type TestStateProps = {
   state?: TestStates | null;
 };
 
-export const VisualState = ({ state }: TestStateProps) => {
+export const VisualTestState = ({ state }: TestStateProps) => {
   switch (state) {
     case 'failed':
       return <Tag type="danger">Failed</Tag>;
