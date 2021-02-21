@@ -57,7 +57,7 @@ export const Header: React.FC = () => {
         }}
       />
       &nbsp;
-      <Tooltip text="Toggle polling the api for updates.">
+      <Tooltip text="Toggle polling for updates">
         <Icon
           className={css`
             align-self: center;

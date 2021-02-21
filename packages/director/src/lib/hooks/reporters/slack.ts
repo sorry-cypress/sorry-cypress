@@ -4,7 +4,7 @@ import {
   HookEvent,
   SlackHook,
   hookEvents,
-  RunSummaryForHooks,
+  RunSummary,
 } from '@sorry-cypress/common';
 
 import { shouldHookHandleEvent } from '../utils';
@@ -19,7 +19,7 @@ export async function reportToSlack({
   hook: SlackHook;
   runId: string;
   ciBuildId: string;
-  runSummary: RunSummaryForHooks;
+  runSummary: RunSummary;
   hookEvent: HookEvent;
 }) {
   if (!shouldHookHandleEvent(hookEvent, hook)) {

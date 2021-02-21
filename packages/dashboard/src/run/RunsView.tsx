@@ -1,4 +1,4 @@
-import RunList from '@src/run/RunList';
+import { RunList } from '@src/run/RunList';
 import PageControls from '@src/components/ui/PageControls';
 import SearchField from '@src/components/ui/SearchField';
 import { getProjectPath, navStructure } from '@src/lib/navigation';
@@ -31,10 +31,7 @@ export function RunsView({
   return (
     <>
       <PageControls>
-        <SearchField
-          placeholder="Enter run build id"
-          onSearch={(value) => setSearch(value)}
-        />
+        <SearchField placeholder="Enter run build id" onSearch={setSearch} />
       </PageControls>
       <RunList projectId={projectId} search={search} />
     </>

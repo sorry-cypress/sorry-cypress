@@ -1,7 +1,6 @@
-import { GithubHook, hookEvents } from '@sorry-cypress/common';
+import { GithubHook, hookEvents, RunSummary } from '@sorry-cypress/common';
 import axios from 'axios';
 import { getDashboardRunURL } from '@src/lib/urls';
-import { RunSummaryForHooks } from '../utils';
 
 const getGithubHookUrl = (url: string, sha: string) => {
   const GITHUB_COM_DOMAIN = 'github.com';
@@ -26,7 +25,7 @@ export async function reportStatusToGithub({
   hook: GithubHook;
   runId: string;
   sha: string;
-  runSummary: RunSummaryForHooks;
+  runSummary: RunSummary;
   hookEvent: string;
 }) {
   const fullStatusPostUrl = getGithubHookUrl(hook.url, sha);

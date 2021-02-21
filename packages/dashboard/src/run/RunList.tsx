@@ -2,35 +2,17 @@ import { CenteredContent } from '@src/components/common';
 import { RunSummary } from '@src/run/summary';
 import { useGetRunsFeedQuery } from '@src/generated/graphql';
 import { Button } from 'bold-ui';
-import React, { FC } from 'react';
+import React from 'react';
 
 type RunListProps = {
   projectId: string;
   search?: string;
 };
 
-const RunList: FC<RunListProps> = ({
-  projectId,
-  search = '',
-}: RunListProps) => {
-  const searchFilters = search
-    ? [
-        {
-          key: 'meta.ciBuildId',
-          like: search,
-        },
-      ]
-    : [];
-  const filters = [
-    {
-      key: 'meta.projectId',
-      value: projectId,
-    },
-    ...searchFilters,
-  ];
+export const RunList = ({ projectId, search = '' }: RunListProps) => {
   const { fetchMore, loading, error, data } = useGetRunsFeedQuery({
     variables: {
-      filters,
+      filters: getFilters(projectId, search),
       cursor: '',
     },
   });
@@ -38,6 +20,7 @@ const RunList: FC<RunListProps> = ({
   if (loading) {
     return <CenteredContent>Loading ...</CenteredContent>;
   }
+
   if (!data || error) {
     return (
       <CenteredContent>
@@ -51,7 +34,7 @@ const RunList: FC<RunListProps> = ({
   const loadMore = () => {
     return fetchMore({
       variables: {
-        filters,
+        filters: getFilters(projectId, search),
         cursor: cursor,
       },
       updateQuery: (prev, { fetchMoreResult }) => {
@@ -71,7 +54,7 @@ const RunList: FC<RunListProps> = ({
     if (search) {
       return (
         <CenteredContent>
-          <p>No runs found </p>
+          <p>No runs found</p>
         </CenteredContent>
       );
     }
@@ -93,4 +76,20 @@ const RunList: FC<RunListProps> = ({
   );
 };
 
-export default RunList;
+function getFilters(projectId: string, search?: string) {
+  const searchFilters = search
+    ? [
+        {
+          key: 'meta.ciBuildId',
+          like: search,
+        },
+      ]
+    : [];
+  return [
+    {
+      key: 'meta.projectId',
+      value: projectId,
+    },
+    ...searchFilters,
+  ];
+}

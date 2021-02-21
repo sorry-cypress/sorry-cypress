@@ -2,16 +2,6 @@ export interface HookEventPayload {
   runId: string;
 }
 
-export interface RunSummaryForHooks {
-  failures: number;
-  passes: number;
-  skipped: number;
-  tests: number;
-  pending: number;
-  wallClockStartedAt: Date;
-  wallClockDuration: number;
-}
-
 export type HookType = 'GITHUB_STATUS_HOOK' | 'GENERIC_HOOK' | 'SLACK_HOOK';
 export type HookEvent =
   | 'RUN_START'

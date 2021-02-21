@@ -61,3 +61,13 @@ export interface Task {
 export type RunWithSpecs = Run & {
   specsFull: Instance[];
 };
+
+export interface RunSummary {
+  failures: number;
+  passes: number;
+  skipped: number;
+  tests: number;
+  pending: number;
+  wallClockStartedAt: Date;
+  wallClockDuration: number;
+}

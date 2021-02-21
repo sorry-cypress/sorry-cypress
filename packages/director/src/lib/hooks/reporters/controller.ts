@@ -4,8 +4,13 @@ import {
   isSlackHook,
 } from '@sorry-cypress/common';
 
-import { Project, HookEvent, RunWithSpecs } from '@sorry-cypress/common';
-import { getCleanHookReportData, getRunTestsOverall } from '../utils';
+import {
+  Project,
+  HookEvent,
+  RunWithSpecs,
+  getRunSummary,
+} from '@sorry-cypress/common';
+import { getCleanHookReportData } from '../utils';
 import { reportStatusToGithub } from './github';
 import { reportToGenericWebHook } from './generic';
 import { reportToSlack } from './slack';
@@ -20,7 +25,7 @@ export function reportToHook({
   project: Project;
 }): Promise<any> {
   try {
-    const runSummary = getCleanHookReportData(getRunTestsOverall(run));
+    const runSummary = getCleanHookReportData(getRunSummary(run));
 
     project?.hooks?.forEach((hook) => {
       if (isSlackHook(hook)) {

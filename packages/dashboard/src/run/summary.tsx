@@ -2,7 +2,6 @@ import { Commit } from '@src/components/commit/commit';
 import FlexRow from '@src/components/ui/FlexRow';
 import HeaderLink from '@src/components/ui/HeaderLink';
 import { useAsync } from '@src/hooks/useAsync';
-import { getRunTestsOverall } from '@src/lib/run';
 import {
   Alert,
   Button,
@@ -25,13 +24,14 @@ import {
   GetRunsFeedDocument,
   Run,
   useDeleteRunMutation,
-} from '../generated/graphql';
+} from '@src/generated/graphql';
 import { shortEnglishHumanizerWithMsIfNeeded } from '@src/lib/utis';
 import { Paper } from '@src/components/common';
 import { FormattedDate } from '@src/components/common/date';
 import RenderOnInterval from '@src/components/renderOnInterval/renderOnInterval';
 import { CiUrl } from '@src/components/ci/ci';
 import { theme } from '@src/theme/theme';
+import { getRunSummary } from '@sorry-cypress/common';
 
 type RunSummaryProps = {
   run: Partial<Run> & { runId: string; specs: Array<FullRunSpec> };
@@ -72,15 +72,13 @@ const DeleteButton = ({
   );
   const [shouldShowModal, setShowModal] = useState(false);
 
-  function deleteRun() {
-    startDeleteRun();
-  }
   useEffect(() => {
     if (!deleteResult) {
       return;
     }
     setShowModal(false);
   }, [deleteResult]);
+
   return (
     <>
       <Modal
@@ -123,7 +121,7 @@ const DeleteButton = ({
             <Button
               kind="danger"
               skin="ghost"
-              onClick={deleteRun}
+              onClick={startDeleteRun}
               disabled={deleting}
             >
               <Icon icon="trashOutline" style={{ marginRight: '0.5rem' }} />
@@ -148,7 +146,8 @@ export function RunSummary({ run }: RunSummaryProps) {
   }`);
   const { meta, runId, specs } = run;
 
-  const overall = getRunTestsOverall(run);
+  const runSummary = getRunSummary(run);
+
   return (
     <Paper>
       <FlexRow>
@@ -159,20 +158,22 @@ export function RunSummary({ run }: RunSummaryProps) {
         <Cell xs={12} md={6}>
           <div>
             <Text>
-              Started At: <FormattedDate value={overall.wallClockStartedAt} />
+              Started At:{' '}
+              <FormattedDate value={runSummary.wallClockStartedAt} />
             </Text>
           </div>
           <div>
             <Text>
               Duration:{' '}
-              {overall?.wallClockDuration ? (
+              {runSummary?.wallClockDuration ? (
                 <Text>
                   {shortEnglishHumanizerWithMsIfNeeded(
-                    overall?.wallClockDuration
+                    runSummary?.wallClockDuration
                   )}
                 </Text>
               ) : null}
-              {!overall?.wallClockDuration && overall.wallClockStartedAt ? (
+              {!runSummary?.wallClockDuration &&
+              runSummary.wallClockStartedAt ? (
                 <Text>
                   <RenderOnInterval
                     live
@@ -180,7 +181,7 @@ export function RunSummary({ run }: RunSummaryProps) {
                     renderChild={() => {
                       return `${shortEnglishHumanizerWithMsIfNeeded(
                         Date.now() -
-                          new Date(overall.wallClockStartedAt).getTime()
+                          new Date(runSummary.wallClockStartedAt).getTime()
                       )}`;
                     }}
                   />
@@ -193,7 +194,7 @@ export function RunSummary({ run }: RunSummaryProps) {
               <Tooltip text="Total Tests">
                 <span className={centeredIconClassName}>
                   <Icon icon="fileWithItensOutline" size={1} />
-                  {overall.tests}
+                  {runSummary.tests}
                 </span>
               </Tooltip>
             </Text>
@@ -201,29 +202,29 @@ export function RunSummary({ run }: RunSummaryProps) {
               <Tooltip text="Successful">
                 <span className={centeredIconClassName}>
                   <Icon icon="checkCircleOutline" size={1} />
-                  {overall.passes}
+                  {runSummary.passes}
                 </span>
               </Tooltip>
             </Text>
             <Text
-              color={overall.failures ? 'danger' : 'normal'}
+              color={runSummary.failures ? 'danger' : 'normal'}
               style={{ marginRight: '10px' }}
             >
               <Tooltip text="Failed">
                 <span className={centeredIconClassName}>
                   <Icon icon="exclamationTriangleOutline" size={1} />
-                  {overall.failures}
+                  {runSummary.failures}
                 </span>
               </Tooltip>
             </Text>
             <Text
-              color={overall.pending ? 'disabled' : 'normal'}
+              color={runSummary.pending ? 'disabled' : 'normal'}
               style={{ marginRight: '10px' }}
             >
               <Tooltip text="Skipped Tests">
                 <span className={centeredIconClassName}>
                   <Icon icon="timesOutline" size={1} />
-                  {overall.pending}
+                  {runSummary.pending}
                 </span>
               </Tooltip>
             </Text>
