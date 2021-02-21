@@ -19,6 +19,6 @@ export const ALLOWED_KEYS: string[] = process.env.ALLOWED_KEYS
   ? process.env.ALLOWED_KEYS.split(',')
   : null;
 
-export const INACTIVITY_TIMEOUT_MS = Number(
-  process.env.INACTIVITY_TIMEOUT_MS ?? 1000 * 180
+export const INACTIVITY_TIMEOUT_SECONDS = Number(
+  process.env.INACTIVITY_TIMEOUT_SECONDS ?? 180
 );

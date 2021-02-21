@@ -9,6 +9,8 @@ generates:
       - 'typescript-react-apollo'
       - 'fragment-matcher'
     config:
+      skipTypename: true
+      preResolveTypes: true
       withComponent: false
       withHooks: true
       withHOC: false

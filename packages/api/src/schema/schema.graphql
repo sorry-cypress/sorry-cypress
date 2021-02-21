@@ -56,7 +56,7 @@ type Hook {
 type Project {
   projectId: String!
   hooks: [Hook!]
-  inactivityTimeoutMs: Int
+  inactivityTimeoutSeconds: Int
 }
 
 input HookInput {
@@ -71,6 +71,7 @@ input HookInput {
 
 input ProjectInput {
   projectId: String!
+  inactivityTimeoutSeconds: Int
   hooks: [HookInput]
 }
 

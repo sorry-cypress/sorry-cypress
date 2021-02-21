@@ -34,6 +34,7 @@ import {
   getNewSpecsInGroup,
   getSpecsForGroup,
 } from '../../utils';
+import { INACTIVITY_TIMEOUT_SECONDS } from '@src/config';
 
 export const getById = getRunById;
 
@@ -56,6 +57,7 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
 
   try {
     await createProject({
+      inactivityTimeoutSeconds: INACTIVITY_TIMEOUT_SECONDS,
       projectId: params.projectId,
       createdAt: new Date().toISOString(),
     });
@@ -92,7 +94,7 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
       const existingGroupSpecs = getSpecsForGroup(run, groupId);
       if (newSpecs.length && existingGroupSpecs.length) {
         response.warnings.push({
-          message: `Group ${groupId} has different specs for the same run. Make sure each group in run has the same specs.`,
+          message: `Group ${groupId} has different specs for the same run.`,
           originalSpecs: existingGroupSpecs.map((spec) => spec.spec).join(', '),
           newSpecs: newSpecs.join(','),
         });

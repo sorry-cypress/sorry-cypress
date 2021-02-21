@@ -24,6 +24,7 @@ import {
   getSpecsForGroup,
   enhanceSpec,
 } from './utils';
+import { INACTIVITY_TIMEOUT_SECONDS } from '@src/config';
 
 const projects: { [key: string]: Project } = {};
 const runs: { [key: string]: Run } = {};
@@ -86,6 +87,7 @@ const createRun: ExecutionDriver['createRun'] = async (
 
   if (!projects[params.projectId]) {
     createProject({
+      inactivityTimeoutSeconds: INACTIVITY_TIMEOUT_SECONDS,
       projectId: params.projectId,
       createdAt: new Date().toUTCString(),
     });
