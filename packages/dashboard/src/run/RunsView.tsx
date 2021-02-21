@@ -1,7 +1,7 @@
 import { PageControls, SearchField } from '@src/components';
 import { getProjectPath, navStructure } from '@src/lib/navigation';
 import React, { useLayoutEffect, useState } from 'react';
-import { RunsFeed } from './runsFeed/RunsFeed';
+import { RunsFeed } from './runsFeed/runsFeed';
 
 type RunsViewProps = {
   match: {

@@ -17,7 +17,7 @@ import { theme } from '@src/theme';
 import { Cell, Grid, Icon, Text, Tooltip, useCss } from 'bold-ui';
 import React from 'react';
 import { Commit } from '../commit';
-import { DeleteRunButton } from '../deleteRun/DeleteRunButton';
+import { DeleteRunButton } from '../deleteRun/deleteRunButton';
 
 type RunSummaryProps = {
   runSpecs: RunSummarySpecFragment[];

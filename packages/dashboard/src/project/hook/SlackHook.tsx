@@ -1,7 +1,7 @@
 import { SlackHook as SlackHookType } from '@sorry-cypress/common';
 import { Icon, TextField, Tooltip } from 'bold-ui';
 import React from 'react';
-import { EditHookEvents } from './EditHookEvents';
+import { EditHookEvents } from './editHookEvents';
 import { HookFormAction } from './hookFormReducer';
 
 interface SlackHookProps {

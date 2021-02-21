@@ -1,3 +1,4 @@
+import { VisualTestState } from '@src/components/common';
 import {
   InstanceScreeshot,
   InstanceTest,
@@ -7,9 +8,8 @@ import {
 import { isTestGteV5 } from '@src/lib/version';
 import { Heading, HFlow } from 'bold-ui';
 import React from 'react';
-import { VisualTestState } from '@src/components/common';
 import { Screenshot, TestError } from './common';
-import { TestDetailsV5 } from './TextDetailsV5';
+import { TestDetailsV5 } from './textDetailsV5';
 
 const TestDetailsLegacy = ({
   test,

@@ -21,7 +21,7 @@ import {
 } from 'bold-ui';
 import React, { useLayoutEffect, useReducer, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { HookEdit } from './hook/HookEdit';
+import { HookEdit } from './hook/hookEdit';
 import {
   hookFormReducer,
   hooksFormInitialState,

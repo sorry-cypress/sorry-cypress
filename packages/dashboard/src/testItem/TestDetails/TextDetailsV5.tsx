@@ -1,3 +1,8 @@
+import {
+  InstanceScreeshot,
+  InstanceTestV5,
+  TestAttempt,
+} from '@src/generated/graphql';
 import { useSwitch } from '@src/hooks/useSwitch';
 import { shortEnglishHumanizer } from '@src/lib/utis';
 import {
@@ -11,11 +16,6 @@ import {
   useCss,
 } from 'bold-ui';
 import React from 'react';
-import {
-  InstanceScreeshot,
-  InstanceTestV5,
-  TestAttempt,
-} from '@src/generated/graphql';
 import { Screenshot, TestError } from './common';
 
 const TestAttemptView = ({

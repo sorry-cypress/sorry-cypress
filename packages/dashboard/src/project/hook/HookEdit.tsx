@@ -9,11 +9,11 @@ import {
 import { useSwitch } from '@src/hooks/useSwitch';
 import { Button, Icon, Select, TableCell, TableRow } from 'bold-ui';
 import React from 'react';
-import { GenericHook } from './GenericHook';
-import { GithubHook } from './GithubHook';
+import { GenericHook } from './genericHook';
+import { GithubHook } from './githubHook';
 import { hookTypeToString } from './hook.utils';
 import { HookFormAction } from './hookFormReducer';
-import { SlackHook } from './SlackHook';
+import { SlackHook } from './slackHook';
 
 const Toggler = ({ toggleExpanded, isExpanded, title }: any) => {
   return (
