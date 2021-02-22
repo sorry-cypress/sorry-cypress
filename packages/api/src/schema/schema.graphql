@@ -87,11 +87,12 @@ type Run {
   createdAt: DateTime!
   meta: RunMeta!
   specs: [FullRunSpec!]!
-  inactivityTimeout: RunInactivityTimeout
+  completion: RunCompletion
 }
 
-type RunInactivityTimeout {
-  timeoutMs: Int!
+type RunCompletion {
+  completed: Boolean!
+  inactivityTimeoutMs: Int
 }
 
 # Full spec data, including execution results

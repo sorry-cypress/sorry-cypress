@@ -1,22 +1,4 @@
-import {
-  Hook,
-  HookEvent,
-  isGithubHook,
-  RunSummary,
-} from '@sorry-cypress/common';
-import { hookReportSchema } from '@src/lib/schemas';
-import { cloneDeep } from 'lodash';
-import Ajv from 'ajv';
-
-const ajv = new Ajv({ removeAdditional: 'all' });
-const cleanHookReportData = ajv.compile(hookReportSchema);
-
-export const getCleanHookReportData = (runSummary: RunSummary): RunSummary => {
-  const cloned = cloneDeep(runSummary);
-  // TODO: this fn mutates the data, replace with pure
-  cleanHookReportData(cloned);
-  return cloned;
-};
+import { Hook, HookEvent, isGithubHook } from '@sorry-cypress/common';
 
 export function shouldHookHandleEvent(event: HookEvent, hook: Hook) {
   if (isGithubHook(hook)) {

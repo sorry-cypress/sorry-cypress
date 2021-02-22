@@ -1,15 +1,15 @@
-import { areTestsGteV5 } from '@src/lib/version';
-import { DataTable, Link, Text, Tooltip, useCss } from 'bold-ui';
-import { truncate } from 'lodash';
-import React from 'react';
-import { generatePath, useParams } from 'react-router';
+import { VisualTestState } from '@src/components/common';
 import {
   GetInstanceQuery,
   InstanceTest,
   InstanceTestV5,
 } from '@src/generated/graphql';
-import { shortEnglishHumanizerWithMsIfNeeded } from '@src/lib/utis';
-import { VisualTestState } from '@src/components/common';
+import { getSecondsDuration } from '@src/lib/duration';
+import { areTestsGteV5 } from '@src/lib/version';
+import { DataTable, Link, Text, Tooltip, useCss } from 'bold-ui';
+import { truncate } from 'lodash';
+import React from 'react';
+import { generatePath, useParams } from 'react-router';
 
 function TestStatus(test: InstanceTest) {
   return <VisualTestState state={test.state} />;
@@ -18,9 +18,7 @@ function TestDuration(test: InstanceTest) {
   if (test?.wallClockDuration) {
     return (
       <Tooltip text={`Started at ${test.wallClockStartedAt}`}>
-        <Text>
-          {shortEnglishHumanizerWithMsIfNeeded(test.wallClockDuration)}
-        </Text>
+        <Text>{getSecondsDuration(test.wallClockDuration)}</Text>
       </Tooltip>
     );
   } else {

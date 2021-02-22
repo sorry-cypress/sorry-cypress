@@ -41,17 +41,22 @@ export interface RunSpec {
   groupId?: string;
   machineId?: string;
 }
+
+type RunCompletion =
+  | { completed: false }
+  | {
+      completed: true;
+      inactivityTimeoutMs?: number;
+    };
+
 export interface Run {
   runId: string;
   createdAt: string;
   meta: RunMetaData;
   specs: RunSpec[];
-  inactivityTimeout?: RunInactivityTimeout;
+  completion?: RunCompletion;
 }
 
-interface RunInactivityTimeout {
-  timeoutMs: number;
-}
 export interface Task {
   instance: RunSpec | null;
   claimedInstances: number;
@@ -68,6 +73,6 @@ export interface RunSummary {
   skipped: number;
   tests: number;
   pending: number;
-  wallClockStartedAt: Date;
+  // wallClockStartedAt: Date;
   wallClockDuration: number;
 }

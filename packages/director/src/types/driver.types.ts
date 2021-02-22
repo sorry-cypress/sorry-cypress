@@ -1,13 +1,13 @@
 import {
-  Instance,
-  InstanceResult,
-  ScreenshotUploadInstruction,
   AssetUploadInstruction,
-  Project,
   CreateRunParameters,
   CreateRunResponse,
+  Instance,
+  InstanceResult,
+  Project,
   Run,
   RunWithSpecs,
+  ScreenshotUploadInstruction,
   Task,
 } from '@sorry-cypress/common';
 
@@ -33,7 +33,7 @@ interface GetNextTaskParams {
   groupId: string;
 }
 
-interface SetRunInactivityTimeoutParams {
+interface SetRunCompletedWithTimeout {
   runId: string;
   timeoutMs: number;
 }
@@ -44,8 +44,9 @@ export interface ExecutionDriver extends Driver {
   getInstanceById: (instanceId: string) => Promise<Instance>;
   createRun: (params: CreateRunParameters) => Promise<CreateRunResponse>;
   getNextTask: (params: GetNextTaskParams) => Promise<Task>;
-  setRunInactivityTimeout: (
-    params: SetRunInactivityTimeoutParams
+  setRunCompleted: (runId: string) => Promise<void>;
+  setRunCompletedWithTimeout: (
+    params: SetRunCompletedWithTimeout
   ) => Promise<void>;
   setInstanceResults: (
     instanceId: string,

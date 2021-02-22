@@ -1,31 +1,21 @@
-import { createProject } from './../projects/project.model';
-import {
-  getRunById,
-  createRun as storageCreateRun,
-  setSpecClaimed,
-  addSpecsToRun,
-} from './run.model';
-
-import { createInstance } from '../instances/instance.controller';
-import { getDashboardRunURL } from '@src/lib/urls';
-
+import { INACTIVITY_TIMEOUT_SECONDS } from '@src/config';
 import {
   AppError,
+  CLAIM_FAILED,
   RUN_EXISTS,
   RUN_NOT_EXIST,
-  CLAIM_FAILED,
 } from '@src/lib/errors';
-
 import {
-  generateRunIdHash,
   generateGroupId,
+  generateRunIdHash,
   generateUUID,
 } from '@src/lib/hash';
+import { getDashboardRunURL } from '@src/lib/urls';
 import {
+  CreateRunResponse,
+  CreateRunWarning,
   ExecutionDriver,
   Task,
-  CreateRunWarning,
-  CreateRunResponse,
 } from '@src/types';
 import {
   enhanceSpec,
@@ -34,7 +24,14 @@ import {
   getNewSpecsInGroup,
   getSpecsForGroup,
 } from '../../utils';
-import { INACTIVITY_TIMEOUT_SECONDS } from '@src/config';
+import { createInstance } from '../instances/instance.controller';
+import { createProject } from './../projects/project.model';
+import {
+  addSpecsToRun,
+  createRun as storageCreateRun,
+  getRunById,
+  setSpecClaimed,
+} from './run.model';
 
 export const getById = getRunById;
 
@@ -64,6 +61,9 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
     await storageCreateRun({
       runId,
       createdAt: new Date().toISOString(),
+      completion: {
+        completed: false,
+      },
       meta: {
         ciBuildId: params.ciBuildId,
         commit: params.commit,

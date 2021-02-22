@@ -1,61 +1,59 @@
+import { differenceInSeconds, parseISO } from 'date-fns';
+import { orderBy } from 'lodash';
 import { InstanceResultStats } from '../instance';
-import { RunSummary } from './types';
+import { RunSummary, RunWithSpecs } from './types';
+
+export function getRunDurationSeconds(specs: InstanceResultStats[]): number {
+  if (specs.length === 0) {
+    return 0;
+  }
+  if (specs.length === 1) {
+    const end = parseISO(specs[0].wallClockEndedAt);
+    const start = parseISO(specs[0].wallClockStartedAt);
+    return differenceInSeconds(end, start);
+  }
+
+  const start = orderBy(specs, 'wallClockStartedAt')[0];
+  const end = orderBy(specs, 'wallClockEndedAt', 'desc')[0];
+
+  return differenceInSeconds(
+    parseISO(end.wallClockEndedAt),
+    parseISO(start.wallClockStartedAt)
+  );
+}
 
 export function getRunSummary(specs: InstanceResultStats[]): RunSummary {
-  // TODO: Fix is still running
-  // const isStillRunning = specs.reduce((wasRunning: boolean, currentSpec) => {
-  //   return !currentSpec.claimed || wasRunning;
-  // }, false);
-  const isStillRunning = false;
-  const duration = specs.reduce(
-    (dates: any, currentSpec: any, index: number) => {
-      if (currentSpec.results) {
-        if (
-          index === 0 ||
-          new Date(currentSpec?.results?.stats?.wallClockStartedAt) <=
-            new Date(dates.firstStart)
-        ) {
-          dates.firstStart = currentSpec.results.stats.wallClockStartedAt;
-        }
-        if (
-          index === 0 ||
-          new Date(currentSpec?.results?.stats?.wallClockEndedAt) >
-            new Date(dates.lastEnd)
-        ) {
-          dates.lastEnd = currentSpec.results.stats.wallClockEndedAt;
-        }
-      }
-      if (index + 1 === specs.length) {
-        return dates.lastEnd
-          ? Number(new Date(dates.lastEnd)) - Number(new Date(dates.firstStart))
-          : 0;
-      }
-      return dates;
-    },
-    {}
-  );
   return specs.reduce(
-    (agg: any, spec: any) => {
-      if (!spec.results) {
-        return agg;
-      }
-
-      return {
-        tests: agg.tests + spec.results.stats.tests,
-        failures: agg.failures + spec.results.stats.failures,
-        passes: agg.passes + spec.results.stats.passes,
-        pending: agg.pending + spec.results.stats.pending,
-        skipped: agg.skipped + spec.results.stats.skipped,
-        wallClockDuration: isStillRunning ? 0 : duration || 0,
-      };
-    },
+    (agg: RunSummary, spec) => ({
+      ...agg,
+      tests: agg.tests + spec.tests,
+      failures: agg.failures + spec.failures,
+      passes: agg.passes + spec.passes,
+      pending: agg.pending + spec.pending,
+      skipped: agg.skipped + spec.skipped,
+    }),
     {
       failures: 0,
       passes: 0,
       skipped: 0,
       tests: 0,
       pending: 0,
-      wallClockDuration: 0,
+      wallClockDuration: getRunDurationSeconds(specs),
     }
   );
+}
+
+export function isAllRunSpecsCompleted(run: RunWithSpecs) {
+  const allCandidateSpecs = run.specs.map((s) => s.spec);
+  const allClaimedSpecs = run.specs.filter((s) => s.claimed);
+
+  if (allCandidateSpecs.length !== allClaimedSpecs.length) {
+    return false;
+  }
+
+  const claimedInstanceIds = allClaimedSpecs.map((s) => s.instanceId);
+  const completedInstanceIds = run.specsFull
+    .filter((s) => !!s.results.stats.wallClockEndedAt)
+    .map((s) => s.instanceId);
+  return claimedInstanceIds.length === completedInstanceIds.length;
 }

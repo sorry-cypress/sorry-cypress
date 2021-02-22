@@ -4,7 +4,6 @@ import {
   TestAttempt,
 } from '@src/generated/graphql';
 import { useSwitch } from '@src/hooks/useSwitch';
-import { shortEnglishHumanizer } from '@src/lib/utis';
 import {
   Alert,
   Button,
@@ -88,9 +87,7 @@ export const TestDetailsV5 = ({
       {test.attempts.map((attempt, index, all) => (
         <TestAttemptView
           key={index}
-          title={`Attempt ${index + 1} of ${
-            all.length
-          } - ${shortEnglishHumanizer(attempt.wallClockDuration)}`}
+          title={`Attempt ${index + 1} of ${all.length}`}
           attempt={attempt}
           screenshot={screenshots[index]}
         />

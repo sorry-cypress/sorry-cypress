@@ -5,16 +5,15 @@ import {
   FormattedDate,
   HeaderLink,
   Paper,
-  RenderOnInterval,
 } from '@src/components/';
 import {
-  RunSummaryInstanceStatsFragment,
   RunSummaryMetaFragment,
   RunSummarySpecFragment,
 } from '@src/generated/graphql';
-import { shortEnglishHumanizerWithMsIfNeeded } from '@src/lib/utis';
+import { getSecondsDuration } from '@src/lib/duration';
 import { theme } from '@src/theme';
 import { Cell, Grid, Icon, Text, Tooltip, useCss } from 'bold-ui';
+import { compact } from 'lodash';
 import React from 'react';
 import { Commit } from '../commit';
 import { DeleteRunButton } from '../deleteRun/deleteRunButton';
@@ -39,16 +38,14 @@ export function RunSummary({
   }`);
 
   const runSummary = getRunSummary(
-    runSpecs
-      .map((s) => s.results?.stats)
-      .filter((i) => !!i) as RunSummaryInstanceStatsFragment[]
+    compact(runSpecs.map((s) => s.results?.stats))
   );
 
   return (
     <Paper>
       <FlexRow>
-        <HeaderLink to={`/run/${runId}`}>{runMeta?.ciBuildId}</HeaderLink>
-        <DeleteRunButton runId={runId} ciBuildId={runMeta?.ciBuildId || ''} />
+        <HeaderLink to={`/run/${runId}`}>{runMeta.ciBuildId}</HeaderLink>
+        <DeleteRunButton runId={runId} ciBuildId={runMeta.ciBuildId} />
       </FlexRow>
       <Grid>
         <Cell xs={12} md={6}>
@@ -60,15 +57,10 @@ export function RunSummary({
           <div>
             <Text>
               Duration:{' '}
-              {runSummary?.wallClockDuration ? (
-                <Text>
-                  {shortEnglishHumanizerWithMsIfNeeded(
-                    runSummary?.wallClockDuration
-                  )}
-                </Text>
+              {runSummary.wallClockDuration ? (
+                <Text>{getSecondsDuration(runSummary.wallClockDuration)}</Text>
               ) : null}
-              {!runSummary?.wallClockDuration &&
-              runSummary.wallClockStartedAt ? (
+              {/* {runSummary.wallClockStartedAt ? (
                 <Text>
                   <RenderOnInterval
                     live
@@ -81,7 +73,7 @@ export function RunSummary({
                     }}
                   />
                 </Text>
-              ) : null}
+              ) : null} */}
             </Text>
           </div>
           <div style={{ display: 'flex' }}>
@@ -129,7 +121,7 @@ export function RunSummary({
             <strong>Spec files</strong>
             <ul>
               <li>Overall: {runSpecs.length}</li>
-              <li>Claimed: {runSpecs.filter((s) => s?.claimed).length}</li>
+              <li>Claimed: {runSpecs.filter((s) => s.claimed).length}</li>
             </ul>
           </div>
         </Cell>

@@ -1,18 +1,15 @@
 import {
+  getRunSummary,
+  HookEvent,
   isGenericHook,
   isGithubHook,
   isSlackHook,
-} from '@sorry-cypress/common';
-
-import {
   Project,
-  HookEvent,
   RunWithSpecs,
-  getRunSummary,
 } from '@sorry-cypress/common';
-import { getCleanHookReportData } from '../utils';
-import { reportStatusToGithub } from './github';
+import { compact } from 'lodash';
 import { reportToGenericWebHook } from './generic';
+import { reportStatusToGithub } from './github';
 import { reportToSlack } from './slack';
 
 export function reportToHook({
@@ -23,15 +20,15 @@ export function reportToHook({
   hookEvent: HookEvent;
   run: RunWithSpecs;
   project: Project;
-}): Promise<any> {
+}): Promise<void> {
   try {
-    const runSummary = getCleanHookReportData(
-      getRunSummary(run.specsFull.map((s) => s.results?.stats))
+    const runSummary = getRunSummary(
+      compact(run.specsFull.map((s) => s.results?.stats))
     );
-
-    project?.hooks?.forEach((hook) => {
+    // TODO: should we report hooks after run finished?
+    project.hooks?.forEach((hook) => {
       if (isSlackHook(hook)) {
-        return reportToSlack({
+        reportToSlack({
           hook,
           runSummary,
           runId: run.runId,
@@ -40,7 +37,7 @@ export function reportToHook({
         });
       }
       if (isGithubHook(hook)) {
-        return reportStatusToGithub({
+        reportStatusToGithub({
           hook,
           sha: run.meta.commit.sha,
           runId: run.runId,
@@ -50,7 +47,7 @@ export function reportToHook({
       }
 
       if (isGenericHook(hook)) {
-        return reportToGenericWebHook({
+        reportToGenericWebHook({
           hook,
           runId: run.runId,
           runSummary,
@@ -59,7 +56,7 @@ export function reportToHook({
       }
     });
   } catch (error) {
-    console.error(`Failed to run hook at for ${project.projectId}`, error);
+    console.error(`Failed to run hook for ${project.projectId}`, error);
   }
   return Promise.resolve();
 }

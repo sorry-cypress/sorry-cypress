@@ -1,18 +1,13 @@
 import { getExecutionDriver, getScreenshotsDriver } from '@src/drivers';
 import { RUN_NOT_EXIST } from '@src/lib/errors';
-import { RequestHandler } from 'express';
+import { emitInstanceFinish, emitInstanceStart } from '@src/lib/hooks/events';
 import {
+  AssetUploadInstruction,
   InstanceResult,
   ScreenshotUploadInstruction,
-  AssetUploadInstruction,
   UpdateInstanceResponse,
 } from '@src/types';
-
-import {
-  emitInstanceFinish,
-  emitInstanceStart,
-  emitRunFinish,
-} from '@src/lib/hooks/events';
+import { RequestHandler } from 'express';
 
 export const handleCreateInstance: RequestHandler = async (req, res) => {
   const { groupId, machineId } = req.body;
@@ -76,22 +71,6 @@ export const handleUpdateInstance: RequestHandler = async (req, res) => {
   emitInstanceFinish({
     runId: run.runId,
   });
-
-  // TODO: Fix isRunStillRunning duplication
-  const isRunStillRunning = run.specs.reduce(
-    (wasRunning, currentSpec, index) => {
-      return (
-        !currentSpec.claimed || !run.specsFull[index]?.results || wasRunning
-      );
-    },
-    false
-  );
-
-  // We should probably add a flag to the actual run here aswell
-  // We should also probably do a check to see if all specs passed and set a flag of success or fail
-  if (!isRunStillRunning) {
-    emitRunFinish({ runId: run.runId });
-  }
 
   const screenshotUploadUrls: ScreenshotUploadInstruction[] = await screenshotsDriver.getScreenshotsUploadUrls(
     instanceId,

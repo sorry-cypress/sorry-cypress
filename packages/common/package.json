@@ -14,9 +14,12 @@
   "typings": "dist/typings",
   "scripts": {
     "build": "microbundle build",
-    "dev": "microbundle watch"
+    "dev": "microbundle watch",
+    "test": "jest"
   },
   "devDependencies": {
+    "@types/jest": "^26.0.20",
+    "jest": "^26.6.3",
     "microbundle": "^0.13.0"
   }
 }

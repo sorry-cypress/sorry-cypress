@@ -1,8 +1,8 @@
 import { RenderOnInterval, SpecState } from '@src/components/';
 import { FullRunSpec, Run, useGetSpecStatsQuery } from '@src/generated/graphql';
 import { useHideSuccessfulSpecs } from '@src/hooks/';
+import { getSecondsDuration } from '@src/lib/duration';
 import { getFullRunSpecState } from '@src/lib/executionState';
-import { shortEnglishHumanizerWithMsIfNeeded } from '@src/lib/utis';
 import {
   DataTable,
   HFlow,
@@ -36,9 +36,7 @@ const SpecAvg = ({ specName }: { specName: string }) => {
     return 'erorr';
   }
 
-  return shortEnglishHumanizerWithMsIfNeeded(
-    data?.specStats?.avgWallClockDuration ?? 0
-  );
+  return getSecondsDuration(data?.specStats?.avgWallClockDuration ?? 0);
 };
 export function RunDetails({ run }: RunDetailsProps) {
   const { css } = useCss();
@@ -131,7 +129,7 @@ export function RunDetails({ run }: RunDetailsProps) {
                       text={`Started at ${spec.results.stats.wallClockStartedAt}`}
                     >
                       <Text>
-                        {shortEnglishHumanizerWithMsIfNeeded(
+                        {getSecondsDuration(
                           spec.results.stats.wallClockDuration
                         )}
                       </Text>
@@ -145,7 +143,7 @@ export function RunDetails({ run }: RunDetailsProps) {
                           live
                           refreshIntervalInSeconds={1}
                           renderChild={() => {
-                            return `${shortEnglishHumanizerWithMsIfNeeded(
+                            return `${getSecondsDuration(
                               Date.now() - new Date(spec.claimedAt!).getTime()
                             )}`;
                           }}

@@ -5,11 +5,11 @@
  * An proper alternative would be an external service
  * that invokes inactivity check after a timeout
  */
-import { hookEvents } from '@sorry-cypress/common';
-import { pubsub } from '../pubsub';
-import { emitRunFinish, PubSubHookEventPayload } from '../hooks/events';
-import { getExecutionDriver } from '@src/drivers';
+import { hookEvents, isAllRunSpecsCompleted } from '@sorry-cypress/common';
 import { INACTIVITY_TIMEOUT_SECONDS } from '@src/config';
+import { getExecutionDriver } from '@src/drivers';
+import { emitRunFinish, PubSubHookEventPayload } from '../hooks/events';
+import { pubsub } from '../pubsub';
 
 const jobs: Record<string, NodeJS.Timeout> = {};
 
@@ -18,20 +18,24 @@ const getInactivityTimeoutHandler = (
   timeoutMs: number
 ) => async () => {
   const executionDriver = await getExecutionDriver();
+  const run = await executionDriver.getRunWithSpecs(runId);
 
-  console.log(
-    'Invoked inactivity timeout handler for',
-    runId,
-    'after',
-    timeoutMs
-  );
+  if (run.completion?.completed) {
+    return;
+  }
 
-  executionDriver
-    .setRunInactivityTimeout({
-      runId,
-      timeoutMs,
-    })
-    .catch(console.error);
+  if (isAllRunSpecsCompleted(run)) {
+    console.log('Run', runId, 'completed');
+    executionDriver.setRunCompleted(runId).catch(console.error);
+  } else {
+    console.log('Run', runId, 'timed out after', timeoutMs, 'ms');
+    executionDriver
+      .setRunCompletedWithTimeout({
+        runId,
+        timeoutMs,
+      })
+      .catch(console.error);
+  }
   emitRunFinish({ runId });
 };
 
