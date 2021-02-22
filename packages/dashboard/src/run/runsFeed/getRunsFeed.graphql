@@ -8,9 +8,7 @@ query getRunsFeed($cursor: String, $filters: [Filters]) {
       meta {
         ...RunSummaryMeta
       }
-      inactivityTimeout {
-        timeoutMs
-      }
+      ...RunCompletion
       specs {
         ...RunSummarySpec
       }

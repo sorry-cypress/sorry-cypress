@@ -1,0 +1,6 @@
+fragment RunCompletion on Run {
+  completion {
+    completed
+    inactivityTimeoutMs
+  }
+}
