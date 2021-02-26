@@ -5,7 +5,10 @@ services:
     image: mongo:4.0
 
   director:
-    build: packages/director
+    build:
+      dockerfile: packages/director/Dockerfile
+      context: .
+
     image: agoldis/sorry-cypress-director:${VERSION:-latest}
     environment:
       DASHBOARD_URL: http://localhost:8080
@@ -22,7 +25,9 @@ services:
       - mongo
 
   api:
-    build: packages/api
+    build:
+      dockerfile: packages/api/Dockerfile
+      context: .
     image: agoldis/sorry-cypress-api:${VERSION:-latest}
     environment:
       MONGODB_URI: 'mongodb://mongo:27017'
@@ -33,7 +38,9 @@ services:
       - mongo
 
   dashboard:
-    build: packages/dashboard
+    build:
+      dockerfile: packages/dashboard/Dockerfile
+      context: .
     image: agoldis/sorry-cypress-dashboard:${VERSION:-latest}
     environment:
       GRAPHQL_SCHEMA_URL: http://localhost:4000
