@@ -1,129 +1,108 @@
-import { getRunSummary } from '@sorry-cypress/common';
 import {
+  getRunSummary,
+  RunSummary as RunSummaryType,
+} from '@sorry-cypress/common';
+import {
+  CenteredContent,
   CiUrl,
-  FlexRow,
   FormattedDate,
   HeaderLink,
   Paper,
+  TestFailureBadge,
+  TestOverallBadge,
+  TestSkippedBadge,
+  TestSuccessBadge,
 } from '@src/components/';
-import {
-  RunSummaryMetaFragment,
-  RunSummarySpecFragment,
-} from '@src/generated/graphql';
+import { Duration } from '@src/components/common/duration';
+import { GetRunQuery, GetRunSummaryQuery } from '@src/generated/graphql';
 import { getSecondsDuration } from '@src/lib/duration';
-import { theme } from '@src/theme';
-import { Cell, Grid, Icon, Text, Tooltip, useCss } from 'bold-ui';
+import { Cell, Grid, HFlow, Icon, Text, Tooltip } from 'bold-ui';
+import { parseISO } from 'date-fns';
 import { compact } from 'lodash';
 import React from 'react';
 import { Commit } from '../commit';
 import { DeleteRunButton } from '../deleteRun/deleteRunButton';
+import { useGetRunSummary } from './useGetRunSummary';
 
 type RunSummaryProps = {
-  runSpecs: RunSummarySpecFragment[];
-  runCreatedAt: string;
-  runMeta: RunSummaryMetaFragment;
   runId: string;
 };
 
-export function RunSummary({
-  runSpecs,
-  runMeta,
+export function RunSummary({ runId }: RunSummaryProps) {
+  const [run, loading, error] = useGetRunSummary(runId);
+  if (loading) {
+    return null;
+  }
+  if (!run) {
+    return <CenteredContent>No run found</CenteredContent>;
+  }
+  if (error) {
+    return <CenteredContent>Error loading run</CenteredContent>;
+  }
+
+  return <RunSummaryComponent run={run} runId={runId} />;
+}
+
+export function RunSummaryComponent({
+  run,
   runId,
-  runCreatedAt,
-}: RunSummaryProps) {
-  const { css } = useCss();
-  const centeredIconClassName = css(`{
-    display: flex;
-    align-items: center;
-  }`);
+}: {
+  run: GetRunQuery['run'] | GetRunSummaryQuery['run'];
+  runId: string;
+}) {
+  if (!run) {
+    return null;
+  }
+  const runMeta = run.meta;
+  const runSpecs = run.specs;
+  const runCreatedAt = run.createdAt;
+  const completed = !!run.completion?.completed;
+  const inactivityTimeoutMs = run.completion?.inactivityTimeoutMs;
 
   const runSummary = getRunSummary(
     compact(runSpecs.map((s) => s.results?.stats))
   );
-
   return (
     <Paper>
-      <FlexRow>
-        <HeaderLink to={`/run/${runId}`}>{runMeta.ciBuildId}</HeaderLink>
+      <HFlow alignItems="center" justifyContent="space-between">
+        <div style={{ flex: 1 }}>
+          <HFlow alignItems="center">
+            <RunStatus
+              completed={completed}
+              inactivityTimeoutMs={inactivityTimeoutMs}
+            />
+            <HeaderLink to={`/run/${runId}`}>{runMeta.ciBuildId}</HeaderLink>
+          </HFlow>
+        </div>
         <DeleteRunButton runId={runId} ciBuildId={runMeta.ciBuildId} />
-      </FlexRow>
+      </HFlow>
       <Grid>
         <Cell xs={12} md={6}>
           <div>
-            <Text>
-              Started At: <FormattedDate value={new Date(runCreatedAt)} />
-            </Text>
+            <strong>Execution details</strong>
           </div>
-          <div>
-            <Text>
-              Duration:{' '}
-              {runSummary.wallClockDuration ? (
-                <Text>{getSecondsDuration(runSummary.wallClockDuration)}</Text>
-              ) : null}
-              {/* {runSummary.wallClockStartedAt ? (
-                <Text>
-                  <RenderOnInterval
-                    live
-                    refreshIntervalInSeconds={1}
-                    renderChild={() => {
-                      return `${shortEnglishHumanizerWithMsIfNeeded(
-                        Date.now() -
-                          new Date(runSummary.wallClockStartedAt).getTime()
-                      )}`;
-                    }}
-                  />
-                </Text>
-              ) : null} */}
-            </Text>
-          </div>
-          <div style={{ display: 'flex' }}>
-            <Text style={{ marginRight: '10px' }}>
-              <Tooltip text="Total Tests">
-                <span className={centeredIconClassName}>
-                  <Icon icon="fileWithItensOutline" size={1} />
-                  {runSummary.tests}
-                </span>
-              </Tooltip>
-            </Text>
-            <Text color="success" style={{ marginRight: '10px' }}>
-              <Tooltip text="Successful">
-                <span className={centeredIconClassName}>
-                  <Icon icon="checkCircleOutline" size={1} />
-                  {runSummary.passes}
-                </span>
-              </Tooltip>
-            </Text>
-            <Text
-              color={runSummary.failures ? 'danger' : 'normal'}
-              style={{ marginRight: '10px' }}
-            >
-              <Tooltip text="Failed">
-                <span className={centeredIconClassName}>
-                  <Icon icon="exclamationTriangleOutline" size={1} />
-                  {runSummary.failures}
-                </span>
-              </Tooltip>
-            </Text>
-            <Text
-              color={runSummary.pending ? 'disabled' : 'normal'}
-              style={{ marginRight: '10px' }}
-            >
-              <Tooltip text="Skipped Tests">
-                <span className={centeredIconClassName}>
-                  <Icon icon="timesOutline" size={1} />
-                  {runSummary.pending}
-                </span>
-              </Tooltip>
-            </Text>
-          </div>
-
-          <div style={{ marginTop: theme.sizes.text }}>
-            <strong>Spec files</strong>
-            <ul>
-              <li>Overall: {runSpecs.length}</li>
-              <li>Claimed: {runSpecs.filter((s) => s.claimed).length}</li>
-            </ul>
-          </div>
+          <ul>
+            <li>
+              <Text>
+                Started At: <FormattedDate value={parseISO(runCreatedAt)} />
+              </Text>
+            </li>
+            <li>
+              <Text>Duration: </Text>
+              <Duration
+                completed={completed}
+                createdAtISO={runCreatedAt}
+                wallClockDurationSeconds={runSummary.wallClockDurationSeconds}
+              />
+            </li>
+            <li>
+              <Text>Spec Files: </Text>
+              <Text>
+                claimed {runSpecs.filter((s) => s.claimed).length} out of{' '}
+                {runSpecs.length}
+              </Text>
+            </li>
+          </ul>
         </Cell>
         <Cell xs={12} md={6}>
           <Commit commit={runMeta?.commit} />
@@ -133,6 +112,50 @@ export function RunSummary({
           />
         </Cell>
       </Grid>
+
+      <RunSummaryTestResults runSummary={runSummary} />
     </Paper>
+  );
+}
+function RunSummaryTestResults({ runSummary }: { runSummary: RunSummaryType }) {
+  return (
+    <HFlow>
+      <TestOverallBadge value={runSummary.tests} />
+      <TestSuccessBadge value={runSummary.passes} />
+      <TestFailureBadge value={runSummary.failures} />
+      <TestSkippedBadge value={runSummary.pending} />
+    </HFlow>
+  );
+}
+
+function RunStatus({
+  completed,
+  inactivityTimeoutMs,
+}: {
+  completed: boolean;
+  inactivityTimeoutMs?: number | null;
+}) {
+  if (!completed) {
+    return (
+      <Tooltip text={`Run is being executed`}>
+        <Icon icon="playFilled" fill="info" stroke="info" size={0.7} />
+      </Tooltip>
+    );
+  }
+  if (inactivityTimeoutMs) {
+    return <Timedout inactivityTimeoutMs={inactivityTimeoutMs} />;
+  }
+  return null;
+}
+
+function Timedout({ inactivityTimeoutMs }: { inactivityTimeoutMs: number }) {
+  return (
+    <Tooltip
+      text={`The run has been marked as timed out after ${getSecondsDuration(
+        inactivityTimeoutMs / 1000
+      )} of inactiviy`}
+    >
+      <Icon icon="clockOutline" fill="danger" stroke="danger" size={0.9} />
+    </Tooltip>
   );
 }

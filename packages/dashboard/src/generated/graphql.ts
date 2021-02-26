@@ -11,17 +11,18 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  DateTime: any;
+  DateTime: string;
 };
 
 export type Query = {
+  __typename?: 'Query';
   projects: Array<Project>;
-  project?: Maybe<Project>;
+  project: Maybe<Project>;
   runs: Array<Maybe<Run>>;
   runFeed: RunFeed;
-  run?: Maybe<Run>;
-  instance?: Maybe<Instance>;
-  specStats?: Maybe<SpecStats>;
+  run: Maybe<Run>;
+  instance: Maybe<Instance>;
+  specStats: Maybe<SpecStats>;
 };
 
 
@@ -44,7 +45,7 @@ export type QueryRunsArgs = {
 
 
 export type QueryRunFeedArgs = {
-  cursor?: Maybe<Scalars['String']>;
+  cursor: Maybe<Scalars['String']>;
   filters?: Maybe<Array<Maybe<Filters>>>;
 };
 
@@ -65,6 +66,7 @@ export type QuerySpecStatsArgs = {
 };
 
 export type Mutation = {
+  __typename?: 'Mutation';
   deleteRun: DeleteRunResponse;
   deleteRuns: DeleteRunResponse;
   deleteRunsInDateRange: DeleteRunResponse;
@@ -96,143 +98,160 @@ export type MutationDeleteProjectArgs = {
 
 
 export type MutationCreateProjectArgs = {
-  project?: Maybe<ProjectInput>;
+  project: Maybe<ProjectInput>;
 };
 
 
 export type MutationUpdateProjectArgs = {
-  project?: Maybe<ProjectInput>;
+  project: Maybe<ProjectInput>;
 };
 
 export type DeleteRunResponse = {
+  __typename?: 'DeleteRunResponse';
   success: Scalars['Boolean'];
   message: Scalars['String'];
   runIds: Array<Maybe<Scalars['ID']>>;
 };
 
 export type SpecStats = {
+  __typename?: 'SpecStats';
   spec: Scalars['String'];
   avgWallClockDuration: Scalars['Int'];
   count: Scalars['Int'];
 };
 
 export type Hook = {
-  hookId?: Maybe<Scalars['String']>;
-  url?: Maybe<Scalars['String']>;
-  headers?: Maybe<Scalars['String']>;
-  hookEvents?: Maybe<Array<Maybe<Scalars['String']>>>;
-  hookType?: Maybe<Scalars['String']>;
-  githubToken?: Maybe<Scalars['String']>;
-  githubContext?: Maybe<Scalars['String']>;
+  __typename?: 'Hook';
+  hookId: Maybe<Scalars['String']>;
+  url: Maybe<Scalars['String']>;
+  headers: Maybe<Scalars['String']>;
+  hookEvents: Maybe<Array<Maybe<Scalars['String']>>>;
+  hookType: Maybe<Scalars['String']>;
+  githubToken: Maybe<Scalars['String']>;
+  githubContext: Maybe<Scalars['String']>;
 };
 
 export type Project = {
+  __typename?: 'Project';
   projectId: Scalars['String'];
-  hooks?: Maybe<Array<Hook>>;
-  inactivityTimeoutSeconds?: Maybe<Scalars['Int']>;
+  hooks: Maybe<Array<Hook>>;
+  inactivityTimeoutSeconds: Maybe<Scalars['Int']>;
 };
 
 export type HookInput = {
-  hookId?: Maybe<Scalars['String']>;
-  url?: Maybe<Scalars['String']>;
-  headers?: Maybe<Scalars['String']>;
-  hookEvents?: Maybe<Array<Maybe<Scalars['String']>>>;
-  hookType?: Maybe<Scalars['String']>;
-  githubToken?: Maybe<Scalars['String']>;
-  githubContext?: Maybe<Scalars['String']>;
+  hookId: Maybe<Scalars['String']>;
+  url: Maybe<Scalars['String']>;
+  headers: Maybe<Scalars['String']>;
+  hookEvents: Maybe<Array<Maybe<Scalars['String']>>>;
+  hookType: Maybe<Scalars['String']>;
+  githubToken: Maybe<Scalars['String']>;
+  githubContext: Maybe<Scalars['String']>;
 };
 
 export type ProjectInput = {
   projectId: Scalars['String'];
-  inactivityTimeoutSeconds?: Maybe<Scalars['Int']>;
-  hooks?: Maybe<Array<Maybe<HookInput>>>;
+  inactivityTimeoutSeconds: Maybe<Scalars['Int']>;
+  hooks: Maybe<Array<Maybe<HookInput>>>;
 };
 
 export type DeleteProjectResponse = {
+  __typename?: 'DeleteProjectResponse';
   success: Scalars['Boolean'];
   message: Scalars['String'];
   projectIds: Array<Maybe<Scalars['ID']>>;
 };
 
 export type Run = {
+  __typename?: 'Run';
   runId: Scalars['ID'];
   createdAt: Scalars['DateTime'];
   meta: RunMeta;
   specs: Array<FullRunSpec>;
-  inactivityTimeout?: Maybe<RunInactivityTimeout>;
+  completion: Maybe<RunCompletion>;
 };
 
-export type RunInactivityTimeout = {
-  timeoutMs: Scalars['Int'];
+export type RunCompletion = {
+  __typename?: 'RunCompletion';
+  completed: Scalars['Boolean'];
+  inactivityTimeoutMs: Maybe<Scalars['Int']>;
 };
 
 export type FullRunSpec = {
+  __typename?: 'FullRunSpec';
   spec: Scalars['String'];
   instanceId: Scalars['String'];
   claimed: Scalars['Boolean'];
-  claimedAt?: Maybe<Scalars['String']>;
-  machineId?: Maybe<Scalars['String']>;
-  groupId?: Maybe<Scalars['String']>;
-  results?: Maybe<InstanceResults>;
+  claimedAt: Maybe<Scalars['String']>;
+  machineId: Maybe<Scalars['String']>;
+  groupId: Maybe<Scalars['String']>;
+  results: Maybe<InstanceResults>;
 };
 
 export type Commit = {
-  sha?: Maybe<Scalars['String']>;
-  branch?: Maybe<Scalars['String']>;
-  authorName?: Maybe<Scalars['String']>;
-  authorEmail?: Maybe<Scalars['String']>;
-  message?: Maybe<Scalars['String']>;
-  remoteOrigin?: Maybe<Scalars['String']>;
+  __typename?: 'Commit';
+  sha: Maybe<Scalars['String']>;
+  branch: Maybe<Scalars['String']>;
+  authorName: Maybe<Scalars['String']>;
+  authorEmail: Maybe<Scalars['String']>;
+  message: Maybe<Scalars['String']>;
+  remoteOrigin: Maybe<Scalars['String']>;
 };
 
 export type RunMeta = {
+  __typename?: 'RunMeta';
   ciBuildId: Scalars['String'];
   projectId: Scalars['String'];
-  commit?: Maybe<Commit>;
+  commit: Maybe<Commit>;
 };
 
 export type RunFeed = {
+  __typename?: 'RunFeed';
   cursor: Scalars['String'];
   hasMore: Scalars['Boolean'];
   runs: Array<Run>;
 };
 
 export type Instance = {
+  __typename?: 'Instance';
   runId: Scalars['ID'];
   run: PartialRun;
   spec: Scalars['String'];
   instanceId: Scalars['ID'];
-  results?: Maybe<InstanceResults>;
+  results: Maybe<InstanceResults>;
 };
 
 export type PartialRun = {
+  __typename?: 'PartialRun';
   runId: Scalars['ID'];
   createdAt: Scalars['DateTime'];
-  meta?: Maybe<RunMeta>;
+  meta: Maybe<RunMeta>;
   specs: Array<Maybe<RunSpec>>;
 };
 
 export type RunSpec = {
+  __typename?: 'RunSpec';
   spec: Scalars['String'];
   instanceId: Scalars['String'];
   claimed: Scalars['Boolean'];
-  claimedAt?: Maybe<Scalars['String']>;
-  groupId?: Maybe<Scalars['String']>;
-  machineId?: Maybe<Scalars['String']>;
+  claimedAt: Maybe<Scalars['String']>;
+  groupId: Maybe<Scalars['String']>;
+  machineId: Maybe<Scalars['String']>;
 };
 
 export type InstanceResults = {
+  __typename?: 'InstanceResults';
   stats: InstanceStats;
-  tests?: Maybe<Array<Maybe<InstanceTestUnion>>>;
-  error?: Maybe<Scalars['String']>;
-  stdout?: Maybe<Scalars['String']>;
+  tests: Array<InstanceTestUnion>;
+  error: Maybe<Scalars['String']>;
+  stdout: Maybe<Scalars['String']>;
   screenshots: Array<InstanceScreeshot>;
-  cypressConfig?: Maybe<CypressConfig>;
-  reporterStats?: Maybe<ReporterStats>;
-  videoUrl?: Maybe<Scalars['String']>;
+  cypressConfig: Maybe<CypressConfig>;
+  reporterStats: Maybe<ReporterStats>;
+  videoUrl: Maybe<Scalars['String']>;
 };
 
 export type InstanceStats = {
+  __typename?: 'InstanceStats';
   suites: Scalars['Int'];
   tests: Scalars['Int'];
   passes: Scalars['Int'];
@@ -245,64 +264,78 @@ export type InstanceStats = {
 };
 
 export type CypressConfig = {
+  __typename?: 'CypressConfig';
   video: Scalars['Boolean'];
   videoUploadOnPasses: Scalars['Boolean'];
 };
 
 export type InstanceScreeshot = {
+  __typename?: 'InstanceScreeshot';
   screenshotId: Scalars['String'];
-  name?: Maybe<Scalars['String']>;
+  name: Maybe<Scalars['String']>;
   testId: Scalars['String'];
   takenAt: Scalars['String'];
   height: Scalars['Int'];
   width: Scalars['Int'];
-  screenshotURL?: Maybe<Scalars['String']>;
+  screenshotURL: Maybe<Scalars['String']>;
 };
 
 export type ReporterStats = {
-  suites?: Maybe<Scalars['Int']>;
-  tests?: Maybe<Scalars['Int']>;
-  passes?: Maybe<Scalars['Int']>;
-  pending?: Maybe<Scalars['Int']>;
-  failures?: Maybe<Scalars['Int']>;
-  start?: Maybe<Scalars['String']>;
-  end?: Maybe<Scalars['String']>;
-  duration?: Maybe<Scalars['Int']>;
+  __typename?: 'ReporterStats';
+  suites: Maybe<Scalars['Int']>;
+  tests: Maybe<Scalars['Int']>;
+  passes: Maybe<Scalars['Int']>;
+  pending: Maybe<Scalars['Int']>;
+  failures: Maybe<Scalars['Int']>;
+  start: Maybe<Scalars['String']>;
+  end: Maybe<Scalars['String']>;
+  duration: Maybe<Scalars['Int']>;
 };
 
 export type InstanceTestUnion = InstanceTest | InstanceTestV5;
 
+export enum TestState {
+  Failed = 'failed',
+  Passed = 'passed',
+  Pending = 'pending',
+  Skipped = 'skipped'
+}
+
 export type InstanceTest = {
+  __typename?: 'InstanceTest';
   testId: Scalars['String'];
-  title?: Maybe<Array<Maybe<Scalars['String']>>>;
-  state?: Maybe<Scalars['String']>;
-  body?: Maybe<Scalars['String']>;
-  stack?: Maybe<Scalars['String']>;
-  error?: Maybe<Scalars['String']>;
-  wallClockStartedAt?: Maybe<Scalars['String']>;
-  wallClockDuration?: Maybe<Scalars['Int']>;
+  title: Array<Scalars['String']>;
+  state: TestState;
+  body: Maybe<Scalars['String']>;
+  stack: Maybe<Scalars['String']>;
+  error: Maybe<Scalars['String']>;
+  wallClockStartedAt: Maybe<Scalars['String']>;
+  wallClockDuration: Maybe<Scalars['Int']>;
 };
 
 export type InstanceTestV5 = {
+  __typename?: 'InstanceTestV5';
   testId: Scalars['String'];
-  title?: Maybe<Array<Maybe<Scalars['String']>>>;
-  state?: Maybe<Scalars['String']>;
-  body?: Maybe<Scalars['String']>;
-  displayError?: Maybe<Scalars['String']>;
+  title: Array<Scalars['String']>;
+  state: TestState;
+  body: Maybe<Scalars['String']>;
+  displayError: Maybe<Scalars['String']>;
   attempts: Array<TestAttempt>;
 };
 
 export type TestError = {
+  __typename?: 'TestError';
   name: Scalars['String'];
   message: Scalars['String'];
   stack: Scalars['String'];
 };
 
 export type TestAttempt = {
-  state?: Maybe<Scalars['String']>;
-  error?: Maybe<TestError>;
-  wallClockStartedAt?: Maybe<Scalars['String']>;
-  wallClockDuration?: Maybe<Scalars['Int']>;
+  __typename?: 'TestAttempt';
+  state: Maybe<Scalars['String']>;
+  error: Maybe<TestError>;
+  wallClockStartedAt: Maybe<Scalars['String']>;
+  wallClockDuration: Maybe<Scalars['Int']>;
 };
 
 
@@ -312,9 +345,9 @@ export enum OrderingOptions {
 }
 
 export type Filters = {
-  key?: Maybe<Scalars['String']>;
-  value?: Maybe<Scalars['String']>;
-  like?: Maybe<Scalars['String']>;
+  key: Maybe<Scalars['String']>;
+  value: Maybe<Scalars['String']>;
+  like: Maybe<Scalars['String']>;
 };
 
 export type GetInstanceQueryVariables = Exact<{
@@ -322,79 +355,160 @@ export type GetInstanceQueryVariables = Exact<{
 }>;
 
 
-export type GetInstanceQuery = { instance?: Maybe<{ instanceId: string, runId: string, spec: string, run: { meta?: Maybe<{ ciBuildId: string, projectId: string, commit?: Maybe<{ sha?: Maybe<string>, branch?: Maybe<string>, authorName?: Maybe<string>, authorEmail?: Maybe<string>, remoteOrigin?: Maybe<string>, message?: Maybe<string> }> }> }, results?: Maybe<{ videoUrl?: Maybe<string>, stats: { suites: number, tests: number, passes: number, pending: number, skipped: number, failures: number, wallClockDuration: number, wallClockStartedAt: string, wallClockEndedAt: string }, tests?: Maybe<Array<Maybe<{ testId: string, title?: Maybe<Array<Maybe<string>>>, state?: Maybe<string>, wallClockDuration?: Maybe<number>, wallClockStartedAt?: Maybe<string>, error?: Maybe<string>, stack?: Maybe<string> } | { testId: string, title?: Maybe<Array<Maybe<string>>>, state?: Maybe<string>, displayError?: Maybe<string>, attempts: Array<{ state?: Maybe<string>, wallClockDuration?: Maybe<number>, wallClockStartedAt?: Maybe<string>, error?: Maybe<{ name: string, message: string, stack: string }> }> }>>>, screenshots: Array<{ testId: string, screenshotId: string, height: number, width: number, screenshotURL?: Maybe<string> }>, cypressConfig?: Maybe<{ video: boolean, videoUploadOnPasses: boolean }> }> }> };
+export type GetInstanceQuery = { __typename?: 'Query', instance: Maybe<{ __typename?: 'Instance', instanceId: string, runId: string, spec: string, run: { __typename?: 'PartialRun', meta: Maybe<{ __typename?: 'RunMeta', ciBuildId: string, projectId: string }> }, results: Maybe<{ __typename?: 'InstanceResults', videoUrl: Maybe<string>, stats: (
+        { __typename?: 'InstanceStats' }
+        & AllInstanceStatsFragment
+      ), tests: Array<{ __typename?: 'InstanceTest', testId: string, title: Array<string>, state: TestState, wallClockDuration: Maybe<number>, wallClockStartedAt: Maybe<string>, error: Maybe<string>, stack: Maybe<string> } | { __typename?: 'InstanceTestV5', testId: string, title: Array<string>, state: TestState, displayError: Maybe<string>, attempts: Array<{ __typename?: 'TestAttempt', state: Maybe<string>, wallClockDuration: Maybe<number>, wallClockStartedAt: Maybe<string>, error: Maybe<{ __typename?: 'TestError', name: string, message: string, stack: string }> }> }>, screenshots: Array<{ __typename?: 'InstanceScreeshot', testId: string, screenshotId: string, height: number, width: number, screenshotURL: Maybe<string> }>, cypressConfig: Maybe<{ __typename?: 'CypressConfig', video: boolean, videoUploadOnPasses: boolean }> }> }> };
 
 export type CreateProjectMutationVariables = Exact<{
-  project?: Maybe<ProjectInput>;
+  project: Maybe<ProjectInput>;
 }>;
 
 
-export type CreateProjectMutation = { createProject: { projectId: string, hooks?: Maybe<Array<{ hookId?: Maybe<string>, url?: Maybe<string>, headers?: Maybe<string>, hookEvents?: Maybe<Array<Maybe<string>>>, hookType?: Maybe<string>, githubContext?: Maybe<string> }>> } };
+export type CreateProjectMutation = { __typename?: 'Mutation', createProject: { __typename?: 'Project', projectId: string, hooks: Maybe<Array<{ __typename?: 'Hook', hookId: Maybe<string>, url: Maybe<string>, headers: Maybe<string>, hookEvents: Maybe<Array<Maybe<string>>>, hookType: Maybe<string>, githubContext: Maybe<string> }>> } };
 
 export type DeleteProjectMutationVariables = Exact<{
   projectId: Scalars['ID'];
 }>;
 
 
-export type DeleteProjectMutation = { deleteProject: { success: boolean, message: string, projectIds: Array<Maybe<string>> } };
+export type DeleteProjectMutation = { __typename?: 'Mutation', deleteProject: { __typename?: 'DeleteProjectResponse', success: boolean, message: string, projectIds: Array<Maybe<string>> } };
 
 export type GetProjectQueryVariables = Exact<{
   projectId: Scalars['ID'];
 }>;
 
 
-export type GetProjectQuery = { project?: Maybe<{ projectId: string, inactivityTimeoutSeconds?: Maybe<number>, hooks?: Maybe<Array<{ hookId?: Maybe<string>, url?: Maybe<string>, headers?: Maybe<string>, hookEvents?: Maybe<Array<Maybe<string>>>, hookType?: Maybe<string>, githubContext?: Maybe<string> }>> }> };
+export type GetProjectQuery = { __typename?: 'Query', project: Maybe<{ __typename?: 'Project', projectId: string, inactivityTimeoutSeconds: Maybe<number>, hooks: Maybe<Array<{ __typename?: 'Hook', hookId: Maybe<string>, url: Maybe<string>, headers: Maybe<string>, hookEvents: Maybe<Array<Maybe<string>>>, hookType: Maybe<string>, githubContext: Maybe<string> }>> }> };
 
 export type GetProjectsQueryVariables = Exact<{
-  orderDirection?: Maybe<OrderingOptions>;
-  filters?: Maybe<Array<Maybe<Filters>> | Maybe<Filters>>;
+  orderDirection: Maybe<OrderingOptions>;
+  filters: Maybe<Array<Maybe<Filters>> | Maybe<Filters>>;
 }>;
 
 
-export type GetProjectsQuery = { projects: Array<{ projectId: string }> };
+export type GetProjectsQuery = { __typename?: 'Query', projects: Array<{ __typename?: 'Project', projectId: string }> };
 
 export type UpdateProjectMutationVariables = Exact<{
   project: ProjectInput;
 }>;
 
 
-export type UpdateProjectMutation = { updateProject: { projectId: string, hooks?: Maybe<Array<{ hookId?: Maybe<string>, url?: Maybe<string>, headers?: Maybe<string>, hookEvents?: Maybe<Array<Maybe<string>>>, hookType?: Maybe<string>, githubContext?: Maybe<string> }>> } };
+export type UpdateProjectMutation = { __typename?: 'Mutation', updateProject: { __typename?: 'Project', projectId: string, hooks: Maybe<Array<{ __typename?: 'Hook', hookId: Maybe<string>, url: Maybe<string>, headers: Maybe<string>, hookEvents: Maybe<Array<Maybe<string>>>, hookType: Maybe<string>, githubContext: Maybe<string> }>> } };
 
 export type DeleteRunMutationVariables = Exact<{
   runId: Scalars['ID'];
 }>;
 
 
-export type DeleteRunMutation = { deleteRun: { success: boolean, message: string, runIds: Array<Maybe<string>> } };
+export type DeleteRunMutation = { __typename?: 'Mutation', deleteRun: { __typename?: 'DeleteRunResponse', success: boolean, message: string, runIds: Array<Maybe<string>> } };
 
 export type GetSpecStatsQueryVariables = Exact<{
   spec: Scalars['String'];
 }>;
 
 
-export type GetSpecStatsQuery = { specStats?: Maybe<{ spec: string, count: number, avgWallClockDuration: number }> };
+export type GetSpecStatsQuery = { __typename?: 'Query', specStats: Maybe<{ __typename?: 'SpecStats', spec: string, count: number, avgWallClockDuration: number }> };
 
 export type GetRunQueryVariables = Exact<{
   runId: Scalars['ID'];
 }>;
 
 
-export type GetRunQuery = { run?: Maybe<{ runId: string, createdAt: any, meta: { ciBuildId: string, projectId: string, commit?: Maybe<{ sha?: Maybe<string>, branch?: Maybe<string>, remoteOrigin?: Maybe<string>, message?: Maybe<string>, authorEmail?: Maybe<string>, authorName?: Maybe<string> }> }, specs: Array<{ spec: string, instanceId: string, claimed: boolean, claimedAt?: Maybe<string>, machineId?: Maybe<string>, groupId?: Maybe<string>, results?: Maybe<{ tests?: Maybe<Array<Maybe<{ title?: Maybe<Array<Maybe<string>>>, state?: Maybe<string>, wallClockDuration?: Maybe<number>, wallClockStartedAt?: Maybe<string> } | { title?: Maybe<Array<Maybe<string>>>, state?: Maybe<string>, attempts: Array<{ state?: Maybe<string>, wallClockDuration?: Maybe<number>, wallClockStartedAt?: Maybe<string>, error?: Maybe<{ name: string, message: string, stack: string }> }> }>>>, stats: { tests: number, pending: number, passes: number, failures: number, skipped: number, suites: number, wallClockDuration: number, wallClockStartedAt: string, wallClockEndedAt: string } }> }> }> };
+export type GetRunQuery = { __typename?: 'Query', run: Maybe<{ __typename?: 'Run', runId: string, createdAt: string, completion: Maybe<(
+      { __typename?: 'RunCompletion' }
+      & RunSummaryCompletionFragment
+    )>, meta: (
+      { __typename?: 'RunMeta' }
+      & RunSummaryMetaFragment
+    ), specs: Array<(
+      { __typename?: 'FullRunSpec' }
+      & RunDetailSpecFragment
+    )> }> };
 
-export type RunSummaryInstanceStatsFragment = { tests: number, pending: number, passes: number, failures: number, skipped: number, suites: number, wallClockDuration: number, wallClockStartedAt: string, wallClockEndedAt: string };
+export type RunDetailSpecFragment = { __typename?: 'FullRunSpec', instanceId: string, spec: string, claimed: boolean, claimedAt: Maybe<string>, machineId: Maybe<string>, groupId: Maybe<string>, results: Maybe<{ __typename?: 'InstanceResults', tests: Array<{ __typename?: 'InstanceTest', state: TestState } | { __typename?: 'InstanceTestV5', state: TestState }>, stats: (
+      { __typename?: 'InstanceStats' }
+      & AllInstanceStatsFragment
+    ) }> };
 
-export type RunSummaryMetaFragment = { ciBuildId: string, projectId: string, commit?: Maybe<{ sha?: Maybe<string>, branch?: Maybe<string>, remoteOrigin?: Maybe<string>, message?: Maybe<string>, authorEmail?: Maybe<string>, authorName?: Maybe<string> }> };
-
-export type RunSummarySpecFragment = { claimed: boolean, results?: Maybe<{ stats: RunSummaryInstanceStatsFragment }> };
-
-export type GetRunsFeedQueryVariables = Exact<{
-  cursor?: Maybe<Scalars['String']>;
-  filters?: Maybe<Array<Maybe<Filters>> | Maybe<Filters>>;
+export type GetRunSummaryQueryVariables = Exact<{
+  runId: Scalars['ID'];
 }>;
 
 
-export type GetRunsFeedQuery = { runFeed: { cursor: string, hasMore: boolean, runs: Array<{ runId: string, createdAt: any, meta: RunSummaryMetaFragment, inactivityTimeout?: Maybe<{ timeoutMs: number }>, specs: Array<RunSummarySpecFragment> }> } };
+export type GetRunSummaryQuery = { __typename?: 'Query', run: Maybe<{ __typename?: 'Run', runId: string, createdAt: string, meta: (
+      { __typename?: 'RunMeta' }
+      & RunSummaryMetaFragment
+    ), completion: Maybe<(
+      { __typename?: 'RunCompletion' }
+      & RunSummaryCompletionFragment
+    )>, specs: Array<(
+      { __typename?: 'FullRunSpec' }
+      & RunSummarySpecFragment
+    )> }> };
 
+export type AllInstanceStatsFragment = { __typename?: 'InstanceStats', suites: number, tests: number, pending: number, passes: number, failures: number, skipped: number, wallClockDuration: number, wallClockStartedAt: string, wallClockEndedAt: string };
+
+export type RunSummaryCompletionFragment = { __typename?: 'RunCompletion', completed: boolean, inactivityTimeoutMs: Maybe<number> };
+
+export type RunSummaryMetaFragment = { __typename?: 'RunMeta', ciBuildId: string, projectId: string, commit: Maybe<{ __typename?: 'Commit', sha: Maybe<string>, branch: Maybe<string>, remoteOrigin: Maybe<string>, message: Maybe<string>, authorEmail: Maybe<string>, authorName: Maybe<string> }> };
+
+export type RunSummarySpecFragment = { __typename?: 'FullRunSpec', claimed: boolean, results: Maybe<{ __typename?: 'InstanceResults', stats: (
+      { __typename?: 'InstanceStats' }
+      & AllInstanceStatsFragment
+    ) }> };
+
+export type GetRunsFeedQueryVariables = Exact<{
+  cursor: Maybe<Scalars['String']>;
+  filters: Maybe<Array<Maybe<Filters>> | Maybe<Filters>>;
+}>;
+
+
+export type GetRunsFeedQuery = { __typename?: 'Query', runFeed: { __typename?: 'RunFeed', cursor: string, hasMore: boolean, runs: Array<{ __typename?: 'Run', runId: string, createdAt: string }> } };
+
+export const AllInstanceStatsFragmentDoc = gql`
+    fragment AllInstanceStats on InstanceStats {
+  suites
+  tests
+  pending
+  passes
+  failures
+  skipped
+  suites
+  wallClockDuration
+  wallClockStartedAt
+  wallClockEndedAt
+}
+    `;
+export const RunDetailSpecFragmentDoc = gql`
+    fragment RunDetailSpec on FullRunSpec {
+  instanceId
+  spec
+  claimed
+  claimedAt
+  machineId
+  groupId
+  results {
+    tests {
+      ... on InstanceTest {
+        state
+      }
+      ... on InstanceTestV5 {
+        state
+      }
+    }
+    stats {
+      ...AllInstanceStats
+    }
+  }
+}
+    ${AllInstanceStatsFragmentDoc}`;
+export const RunSummaryCompletionFragmentDoc = gql`
+    fragment RunSummaryCompletion on RunCompletion {
+  completed
+  inactivityTimeoutMs
+}
+    `;
 export const RunSummaryMetaFragmentDoc = gql`
     fragment RunSummaryMeta on RunMeta {
   ciBuildId
@@ -409,29 +523,16 @@ export const RunSummaryMetaFragmentDoc = gql`
   }
 }
     `;
-export const RunSummaryInstanceStatsFragmentDoc = gql`
-    fragment RunSummaryInstanceStats on InstanceStats {
-  tests
-  pending
-  passes
-  failures
-  skipped
-  suites
-  wallClockDuration
-  wallClockStartedAt
-  wallClockEndedAt
-}
-    `;
 export const RunSummarySpecFragmentDoc = gql`
     fragment RunSummarySpec on FullRunSpec {
   claimed
   results {
     stats {
-      ...RunSummaryInstanceStats
+      ...AllInstanceStats
     }
   }
 }
-    ${RunSummaryInstanceStatsFragmentDoc}`;
+    ${AllInstanceStatsFragmentDoc}`;
 export const GetInstanceDocument = gql`
     query getInstance($instanceId: ID!) {
   instance(id: $instanceId) {
@@ -442,27 +543,11 @@ export const GetInstanceDocument = gql`
       meta {
         ciBuildId
         projectId
-        commit {
-          sha
-          branch
-          authorName
-          authorEmail
-          remoteOrigin
-          message
-        }
       }
     }
     results {
       stats {
-        suites
-        tests
-        passes
-        pending
-        skipped
-        failures
-        wallClockDuration
-        wallClockStartedAt
-        wallClockEndedAt
+        ...AllInstanceStats
       }
       tests {
         ... on InstanceTest {
@@ -506,7 +591,7 @@ export const GetInstanceDocument = gql`
     }
   }
 }
-    `;
+    ${AllInstanceStatsFragmentDoc}`;
 
 /**
  * __useGetInstanceQuery__
@@ -797,64 +882,20 @@ export const GetRunDocument = gql`
   run(id: $runId) {
     runId
     createdAt
+    completion {
+      ...RunSummaryCompletion
+    }
     meta {
-      ciBuildId
-      projectId
-      commit {
-        sha
-        branch
-        remoteOrigin
-        message
-        authorEmail
-        authorName
-      }
+      ...RunSummaryMeta
     }
     specs {
-      spec
-      instanceId
-      claimed
-      claimedAt
-      machineId
-      groupId
-      results {
-        tests {
-          ... on InstanceTest {
-            title
-            state
-            wallClockDuration
-            wallClockStartedAt
-          }
-          ... on InstanceTestV5 {
-            title
-            state
-            attempts {
-              state
-              wallClockDuration
-              wallClockStartedAt
-              error {
-                name
-                message
-                stack
-              }
-            }
-          }
-        }
-        stats {
-          tests
-          pending
-          passes
-          failures
-          skipped
-          suites
-          wallClockDuration
-          wallClockStartedAt
-          wallClockEndedAt
-        }
-      }
+      ...RunDetailSpec
     }
   }
 }
-    `;
+    ${RunSummaryCompletionFragmentDoc}
+${RunSummaryMetaFragmentDoc}
+${RunDetailSpecFragmentDoc}`;
 
 /**
  * __useGetRunQuery__
@@ -881,6 +922,51 @@ export function useGetRunLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Get
 export type GetRunQueryHookResult = ReturnType<typeof useGetRunQuery>;
 export type GetRunLazyQueryHookResult = ReturnType<typeof useGetRunLazyQuery>;
 export type GetRunQueryResult = Apollo.QueryResult<GetRunQuery, GetRunQueryVariables>;
+export const GetRunSummaryDocument = gql`
+    query getRunSummary($runId: ID!) {
+  run(id: $runId) {
+    runId
+    createdAt
+    meta {
+      ...RunSummaryMeta
+    }
+    completion {
+      ...RunSummaryCompletion
+    }
+    specs {
+      ...RunSummarySpec
+    }
+  }
+}
+    ${RunSummaryMetaFragmentDoc}
+${RunSummaryCompletionFragmentDoc}
+${RunSummarySpecFragmentDoc}`;
+
+/**
+ * __useGetRunSummaryQuery__
+ *
+ * To run a query within a React component, call `useGetRunSummaryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRunSummaryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetRunSummaryQuery({
+ *   variables: {
+ *      runId: // value for 'runId'
+ *   },
+ * });
+ */
+export function useGetRunSummaryQuery(baseOptions: Apollo.QueryHookOptions<GetRunSummaryQuery, GetRunSummaryQueryVariables>) {
+        return Apollo.useQuery<GetRunSummaryQuery, GetRunSummaryQueryVariables>(GetRunSummaryDocument, baseOptions);
+      }
+export function useGetRunSummaryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRunSummaryQuery, GetRunSummaryQueryVariables>) {
+          return Apollo.useLazyQuery<GetRunSummaryQuery, GetRunSummaryQueryVariables>(GetRunSummaryDocument, baseOptions);
+        }
+export type GetRunSummaryQueryHookResult = ReturnType<typeof useGetRunSummaryQuery>;
+export type GetRunSummaryLazyQueryHookResult = ReturnType<typeof useGetRunSummaryLazyQuery>;
+export type GetRunSummaryQueryResult = Apollo.QueryResult<GetRunSummaryQuery, GetRunSummaryQueryVariables>;
 export const GetRunsFeedDocument = gql`
     query getRunsFeed($cursor: String, $filters: [Filters]) {
   runFeed(cursor: $cursor, filters: $filters) {
@@ -889,20 +975,10 @@ export const GetRunsFeedDocument = gql`
     runs {
       runId
       createdAt
-      meta {
-        ...RunSummaryMeta
-      }
-      inactivityTimeout {
-        timeoutMs
-      }
-      specs {
-        ...RunSummarySpec
-      }
     }
   }
 }
-    ${RunSummaryMetaFragmentDoc}
-${RunSummarySpecFragmentDoc}`;
+    `;
 
 /**
  * __useGetRunsFeedQuery__

@@ -1,7 +1,7 @@
 import { useGetRunQuery } from '@src/generated/graphql';
-import { useAutoRefresh } from '@src/hooks/useAutoRefresh';
+import { useAutoRefreshRate } from '@src/hooks/useAutoRefresh';
 import { getProjectPath, getRunPath, navStructure } from '@src/lib/navigation';
-import { RunSummary } from '@src/run/runSummary/summary';
+import { RunSummaryComponent } from '@src/run/runSummary/summary';
 import React, { useLayoutEffect } from 'react';
 import { RunDetails } from './details';
 
@@ -17,13 +17,31 @@ export function RunDetailsView({
     params: { id },
   },
 }: RunDetailsViewProps) {
-  const [shouldAutoRefresh] = useAutoRefresh();
+  const autoRefreshRate = useAutoRefreshRate();
 
   const { loading, error, data } = useGetRunQuery({
     variables: { runId: id },
-    pollInterval: shouldAutoRefresh ? 1500 : undefined,
+    pollInterval: autoRefreshRate,
   });
 
+  updateNav(data);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{error.toString()}</p>;
+  if (!data) return <p>No data</p>;
+  if (!data.run) {
+    return 'Non-existing run';
+  }
+
+  return (
+    <>
+      <RunSummaryComponent run={data.run} runId={id} />
+      <RunDetails run={data.run} />
+    </>
+  );
+}
+
+const updateNav = (data) =>
   useLayoutEffect(() => {
     if (!data?.run) {
       navStructure([]);
@@ -41,18 +59,3 @@ export function RunDetailsView({
       },
     ]);
   }, [data]);
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error.toString()}</p>;
-  if (!data) return <p>No data</p>;
-  if (!data.run) {
-    return 'Non-existing run';
-  }
-
-  return (
-    <>
-      <RunSummary run={data.run} />
-      <RunDetails run={data.run} />
-    </>
-  );
-}

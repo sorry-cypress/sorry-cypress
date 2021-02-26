@@ -7,27 +7,11 @@ query getInstance($instanceId: ID!) {
       meta {
         ciBuildId
         projectId
-        commit {
-          sha
-          branch
-          authorName
-          authorEmail
-          remoteOrigin
-          message
-        }
       }
     }
     results {
       stats {
-        suites
-        tests
-        passes
-        pending
-        skipped
-        failures
-        wallClockDuration
-        wallClockStartedAt
-        wallClockEndedAt
+        ...AllInstanceStats
       }
       tests {
         ... on InstanceTest {

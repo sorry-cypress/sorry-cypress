@@ -38,7 +38,7 @@ export function getRunSummary(specs: InstanceResultStats[]): RunSummary {
       skipped: 0,
       tests: 0,
       pending: 0,
-      wallClockDuration: getRunDurationSeconds(specs),
+      wallClockDurationSeconds: getRunDurationSeconds(specs),
     }
   );
 }

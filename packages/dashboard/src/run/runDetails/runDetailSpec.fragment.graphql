@@ -1,0 +1,21 @@
+fragment RunDetailSpec on FullRunSpec {
+  instanceId
+  spec
+  claimed
+  claimedAt
+  machineId
+  groupId
+  results {
+    tests {
+      ... on InstanceTest {
+        state
+      }
+      ... on InstanceTestV5 {
+        state
+      }
+    }
+    stats {
+      ...AllInstanceStats
+    }
+  }
+}

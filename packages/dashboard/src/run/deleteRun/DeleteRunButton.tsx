@@ -111,7 +111,12 @@ export const DeleteRunButton = ({
           </HFlow>
         </ModalFooter>
       </Modal>
-      <Button kind="danger" skin="ghost" onClick={() => setShowModal(true)}>
+      <Button
+        kind="normal"
+        size="small"
+        skin="ghost"
+        onClick={() => setShowModal(true)}
+      >
         <Icon icon="trashOutline" style={{ marginRight: '0.5rem' }} />
         <Text color="inherit">Delete</Text>
       </Button>

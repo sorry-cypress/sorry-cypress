@@ -1,14 +1,14 @@
-import { Project } from '@src/duplicatedFromDirector/project.types';
-import { GraphQLDateTime } from 'graphql-iso-date';
-import { AppDatasources } from '@src/datasources/types';
 import { ProjectsAPI } from '@src/datasources/projects';
 import { RunsAPI } from '@src/datasources/runs';
 import { SpecsAPI } from '@src/datasources/specs';
+import { AppDatasources } from '@src/datasources/types';
+import { Project } from '@src/duplicatedFromDirector/project.types';
 import {
   InstanceTestUnion,
   InstanceTestV5,
   OrderingOptions,
 } from '@src/generated/graphql';
+import { GraphQLDateTime } from 'graphql-iso-date';
 
 function isInstanceV5(
   candidate: InstanceTestUnion
@@ -18,6 +18,12 @@ function isInstanceV5(
 
 export const resolvers = {
   DateTime: GraphQLDateTime,
+  TestState: {
+    failed: 'failed',
+    passed: 'passed',
+    pending: 'pending',
+    skipped: 'skipped',
+  },
   InstanceTestUnion: {
     __resolveType(obj: InstanceTestUnion) {
       if (isInstanceV5(obj)) {

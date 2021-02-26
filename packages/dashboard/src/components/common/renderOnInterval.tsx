@@ -1,43 +1,24 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface RenderOnIntervalProps {
+  refreshIntervalInSeconds?: number;
   live?: boolean;
-  refreshIntervalInSeconds: number;
-  renderChild: () => React.ReactNode;
+  render: () => React.ReactNode;
 }
+export const RenderOnInterval = ({
+  refreshIntervalInSeconds = 1,
+  live = true,
+  render,
+}: RenderOnIntervalProps) => {
+  const setTick = useState([])[1];
+  const intervalId = useRef<NodeJS.Timeout | undefined>(undefined);
 
-class RenderOnInterval extends React.PureComponent<
-  React.PropsWithChildren<RenderOnIntervalProps>
-> {
-  private timeoutId: NodeJS.Timeout | undefined = undefined;
-  static defaultProps = {
-    live: true,
-    refreshIntervalInSeconds: 60,
-  };
-  tick = () => {
-    const { live, refreshIntervalInSeconds } = this.props;
-
-    if (live) {
-      this.timeoutId && clearTimeout(this.timeoutId);
-      const timeoutId = setTimeout(this.tick, 1000 * refreshIntervalInSeconds);
-      this.timeoutId = timeoutId;
+  useEffect(() => {
+    if (!live) {
+      return;
     }
-
-    this.forceUpdate();
-  };
-
-  componentDidMount() {
-    this.tick();
-  }
-
-  componentWillUnmount() {
-    if (this.timeoutId) {
-      clearTimeout(this.timeoutId);
-    }
-  }
-  render() {
-    return this.props.renderChild();
-  }
-}
-
-export { RenderOnInterval };
+    setInterval(() => setTick([]), 1000 * refreshIntervalInSeconds);
+    return () => intervalId.current && clearInterval(intervalId.current);
+  }, [refreshIntervalInSeconds, live]);
+  return <React.Fragment>{render()}</React.Fragment>;
+};

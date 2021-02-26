@@ -1,6 +1,9 @@
 overwrite: true
 schema: '../api/src/schema/*.graphql'
 documents: './src/**/*.graphql'
+config:
+  scalars:
+    DateTime: string
 generates:
   ./src/generated/graphql.ts:
     plugins:
@@ -11,7 +14,7 @@ generates:
     config:
       withHOC: false
       withHooks: true
-      skipTypename: true
       withComponent: false
+      avoidOptionals: true
       preResolveTypes: true
       apolloClientVersion: 3

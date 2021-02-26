@@ -2,28 +2,26 @@ import { VisualTestState } from '@src/components/common';
 import {
   GetInstanceQuery,
   InstanceTest,
+  InstanceTestUnion,
   InstanceTestV5,
 } from '@src/generated/graphql';
 import { getSecondsDuration } from '@src/lib/duration';
 import { areTestsGteV5 } from '@src/lib/version';
-import { DataTable, Link, Text, Tooltip, useCss } from 'bold-ui';
+import { DataTable, Link, Text, Tooltip } from 'bold-ui';
 import { truncate } from 'lodash';
 import React from 'react';
 import { generatePath, useParams } from 'react-router';
+import { getTestDuration, getTestStartedAt } from './util';
 
 function TestStatus(test: InstanceTest) {
   return <VisualTestState state={test.state} />;
 }
-function TestDuration(test: InstanceTest) {
-  if (test?.wallClockDuration) {
-    return (
-      <Tooltip text={`Started at ${test.wallClockStartedAt}`}>
-        <Text>{getSecondsDuration(test.wallClockDuration)}</Text>
-      </Tooltip>
-    );
-  } else {
-    return '';
-  }
+function TestDuration(test: InstanceTestUnion) {
+  return (
+    <Tooltip text={`Started at ${getTestStartedAt(test)}`}>
+      <Text>{getSecondsDuration(getTestDuration(test) / 1000)}</Text>
+    </Tooltip>
+  );
 }
 function TestLink(test: InstanceTest) {
   const { id } = useParams<{ id: string }>();
@@ -94,8 +92,6 @@ export const InstanceDetails = ({
 }: {
   instance: GetInstanceQuery['instance'];
 }) => {
-  const { css } = useCss();
-
   if (!instance?.results) {
     return <p>No results yet for the spec</p>;
   }
@@ -111,15 +107,7 @@ export const InstanceDetails = ({
   return (
     <div>
       <strong>Tests</strong>
-      <div
-        className={css`
-           {
-            margin: 12px 0;
-          }
-        `}
-      >
-        <DataTable rows={tests} loading={false} columns={columns} />
-      </div>
+      <DataTable rows={tests} columns={columns} />
     </div>
   );
 };

@@ -1,4 +1,5 @@
-import { useAutoRefresh } from '@src/hooks/useAutoRefresh';
+import { GetInstanceQuery, useGetInstanceQuery } from '@src/generated/graphql';
+import { useAutoRefreshRate } from '@src/hooks/useAutoRefresh';
 import {
   getInstancePath,
   getProjectPath,
@@ -8,7 +9,6 @@ import {
 import React, { useLayoutEffect } from 'react';
 import { InstanceDetails } from './details';
 import { InstanceSummary } from './summary';
-import { useGetInstanceQuery } from '@src/generated/graphql';
 
 type InstanceDetailsViewProps = {
   match: {
@@ -22,13 +22,38 @@ export function InstanceDetailsView({
     params: { id },
   },
 }: InstanceDetailsViewProps) {
-  const [shouldAutoRefresh] = useAutoRefresh();
-
+  const autoRefreshRate = useAutoRefreshRate();
   const { loading, error, data } = useGetInstanceQuery({
     variables: { instanceId: id },
-    pollInterval: shouldAutoRefresh ? 1500 : undefined,
+    pollInterval: autoRefreshRate,
   });
+  updateNav(data);
 
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{error.toString()}</p>;
+  if (!data) return <p>No Data</p>;
+
+  if (!data.instance) {
+    return <p>No data reported so far</p>;
+  }
+
+  if (!data.instance.results) {
+    return (
+      <div>
+        No results yet for spec <strong>{data.instance.spec}</strong>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <InstanceSummary instance={data.instance} />
+      <InstanceDetails instance={data.instance} />
+    </>
+  );
+}
+
+function updateNav(data: GetInstanceQuery | undefined) {
   useLayoutEffect(() => {
     if (!data?.instance) {
       return;
@@ -48,27 +73,4 @@ export function InstanceDetailsView({
       },
     ]);
   }, [data]);
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error.toString()}</p>;
-  if (!data) return <p>No Data</p>;
-
-  if (!data.instance) {
-    return <p>No data reported so far</p>;
-  }
-
-  if (!data.instance?.results) {
-    return (
-      <div>
-        No results yet for spec <strong>{data.instance.spec}</strong>
-      </div>
-    );
-  }
-
-  return (
-    <>
-      <InstanceSummary instance={data.instance} />
-      <InstanceDetails instance={data.instance} />
-    </>
-  );
 }

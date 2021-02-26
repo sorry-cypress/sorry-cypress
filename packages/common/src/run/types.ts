@@ -74,5 +74,5 @@ export interface RunSummary {
   tests: number;
   pending: number;
   // wallClockStartedAt: Date;
-  wallClockDuration: number;
+  wallClockDurationSeconds: number;
 }

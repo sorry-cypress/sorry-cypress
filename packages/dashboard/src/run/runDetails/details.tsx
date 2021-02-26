@@ -1,28 +1,212 @@
-import { RenderOnInterval, SpecState } from '@src/components/';
-import { FullRunSpec, Run, useGetSpecStatsQuery } from '@src/generated/graphql';
+import {
+  RenderOnInterval,
+  SpecStateTag,
+  TestFailureBadge,
+  TestSkippedBadge,
+  TestSuccessBadge,
+} from '@src/components/';
+import { getSpecState } from '@src/components/common/executionState';
+import {
+  GetRunQuery,
+  RunDetailSpecFragment,
+  useGetSpecStatsQuery,
+} from '@src/generated/graphql';
 import { useHideSuccessfulSpecs } from '@src/hooks/';
 import { getSecondsDuration } from '@src/lib/duration';
-import { getFullRunSpecState } from '@src/lib/executionState';
 import {
+  Cell,
   DataTable,
+  Grid,
   HFlow,
-  Icon,
   Link,
   Switch,
   Text,
   Tooltip,
-  useCss,
+  VFlow,
 } from 'bold-ui';
 import React from 'react';
-import { generatePath } from 'react-router-dom';
+import { generatePath, useHistory } from 'react-router';
 import stringHash from 'string-hash';
+
+export function RunDetails({ run }: { run: NonNullable<GetRunQuery['run']> }) {
+  const { specs } = run;
+  const history = useHistory();
+
+  const [isPassedHidden, setHidePassedSpecs] = useHideSuccessfulSpecs();
+
+  if (!specs) {
+    return null;
+  }
+
+  function handleRowClick(row: RunDetailSpecFragment) {
+    history.push(generatePath(`/instance/${row.instanceId}`));
+  }
+
+  const rows = run.specs
+    .filter((spec) => !!spec)
+    .filter((spec) =>
+      isPassedHidden ? getSpecState(spec) !== 'passed' : true
+    );
+
+  return (
+    <Grid>
+      <Cell xs={12}>
+        <HFlow justifyContent="space-between" alignItems="center">
+          <strong>Spec Files</strong>
+          <Switch
+            label="Hide successful specs"
+            checked={isPassedHidden}
+            onChange={() => setHidePassedSpecs(!isPassedHidden)}
+          />
+        </HFlow>
+      </Cell>
+      <Cell xs={12}>
+        <VFlow>
+          <DataTable
+            rows={rows}
+            loading={false}
+            onRowClick={handleRowClick}
+            columns={[
+              {
+                name: 'status',
+                header: 'Status',
+                sortable: false,
+                render: getItemStatusCell,
+              },
+              {
+                name: 'machine',
+                header: (
+                  <Tooltip text="Random but consistent">
+                    <Text>Machine #</Text>
+                  </Tooltip>
+                ),
+                sortable: false,
+                render: getMachineCell,
+              },
+              {
+                name: 'group',
+                header: 'Group',
+                sortable: false,
+                render: getGroupIdCell,
+              },
+              {
+                name: 'link',
+                header: 'Name',
+                sortable: false,
+                render: getSpecNameCell,
+              },
+              {
+                name: 'duration',
+                header: 'Duration',
+                sortable: false,
+                render: getDurationCell,
+              },
+              {
+                name: 'average-duration',
+                header: 'Avg Duration',
+                sortable: false,
+                render: getAvgDurationCell,
+              },
+              {
+                name: 'failures',
+                header: '',
+                sortable: false,
+                render: getFailuresCell,
+              },
+              {
+                name: 'passes',
+                header: '',
+                sortable: false,
+                render: getPassesCell,
+              },
+              {
+                name: 'skipped',
+                header: '',
+                sortable: false,
+                render: getSkippedCell,
+              },
+            ]}
+          />
+        </VFlow>
+      </Cell>
+    </Grid>
+  );
+}
+
+const getSkippedCell = (spec: RunDetailSpecFragment) => {
+  if (!spec.results?.stats?.pending) {
+    return null;
+  }
+  return <TestSkippedBadge value={spec.results?.stats?.pending} />;
+};
+
+const getPassesCell = (spec: RunDetailSpecFragment) => {
+  if (!spec.results?.stats?.passes) {
+    return null;
+  }
+  return <TestSuccessBadge value={spec.results?.stats?.passes} />;
+};
+
+const getFailuresCell = (spec: RunDetailSpecFragment) => {
+  if (!spec.results?.stats?.failures) {
+    return null;
+  }
+  return <TestFailureBadge value={spec.results?.stats?.failures} />;
+};
+
+const getItemStatusCell = (spec: RunDetailSpecFragment) => (
+  <SpecStateTag state={getSpecState(spec)} />
+);
+
+const getMachineCell = (spec: RunDetailSpecFragment) => {
+  if (spec.machineId) {
+    return getMachineName(spec.machineId);
+  }
+  return null;
+};
+const getGroupIdCell = (spec: RunDetailSpecFragment) => spec.groupId;
+const getSpecNameCell = (spec: RunDetailSpecFragment) => (
+  <Link href={generatePath(`/instance/${spec.instanceId}`)}>{spec.spec}</Link>
+);
+
+const getDurationCell = (spec: RunDetailSpecFragment) => {
+  if (spec.results?.stats?.wallClockDuration) {
+    return (
+      <Tooltip text={`Started at ${spec.results.stats.wallClockStartedAt}`}>
+        <Text>
+          {getSecondsDuration(spec.results.stats.wallClockDuration / 1000)}
+        </Text>
+      </Tooltip>
+    );
+  } else if (spec.claimedAt) {
+    return (
+      <Tooltip text={`Started at ${spec.claimedAt}`}>
+        <Text>
+          <RenderOnInterval
+            render={() =>
+              getSecondsDuration(
+                (Date.now() - new Date(spec.claimedAt!).getTime()) / 1000
+              )
+            }
+          />
+        </Text>
+      </Tooltip>
+    );
+  } else {
+    return null;
+  }
+};
+
+const getAvgDurationCell = (spec: RunDetailSpecFragment) => {
+  if (!spec.spec) {
+    return null;
+  }
+  return <SpecAvg specName={spec.spec} />;
+};
 
 function getMachineName(machineId: string) {
   return (stringHash(machineId) % 10000) + 1;
 }
-type RunDetailsProps = {
-  run: Partial<Run>;
-};
 
 const SpecAvg = ({ specName }: { specName: string }) => {
   const { data, error, loading } = useGetSpecStatsQuery({
@@ -33,197 +217,19 @@ const SpecAvg = ({ specName }: { specName: string }) => {
   }
   if (error) {
     console.error(error);
-    return 'erorr';
-  }
-
-  return getSecondsDuration(data?.specStats?.avgWallClockDuration ?? 0);
-};
-export function RunDetails({ run }: RunDetailsProps) {
-  const { css } = useCss();
-  const { specs } = run;
-
-  const [isPassedHidden, setHidePassedSpecs] = useHideSuccessfulSpecs();
-
-  if (!specs) {
     return null;
   }
 
-  const centeredIconClassName = css(`{
-    display: flex;
-    align-items: center;
-  }`);
-
-  /* eslint-disable @typescript-eslint/no-non-null-assertion, react/display-name */
+  if (!data) {
+    return null;
+  }
   return (
-    <div>
-      <HFlow justifyContent="space-between">
-        <strong>Spec files</strong>
-        <Switch
-          label="Hide successful specs"
-          checked={isPassedHidden}
-          onChange={() => setHidePassedSpecs(!isPassedHidden)}
-        />
-      </HFlow>
-      <div
-        className={css`
-           {
-            margin: 12px 0;
-          }
-        `}
-      >
-        <DataTable
-          rows={specs
-            .filter((spec) => !!spec)
-            .filter((spec) =>
-              isPassedHidden ? getFullRunSpecState(spec!) !== 'passed' : true
-            )}
-          loading={false}
-          columns={[
-            {
-              name: 'status',
-              header: 'Status',
-              sortable: false,
-              render: (spec: FullRunSpec) => (
-                <SpecState state={getFullRunSpecState(spec)} />
-              ),
-            },
-            {
-              name: 'machine',
-              header: (
-                <Tooltip text="Random but consistent">
-                  <Text>Machine #</Text>
-                </Tooltip>
-              ),
-              sortable: false,
-              render: (spec: FullRunSpec) => {
-                if (spec.machineId) {
-                  return getMachineName(spec.machineId);
-                }
-                return null;
-              },
-            },
-            {
-              name: 'group',
-              header: 'Group',
-              sortable: false,
-              render: (spec: FullRunSpec) => spec.groupId,
-            },
-            {
-              name: 'link',
-              header: '',
-              sortable: false,
-              render: (spec: FullRunSpec) => (
-                <Link href={generatePath(`/instance/${spec?.instanceId}`)}>
-                  {spec?.spec}
-                </Link>
-              ),
-            },
-            {
-              name: 'duration',
-              header: 'Duration',
-              sortable: false,
-              render: (spec: FullRunSpec) => {
-                if (spec?.results?.stats?.wallClockDuration) {
-                  return (
-                    <Tooltip
-                      text={`Started at ${spec.results.stats.wallClockStartedAt}`}
-                    >
-                      <Text>
-                        {getSecondsDuration(
-                          spec.results.stats.wallClockDuration
-                        )}
-                      </Text>
-                    </Tooltip>
-                  );
-                } else if (spec?.claimedAt) {
-                  return (
-                    <Tooltip text={`Started at ${spec.claimedAt}`}>
-                      <Text>
-                        <RenderOnInterval
-                          live
-                          refreshIntervalInSeconds={1}
-                          renderChild={() => {
-                            return `${getSecondsDuration(
-                              Date.now() - new Date(spec.claimedAt!).getTime()
-                            )}`;
-                          }}
-                        />
-                      </Text>
-                    </Tooltip>
-                  );
-                } else {
-                  return '';
-                }
-              },
-            },
-            {
-              name: 'average-duration',
-              header: 'Average Duration',
-              sortable: false,
-              render: (spec: FullRunSpec) => {
-                if (!spec.spec) {
-                  return null;
-                }
-                return <SpecAvg specName={spec.spec} />;
-              },
-            },
-            {
-              name: 'failures',
-              header: '',
-              sortable: false,
-              render: (spec) =>
-                spec?.results?.stats?.failures ? (
-                  <Text color="danger">
-                    <Tooltip text="failed">
-                      <span className={centeredIconClassName}>
-                        <Icon icon="exclamationTriangleOutline" size={1} />
-                        {spec.results.stats.failures}
-                      </span>
-                    </Tooltip>
-                  </Text>
-                ) : (
-                  ''
-                ),
-            },
-            {
-              name: 'passes',
-              header: '',
-              sortable: false,
-              render: (spec) =>
-                spec?.results?.stats?.passes ? (
-                  <Text color="success">
-                    <Tooltip text="passed">
-                      <span className={centeredIconClassName}>
-                        <Icon icon="checkCircleOutline" size={1} />
-                        {spec.results.stats.passes}
-                      </span>
-                    </Tooltip>
-                  </Text>
-                ) : (
-                  ''
-                ),
-            },
-            {
-              name: 'skipped',
-              header: '',
-              sortable: false,
-              render: (spec) =>
-                spec?.results?.stats?.pending ? (
-                  <Text>
-                    <Tooltip text="skipped">
-                      <span className={centeredIconClassName}>
-                        <Icon icon="timesOutline" size={1} />
-                        {spec.results.stats.pending}
-                      </span>
-                    </Tooltip>
-                  </Text>
-                ) : (
-                  ''
-                ),
-            },
-          ]}
-        />
-      </div>
-    </div>
+    <>
+      {getSecondsDuration(
+        data.specStats?.avgWallClockDuration
+          ? data?.specStats?.avgWallClockDuration / 1000
+          : 0
+      )}
+    </>
   );
-}
+};

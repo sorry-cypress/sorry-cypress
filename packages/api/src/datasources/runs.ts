@@ -57,6 +57,7 @@ const projectAggregation = {
     meta: 1,
     specs: 1,
     createdAt: 1,
+    completion: 1,
     specsFull: {
       $map: {
         input: '$specs',

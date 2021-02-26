@@ -1,12 +1,12 @@
-import { Paper, VisualTestState } from '@src/components';
+import { Paper } from '@src/components';
+import {
+  getInstanceState,
+  SpecStateTag,
+} from '@src/components/common/executionState';
 import { GetInstanceQuery, InstanceStats } from '@src/generated/graphql';
-import { getInstanceState } from '@src/lib/executionState';
 import { Cell, Grid, Heading, HFlow, Text } from 'bold-ui';
 import { capitalize } from 'lodash';
 import React from 'react';
-
-const getInstanceStatLabel = (statusItem: keyof InstanceStats): string =>
-  statusItem === 'pending' ? 'skipped' : statusItem;
 
 type InstanceSummaryProps = {
   instance: GetInstanceQuery['instance'];
@@ -22,7 +22,7 @@ export function InstanceSummary({ instance }: InstanceSummaryProps) {
       <Grid>
         <Cell xs={12} lg={6}>
           <HFlow>
-            <VisualTestState state={getInstanceState(instance)} />
+            <SpecStateTag state={getInstanceState(instance)} />
             <Heading level={1}>{instance.spec}</Heading>
           </HFlow>
           <ul>
@@ -57,3 +57,6 @@ export function InstanceSummary({ instance }: InstanceSummaryProps) {
     </Paper>
   );
 }
+
+const getInstanceStatLabel = (statusItem: keyof InstanceStats): string =>
+  statusItem === 'pending' ? 'skipped' : statusItem;
