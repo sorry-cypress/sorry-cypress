@@ -2,7 +2,7 @@ import { InstanceResult } from '@src/types';
 export const isInstanceFailed = (results: InstanceResult) =>
   results.stats.failures > 0;
 
-function sanitizeKey(key: string, value: any) {
+function sanitizeKey(_: string, value: any) {
   if (value && typeof value === 'object') {
     const replacement: Record<string, any> = {};
     for (const key in value) {

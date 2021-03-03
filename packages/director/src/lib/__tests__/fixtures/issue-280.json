@@ -1,0 +1,903 @@
+{
+  "body": {
+    "stats": {
+      "suites": 3,
+      "tests": 20,
+      "passes": 16,
+      "pending": 2,
+      "skipped": 0,
+      "failures": 2,
+      "wallClockStartedAt": "2021-03-02T21:47:11.199Z",
+      "wallClockEndedAt": "2021-03-02T21:47:29.997Z",
+      "wallClockDuration": 18798
+    },
+    "tests": [
+      {
+        "testId": "r4",
+        "title": [
+          "Visiting public accessible links",
+          "Desktop 1680 1050",
+          "visits the app"
+        ],
+        "state": "passed",
+        "body": "() => {\n        cy.visit('/');\n      }",
+        "displayError": null,
+        "attempts": [
+          {
+            "state": "passed",
+            "error": null,
+            "timings": {
+              "lifecycle": 33,
+              "before each": [
+                { "hookId": "h1", "fnDuration": 3609, "afterFnDuration": 1 }
+              ],
+              "test": { "fnDuration": 903, "afterFnDuration": 0 }
+            },
+            "failedFromHookId": null,
+            "wallClockStartedAt": "2021-03-02T21:47:11.225Z",
+            "wallClockDuration": 4550,
+            "videoTimestamp": 6002
+          }
+        ]
+      },
+      {
+        "testId": "r5",
+        "title": [
+          "Visiting public accessible links",
+          "Desktop 1680 1050",
+          "visits communities"
+        ],
+        "state": "passed",
+        "body": "() => {\n        cy.get('.menu a.item[href=\"/communities\"]:visible').should('be.visible').click();\n        cy.url().should('eq', \"\".concat(Cypress.config().baseUrl, \"login?redirect=%2Fcommunities\"));\n      }",
+        "displayError": null,
+        "attempts": [
+          {
+            "state": "passed",
+            "error": null,
+            "timings": {
+              "lifecycle": 34,
+              "before each": [
+                { "hookId": "h1", "fnDuration": 15, "afterFnDuration": 0 }
+              ],
+              "test": { "fnDuration": 350, "afterFnDuration": 0 }
+            },
+            "failedFromHookId": null,
+            "wallClockStartedAt": "2021-03-02T21:47:15.780Z",
+            "wallClockDuration": 443,
+            "videoTimestamp": 10557
+          }
+        ]
+      },
+      {
+        "testId": "r6",
+        "title": [
+          "Visiting public accessible links",
+          "Desktop 1680 1050",
+          "visits overview"
+        ],
+        "state": "passed",
+        "body": "() => {\n        cy.get('.menu a.item[href=\"/overview\"]:visible').should('be.visible').click();\n        cy.url().should('eq', \"\".concat(Cypress.config().baseUrl, \"login?redirect=%2Foverview\"));\n      }",
+        "displayError": null,
+        "attempts": [
+          {
+            "state": "passed",
+            "error": null,
+            "timings": {
+              "lifecycle": 156,
+              "before each": [
+                { "hookId": "h1", "fnDuration": 98, "afterFnDuration": 0 }
+              ],
+              "test": { "fnDuration": 276, "afterFnDuration": 0 }
+            },
+            "failedFromHookId": null,
+            "wallClockStartedAt": "2021-03-02T21:47:16.230Z",
+            "wallClockDuration": 536,
+            "videoTimestamp": 11007
+          }
+        ]
+      },
+      {
+        "testId": "r7",
+        "title": [
+          "Visiting public accessible links",
+          "Desktop 1680 1050",
+          "visits help"
+        ],
+        "state": "passed",
+        "body": "() => {\n        cy.get('.menu div.item.dropdown').contains('More').should('be.visible').click();\n        cy.get('.menu div.item.dropdown .menu a').contains('Help').should('be.visible').click();\n        cy.url().should('eq', \"\".concat(Cypress.config().baseUrl, \"help\"));\n      }",
+        "displayError": null,
+        "attempts": [
+          {
+            "state": "passed",
+            "error": null,
+            "timings": {
+              "lifecycle": 24,
+              "before each": [
+                { "hookId": "h1", "fnDuration": 34, "afterFnDuration": 1 }
+              ],
+              "test": { "fnDuration": 247, "afterFnDuration": 0 }
+            },
+            "failedFromHookId": null,
+            "wallClockStartedAt": "2021-03-02T21:47:16.775Z",
+            "wallClockDuration": 311,
+            "videoTimestamp": 11552
+          }
+        ]
+      },
+      {
+        "testId": "r8",
+        "title": [
+          "Visiting public accessible links",
+          "Desktop 1680 1050",
+          "visits feature requests"
+        ],
+        "state": "passed",
+        "body": "() => {\n        cy.get('.menu div.item.dropdown').contains('More').should('be.visible').click();\n        cy.get('.menu div.item.dropdown .menu a').contains('Feature Requests').should('be.visible').click();\n        cy.url().should('eq', \"\".concat(Cypress.config().baseUrl, \"login?redirect=%2Frequests\"));\n      }",
+        "displayError": null,
+        "attempts": [
+          {
+            "state": "passed",
+            "error": null,
+            "timings": {
+              "lifecycle": 29,
+              "before each": [
+                { "hookId": "h1", "fnDuration": 20, "afterFnDuration": 0 }
+              ],
+              "test": { "fnDuration": 398, "afterFnDuration": 1 }
+            },
+            "failedFromHookId": null,
+            "wallClockStartedAt": "2021-03-02T21:47:17.088Z",
+            "wallClockDuration": 458,
+            "videoTimestamp": 11865
+          }
+        ]
+      },
+      {
+        "testId": "r9",
+        "title": [
+          "Visiting public accessible links",
+          "Desktop 1680 1050",
+          "visits bug report"
+        ],
+        "state": "failed",
+        "body": "() => {\n        cy.get('.menu div.item.dropdown').contains('More').should('be.visible').click();\n        cy.get('.menu div.item.dropdown .menu a').contains('Bug Report').should('be.visible').click();\n        cy.url().should('eq', \"\".concat(Cypress.config().baseUrl, \"login?redirect=%2Fbugreport\"));\n      }",
+        "displayError": "AssertionError: Timed out retrying after 4000ms: expected 'http://localhost:3000/bugreport' to equal 'http://localhost:3000/login?redirect=%2Fbugreport'\n    at Context.eval (http://localhost:3000/__cypress/tests?p=cypress/integration/public_pages.spec.js:139:18)",
+        "attempts": [
+          {
+            "state": "failed",
+            "error": {
+              "name": "AssertionError",
+              "message": "Timed out retrying after 4000ms: expected 'http://localhost:3000/bugreport' to equal 'http://localhost:3000/login?redirect=%2Fbugreport'",
+              "stack": "    at Context.eval (http://localhost:3000/__cypress/tests?p=cypress/integration/public_pages.spec.js:139:18)",
+              "codeFrame": {
+                "line": 48,
+                "column": 18,
+                "originalFile": "cypress/integration/public_pages.spec.js",
+                "relativeFile": "cypress/integration/public_pages.spec.js",
+                "absoluteFile": "/Users/gash/PhpstormProjects/speisekammer/prepper-reactjs/cypress/integration/public_pages.spec.js",
+                "frame": "  46 |           .should('be.visible')\n  47 |           .click()\n> 48 |         cy.url().should('eq', `${Cypress.config().baseUrl}login?redirect=%2Fbugreport`)\n     |                  ^\n  49 |       })\n  50 | \n  51 |       it('visits changelog', () => {",
+                "language": "js"
+              }
+            },
+            "timings": {
+              "lifecycle": 28,
+              "before each": [
+                { "hookId": "h1", "fnDuration": 24, "afterFnDuration": 1 }
+              ],
+              "test": { "fnDuration": 4227, "afterFnDuration": 309 }
+            },
+            "failedFromHookId": null,
+            "wallClockStartedAt": "2021-03-02T21:47:17.551Z",
+            "wallClockDuration": 4595,
+            "videoTimestamp": 12328
+          }
+        ]
+      },
+      {
+        "testId": "r10",
+        "title": [
+          "Visiting public accessible links",
+          "Desktop 1680 1050",
+          "visits changelog"
+        ],
+        "state": "passed",
+        "body": "() => {\n        cy.get('.menu div.item.dropdown').contains('More').should('be.visible').click();\n        cy.get('.menu div.item.dropdown .menu a').contains('Changelog').should('be.visible').click();\n        cy.url().should('eq', \"\".concat(Cypress.config().baseUrl, \"login?redirect=%2Fchangelog\"));\n      }",
+        "displayError": null,
+        "attempts": [
+          {
+            "state": "passed",
+            "error": null,
+            "timings": {
+              "lifecycle": 43,
+              "before each": [
+                { "hookId": "h1", "fnDuration": 17, "afterFnDuration": 0 }
+              ],
+              "test": { "fnDuration": 203, "afterFnDuration": 0 }
+            },
+            "failedFromHookId": null,
+            "wallClockStartedAt": "2021-03-02T21:47:22.209Z",
+            "wallClockDuration": 267,
+            "videoTimestamp": 16986
+          }
+        ]
+      },
+      {
+        "testId": "r11",
+        "title": [
+          "Visiting public accessible links",
+          "Desktop 1680 1050",
+          "visits upgrade"
+        ],
+        "state": "passed",
+        "body": "() => {\n        cy.get('.menu div.item.dropdown').contains('More').should('be.visible').click();\n        cy.get('.menu div.item.dropdown .menu a').contains('Upgrade').should('be.visible').click();\n        cy.url().should('eq', \"\".concat(Cypress.config().baseUrl, \"login?redirect=%2Fupgrade\"));\n      }",
+        "displayError": null,
+        "attempts": [
+          {
+            "state": "passed",
+            "error": null,
+            "timings": {
+              "lifecycle": 5,
+              "before each": [
+                { "hookId": "h1", "fnDuration": 7, "afterFnDuration": 0 }
+              ],
+              "test": { "fnDuration": 207, "afterFnDuration": 0 }
+            },
+            "failedFromHookId": null,
+            "wallClockStartedAt": "2021-03-02T21:47:22.477Z",
+            "wallClockDuration": 224,
+            "videoTimestamp": 17254
+          }
+        ]
+      },
+      {
+        "testId": "r12",
+        "title": [
+          "Visiting public accessible links",
+          "Desktop 1680 1050",
+          "visits signup"
+        ],
+        "state": "passed",
+        "body": "() => {\n        cy.get('a.ui.yellow.button[href=\"/signup\"]:visible').should('be.visible').click();\n        cy.url().should('eq', \"\".concat(Cypress.config().baseUrl, \"signup\"));\n      }",
+        "displayError": null,
+        "attempts": [
+          {
+            "state": "passed",
+            "error": null,
+            "timings": {
+              "lifecycle": 22,
+              "before each": [
+                { "hookId": "h1", "fnDuration": 7, "afterFnDuration": 0 }
+              ],
+              "test": { "fnDuration": 227, "afterFnDuration": 0 }
+            },
+            "failedFromHookId": null,
+            "wallClockStartedAt": "2021-03-02T21:47:22.701Z",
+            "wallClockDuration": 257,
+            "videoTimestamp": 17478
+          }
+        ]
+      },
+      {
+        "testId": "r13",
+        "title": [
+          "Visiting public accessible links",
+          "Desktop 1680 1050",
+          "reads TOS"
+        ],
+        "state": "passed",
+        "body": "() => {\n        cy.get('a[href=\"/termsofuse\"]:visible').should('be.visible').click();\n        cy.url().should('eq', \"\".concat(Cypress.config().baseUrl, \"termsofuse\"));\n      }",
+        "displayError": null,
+        "attempts": [
+          {
+            "state": "passed",
+            "error": null,
+            "timings": {
+              "lifecycle": 5,
+              "before each": [
+                { "hookId": "h1", "fnDuration": 26, "afterFnDuration": 0 }
+              ],
+              "test": { "fnDuration": 118, "afterFnDuration": 0 }
+            },
+            "failedFromHookId": null,
+            "wallClockStartedAt": "2021-03-02T21:47:22.962Z",
+            "wallClockDuration": 151,
+            "videoTimestamp": 17739
+          }
+        ]
+      },
+      {
+        "testId": "r14",
+        "title": [
+          "Visiting public accessible links",
+          "Desktop 1680 1050",
+          "reads privacy"
+        ],
+        "state": "passed",
+        "body": "() => {\n        cy.go('back');\n        cy.get('a[href=\"/privacy\"]:visible').should('be.visible').click();\n        cy.url().should('eq', \"\".concat(Cypress.config().baseUrl, \"privacy\"));\n      }",
+        "displayError": null,
+        "attempts": [
+          {
+            "state": "passed",
+            "error": null,
+            "timings": {
+              "lifecycle": 4,
+              "before each": [
+                { "hookId": "h1", "fnDuration": 13, "afterFnDuration": 0 }
+              ],
+              "test": { "fnDuration": 261, "afterFnDuration": 0 }
+            },
+            "failedFromHookId": null,
+            "wallClockStartedAt": "2021-03-02T21:47:23.113Z",
+            "wallClockDuration": 281,
+            "videoTimestamp": 17890
+          }
+        ]
+      },
+      {
+        "testId": "r15",
+        "title": [
+          "Visiting public accessible links",
+          "Desktop 1680 1050",
+          "visits login by icon"
+        ],
+        "state": "passed",
+        "body": "() => {\n        cy.get('.pusher .right.menu a.item[href=\"/login\"]:visible').should('be.visible').click();\n        cy.url().should('eq', \"\".concat(Cypress.config().baseUrl, \"login\"));\n      }",
+        "displayError": null,
+        "attempts": [
+          {
+            "state": "passed",
+            "error": null,
+            "timings": {
+              "lifecycle": 27,
+              "before each": [
+                { "hookId": "h1", "fnDuration": 19, "afterFnDuration": 0 }
+              ],
+              "test": { "fnDuration": 118, "afterFnDuration": 0 }
+            },
+            "failedFromHookId": null,
+            "wallClockStartedAt": "2021-03-02T21:47:23.395Z",
+            "wallClockDuration": 166,
+            "videoTimestamp": 18172
+          }
+        ]
+      },
+      {
+        "testId": "r16",
+        "title": [
+          "Visiting public accessible links",
+          "Desktop 1680 1050",
+          "uses crisp"
+        ],
+        "state": "pending",
+        "body": "",
+        "displayError": null,
+        "attempts": [
+          {
+            "state": "pending",
+            "error": null,
+            "timings": null,
+            "failedFromHookId": null,
+            "wallClockStartedAt": null,
+            "wallClockDuration": null,
+            "videoTimestamp": null
+          }
+        ]
+      },
+      {
+        "testId": "r18",
+        "title": [
+          "Visiting public accessible links",
+          "Mobile iphone-xr null",
+          "visits the app"
+        ],
+        "state": "passed",
+        "body": "() => {\n        cy.visit('/');\n        cy.waitForReact();\n      }",
+        "displayError": null,
+        "attempts": [
+          {
+            "state": "passed",
+            "error": null,
+            "timings": {
+              "lifecycle": 27,
+              "before each": [
+                { "hookId": "h2", "fnDuration": 50, "afterFnDuration": 0 }
+              ],
+              "test": { "fnDuration": 276, "afterFnDuration": 0 }
+            },
+            "failedFromHookId": null,
+            "wallClockStartedAt": "2021-03-02T21:47:23.571Z",
+            "wallClockDuration": 358,
+            "videoTimestamp": 18348
+          }
+        ]
+      },
+      {
+        "testId": "r19",
+        "title": [
+          "Visiting public accessible links",
+          "Mobile iphone-xr null",
+          "visits help"
+        ],
+        "state": "passed",
+        "body": "() => {\n        cy.react('MenuItem', {\n          props: {\n            name: 'Launch'\n          }\n        }).should('be.visible').click();\n        cy.react('LinkAnchor', {\n          props: {\n            href: '/help'\n          }\n        }).should('be.visible').click();\n        cy.url().should('eq', \"\".concat(Cypress.config().baseUrl, \"help\"));\n        cy.get('.content').contains('Help');\n      }",
+        "displayError": null,
+        "attempts": [
+          {
+            "state": "passed",
+            "error": null,
+            "timings": {
+              "lifecycle": 30,
+              "before each": [
+                { "hookId": "h2", "fnDuration": 8, "afterFnDuration": 0 }
+              ],
+              "test": { "fnDuration": 505, "afterFnDuration": 0 }
+            },
+            "failedFromHookId": null,
+            "wallClockStartedAt": "2021-03-02T21:47:23.931Z",
+            "wallClockDuration": 548,
+            "videoTimestamp": 18708
+          }
+        ]
+      },
+      {
+        "testId": "r20",
+        "title": [
+          "Visiting public accessible links",
+          "Mobile iphone-xr null",
+          "visits signup"
+        ],
+        "state": "failed",
+        "body": "() => {\n        cy.react('MenuItem', {\n          props: {\n            name: 'Launch'\n          }\n        }).should('be.visible').click();\n        cy.react('LinkAnchor', {\n          props: {\n            href: '/signup'\n          }\n        }).should('be.visible').click();\n        cy.url().should('eq', \"\".concat(Cypress.config().baseUrl, \"signup\"));\n      }",
+        "displayError": "CypressError: `cy.then()` timed out after waiting `4100ms`.\n\nYour callback function returned a promise that never resolved.\n\nThe callback function was:\n\n(window) => {\n      const isPrimitive = (x) =>\n        Cypress._.isNumber(x) ||\n        Cypress._.isString(x) ||\n        Cypress._.isBoolean(x);\n\n      const getNodes = () => {\n        let elements;\n        if (!window.resq) {\n          throw new Error(\n            '[cypress-react-selector] not loaded yet. did you forget to run cy.waitForReact()?'\n          );\n        }\n\n        if (subject) {\n          elements = window.resq.resq$(component, subject);\n        } else {\n          if (getReactRoot(reactOpts.root) !== undefined) {\n            elements = window.resq.resq$(\n              component,\n              document.querySelector(getReactRoot(reactOpts.root))\n            );\n          } else {\n            elements = window.resq.resq$(component);\n          }\n        }\n\n        if (reactOpts.props) {\n          elements = elements.byProps(reactOpts.props, {\n            exact: reactOpts.exact,\n          });\n        }\n        if (reactOpts.state) {\n          elements = elements.byState(reactOpts.state, {\n            exact: reactOpts.exact,\n          });\n        }\n        if (!elements.length) {\n          return null;\n        }\n\n        let nodes = [];\n        elements.forEach((elm) => {\n          var node = elm.node,\n            isFragment = elm.isFragment;\n          if (isFragment) {\n            nodes = nodes.concat(node);\n          } else {\n            nodes.push(node);\n          }\n        });\n\n        return nodes;\n      };\n\n      const resolveValue = () => {\n        return new Cypress.Promise.try(getNodes).then((value) => {\n          if (!value) {\n            if (retries < 1) {\n              cy.log(\n                getComponentNotFoundMessage(\n                  component,\n                  reactOpts.props,\n                  reactOpts.state\n                )\n              );\n              return;\n            }\n\n            return cy\n              .wait(retryInterval, {\n                log: false,\n              })\n              .then(() => {\n                retries--;\n                return resolveValue();\n              });\n          }\n          if (!isPrimitive(value)) {\n            value = Cypress.$(value);\n          }\n          return cy.verifyUpcomingAssertions(value, (reactOpts || {}).options, {\n            onRetry: resolveValue,\n          });\n        });\n      };\n\n      return resolveValue().then((value) => {\n        return value;\n      });\n    }\n\nhttps://on.cypress.io/then\n    at http://localhost:3000/__cypress/runner/cypress_runner.js:156403:24\n    at tryCatcher (http://localhost:3000/__cypress/runner/cypress_runner.js:10765:23)\n    at http://localhost:3000/__cypress/runner/cypress_runner.js:5887:41\n    at tryCatcher (http://localhost:3000/__cypress/runner/cypress_runner.js:10765:23)\n    at Promise._settlePromiseFromHandler (http://localhost:3000/__cypress/runner/cypress_runner.js:8700:31)\n    at Promise._settlePromise (http://localhost:3000/__cypress/runner/cypress_runner.js:8757:18)\n    at Promise._settlePromise0 (http://localhost:3000/__cypress/runner/cypress_runner.js:8802:10)\n    at Promise._settlePromises (http://localhost:3000/__cypress/runner/cypress_runner.js:8878:18)\n    at _drainQueueStep (http://localhost:3000/__cypress/runner/cypress_runner.js:5472:12)\n    at _drainQueue (http://localhost:3000/__cypress/runner/cypress_runner.js:5465:9)\n    at Async.../../node_modules/bluebird/js/release/async.js.Async._drainQueues (http://localhost:3000/__cypress/runner/cypress_runner.js:5481:5)\n    at Async.drainQueues (http://localhost:3000/__cypress/runner/cypress_runner.js:5351:14)\nFrom Your Spec Code:\n    at Context.eval (http://localhost:3000/__cypress/tests?p=cypress/integration/public_pages.spec.js:222:12)",
+        "attempts": [
+          {
+            "state": "failed",
+            "error": {
+              "name": "CypressError",
+              "message": "`cy.then()` timed out after waiting `4100ms`.\n\nYour callback function returned a promise that never resolved.\n\nThe callback function was:\n\n(window) => {\n      const isPrimitive = (x) =>\n        Cypress._.isNumber(x) ||\n        Cypress._.isString(x) ||\n        Cypress._.isBoolean(x);\n\n      const getNodes = () => {\n        let elements;\n        if (!window.resq) {\n          throw new Error(\n            '[cypress-react-selector] not loaded yet. did you forget to run cy.waitForReact()?'\n          );\n        }\n\n        if (subject) {\n          elements = window.resq.resq$(component, subject);\n        } else {\n          if (getReactRoot(reactOpts.root) !== undefined) {\n            elements = window.resq.resq$(\n              component,\n              document.querySelector(getReactRoot(reactOpts.root))\n            );\n          } else {\n            elements = window.resq.resq$(component);\n          }\n        }\n\n        if (reactOpts.props) {\n          elements = elements.byProps(reactOpts.props, {\n            exact: reactOpts.exact,\n          });\n        }\n        if (reactOpts.state) {\n          elements = elements.byState(reactOpts.state, {\n            exact: reactOpts.exact,\n          });\n        }\n        if (!elements.length) {\n          return null;\n        }\n\n        let nodes = [];\n        elements.forEach((elm) => {\n          var node = elm.node,\n            isFragment = elm.isFragment;\n          if (isFragment) {\n            nodes = nodes.concat(node);\n          } else {\n            nodes.push(node);\n          }\n        });\n\n        return nodes;\n      };\n\n      const resolveValue = () => {\n        return new Cypress.Promise.try(getNodes).then((value) => {\n          if (!value) {\n            if (retries < 1) {\n              cy.log(\n                getComponentNotFoundMessage(\n                  component,\n                  reactOpts.props,\n                  reactOpts.state\n                )\n              );\n              return;\n            }\n\n            return cy\n              .wait(retryInterval, {\n                log: false,\n              })\n              .then(() => {\n                retries--;\n                return resolveValue();\n              });\n          }\n          if (!isPrimitive(value)) {\n            value = Cypress.$(value);\n          }\n          return cy.verifyUpcomingAssertions(value, (reactOpts || {}).options, {\n            onRetry: resolveValue,\n          });\n        });\n      };\n\n      return resolveValue().then((value) => {\n        return value;\n      });\n    }\n\nhttps://on.cypress.io/then",
+              "stack": "    at http://localhost:3000/__cypress/runner/cypress_runner.js:156403:24\n    at tryCatcher (http://localhost:3000/__cypress/runner/cypress_runner.js:10765:23)\n    at http://localhost:3000/__cypress/runner/cypress_runner.js:5887:41\n    at tryCatcher (http://localhost:3000/__cypress/runner/cypress_runner.js:10765:23)\n    at Promise._settlePromiseFromHandler (http://localhost:3000/__cypress/runner/cypress_runner.js:8700:31)\n    at Promise._settlePromise (http://localhost:3000/__cypress/runner/cypress_runner.js:8757:18)\n    at Promise._settlePromise0 (http://localhost:3000/__cypress/runner/cypress_runner.js:8802:10)\n    at Promise._settlePromises (http://localhost:3000/__cypress/runner/cypress_runner.js:8878:18)\n    at _drainQueueStep (http://localhost:3000/__cypress/runner/cypress_runner.js:5472:12)\n    at _drainQueue (http://localhost:3000/__cypress/runner/cypress_runner.js:5465:9)\n    at Async.../../node_modules/bluebird/js/release/async.js.Async._drainQueues (http://localhost:3000/__cypress/runner/cypress_runner.js:5481:5)\n    at Async.drainQueues (http://localhost:3000/__cypress/runner/cypress_runner.js:5351:14)\nFrom Your Spec Code:\n    at Context.eval (http://localhost:3000/__cypress/tests?p=cypress/integration/public_pages.spec.js:222:12)",
+              "codeFrame": {
+                "line": 126,
+                "column": 12,
+                "originalFile": "cypress/integration/public_pages.spec.js",
+                "relativeFile": "cypress/integration/public_pages.spec.js",
+                "absoluteFile": "/Users/gash/PhpstormProjects/speisekammer/prepper-reactjs/cypress/integration/public_pages.spec.js",
+                "frame": "  124 |           .click()\n  125 |         cy.react('LinkAnchor', { props: { href: '/signup' } })\n> 126 |           .should('be.visible')\n      |            ^\n  127 |           .click()\n  128 |         cy.url().should('eq', `${Cypress.config().baseUrl}signup`)\n  129 |       })",
+                "language": "js"
+              }
+            },
+            "timings": {
+              "lifecycle": 39,
+              "before each": [
+                { "hookId": "h2", "fnDuration": 91, "afterFnDuration": 0 }
+              ],
+              "test": { "fnDuration": 4329, "afterFnDuration": 324 }
+            },
+            "failedFromHookId": null,
+            "wallClockStartedAt": "2021-03-02T21:47:24.482Z",
+            "wallClockDuration": 4800,
+            "videoTimestamp": 19259
+          }
+        ]
+      },
+      {
+        "testId": "r21",
+        "title": [
+          "Visiting public accessible links",
+          "Mobile iphone-xr null",
+          "reads TOS"
+        ],
+        "state": "passed",
+        "body": "() => {\n        cy.get('a[href=\"/termsofuse\"]:visible').should('be.visible').click();\n        cy.url().should('eq', \"\".concat(Cypress.config().baseUrl, \"termsofuse\"));\n      }",
+        "displayError": null,
+        "attempts": [
+          {
+            "state": "passed",
+            "error": null,
+            "timings": {
+              "lifecycle": 193,
+              "before each": [
+                { "hookId": "h2", "fnDuration": 11, "afterFnDuration": 0 }
+              ],
+              "test": { "fnDuration": 124, "afterFnDuration": 0 }
+            },
+            "failedFromHookId": null,
+            "wallClockStartedAt": "2021-03-02T21:47:29.299Z",
+            "wallClockDuration": 331,
+            "videoTimestamp": 24076
+          }
+        ]
+      },
+      {
+        "testId": "r22",
+        "title": [
+          "Visiting public accessible links",
+          "Mobile iphone-xr null",
+          "reads privacy"
+        ],
+        "state": "passed",
+        "body": "() => {\n        cy.go('back');\n        cy.get('a[href=\"/privacy\"]:visible').should('be.visible').click();\n        cy.url().should('eq', \"\".concat(Cypress.config().baseUrl, \"privacy\"));\n      }",
+        "displayError": null,
+        "attempts": [
+          {
+            "state": "passed",
+            "error": null,
+            "timings": {
+              "lifecycle": 4,
+              "before each": [
+                { "hookId": "h2", "fnDuration": 6, "afterFnDuration": 0 }
+              ],
+              "test": { "fnDuration": 222, "afterFnDuration": 0 }
+            },
+            "failedFromHookId": null,
+            "wallClockStartedAt": "2021-03-02T21:47:29.631Z",
+            "wallClockDuration": 235,
+            "videoTimestamp": 24408
+          }
+        ]
+      },
+      {
+        "testId": "r23",
+        "title": [
+          "Visiting public accessible links",
+          "Mobile iphone-xr null",
+          "visits login by icon"
+        ],
+        "state": "passed",
+        "body": "() => {\n        cy.get('.pusher .right.menu a.item[href=\"/login\"]:visible').should('be.visible').click();\n        cy.url().should('eq', \"\".concat(Cypress.config().baseUrl, \"login\"));\n      }",
+        "displayError": null,
+        "attempts": [
+          {
+            "state": "passed",
+            "error": null,
+            "timings": {
+              "lifecycle": 6,
+              "before each": [
+                { "hookId": "h2", "fnDuration": 18, "afterFnDuration": 0 }
+              ],
+              "test": { "fnDuration": 101, "afterFnDuration": 0 }
+            },
+            "failedFromHookId": null,
+            "wallClockStartedAt": "2021-03-02T21:47:29.866Z",
+            "wallClockDuration": 128,
+            "videoTimestamp": 24643
+          }
+        ]
+      },
+      {
+        "testId": "r24",
+        "title": [
+          "Visiting public accessible links",
+          "Mobile iphone-xr null",
+          "uses crisp"
+        ],
+        "state": "pending",
+        "body": "",
+        "displayError": null,
+        "attempts": [
+          {
+            "state": "pending",
+            "error": null,
+            "timings": null,
+            "failedFromHookId": null,
+            "wallClockStartedAt": null,
+            "wallClockDuration": null,
+            "videoTimestamp": null
+          }
+        ]
+      }
+    ],
+    "error": null,
+    "video": true,
+    "hooks": [
+      {
+        "hookId": "h1",
+        "hookName": "before each",
+        "title": ["\"before each\" hook"],
+        "body": "() => {\n        var _size$2;\n\n        cy.viewport(size[0], (_size$2 = size[1]) !== null && _size$2 !== void 0 ? _size$2 : null);\n        cy.url().then(urlString => {\n          if (urlString === 'about:blank') {\n            cy.visit('/');\n          }\n        });\n        cy.waitForReact();\n      }"
+      },
+      {
+        "hookId": "h2",
+        "hookName": "before each",
+        "title": ["\"before each\" hook"],
+        "body": "() => {\n        var _size$4;\n\n        cy.viewport(size[0], (_size$4 = size[1]) !== null && _size$4 !== void 0 ? _size$4 : null);\n        cy.url().then(urlString => {\n          if (urlString === 'about:blank') {\n            cy.visit('/');\n          }\n        });\n        cy.waitForReact();\n      }"
+      }
+    ],
+    "screenshots": [
+      {
+        "screenshotId": "fpbkb",
+        "name": null,
+        "testId": "r9",
+        "testAttemptIndex": 0,
+        "takenAt": "2021-03-02T21:47:21.839Z",
+        "height": 720,
+        "width": 1280
+      },
+      {
+        "screenshotId": "vtu6n",
+        "name": null,
+        "testId": "r20",
+        "testAttemptIndex": 0,
+        "takenAt": "2021-03-02T21:47:28.943Z",
+        "height": 720,
+        "width": 1280
+      }
+    ],
+    "cypressConfig": {
+      "configFile": "/Users/gash/PhpstormProjects/speisekammer/prepper-reactjs/cypress.json",
+      "version": "6.6.0",
+      "viewportHeight": 1080,
+      "viewportWidth": 1920,
+      "resolutions": { "desktop": [[1680, 1050]], "mobile": [["iphone-xr"]] },
+      "reporter": "junit",
+      "reporterOptions": {
+        "mochaFile": "cypress/results/[hash]-test-result.xml",
+        "attachments": false,
+        "antMode": false,
+        "jenkinsMode": false,
+        "properties": null,
+        "toConsole": false,
+        "rootSuiteTitle": "Root Suite",
+        "testsuitesTitle": "Mocha Tests",
+        "suiteTitleSeparatedBy": " "
+      },
+      "baseUrl": "http://localhost:3000/",
+      "env": { "cypress-react-selector": { "root": "#root" } },
+      "projectId": "speisekammer_prepper-reactjs",
+      "$schema": "https://on.cypress.io/cypress.schema.json",
+      "watchForFileChanges": false,
+      "retries": { "runMode": 0, "openMode": 0 },
+      "projectRoot": "/Users/gash/PhpstormProjects/speisekammer/prepper-reactjs",
+      "projectName": "prepper-reactjs",
+      "morgan": false,
+      "isTextTerminal": true,
+      "socketId": "qyhr8",
+      "report": true,
+      "browsers": [
+        {
+          "name": "chrome",
+          "family": "chromium",
+          "channel": "stable",
+          "displayName": "Chrome",
+          "version": "88.0.4324.192",
+          "path": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+          "majorVersion": 88
+        },
+        {
+          "name": "electron",
+          "channel": "stable",
+          "family": "chromium",
+          "displayName": "Electron",
+          "version": "87.0.4280.141",
+          "path": "",
+          "majorVersion": 87,
+          "info": "Electron is the default browser that comes with Cypress. This is the default browser that runs in headless mode. Selecting this browser is useful when debugging. The version number indicates the underlying Chromium version that Electron uses."
+        }
+      ],
+      "animationDistanceThreshold": 5,
+      "autoOpen": false,
+      "blockHosts": null,
+      "chromeWebSecurity": true,
+      "clientRoute": "/__/",
+      "componentFolder": "/Users/gash/PhpstormProjects/speisekammer/prepper-reactjs/cypress/component",
+      "defaultCommandTimeout": 4000,
+      "downloadsFolder": "/Users/gash/PhpstormProjects/speisekammer/prepper-reactjs/cypress/downloads",
+      "execTimeout": 60000,
+      "experimentalComponentTesting": false,
+      "experimentalFetchPolyfill": false,
+      "experimentalRunEvents": false,
+      "experimentalSourceRewriting": false,
+      "experimentalStudio": false,
+      "fileServerFolder": "/Users/gash/PhpstormProjects/speisekammer/prepper-reactjs",
+      "firefoxGcInterval": { "runMode": 1, "openMode": null },
+      "fixturesFolder": "/Users/gash/PhpstormProjects/speisekammer/prepper-reactjs/cypress/fixtures",
+      "hosts": null,
+      "ignoreTestFiles": "*.hot-update.js",
+      "includeShadowDom": false,
+      "integrationFolder": "/Users/gash/PhpstormProjects/speisekammer/prepper-reactjs/cypress/integration",
+      "javascripts": [],
+      "modifyObstructiveCode": true,
+      "namespace": "__cypress",
+      "nodeVersion": "default",
+      "numTestsKeptInMemory": 0,
+      "pageLoadTimeout": 60000,
+      "pluginsFile": "/Users/gash/PhpstormProjects/speisekammer/prepper-reactjs/cypress/plugins/index.js",
+      "port": 61277,
+      "reporterRoute": "/__cypress/reporter",
+      "requestTimeout": 5000,
+      "responseTimeout": 30000,
+      "screenshotOnRunFailure": true,
+      "screenshotsFolder": "/Users/gash/PhpstormProjects/speisekammer/prepper-reactjs/cypress/screenshots",
+      "socketIoRoute": "/__socket.io",
+      "webpackDevServerPublicPathRoute": "/__cypress/src",
+      "socketIoCookie": "__socket.io",
+      "supportFile": "/Users/gash/PhpstormProjects/speisekammer/prepper-reactjs/cypress/support/index.js",
+      "taskTimeout": 60000,
+      "testFiles": "**/*.*",
+      "trashAssetsBeforeRuns": true,
+      "userAgent": null,
+      "video": true,
+      "videoCompression": 32,
+      "videosFolder": "/Users/gash/PhpstormProjects/speisekammer/prepper-reactjs/cypress/videos",
+      "videoUploadOnPasses": true,
+      "waitForAnimations": true,
+      "scrollBehavior": "top",
+      "xhrRoute": "/xhrs/",
+      "cypressEnv": "production",
+      "resolved": {
+        "animationDistanceThreshold": { "value": 5, "from": "default" },
+        "baseUrl": { "value": "http://localhost:3000/", "from": "config" },
+        "blockHosts": { "value": null, "from": "default" },
+        "browsers": {
+          "value": [
+            {
+              "name": "chrome",
+              "family": "chromium",
+              "channel": "stable",
+              "displayName": "Chrome",
+              "version": "88.0.4324.192",
+              "path": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+              "majorVersion": 88
+            },
+            {
+              "name": "electron",
+              "channel": "stable",
+              "family": "chromium",
+              "displayName": "Electron",
+              "version": "87.0.4280.141",
+              "path": "",
+              "majorVersion": 87,
+              "info": "Electron is the default browser that comes with Cypress. This is the default browser that runs in headless mode. Selecting this browser is useful when debugging. The version number indicates the underlying Chromium version that Electron uses.",
+              "isHeadless": true,
+              "isHeaded": false
+            }
+          ],
+          "from": "default"
+        },
+        "chromeWebSecurity": { "value": true, "from": "default" },
+        "componentFolder": { "value": "cypress/component", "from": "default" },
+        "defaultCommandTimeout": { "value": 4000, "from": "default" },
+        "downloadsFolder": { "value": "cypress/downloads", "from": "default" },
+        "env": {
+          "cypress-react-selector": {
+            "value": { "root": "#root" },
+            "from": "config"
+          }
+        },
+        "execTimeout": { "value": 60000, "from": "default" },
+        "experimentalComponentTesting": { "value": false, "from": "default" },
+        "experimentalFetchPolyfill": { "value": false, "from": "default" },
+        "experimentalRunEvents": { "value": false, "from": "default" },
+        "experimentalSourceRewriting": { "value": false, "from": "default" },
+        "experimentalStudio": { "value": false, "from": "default" },
+        "fileServerFolder": { "value": "", "from": "default" },
+        "firefoxGcInterval": {
+          "value": { "runMode": 1, "openMode": null },
+          "from": "default"
+        },
+        "fixturesFolder": { "value": "cypress/fixtures", "from": "default" },
+        "hosts": { "value": null, "from": "default" },
+        "ignoreTestFiles": { "value": "*.hot-update.js", "from": "default" },
+        "includeShadowDom": { "value": false, "from": "default" },
+        "integrationFolder": {
+          "value": "cypress/integration",
+          "from": "default"
+        },
+        "modifyObstructiveCode": { "value": true, "from": "default" },
+        "nodeVersion": { "value": "default", "from": "default" },
+        "numTestsKeptInMemory": { "value": 0, "from": "config" },
+        "pageLoadTimeout": { "value": 60000, "from": "default" },
+        "pluginsFile": { "value": "cypress/plugins", "from": "default" },
+        "port": { "value": null, "from": "default" },
+        "projectId": {
+          "value": "speisekammer_prepper-reactjs",
+          "from": "config"
+        },
+        "reporter": { "value": "junit", "from": "config" },
+        "reporterOptions": {
+          "value": { "mochaFile": "cypress/results/[hash]-test-result.xml" },
+          "from": "config"
+        },
+        "requestTimeout": { "value": 5000, "from": "default" },
+        "responseTimeout": { "value": 30000, "from": "default" },
+        "retries": {
+          "value": { "runMode": 0, "openMode": 0 },
+          "from": "default"
+        },
+        "screenshotOnRunFailure": { "value": true, "from": "default" },
+        "screenshotsFolder": {
+          "value": "cypress/screenshots",
+          "from": "default"
+        },
+        "supportFile": { "value": "cypress/support", "from": "default" },
+        "taskTimeout": { "value": 60000, "from": "default" },
+        "testFiles": { "value": "**/*.*", "from": "default" },
+        "trashAssetsBeforeRuns": { "value": true, "from": "default" },
+        "userAgent": { "value": null, "from": "default" },
+        "video": { "value": true, "from": "default" },
+        "videoCompression": { "value": 32, "from": "default" },
+        "videosFolder": { "value": "cypress/videos", "from": "default" },
+        "videoUploadOnPasses": { "value": true, "from": "default" },
+        "viewportHeight": { "value": 1080, "from": "config" },
+        "viewportWidth": { "value": 1920, "from": "config" },
+        "waitForAnimations": { "value": true, "from": "default" },
+        "scrollBehavior": { "value": "top", "from": "default" },
+        "watchForFileChanges": { "value": false, "from": "config" },
+        "configFile": {
+          "value": "/Users/gash/PhpstormProjects/speisekammer/prepper-reactjs/cypress.json",
+          "from": "plugin"
+        },
+        "version": { "value": "6.6.0", "from": "plugin" }
+      },
+      "parentTestsFolder": "/Users/gash/PhpstormProjects/speisekammer/prepper-reactjs/cypress",
+      "parentTestsFolderDisplay": "prepper-reactjs/cypress",
+      "supportFolder": "/Users/gash/PhpstormProjects/speisekammer/prepper-reactjs/cypress/support",
+      "integrationExampleName": "examples",
+      "integrationExamplePath": "/Users/gash/PhpstormProjects/speisekammer/prepper-reactjs/cypress/integration/examples",
+      "scaffoldedFiles": [
+        {
+          "name": "cypress",
+          "children": [
+            {
+              "name": "integration",
+              "children": [
+                {
+                  "name": "examples",
+                  "children": [
+                    { "name": "actions.spec.js" },
+                    { "name": "aliasing.spec.js" },
+                    { "name": "assertions.spec.js" },
+                    { "name": "connectors.spec.js" },
+                    { "name": "cookies.spec.js" },
+                    { "name": "cypress_api.spec.js" },
+                    { "name": "files.spec.js" },
+                    { "name": "local_storage.spec.js" },
+                    { "name": "location.spec.js" },
+                    { "name": "misc.spec.js" },
+                    { "name": "navigation.spec.js" },
+                    { "name": "network_requests.spec.js" },
+                    { "name": "querying.spec.js" },
+                    { "name": "spies_stubs_clocks.spec.js" },
+                    { "name": "traversal.spec.js" },
+                    { "name": "utilities.spec.js" },
+                    { "name": "viewport.spec.js" },
+                    { "name": "waiting.spec.js" },
+                    { "name": "window.spec.js" }
+                  ]
+                }
+              ]
+            },
+            { "name": "fixtures", "children": [{ "name": "example.json" }] },
+            {
+              "name": "support",
+              "children": [{ "name": "commands.js" }, { "name": "index.js" }]
+            },
+            { "name": "plugins", "children": [{ "name": "index.js" }] }
+          ]
+        }
+      ],
+      "resolvedNodeVersion": "12.18.3",
+      "state": {},
+      "proxyUrl": "http://localhost:61277",
+      "browserUrl": "http://localhost:3000/__/",
+      "reporterUrl": "http://localhost:3000/__cypress/reporter",
+      "xhrUrl": "__cypress/xhrs/",
+      "proxyServer": "http://localhost:61277"
+    },
+    "reporterStats": {
+      "suites": 3,
+      "tests": 20,
+      "passes": 16,
+      "pending": 2,
+      "failures": 2,
+      "start": "2021-03-02T21:47:11.214Z",
+      "end": "2021-03-02T21:47:30.005Z",
+      "duration": 18791
+    }
+  },
+  "headers": {
+    "x-route-version": "3",
+    "x-os-name": "darwin",
+    "x-cypress-version": "6.6.0"
+  }
+}
