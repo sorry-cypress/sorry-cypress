@@ -3395,13 +3395,6 @@
   dependencies:
     "@types/node" "*"
 
-"@types/ioredis@^4.22.0":
-  version "4.22.0"
-  resolved "https://registry.yarnpkg.com/@types/ioredis/-/ioredis-4.22.0.tgz#b07cc3405d98bae50a642b20790471b4c3c390a9"
-  integrity sha512-BhgyAqt+CIFj/ejdYpWSGYUQzoQr7sFOBYLL8yEExa1tSTi2cy2D3a952zF8Tm4Q1cY3srn8xXZfb2riX6hWjw==
-  dependencies:
-    "@types/node" "*"
-
 "@types/istanbul-lib-coverage@*", "@types/istanbul-lib-coverage@^2.0.0", "@types/istanbul-lib-coverage@^2.0.1":
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/@types/istanbul-lib-coverage/-/istanbul-lib-coverage-2.0.3.tgz#4ba8ddb720221f432e443bd5f9117fd22cfd4762"
