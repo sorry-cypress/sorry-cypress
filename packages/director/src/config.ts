@@ -22,3 +22,5 @@ export const ALLOWED_KEYS: string[] = process.env.ALLOWED_KEYS
 export const INACTIVITY_TIMEOUT_SECONDS = Number(
   process.env.INACTIVITY_TIMEOUT_SECONDS ?? 180
 );
+
+export const REDIS_URI = process.env.REDIS_URI;

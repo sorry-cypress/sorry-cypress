@@ -39,6 +39,7 @@
     "md5": "^2.2.1",
     "minio": "^7.0.15",
     "mongodb": "^3.3.0",
+    "redis": "^3.0.2",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
@@ -56,6 +57,7 @@
     "@types/minio": "^7.0.5",
     "@types/mongodb": "^3.3.1",
     "@types/node": "^14.11.2",
+    "@types/redis": "^2.8.28",
     "@types/uuid": "^3.4.5",
     "babel-plugin-module-resolver": "^4.0.0",
     "jest": "^25.5.4",
