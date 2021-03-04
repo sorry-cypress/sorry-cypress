@@ -8,13 +8,12 @@ const jobs: Record<string, NodeJS.Timeout> = {};
 export const inMemoryScheduler = async (runId: string) => {
   const timeoutMs = await getRunInactivityTimeoutMs(runId);
 
-  const jobName = `${runId}_inactivity_timeout`;
-  if (jobs[jobName]) {
-    clearTimeout(jobs[jobName]);
+  if (jobs[runId]) {
+    clearTimeout(jobs[runId]);
   }
 
-  jobs[jobName] = setTimeout(async () => {
-    clearTimeout(jobs[jobName]);
+  jobs[runId] = setTimeout(async () => {
+    clearTimeout(jobs[runId]);
     checkRunCompletionOnInactivity(runId, timeoutMs).catch(console.error);
   }, timeoutMs);
 };
