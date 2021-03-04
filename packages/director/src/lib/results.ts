@@ -3,6 +3,9 @@ export const isInstanceFailed = (results: InstanceResult) =>
   results.stats.failures > 0;
 
 function sanitizeKey(_: string, value: any) {
+  if (Array.isArray(value)) {
+    return value;
+  }
   if (value && typeof value === 'object') {
     const replacement: Record<string, any> = {};
     for (const key in value) {
