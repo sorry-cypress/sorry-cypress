@@ -9,7 +9,7 @@ import { isTestGteV5 } from '@src/lib/version';
 import { Heading, HFlow } from 'bold-ui';
 import React from 'react';
 import { Screenshot, TestError } from './common';
-import { TestDetailsV5 } from './textDetailsV5';
+import { TestDetailsV5 } from './testDetailsV5';
 
 const TestDetailsLegacy = ({
   test,

@@ -3,7 +3,7 @@ import { ThemeProvider } from 'bold-ui';
 import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Content, Footer, Header, Layout } from './components';
-import { InstanceDetailsView } from './instance/InstanceDetailsView';
+import { InstanceDetailsView } from './instance/instanceDetailsView';
 import { client } from './lib/apolloClient';
 import { ProjectEditView } from './project/projectEditView';
 import { ProjectsView } from './project/projectsView';
