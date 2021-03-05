@@ -34,7 +34,7 @@ export const RunsFeed = ({ projectId, search = '' }: RunListProps) => {
 
     return (
       <CenteredContent>
-        <p>No runs have started on this project.</p>
+        <p>No runs started yet</p>
       </CenteredContent>
     );
   }
