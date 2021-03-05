@@ -5,14 +5,18 @@ import {
   checkRunCompletionOnInactivity,
   getRunInactivityTimeoutMs,
 } from './runCompletion';
+
 const INACTIVITY_TIMEOUT_QUEUE_NAME = 'sc_inactivityTimeoutQueue';
 const INACTIVITY_TIMEOUT_JOB_NAME = 'sc_inactivityTimeoutJob';
 
+const connection = getRedisConnection(REDIS_URI);
 // https://docs.bullmq.io/guide/queuescheduler
-export const scheduler = new QueueScheduler(INACTIVITY_TIMEOUT_QUEUE_NAME);
+export const scheduler = new QueueScheduler(INACTIVITY_TIMEOUT_QUEUE_NAME, {
+  connection,
+});
 
 const inactiviyTimeoutQueue = new Queue(INACTIVITY_TIMEOUT_QUEUE_NAME, {
-  connection: getRedisConnection(REDIS_URI),
+  connection,
 });
 
 export const setInactivityTimeoutJob = async (runId: string) => {
@@ -48,6 +52,12 @@ type InactivityTimeoutJob = {
   runId: string;
   timeoutMs: number;
 };
-new Worker<InactivityTimeoutJob>(INACTIVITY_TIMEOUT_QUEUE_NAME, async (job) => {
-  await checkRunCompletionOnInactivity(job.data.runId, job.data.timeoutMs);
-});
+new Worker<InactivityTimeoutJob>(
+  INACTIVITY_TIMEOUT_QUEUE_NAME,
+  async (job) => {
+    await checkRunCompletionOnInactivity(job.data.runId, job.data.timeoutMs);
+  },
+  {
+    connection,
+  }
+);
