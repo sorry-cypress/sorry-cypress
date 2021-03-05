@@ -25,7 +25,6 @@ export function reportToHook({
     const runSummary = getRunSummary(
       compact(run.specsFull.map((s) => s.results?.stats))
     );
-    // TODO: should we report hooks after run finished?
     project.hooks?.forEach((hook) => {
       if (isSlackHook(hook)) {
         reportToSlack({

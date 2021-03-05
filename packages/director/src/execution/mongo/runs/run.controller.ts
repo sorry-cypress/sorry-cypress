@@ -76,8 +76,7 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
   } catch (error) {
     if (error.code && error.code === RUN_EXISTS) {
       response.isNewRun = false;
-      // update new specs for a new group
-      // TODO: prone to race condition on serverless
+      // serverless: prone to race condition on serverless
       const run = await getRunById(runId);
 
       const newSpecs = getNewSpecsInGroup({

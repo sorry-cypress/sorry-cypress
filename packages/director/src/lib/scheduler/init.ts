@@ -1,5 +1,5 @@
 /**
- * This implementation is unfriendly for serverless environments
+ * serverless: This implementation is unfriendly for serverless environments
  */
 import { hookEvents } from '@sorry-cypress/common';
 import { REDIS_URI } from '@src/config';
