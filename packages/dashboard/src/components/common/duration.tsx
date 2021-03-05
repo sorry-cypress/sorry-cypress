@@ -8,13 +8,36 @@ export function Duration({
   completed,
   createdAtISO,
   wallClockDurationSeconds,
+  pendingInactivity,
 }: {
+  pendingInactivity: boolean;
   completed: boolean;
   createdAtISO: string;
   wallClockDurationSeconds: number;
 }) {
   if (completed) {
     return <Text>{getSecondsDuration(wallClockDurationSeconds)}</Text>;
+  }
+  if (!completed && pendingInactivity) {
+    return (
+      <>
+        <Text>
+          {getSecondsDuration(wallClockDurationSeconds)}
+          <RenderOnInterval
+            render={() => (
+              <Text color="disabled">
+                {' +'}
+                {getSecondsDuration(
+                  differenceInSeconds(Date.now(), parseISO(createdAtISO)) -
+                    wallClockDurationSeconds
+                )}{' '}
+                pending for inactivity
+              </Text>
+            )}
+          />
+        </Text>
+      </>
+    );
   }
 
   return (

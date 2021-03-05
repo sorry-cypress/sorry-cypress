@@ -1,5 +1,6 @@
 import {
   getRunSummary,
+  isRunPendingInactivityTimeout,
   RunSummary as RunSummaryType,
 } from '@sorry-cypress/common';
 import {
@@ -62,12 +63,15 @@ export function RunSummaryComponent({
   const runSummary = getRunSummary(
     compact(runSpecs.map((s) => s.results?.stats))
   );
+  const pendingInactivity = isRunPendingInactivityTimeout(runSpecs);
+
   return (
     <Paper>
       <HFlow alignItems="center" justifyContent="space-between">
         <div style={{ flex: 1 }}>
           <HFlow alignItems="center">
             <RunStatus
+              pendingInactivity={pendingInactivity}
               completed={completed}
               inactivityTimeoutMs={inactivityTimeoutMs}
             />
@@ -90,6 +94,7 @@ export function RunSummaryComponent({
             <li>
               <Text>Duration: </Text>
               <Duration
+                pendingInactivity={pendingInactivity}
                 completed={completed}
                 createdAtISO={runCreatedAt}
                 wallClockDurationSeconds={runSummary.wallClockDurationSeconds}
@@ -131,14 +136,23 @@ function RunSummaryTestResults({ runSummary }: { runSummary: RunSummaryType }) {
 function RunStatus({
   completed,
   inactivityTimeoutMs,
+  pendingInactivity,
 }: {
+  pendingInactivity: boolean;
   completed: boolean;
   inactivityTimeoutMs?: number | null;
 }) {
-  if (!completed) {
+  if (!completed && !pendingInactivity) {
     return (
       <Tooltip text={`Run is being executed`}>
         <Icon icon="playFilled" fill="info" stroke="info" size={0.7} />
+      </Tooltip>
+    );
+  }
+  if (!completed && pendingInactivity) {
+    return (
+      <Tooltip text={`Run has been waiting for inactivity timeout`}>
+        <Icon icon="clockFilled" fill="info" size={1} />
       </Tooltip>
     );
   }

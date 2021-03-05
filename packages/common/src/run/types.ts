@@ -73,6 +73,5 @@ export interface RunSummary {
   skipped: number;
   tests: number;
   pending: number;
-  // wallClockStartedAt: Date;
   wallClockDurationSeconds: number;
 }
