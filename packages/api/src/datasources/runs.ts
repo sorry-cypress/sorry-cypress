@@ -16,7 +16,7 @@ type RunWithFullSpecs = Run & {
   _id: string;
 };
 
-const PAGE_LIMIT = 5;
+const PAGE_LIMIT = 10;
 const mergeRunSpecs = (run: RunWithFullSpecs) => {
   // merge fullspec into spec
   run.specs = run.specs.map((s) => ({
