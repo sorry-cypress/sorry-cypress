@@ -2,7 +2,7 @@ import { useGetInstanceQuery } from '@src/generated/graphql';
 import { useAutoRefreshRate } from '@src/hooks';
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { TestDetails } from './testDetails';
+import { TestDetails } from './details';
 import { useUpdateTestNav } from './useUpdateNavForTest';
 
 export function TestDetailsView() {
