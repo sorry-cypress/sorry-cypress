@@ -1,6 +1,6 @@
 {
   "name": "@sorry-cypress/common",
-  "version": "1.0.0-beta.18",
+  "version": "1.0.0",
   "author": {
     "name": "Andrew Goldis",
     "email": "agoldis@gmail.com"
@@ -16,7 +16,7 @@
     "build": "microbundle build",
     "dev": "microbundle watch",
     "lint": "eslint ./ --ext ts,tsx",
-    "release": "yarn version --no-git-tag-version",
+    "release": "echo \"skipping release\"",
     "test": "jest"
   },
   "devDependencies": {
