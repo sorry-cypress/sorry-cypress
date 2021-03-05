@@ -2,7 +2,7 @@ version: '3.6'
 
 services:
   mongo:
-    image: mongo:bionic
+    image: mongo:4.2
 
   redis:
     image: redis:alpine
