@@ -44,9 +44,9 @@ function getTagsArg() {
 }
 
 function dockerBuild() {
-  echo 🔨 Building ${2} from ${1}: docker build ${1} --file ${1}/Dockerfile $(getTagsArg ${2})
+  echo 🔨 Building ${2} from ${1}: docker build --file ${1}/Dockerfile $(getTagsArg ${2})
   echo ========================
-  docker build ${1} --file ${1}/Dockerfile $(getTagsArg ${2})
+  docker build --file ${1}/Dockerfile $(getTagsArg ${2}) .
   echo ========================
   echo ✅ Build completed ${2} from ${1} 
 }
