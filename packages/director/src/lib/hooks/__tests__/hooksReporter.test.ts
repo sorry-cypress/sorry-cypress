@@ -1,13 +1,16 @@
+import { GithubHook, hookEvents, RunSummary } from '@sorry-cypress/common';
 import axios from 'axios';
-import { reportStatusToGithub } from '../githubReporter';
-import { hookEvents } from '../hooksEnums';
-
+import { reportStatusToGithub } from '../reporters/github';
 import githubHook from './fixtures/githubHooks.json';
-import reportData from './fixtures/reportData.json';
 import reportStatusRequest from './fixtures/reportStatusRequest.json';
+import runSummary from './fixtures/runSummary.json';
 
 jest.mock('axios');
 
+const hook = ({
+  ...githubHook,
+  url: 'https://github.com/test-company/test-project/',
+} as unknown) as GithubHook;
 describe('test reportStatusToGithub', () => {
   beforeEach(() => {
     ((axios as unknown) as jest.Mock).mockResolvedValueOnce({ status: 200 });
@@ -19,11 +22,10 @@ describe('test reportStatusToGithub', () => {
 
   it('should send correct request to the github.com repo when run is started', async () => {
     await reportStatusToGithub({
-      hook: {
-        ...githubHook,
-        url: 'https://github.com/test-company/test-project/',
-      },
-      reportData: reportData,
+      hook,
+      sha: 'testCommitSha',
+      runId: 'testRunId',
+      runSummary: (runSummary as unknown) as RunSummary,
       hookEvent: hookEvents.RUN_START,
     });
 
@@ -37,10 +39,12 @@ describe('test reportStatusToGithub', () => {
   it('should send correct request to the github enterprise repo when run is started', async () => {
     await reportStatusToGithub({
       hook: {
-        ...githubHook,
+        ...hook,
         url: 'https://gh.testcompany.com/test-company/test-project/',
       },
-      reportData: reportData,
+      sha: 'testCommitSha',
+      runId: 'testRunId',
+      runSummary: (runSummary as unknown) as RunSummary,
       hookEvent: hookEvents.RUN_START,
     });
 

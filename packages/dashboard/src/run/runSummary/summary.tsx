@@ -145,7 +145,7 @@ function RunStatus({
   if (!completed && !pendingInactivity) {
     return (
       <Tooltip text={`Run is being executed`}>
-        <Icon icon="playFilled" fill="info" stroke="info" size={0.7} />
+        <Icon icon="rocket" fill="info" stroke="info" size={1} />
       </Tooltip>
     );
   }
