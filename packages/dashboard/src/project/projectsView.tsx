@@ -1,5 +1,5 @@
 import { PageControls, SearchField } from '@src/components';
-import { navStructure } from '@src/lib/navigation';
+import { setNav } from '@src/lib/navigation';
 import ProjectsList from '@src/project/projectList';
 import { Button, Icon, Text } from 'bold-ui';
 import React, { useLayoutEffect, useState } from 'react';
@@ -8,7 +8,7 @@ export function ProjectsView() {
   const [search, setSearch] = useState('');
 
   useLayoutEffect(() => {
-    navStructure([]);
+    setNav([]);
   }, []);
 
   return (

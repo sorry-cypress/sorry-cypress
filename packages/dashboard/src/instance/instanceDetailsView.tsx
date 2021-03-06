@@ -4,7 +4,7 @@ import {
   getInstancePath,
   getProjectPath,
   getRunPath,
-  navStructure,
+  setNav,
 } from '@src/lib/navigation';
 import React, { useLayoutEffect } from 'react';
 import { InstanceDetails } from './details';
@@ -58,7 +58,7 @@ function updateNav(data: GetInstanceQuery | undefined) {
     if (!data?.instance) {
       return;
     }
-    navStructure([
+    setNav([
       {
         label: data.instance?.run?.meta?.projectId,
         link: getProjectPath(data.instance?.run?.meta?.projectId),

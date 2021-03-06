@@ -4,7 +4,7 @@ import {
   getProjectPath,
   getRunPath,
   getTestPath,
-  navStructure,
+  setNav,
 } from '@src/lib/navigation';
 import { useLayoutEffect } from 'react';
 import { useParams } from 'react-router-dom';
@@ -24,7 +24,7 @@ export const useUpdateTestNav = (data: GetInstanceQuery | undefined) => {
     if (!test) {
       return;
     }
-    navStructure([
+    setNav([
       {
         label: data.instance?.run?.meta?.projectId,
         link: getProjectPath(data.instance?.run?.meta?.projectId),

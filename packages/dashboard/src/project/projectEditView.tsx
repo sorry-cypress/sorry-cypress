@@ -5,7 +5,7 @@ import {
   useGetProjectQuery,
   useUpdateProjectMutation,
 } from '@src/generated/graphql';
-import { navStructure } from '@src/lib/navigation';
+import { setNav } from '@src/lib/navigation';
 import {
   Button,
   Cell,
@@ -53,7 +53,7 @@ export function ProjectEditView({
   const isNewProject = projectId === '--create-new-project--';
 
   useLayoutEffect(() => {
-    navStructure([]);
+    setNav([]);
   }, []);
 
   const [createError, setCreateError] = useState<string | null>(null);

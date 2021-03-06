@@ -1,6 +1,6 @@
 import { useGetRunQuery } from '@src/generated/graphql';
 import { useAutoRefreshRate } from '@src/hooks/useAutoRefresh';
-import { getProjectPath, getRunPath, navStructure } from '@src/lib/navigation';
+import { getProjectPath, getRunPath, setNav } from '@src/lib/navigation';
 import { RunSummaryComponent } from '@src/run/runSummary/summary';
 import React, { useLayoutEffect } from 'react';
 import { RunDetails } from './details';
@@ -44,11 +44,11 @@ export function RunDetailsView({
 const updateNav = (data) =>
   useLayoutEffect(() => {
     if (!data?.run) {
-      navStructure([]);
+      setNav([]);
       return;
     }
 
-    navStructure([
+    setNav([
       {
         label: data.run.meta.projectId,
         link: getProjectPath(data.run.meta.projectId),

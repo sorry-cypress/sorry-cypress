@@ -1,5 +1,5 @@
 import { PageControls, SearchField } from '@src/components';
-import { getProjectPath, navStructure } from '@src/lib/navigation';
+import { getProjectPath, setNav } from '@src/lib/navigation';
 import React, { useLayoutEffect, useState } from 'react';
 import { RunsFeed } from './runsFeed/runsFeed';
 
@@ -19,7 +19,7 @@ export function RunsView({
   const [search, setSearch] = useState('');
 
   useLayoutEffect(() => {
-    navStructure([
+    setNav([
       {
         label: projectId,
         link: getProjectPath(projectId),
