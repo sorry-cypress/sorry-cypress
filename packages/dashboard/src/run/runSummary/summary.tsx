@@ -57,12 +57,14 @@ export function RunSummaryComponent({
   const runMeta = run.meta;
   const runSpecs = run.specs;
   const runCreatedAt = run.createdAt;
-  const completed = !!run.completion?.completed;
-  const inactivityTimeoutMs = run.completion?.inactivityTimeoutMs;
 
   const runSummary = getRunSummary(
     compact(runSpecs.map((s) => s.results?.stats))
   );
+
+  const hasCompletion = !!run.completion;
+  const completed = !!run.completion?.completed;
+  const inactivityTimeoutMs = run.completion?.inactivityTimeoutMs;
   const pendingInactivity = isRunPendingInactivityTimeout(runSpecs);
 
   return (
@@ -70,11 +72,13 @@ export function RunSummaryComponent({
       <HFlow alignItems="center" justifyContent="space-between">
         <div style={{ flex: 1 }}>
           <HFlow alignItems="center">
-            <RunStatus
-              pendingInactivity={pendingInactivity}
-              completed={completed}
-              inactivityTimeoutMs={inactivityTimeoutMs}
-            />
+            {hasCompletion && (
+              <RunStatus
+                pendingInactivity={pendingInactivity}
+                completed={completed}
+                inactivityTimeoutMs={inactivityTimeoutMs}
+              />
+            )}
             <HeaderLink to={`/run/${runId}`}>{runMeta.ciBuildId}</HeaderLink>
           </HFlow>
         </div>
@@ -94,6 +98,7 @@ export function RunSummaryComponent({
             <li>
               <Text>Duration: </Text>
               <Duration
+                hasCompletion={hasCompletion}
                 pendingInactivity={pendingInactivity}
                 completed={completed}
                 createdAtISO={runCreatedAt}
@@ -152,7 +157,7 @@ function RunStatus({
   if (!completed && pendingInactivity) {
     return (
       <Tooltip text={`Run has been waiting for inactivity timeout`}>
-        <Icon icon="clockFilled" fill="info" size={1} />
+        <Icon icon="clockOutline" stroke="info" size={1} />
       </Tooltip>
     );
   }

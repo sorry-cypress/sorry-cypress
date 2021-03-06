@@ -9,13 +9,15 @@ export function Duration({
   createdAtISO,
   wallClockDurationSeconds,
   pendingInactivity,
+  hasCompletion,
 }: {
+  hasCompletion: boolean;
   pendingInactivity: boolean;
   completed: boolean;
   createdAtISO: string;
   wallClockDurationSeconds: number;
 }) {
-  if (completed) {
+  if (completed || !hasCompletion) {
     return <Text>{getSecondsDuration(wallClockDurationSeconds)}</Text>;
   }
   if (!completed && pendingInactivity) {
