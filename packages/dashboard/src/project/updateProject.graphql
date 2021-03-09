@@ -8,6 +8,10 @@ mutation updateProject($project: ProjectInput!) {
       hookEvents
       hookType
       githubContext
+      githubToken
+      bitbucketUsername
+      bitbucketToken
+      bitbucketBuildName
     }
   }
 }

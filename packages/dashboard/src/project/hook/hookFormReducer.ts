@@ -1,4 +1,4 @@
-import { Hook, HookType, hookTypes } from '@sorry-cypress/common';
+import { Hook, HookType } from '@sorry-cypress/common';
 import { nanoid } from 'nanoid';
 
 export type HooksFormState = {
@@ -62,7 +62,7 @@ export type HookFormAction =
   | RemoveHook;
 
 export const hooksFormInitialState: HooksFormState = {
-  inactivityTimeoutSeconds: '',
+  inactivityTimeoutSeconds: '180',
   projectId: '',
   hooks: [],
 };
@@ -90,7 +90,8 @@ export const hookFormReducer = (
         hooks: [
           ...originalHooks,
           {
-            hookType: hookTypes.GENERIC_HOOK,
+            hookType: HookType.GENERIC_HOOK,
+            hookEvents: [],
             url: '',
             hookId: nanoid(),
           },

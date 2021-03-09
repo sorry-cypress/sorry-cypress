@@ -1,0 +1,10 @@
+{
+  "hookId": "testHook",
+  "url": "https://bitbucket.org/testcompany/testrepo.git",
+  "bitbucketUsername": "sorry-cypress",
+  "bitbucketToken": "testBitbucketToken",
+  "bitbucketBuildName": "cypress-build",
+  "headers": "",
+  "hookEvents": [""],
+  "hookType": "BITBUCKET_STATUS_HOOK"
+}

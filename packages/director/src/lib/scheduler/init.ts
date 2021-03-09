@@ -1,7 +1,7 @@
 /**
  * serverless: This implementation is unfriendly for serverless environments
  */
-import { hookEvents } from '@sorry-cypress/common';
+import { HookEvent } from '@sorry-cypress/common';
 import { REDIS_URI } from '@src/config';
 import { PubSubHookEventPayload } from '../hooks/events';
 import { pubsub } from '../pubsub';
@@ -12,7 +12,7 @@ let _queueScheduler: any = null;
 
 export async function init() {
   console.log('🎧 Initializing listeners for inactivity timeout scheduler...');
-  [hookEvents.RUN_START, hookEvents.INSTANCE_START].forEach((event) => {
+  [HookEvent.RUN_START, HookEvent.INSTANCE_START].forEach((event) => {
     pubsub.on(event, scheduleInactivityTimeout);
   });
 

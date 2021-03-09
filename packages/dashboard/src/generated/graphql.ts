@@ -129,23 +129,29 @@ export type Hook = {
   hookType: Maybe<Scalars['String']>;
   githubToken: Maybe<Scalars['String']>;
   githubContext: Maybe<Scalars['String']>;
+  bitbucketUsername: Maybe<Scalars['String']>;
+  bitbucketToken: Maybe<Scalars['String']>;
+  bitbucketBuildName: Maybe<Scalars['String']>;
 };
 
 export type Project = {
   __typename?: 'Project';
   projectId: Scalars['String'];
-  hooks: Maybe<Array<Hook>>;
+  hooks: Array<Hook>;
   inactivityTimeoutSeconds: Maybe<Scalars['Int']>;
 };
 
 export type HookInput = {
   hookId: Maybe<Scalars['String']>;
-  url: Maybe<Scalars['String']>;
+  url: Scalars['String'];
   headers: Maybe<Scalars['String']>;
   hookEvents: Maybe<Array<Maybe<Scalars['String']>>>;
   hookType: Maybe<Scalars['String']>;
   githubToken: Maybe<Scalars['String']>;
   githubContext: Maybe<Scalars['String']>;
+  bitbucketUsername: Maybe<Scalars['String']>;
+  bitbucketToken: Maybe<Scalars['String']>;
+  bitbucketBuildName: Maybe<Scalars['String']>;
 };
 
 export type ProjectInput = {
@@ -365,7 +371,7 @@ export type CreateProjectMutationVariables = Exact<{
 }>;
 
 
-export type CreateProjectMutation = { __typename?: 'Mutation', createProject: { __typename?: 'Project', projectId: string, hooks: Maybe<Array<{ __typename?: 'Hook', hookId: Maybe<string>, url: Maybe<string>, headers: Maybe<string>, hookEvents: Maybe<Array<Maybe<string>>>, hookType: Maybe<string>, githubContext: Maybe<string> }>> } };
+export type CreateProjectMutation = { __typename?: 'Mutation', createProject: { __typename?: 'Project', projectId: string, hooks: Array<{ __typename?: 'Hook', hookId: Maybe<string>, url: Maybe<string>, headers: Maybe<string>, hookEvents: Maybe<Array<Maybe<string>>>, hookType: Maybe<string>, githubContext: Maybe<string>, githubToken: Maybe<string>, bitbucketUsername: Maybe<string>, bitbucketToken: Maybe<string>, bitbucketBuildName: Maybe<string> }> } };
 
 export type DeleteProjectMutationVariables = Exact<{
   projectId: Scalars['ID'];
@@ -379,7 +385,7 @@ export type GetProjectQueryVariables = Exact<{
 }>;
 
 
-export type GetProjectQuery = { __typename?: 'Query', project: Maybe<{ __typename?: 'Project', projectId: string, inactivityTimeoutSeconds: Maybe<number>, hooks: Maybe<Array<{ __typename?: 'Hook', hookId: Maybe<string>, url: Maybe<string>, headers: Maybe<string>, hookEvents: Maybe<Array<Maybe<string>>>, hookType: Maybe<string>, githubContext: Maybe<string> }>> }> };
+export type GetProjectQuery = { __typename?: 'Query', project: Maybe<{ __typename?: 'Project', projectId: string, inactivityTimeoutSeconds: Maybe<number>, hooks: Array<{ __typename?: 'Hook', hookId: Maybe<string>, url: Maybe<string>, headers: Maybe<string>, hookEvents: Maybe<Array<Maybe<string>>>, hookType: Maybe<string>, githubContext: Maybe<string>, bitbucketUsername: Maybe<string>, bitbucketBuildName: Maybe<string> }> }> };
 
 export type GetProjectsQueryVariables = Exact<{
   orderDirection: Maybe<OrderingOptions>;
@@ -394,7 +400,7 @@ export type UpdateProjectMutationVariables = Exact<{
 }>;
 
 
-export type UpdateProjectMutation = { __typename?: 'Mutation', updateProject: { __typename?: 'Project', projectId: string, hooks: Maybe<Array<{ __typename?: 'Hook', hookId: Maybe<string>, url: Maybe<string>, headers: Maybe<string>, hookEvents: Maybe<Array<Maybe<string>>>, hookType: Maybe<string>, githubContext: Maybe<string> }>> } };
+export type UpdateProjectMutation = { __typename?: 'Mutation', updateProject: { __typename?: 'Project', projectId: string, hooks: Array<{ __typename?: 'Hook', hookId: Maybe<string>, url: Maybe<string>, headers: Maybe<string>, hookEvents: Maybe<Array<Maybe<string>>>, hookType: Maybe<string>, githubContext: Maybe<string>, githubToken: Maybe<string>, bitbucketUsername: Maybe<string>, bitbucketToken: Maybe<string>, bitbucketBuildName: Maybe<string> }> } };
 
 export type DeleteRunMutationVariables = Exact<{
   runId: Scalars['ID'];
@@ -629,6 +635,10 @@ export const CreateProjectDocument = gql`
       hookEvents
       hookType
       githubContext
+      githubToken
+      bitbucketUsername
+      bitbucketToken
+      bitbucketBuildName
     }
   }
 }
@@ -704,6 +714,8 @@ export const GetProjectDocument = gql`
       hookEvents
       hookType
       githubContext
+      bitbucketUsername
+      bitbucketBuildName
     }
   }
 }
@@ -779,6 +791,10 @@ export const UpdateProjectDocument = gql`
       hookEvents
       hookType
       githubContext
+      githubToken
+      bitbucketUsername
+      bitbucketToken
+      bitbucketBuildName
     }
   }
 }

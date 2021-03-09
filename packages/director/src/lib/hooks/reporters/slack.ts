@@ -1,12 +1,6 @@
-import axios from 'axios';
+import { HookEvent, RunSummary, SlackHook } from '@sorry-cypress/common';
 import { getDashboardRunURL } from '@src/lib/urls';
-import {
-  HookEvent,
-  SlackHook,
-  hookEvents,
-  RunSummary,
-} from '@sorry-cypress/common';
-
+import axios from 'axios';
 import { shouldHookHandleEvent } from '../utils';
 
 export async function reportToSlack({
@@ -37,15 +31,15 @@ export async function reportToSlack({
     description += ` 👟 skipped ${runSummary.skipped}`;
   }
 
-  if (hookEvent === hookEvents.RUN_START) {
+  if (hookEvent === HookEvent.RUN_START) {
     title = '🚀 Started Run';
   }
 
-  if (hookEvent === hookEvents.INSTANCE_FINISH) {
+  if (hookEvent === HookEvent.INSTANCE_FINISH) {
     title = 'Test suite finished';
   }
 
-  if (hookEvent === hookEvents.RUN_FINISH) {
+  if (hookEvent === HookEvent.RUN_FINISH) {
     title = '🏁 Finished Run';
     await new Promise((resolve) => {
       setTimeout(() => {

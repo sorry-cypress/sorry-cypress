@@ -13,8 +13,12 @@
   "main": "dist/index.js",
   "typings": "dist/typings",
   "scripts": {
-    "build": "microbundle build",
-    "dev": "microbundle watch",
+    "dev": "run-p dev:nodemon types:watch",
+    "dev:nodemon": "nodemon",
+    "build": "npm run build:types && npm run build:js",
+    "build:types": "tsc --emitDeclarationOnly",
+    "types:watch": "tsc --noEmit --watch",
+    "build:js": "babel src --out-dir dist --extensions \".ts\" --source-maps inline",
     "lint": "eslint ./ --ext ts,tsx",
     "release": "echo \"skipping release\"",
     "test": "jest"

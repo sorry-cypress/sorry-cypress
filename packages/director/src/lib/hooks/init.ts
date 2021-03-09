@@ -1,4 +1,4 @@
-import { HookEvent, hookEvents } from '@sorry-cypress/common';
+import { HookEvent } from '@sorry-cypress/common';
 import { getExecutionDriver } from '@src/drivers';
 import { pubsub } from '../pubsub';
 import { PubSubHookEventPayload } from './events';
@@ -21,7 +21,7 @@ const handleHookEvent = (eventType: HookEvent) => async ({
 export async function init() {
   console.log('🎧 Initializing listeners for hooks...');
 
-  for (const event of Object.values(hookEvents)) {
+  for (const event of Object.values(HookEvent)) {
     pubsub.on(event, handleHookEvent(event));
   }
 }

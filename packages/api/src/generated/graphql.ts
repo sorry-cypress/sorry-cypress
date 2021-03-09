@@ -128,23 +128,29 @@ export type Hook = {
   hookType?: Maybe<Scalars['String']>;
   githubToken?: Maybe<Scalars['String']>;
   githubContext?: Maybe<Scalars['String']>;
+  bitbucketUsername?: Maybe<Scalars['String']>;
+  bitbucketToken?: Maybe<Scalars['String']>;
+  bitbucketBuildName?: Maybe<Scalars['String']>;
 };
 
 export type Project = {
   __typename?: 'Project';
   projectId: Scalars['String'];
-  hooks?: Maybe<Array<Hook>>;
+  hooks: Array<Hook>;
   inactivityTimeoutSeconds?: Maybe<Scalars['Int']>;
 };
 
 export type HookInput = {
   hookId?: Maybe<Scalars['String']>;
-  url?: Maybe<Scalars['String']>;
+  url: Scalars['String'];
   headers?: Maybe<Scalars['String']>;
   hookEvents?: Maybe<Array<Maybe<Scalars['String']>>>;
   hookType?: Maybe<Scalars['String']>;
   githubToken?: Maybe<Scalars['String']>;
   githubContext?: Maybe<Scalars['String']>;
+  bitbucketUsername?: Maybe<Scalars['String']>;
+  bitbucketToken?: Maybe<Scalars['String']>;
+  bitbucketBuildName?: Maybe<Scalars['String']>;
 };
 
 export type ProjectInput = {
@@ -544,12 +550,15 @@ export type HookResolvers<ContextType = any, ParentType extends ResolversParentT
   hookType?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   githubToken?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   githubContext?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  bitbucketUsername?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  bitbucketToken?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  bitbucketBuildName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type ProjectResolvers<ContextType = any, ParentType extends ResolversParentTypes['Project'] = ResolversParentTypes['Project']> = {
   projectId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  hooks?: Resolver<Maybe<Array<ResolversTypes['Hook']>>, ParentType, ContextType>;
+  hooks?: Resolver<Array<ResolversTypes['Hook']>, ParentType, ContextType>;
   inactivityTimeoutSeconds?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };

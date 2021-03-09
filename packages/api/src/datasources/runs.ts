@@ -1,5 +1,4 @@
-import { Instance } from '@src/duplicatedFromDirector/instance.types';
-import { Run } from '@src/duplicatedFromDirector/run.types';
+import { Instance, Run } from '@sorry-cypress/common';
 import { OrderingOptions } from '@src/generated/graphql';
 import { getMongoDB, init, ObjectID } from '@src/lib/mongo';
 import {

@@ -1,12 +1,13 @@
+import { Project } from '@sorry-cypress/common';
 import { ProjectsAPI } from '@src/datasources/projects';
 import { RunsAPI } from '@src/datasources/runs';
 import { SpecsAPI } from '@src/datasources/specs';
 import { AppDatasources } from '@src/datasources/types';
-import { Project } from '@src/duplicatedFromDirector/project.types';
 import {
   InstanceTestUnion,
   InstanceTestV5,
   OrderingOptions,
+  ProjectInput,
 } from '@src/generated/graphql';
 import { GraphQLDateTime } from 'graphql-iso-date';
 
@@ -117,17 +118,17 @@ export const resolvers = {
     },
     createProject: (
       _: any,
-      { project }: { project: Project },
+      { project }: { project: ProjectInput },
       { dataSources }: { dataSources: AppDatasources }
     ) => dataSources.projectsAPI.createProject(project),
     updateProject: (
       _: any,
-      { project }: { project: Project },
+      { project }: { project: ProjectInput },
       { dataSources }: { dataSources: AppDatasources }
     ) => dataSources.projectsAPI.updateProject(project),
     deleteProject: async (
       _: any,
-      { projectId }: Project,
+      { projectId }: { projectId: Project['projectId'] },
       { dataSources }: { dataSources: AppDatasources }
     ) => {
       const runsMatchingProjectResponse = await dataSources.runsAPI.getAllRuns({

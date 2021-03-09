@@ -51,22 +51,28 @@ type Hook {
   hookType: String
   githubToken: String
   githubContext: String
+  bitbucketUsername: String
+  bitbucketToken: String
+  bitbucketBuildName: String
 }
 
 type Project {
   projectId: String!
-  hooks: [Hook!]
+  hooks: [Hook!]!
   inactivityTimeoutSeconds: Int
 }
 
 input HookInput {
   hookId: String
-  url: String
+  url: String!
   headers: String
   hookEvents: [String]
   hookType: String
   githubToken: String
   githubContext: String
+  bitbucketUsername: String
+  bitbucketToken: String
+  bitbucketBuildName: String
 }
 
 input ProjectInput {

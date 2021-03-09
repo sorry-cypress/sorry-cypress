@@ -9,6 +9,8 @@ query getProject($projectId: ID!) {
       hookEvents
       hookType
       githubContext
+      bitbucketUsername
+      bitbucketBuildName
     }
   }
 }

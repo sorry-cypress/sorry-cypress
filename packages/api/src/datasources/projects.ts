@@ -1,77 +1,33 @@
-import { hookTypes } from '@src/duplicatedFromDirector/hooksEnums';
-import { Project } from '@src/duplicatedFromDirector/project.types';
-import { getMongoDB, init } from '@src/lib/mongo';
-
 import {
-  getSortByAggregation,
-  filtersToAggregations,
+  BitBucketHook,
+  GithubHook,
+  Hook,
+  isBitbucketHook,
+  isGenericHook,
+  isGithubHook,
+  isSlackHook,
+} from '@sorry-cypress/common';
+import {
+  HookInput,
+  OrderingOptions,
+  Project,
+  ProjectInput,
+} from '@src/generated/graphql';
+import { getProjectsCollection, init } from '@src/lib/mongo';
+import {
   AggregationFilter,
+  filtersToAggregations,
+  getSortByAggregation,
 } from '@src/lib/query';
 import { DataSource } from 'apollo-datasource';
-import { v4 as uuid } from 'uuid';
-import { negate, isNil } from 'lodash';
-import { OrderingOptions } from '@src/generated/graphql';
+import { isNil, negate, pick } from 'lodash';
 import plur from 'plur';
-
-const addHookIdsToProjectHooks = (project: Project) => {
-  if (!project?.hooks) {
-    return project;
-  }
-
-  project.hooks = project.hooks.map((hook) => {
-    hook.hookId = hook.hookId || uuid();
-    return hook;
-  });
-
-  return project;
-};
-
-const removeUnusedHookDataFromProject = (project: Project) => {
-  if (!project?.hooks) {
-    return project;
-  }
-
-  project.hooks = project.hooks.map((hook) => {
-    if (hook.hookType === hookTypes.GENERIC_HOOK) {
-      delete hook.githubToken;
-      delete hook.githubContext;
-    }
-    if (hook.hookType === hookTypes.GITHUB_STATUS_HOOK) {
-      delete hook.headers;
-      delete hook.hookEvents;
-    }
-    return hook;
-  });
-
-  return project;
-};
-
-const restoreGithubTokensOnGithubHooks = async (
-  updatedProject: Project,
-  getProjectById: ProjectsAPI['getProjectById']
-) => {
-  const oldProject = await getProjectById(updatedProject.projectId);
-
-  // This is to ensure that we keep github tokens when the user only updaing the url
-  if (updatedProject?.hooks) {
-    updatedProject.hooks = updatedProject.hooks.map((hook) => {
-      if (!hook.githubToken) {
-        const oldhook = oldProject?.hooks?.find(
-          (oldHook) => oldHook.hookId === hook.hookId
-        );
-        if (oldhook?.githubToken) {
-          hook.githubToken = oldhook.githubToken;
-        }
-      }
-      return hook;
-    });
-  }
-  return updatedProject;
-};
+import { v4 as uuid } from 'uuid';
 
 interface IProjectsAPI extends DataSource {
   getProjectById(id: string): Promise<Project | undefined>;
-  createProject(project: Project): Promise<Project>;
+  createProject(project: ProjectInput): Promise<Project>;
+  updateProject(project: ProjectInput): Promise<Project>;
   getProjects({
     orderDirection,
     filters,
@@ -80,45 +36,52 @@ interface IProjectsAPI extends DataSource {
     filters: AggregationFilter[];
   }): Promise<Project[]>;
 }
+
 export class ProjectsAPI extends DataSource implements IProjectsAPI {
   async initialize() {
     await init();
   }
 
   async getProjectById(id: string) {
-    const result = getMongoDB()
-      .collection('projects')
-      .aggregate<Project>([
-        {
-          $match: {
-            projectId: id,
-          },
+    const result = await getProjectsCollection().aggregate<Project>([
+      {
+        $match: {
+          projectId: id,
         },
-      ]);
+      },
+    ]);
 
     return (await result.toArray()).pop();
   }
 
-  async createProject(project: Project) {
-    project = addHookIdsToProjectHooks(project);
-    project = removeUnusedHookDataFromProject(project);
-    await getMongoDB().collection('projects').insertOne(project);
-    // this needs sanitization and validation it would be great to share the logic between director and the api.
-    // its hard to do with the seperate yarn workspaces.
-    return project;
+  async createProject(projectInput: ProjectInput) {
+    if (!projectInput.projectId) {
+      throw new Error('Missing projectId');
+    }
+
+    try {
+      const project = getCreateProjectValue(projectInput);
+      await getProjectsCollection().insertOne(project);
+      return project;
+    } catch (error) {
+      if (error.code && error.code === 11000) {
+        throw new Error('Duplicate projectId');
+      }
+      throw error;
+    }
   }
 
-  async updateProject(project: Project) {
-    project = addHookIdsToProjectHooks(project);
-    project = removeUnusedHookDataFromProject(project);
-    project = await restoreGithubTokensOnGithubHooks(
-      project,
-      this.getProjectById
+  async updateProject(projectInput: ProjectInput) {
+    const project = getUpdateProjectValue(
+      projectInput,
+      await this.getProjectById(projectInput.projectId)
     );
 
-    await getMongoDB()
-      .collection('projects')
-      .replaceOne({ projectId: project.projectId }, project);
+    await getProjectsCollection().replaceOne(
+      { projectId: project.projectId },
+      project
+    );
+
     return project;
   }
 
@@ -134,8 +97,7 @@ export class ProjectsAPI extends DataSource implements IProjectsAPI {
       getSortByAggregation(orderDirection),
     ].filter(negate(isNil));
 
-    const results = await getMongoDB()
-      .collection<Project>('projects')
+    const results = await getProjectsCollection()
       .aggregate(aggregationPipeline)
       .toArray();
 
@@ -143,13 +105,11 @@ export class ProjectsAPI extends DataSource implements IProjectsAPI {
   }
 
   async deleteProjectsByIds(projectIds: string[]) {
-    const projectResult = await getMongoDB()
-      .collection<Project>('projects')
-      .deleteMany({
-        projectId: {
-          $in: projectIds,
-        },
-      });
+    const projectResult = await getProjectsCollection().deleteMany({
+      projectId: {
+        $in: projectIds,
+      },
+    });
     return {
       success: projectResult.result.ok === 1,
       message: `Deleted ${projectResult.deletedCount} ${plur(
@@ -160,3 +120,106 @@ export class ProjectsAPI extends DataSource implements IProjectsAPI {
     };
   }
 }
+
+export function getUpdateProjectValue(
+  projectInput: ProjectInput,
+  originalProject: Project
+) {
+  return {
+    ...projectInput,
+    hooks: projectInput.hooks
+      .map(removeSensitiveData)
+      .map(addHookId)
+      .map((hook) => restoreSensitiveData(hook, originalProject)),
+  } as Project;
+}
+
+export function getCreateProjectValue(projectInput: ProjectInput) {
+  return {
+    projectId: projectInput.projectId.trim(),
+    hooks: projectInput.hooks
+      .map(addHookId)
+      .map(removeSensitiveData) as HookInputWithId[],
+    createdAt: new Date().toString(),
+    inactivityTimeoutSeconds: projectInput.inactivityTimeoutSeconds ?? 180,
+  } as Project;
+}
+type HookInputWithId = HookInput & { hookId: string };
+
+const addHookId = (hook: HookInput): HookInputWithId => ({
+  ...hook,
+  hookId: hook.hookId || uuid(),
+});
+
+export const genericHookFields = [
+  'hookId',
+  'url',
+  'hookType',
+  'headers',
+  'hookEvents',
+];
+export const githubHookFields = [
+  'hookId',
+  'url',
+  'hookType',
+  'githubToken',
+  'githubContext',
+];
+export const bitbucketHookFields = [
+  'hookId',
+  'url',
+  'hookType',
+  'bitbucketUsername',
+  'bitbucketToken',
+  'bitbucketBuildName',
+];
+export const slackHookFields = ['hookId', 'url', 'hookType', 'hookEvents'];
+
+// Only keep specific data
+const removeSensitiveData = (hook: HookInput) => {
+  switch (true) {
+    case isGenericHook(hook as Hook):
+      return pick(hook, genericHookFields);
+    case isGithubHook(hook as Hook):
+      return pick(hook, githubHookFields);
+    case isBitbucketHook(hook as Hook):
+      return pick(hook, bitbucketHookFields);
+    case isSlackHook(hook as Hook):
+      return pick(hook, slackHookFields);
+    default:
+      return hook;
+  }
+};
+
+// Restore sensitive data when updating hooks
+const restoreSensitiveData = (
+  hook: HookInput & { hookId: string },
+  originalProject: Project
+) => {
+  const originalHook = originalProject.hooks.find(
+    (i) => i.hookId === hook.hookId
+  );
+  if (!originalHook) {
+    return hook;
+  }
+  switch (true) {
+    case isGithubHook(hook as Hook):
+      return {
+        ...hook,
+
+        githubToken:
+          hook.githubToken ?? (originalHook as GithubHook).githubToken,
+      };
+    case isBitbucketHook(hook as Hook):
+      return {
+        ...hook,
+        bitbucketToken:
+          hook.bitbucketToken ?? (originalHook as BitBucketHook).bitbucketToken,
+        bitbucketUsername:
+          hook.bitbucketUsername ??
+          (originalHook as BitBucketHook).bitbucketUsername,
+      };
+    default:
+      return { ...hook };
+  }
+};

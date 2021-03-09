@@ -1,6 +1,7 @@
 import {
   getRunSummary,
   HookEvent,
+  isBitbucketHook,
   isGenericHook,
   isGithubHook,
   isSlackHook,
@@ -8,6 +9,7 @@ import {
   RunWithSpecs,
 } from '@sorry-cypress/common';
 import { compact } from 'lodash';
+import { reportStatusToBitbucket } from './bitbucket';
 import { reportToGenericWebHook } from './generic';
 import { reportStatusToGithub } from './github';
 import { reportToSlack } from './slack';
@@ -48,6 +50,16 @@ export function reportToHook({
       if (isGenericHook(hook)) {
         reportToGenericWebHook({
           hook,
+          runId: run.runId,
+          runSummary,
+          hookEvent,
+        });
+      }
+
+      if (isBitbucketHook(hook)) {
+        return reportStatusToBitbucket({
+          hook,
+          sha: run.meta.commit.sha,
           runId: run.runId,
           runSummary,
           hookEvent,

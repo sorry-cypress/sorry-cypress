@@ -1,6 +1,6 @@
-import { GithubHook, hookEvents, RunSummary } from '@sorry-cypress/common';
-import axios from 'axios';
+import { GithubHook, HookEvent, RunSummary } from '@sorry-cypress/common';
 import { getDashboardRunURL } from '@src/lib/urls';
+import axios from 'axios';
 
 const getGithubHookUrl = (url: string, sha: string) => {
   const GITHUB_COM_DOMAIN = 'github.com';
@@ -37,15 +37,15 @@ export async function reportStatusToGithub({
     context: hook.githubContext || 'Sorry-Cypress-Tests',
   };
 
-  if (hookEvent === hookEvents.RUN_START) {
+  if (hookEvent === HookEvent.RUN_START) {
     data.state = 'pending';
   }
 
-  if (hookEvent === hookEvents.INSTANCE_FINISH) {
+  if (hookEvent === HookEvent.INSTANCE_FINISH) {
     data.state = 'pending';
   }
 
-  if (hookEvent === hookEvents.RUN_FINISH) {
+  if (hookEvent === HookEvent.RUN_FINISH) {
     await new Promise((resolve) => {
       setTimeout(() => {
         resolve(null);

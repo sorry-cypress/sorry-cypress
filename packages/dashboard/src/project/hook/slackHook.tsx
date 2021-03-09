@@ -1,5 +1,6 @@
 import { SlackHook as SlackHookType } from '@sorry-cypress/common';
-import { Icon, TextField, Tooltip } from 'bold-ui';
+import { InputFieldLabel } from '@src/components';
+import { Cell, Grid, TextField } from 'bold-ui';
 import React from 'react';
 import { EditHookEvents } from './editHookEvents';
 import { HookFormAction } from './hookFormReducer';
@@ -11,15 +12,10 @@ interface SlackHookProps {
   dispatch: React.Dispatch<HookFormAction>;
 }
 export const SlackHook = ({ hook, disabled, dispatch }: SlackHookProps) => (
-  <>
-    <div
-      style={{
-        marginBottom: '20px',
-        position: 'relative',
-      }}
-    >
-      <TextField
-        name="url"
+  <Grid>
+    <Cell xs={12}>
+      <InputFieldLabel
+        helpText="Incoming webhook URL. https://api.slack.com/messaging/webhooks"
         label={
           <span>
             Incoming webhook URL &nbsp;
@@ -32,34 +28,28 @@ export const SlackHook = ({ hook, disabled, dispatch }: SlackHookProps) => (
             </a>
           </span>
         }
-        placeholder="Enter your Incoming Webhook URL"
-        value={hook.url}
-        onChange={(e) => {
-          dispatch({
-            type: 'SET_HOOK_FIELD',
-            payload: {
-              hookId: hook.hookId,
-              data: {
-                url: e.target.value,
-              },
-            },
-          });
-        }}
-        disabled={disabled}
         required
-      />
-      <div
-        style={{
-          position: 'absolute',
-          right: '-71px',
-          top: '29px',
-        }}
+        htmlFor="url"
       >
-        <Tooltip text="Incoming webhook URL. https://api.slack.com/messaging/webhooks">
-          <Icon icon="infoCircleOutline" />
-        </Tooltip>
-      </div>
-    </div>
+        <TextField
+          name="url"
+          placeholder="Enter your Incoming Webhook URL"
+          value={hook.url}
+          onChange={(e) => {
+            dispatch({
+              type: 'SET_HOOK_FIELD',
+              payload: {
+                hookId: hook.hookId,
+                data: {
+                  url: e.target.value,
+                },
+              },
+            });
+          }}
+          disabled={disabled}
+        />
+      </InputFieldLabel>
+    </Cell>
     <EditHookEvents dispatch={dispatch} hook={hook} disabled={disabled} />
-  </>
+  </Grid>
 );

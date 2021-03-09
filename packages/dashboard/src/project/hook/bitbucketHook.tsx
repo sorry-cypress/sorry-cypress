@@ -1,16 +1,20 @@
-import { GithubHook as GithubHookType } from '@sorry-cypress/common';
+import { BitBucketHook as BitbucketHookType } from '@sorry-cypress/common';
 import { InputFieldLabel } from '@src/components';
 import { useSwitch } from '@src/hooks/useSwitch';
 import { Cell, Grid, TextField } from 'bold-ui';
 import React from 'react';
 import { HookFormAction } from './hookFormReducer';
 
-interface GithubHookPros {
-  hook: GithubHookType;
+interface BitbucketHookPros {
+  hook: BitbucketHookType;
   disabled: boolean;
   dispatch: React.Dispatch<HookFormAction>;
 }
-export const GithubHook = ({ hook, disabled, dispatch }: GithubHookPros) => {
+export const BitbucketHook = ({
+  hook,
+  disabled,
+  dispatch,
+}: BitbucketHookPros) => {
   const isNewHook = !hook.hookId;
   const [showToken, toggleToken] = useSwitch();
 
@@ -18,14 +22,15 @@ export const GithubHook = ({ hook, disabled, dispatch }: GithubHookPros) => {
     <Grid>
       <Cell xs={12}>
         <InputFieldLabel
-          helpText="This is the GitHub repository URL, e.g. https://github.com/sorry-cypress/sorry-cypress"
           label="URL"
           htmlFor="url"
           required
+          helpText="This is the Bitbucket repository URL, e.g. https://bitbucket.org/sorry-cypress/sorry-cypress"
         >
           <TextField
             name="url"
-            placeholder="Enter your GitHub repo URL"
+            clearable
+            placeholder="Enter your Bitbucket repo URL"
             value={hook.url}
             onChange={(e) => {
               dispatch({
@@ -42,43 +47,24 @@ export const GithubHook = ({ hook, disabled, dispatch }: GithubHookPros) => {
           />
         </InputFieldLabel>
       </Cell>
+
       <Cell xs={12}>
         <InputFieldLabel
-          helpText="Your private GriHub token. Once this token is saved you will not be able to see it again. You will alwayse be able to update it."
-          label={
-            <span>
-              Github Token &nbsp;
-              <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href="https://github.com/settings/tokens/new?scopes=repo&description=Sorry-cypress-status"
-              >
-                (Create One)
-              </a>
-            </span>
-          }
-          htmlFor="githubToken"
           required={isNewHook}
+          label="Bitbucket&nbsp;Username"
+          htmlFor="bitbucketUser"
         >
           <TextField
-            autoComplete="off"
-            icon={showToken ? 'eyeFilled' : 'eyeHiddenFilled'}
-            onIconClick={() => toggleToken()}
-            name="githubToken"
-            type={showToken ? 'text' : 'password'}
-            placeholder={
-              isNewHook
-                ? 'Enter a github token with repo:status access.'
-                : 'Using a previously saved token. You may enter a new one.'
-            }
-            value={hook.githubToken}
+            name="bitbucketUser"
+            placeholder={'Enter Bitbucket username'}
+            value={hook.bitbucketUsername}
             onChange={(e) =>
               dispatch({
                 type: 'SET_HOOK_FIELD',
                 payload: {
                   hookId: hook.hookId,
                   data: {
-                    githubToken: e.target.value.trim(),
+                    bitbucketUsername: e.target.value.trim(),
                   },
                 },
               })
@@ -87,23 +73,71 @@ export const GithubHook = ({ hook, disabled, dispatch }: GithubHookPros) => {
           />
         </InputFieldLabel>
       </Cell>
+
       <Cell xs={12}>
         <InputFieldLabel
-          helpText='Status label in GitHub to differentiate this project status from others. Default value is "Sorry-Cypress-Tests"'
-          label="Status Label"
-          htmlFor="githubContext"
+          required={isNewHook}
+          label={
+            <span>
+              Bitbucket&nbsp;App&nbsp;Password&nbsp;
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://bitbucket.org/account/settings/app-passwords/"
+              >
+                (Create One)
+              </a>
+            </span>
+          }
+          htmlFor="bitbucketToken"
+          helpText="You will need to generate this token on bitbucket. Once this token is saved you will not be able to see it again. You will alwayse be able to update it."
         >
           <TextField
-            name="githubContext"
-            placeholder="Enter custom string to differentiate this status from others"
-            value={hook.githubContext}
+            autoComplete="off"
+            icon={showToken ? 'eyeFilled' : 'eyeHiddenFilled'}
+            onIconClick={() => toggleToken()}
+            name="bitbucketToken"
+            type={showToken ? 'text' : 'password'}
+            placeholder={
+              isNewHook
+                ? 'Enter a bitbucket Personal token with repo:status write access.'
+                : 'Using a previously saved token. You may enter a new one.'
+            }
+            value={hook.bitbucketToken}
             onChange={(e) =>
               dispatch({
                 type: 'SET_HOOK_FIELD',
                 payload: {
                   hookId: hook.hookId,
                   data: {
-                    githubContext: e.target.value.trim(),
+                    bitbucketToken: e.target.value.trim(),
+                  },
+                },
+              })
+            }
+            disabled={disabled}
+            required={isNewHook}
+          />
+        </InputFieldLabel>
+      </Cell>
+
+      <Cell xs={12}>
+        <InputFieldLabel
+          label="Bitbucket Build Name"
+          htmlFor="bitbucketBuildName"
+          helpText='This string will be used as a build name in Bitbucket. Default value is "sorry-cypress".'
+        >
+          <TextField
+            name="bitbucketBuildName"
+            placeholder="Enter custom string to differentiate this status from others"
+            value={hook.bitbucketBuildName}
+            onChange={(e) =>
+              dispatch({
+                type: 'SET_HOOK_FIELD',
+                payload: {
+                  hookId: hook.hookId,
+                  data: {
+                    bitbucketBuildName: e.target.value.trim(),
                   },
                 },
               })

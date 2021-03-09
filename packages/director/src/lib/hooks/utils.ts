@@ -1,6 +1,13 @@
-import { Hook, HookEvent, isGithubHook } from '@sorry-cypress/common';
+import {
+  HookEvent,
+  HookWithCustomEvents,
+  isGithubHook,
+} from '@sorry-cypress/common';
 
-export function shouldHookHandleEvent(event: HookEvent, hook: Hook) {
+export function shouldHookHandleEvent(
+  event: HookEvent,
+  hook: HookWithCustomEvents
+) {
   if (isGithubHook(hook)) {
     return true;
   }
