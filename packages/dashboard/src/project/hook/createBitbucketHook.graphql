@@ -1,0 +1,10 @@
+mutation createBitbucketHook($input: CreateBitbucketHookInput!) {
+  createBitbucketHook(input: $input) {
+    projectId
+    hookId
+    hookType
+    url
+    bitbucketUsername
+    bitbucketBuildName
+  }
+}

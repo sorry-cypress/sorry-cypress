@@ -1,17 +1,6 @@
-mutation createProject($project: ProjectInput) {
+mutation createProject($project: CreateProjectInput!) {
   createProject(project: $project) {
     projectId
-    hooks {
-      hookId
-      url
-      headers
-      hookEvents
-      hookType
-      githubContext
-      githubToken
-      bitbucketUsername
-      bitbucketToken
-      bitbucketBuildName
-    }
+    inactivityTimeoutSeconds
   }
 }

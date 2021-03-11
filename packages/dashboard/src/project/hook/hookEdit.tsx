@@ -1,16 +1,16 @@
 import styled from '@emotion/styled';
 import {
   Hook,
-  HookType,
   isBitbucketHook,
   isGenericHook,
   isGithubHook,
   isSlackHook,
 } from '@sorry-cypress/common';
-import { InputFieldLabel } from '@src/components';
+import { useDeleteHookMutation } from '@src/generated/graphql';
 import { useSwitch } from '@src/hooks/useSwitch';
-import { Button, Cell, Grid, HFlow, Icon, Select, Text } from 'bold-ui';
+import { Button, Cell, Grid, HFlow, Icon, Text } from 'bold-ui';
 import React from 'react';
+import { useRouteMatch } from 'react-router';
 import { BitbucketHook } from './bitbucketHook';
 import { GenericHook } from './genericHook';
 import { GithubHook } from './githubHook';
@@ -40,21 +40,58 @@ const Toggler = ({ toggleExpanded, isExpanded, title }: any) => {
 export const HookEdit = ({
   hook,
   dispatch,
-  disabled,
+  disabled = false,
 }: {
   hook: Hook;
   dispatch: React.Dispatch<HookFormAction>;
-  disabled: boolean;
+  disabled?: boolean;
 }) => {
   const [isExpanded, toggleExpanded] = useSwitch();
+  const {
+    params: { projectId },
+  } = useRouteMatch<{ projectId: string }>();
+  const [sendDeleteHook] = useDeleteHookMutation();
+
+  async function deleteHook(hookId: string) {
+    try {
+      await sendDeleteHook({
+        variables: {
+          input: {
+            projectId,
+            hookId,
+          },
+        },
+      });
+
+      dispatch({
+        type: 'REMOVE_HOOK',
+        payload: {
+          hookId,
+        },
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
   return (
     <>
-      <HFlow justifyContent="space-between">
+      <HFlow justifyContent="space-between" alignItems="center">
         <Toggler
           toggleExpanded={toggleExpanded}
           isExpanded={isExpanded}
-          title={hook.url || 'New Hook'}
+          title={`${hookTypeToString(hook.hookType)}: ${
+            hook.url || 'New Hook'
+          }`}
         />
+        <Button
+          kind="danger"
+          skin="ghost"
+          size="small"
+          disabled={disabled}
+          onClick={() => deleteHook(hook.hookId)}
+        >
+          Remove
+        </Button>
       </HFlow>
       {isExpanded && (
         <HookDetails hook={hook} disabled={disabled} dispatch={dispatch} />
@@ -75,35 +112,10 @@ const HookDetails = ({
   return (
     <Grid style={{ padding: '1rem' }}>
       <Cell xs={12}>
-        <InputFieldLabel label="Hook Type" htmlFor="hookType">
-          <Select
-            itemToString={hookTypeToString}
-            items={Object.keys(HookType)}
-            name="hookType"
-            onChange={(value: HookType) => {
-              dispatch({
-                type: 'SET_HOOK_FIELD',
-                payload: {
-                  hookId: hook.hookId,
-                  data: {
-                    hookType: value,
-                  },
-                },
-              });
-            }}
-            value={hook.hookType}
-            clearable={false}
-          />
-        </InputFieldLabel>
-      </Cell>
-
-      <Cell xs={12}>
         {isGithubHook(hook) && (
           <GithubHook hook={hook} dispatch={dispatch} disabled={disabled} />
         )}
-        {isGenericHook(hook) && (
-          <GenericHook dispatch={dispatch} disabled={disabled} hook={hook} />
-        )}
+        {isGenericHook(hook) && <GenericHook dispatch={dispatch} hook={hook} />}
         {isSlackHook(hook) && (
           <SlackHook dispatch={dispatch} disabled={disabled} hook={hook} />
         )}
@@ -111,23 +123,8 @@ const HookDetails = ({
           <BitbucketHook dispatch={dispatch} disabled={disabled} hook={hook} />
         )}
       </Cell>
-      <Cell xs={12} style={{ textAlign: 'right' }}>
-        <Button
-          kind="danger"
-          skin="ghost"
-          size="small"
-          disabled={disabled}
-          onClick={() => {
-            dispatch({
-              type: 'REMOVE_HOOK',
-              payload: {
-                hookId: hook.hookId,
-              },
-            });
-          }}
-        >
-          Remove Hook
-        </Button>
+      <Cell xs={12}>
+        <HFlow justifyContent="space-between"></HFlow>
       </Cell>
     </Grid>
   );

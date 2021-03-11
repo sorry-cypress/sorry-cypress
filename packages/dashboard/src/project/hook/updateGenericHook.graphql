@@ -1,0 +1,5 @@
+mutation updateGenericHook($input: UpdateGenericHookInput!) {
+  updateGenericHook(input: $input) {
+    hookId
+  }
+}

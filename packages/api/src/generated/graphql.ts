@@ -10,6 +10,10 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  GenericHookType: any;
+  SlackHookType: any;
+  GithubHookType: any;
+  BitbucketHookType: any;
   DateTime: any;
 };
 
@@ -72,6 +76,15 @@ export type Mutation = {
   deleteProject: DeleteProjectResponse;
   createProject: Project;
   updateProject: Project;
+  createGenericHook: GenericHook;
+  updateGenericHook: GenericHook;
+  createBitbucketHook: BitbucketHook;
+  updateBitbucketHook: BitbucketHook;
+  createGithubHook: GithubHook;
+  updateGithubHook: GithubHook;
+  createSlackHook: SlackHook;
+  updateSlackHook: SlackHook;
+  deleteHook: DeleteHookResponse;
 };
 
 
@@ -97,12 +110,57 @@ export type MutationDeleteProjectArgs = {
 
 
 export type MutationCreateProjectArgs = {
-  project?: Maybe<ProjectInput>;
+  project: CreateProjectInput;
 };
 
 
 export type MutationUpdateProjectArgs = {
-  project?: Maybe<ProjectInput>;
+  input: UpdateProjectInput;
+};
+
+
+export type MutationCreateGenericHookArgs = {
+  input: CreateGenericHookInput;
+};
+
+
+export type MutationUpdateGenericHookArgs = {
+  input: UpdateGenericHookInput;
+};
+
+
+export type MutationCreateBitbucketHookArgs = {
+  input: CreateBitbucketHookInput;
+};
+
+
+export type MutationUpdateBitbucketHookArgs = {
+  input: UpdateBitbucketHookInput;
+};
+
+
+export type MutationCreateGithubHookArgs = {
+  input: CreateGithubHookInput;
+};
+
+
+export type MutationUpdateGithubHookArgs = {
+  input: UpdateGithubHookInput;
+};
+
+
+export type MutationCreateSlackHookArgs = {
+  input: CreateSlackHookInput;
+};
+
+
+export type MutationUpdateSlackHookArgs = {
+  input: UpdateSlackHookInput;
+};
+
+
+export type MutationDeleteHookArgs = {
+  input: DeleteHookInput;
 };
 
 export type DeleteRunResponse = {
@@ -117,6 +175,109 @@ export type SpecStats = {
   spec: Scalars['String'];
   avgWallClockDuration: Scalars['Int'];
   count: Scalars['Int'];
+};
+
+
+
+
+
+export type DeleteHookInput = {
+  projectId: Scalars['ID'];
+  hookId: Scalars['ID'];
+};
+
+export type DeleteHookResponse = {
+  __typename?: 'DeleteHookResponse';
+  projectId: Scalars['ID'];
+  hookId: Scalars['ID'];
+};
+
+export type SlackHook = {
+  __typename?: 'SlackHook';
+  projectId: Scalars['ID'];
+  hookId: Scalars['ID'];
+  url: Scalars['String'];
+  hookType: Scalars['SlackHookType'];
+  hookEvents: Array<Scalars['String']>;
+};
+
+export type CreateSlackHookInput = {
+  projectId: Scalars['ID'];
+};
+
+export type UpdateSlackHookInput = {
+  projectId: Scalars['ID'];
+  hookId: Scalars['ID'];
+  url: Scalars['String'];
+  hookEvents: Array<Scalars['String']>;
+};
+
+export type GithubHook = {
+  __typename?: 'GithubHook';
+  projectId: Scalars['ID'];
+  hookId: Scalars['ID'];
+  url: Scalars['String'];
+  hookType: Scalars['GithubHookType'];
+  githubToken?: Maybe<Scalars['String']>;
+  githubContext?: Maybe<Scalars['String']>;
+};
+
+export type CreateGithubHookInput = {
+  projectId: Scalars['ID'];
+};
+
+export type UpdateGithubHookInput = {
+  projectId: Scalars['ID'];
+  hookId: Scalars['ID'];
+  url: Scalars['String'];
+  githubToken?: Maybe<Scalars['String']>;
+  githubContext?: Maybe<Scalars['String']>;
+};
+
+export type BitbucketHook = {
+  __typename?: 'BitbucketHook';
+  projectId: Scalars['ID'];
+  hookId: Scalars['ID'];
+  url: Scalars['String'];
+  hookType: Scalars['BitbucketHookType'];
+  bitbucketUsername?: Maybe<Scalars['String']>;
+  bitbucketToken?: Maybe<Scalars['String']>;
+  bitbucketBuildName?: Maybe<Scalars['String']>;
+};
+
+export type CreateBitbucketHookInput = {
+  projectId: Scalars['ID'];
+};
+
+export type UpdateBitbucketHookInput = {
+  projectId: Scalars['ID'];
+  hookId: Scalars['ID'];
+  url?: Maybe<Scalars['String']>;
+  bitbucketUsername: Scalars['String'];
+  bitbucketToken?: Maybe<Scalars['String']>;
+  bitbucketBuildName?: Maybe<Scalars['String']>;
+};
+
+export type GenericHook = {
+  __typename?: 'GenericHook';
+  projectId: Scalars['ID'];
+  hookId: Scalars['ID'];
+  url: Scalars['String'];
+  headers?: Maybe<Scalars['String']>;
+  hookType: Scalars['GenericHookType'];
+  hookEvents: Array<Scalars['String']>;
+};
+
+export type CreateGenericHookInput = {
+  projectId: Scalars['ID'];
+};
+
+export type UpdateGenericHookInput = {
+  projectId: Scalars['ID'];
+  hookId: Scalars['ID'];
+  url: Scalars['String'];
+  headers?: Maybe<Scalars['String']>;
+  hookEvents: Array<Scalars['String']>;
 };
 
 export type Hook = {
@@ -135,7 +296,7 @@ export type Hook = {
 
 export type Project = {
   __typename?: 'Project';
-  projectId: Scalars['String'];
+  projectId: Scalars['ID'];
   hooks: Array<Hook>;
   inactivityTimeoutSeconds?: Maybe<Scalars['Int']>;
 };
@@ -151,6 +312,16 @@ export type HookInput = {
   bitbucketUsername?: Maybe<Scalars['String']>;
   bitbucketToken?: Maybe<Scalars['String']>;
   bitbucketBuildName?: Maybe<Scalars['String']>;
+};
+
+export type CreateProjectInput = {
+  projectId: Scalars['ID'];
+  inactivityTimeoutSeconds: Scalars['Int'];
+};
+
+export type UpdateProjectInput = {
+  projectId: Scalars['ID'];
+  inactivityTimeoutSeconds: Scalars['Int'];
 };
 
 export type ProjectInput = {
@@ -441,9 +612,29 @@ export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   SpecStats: ResolverTypeWrapper<SpecStats>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
+  GenericHookType: ResolverTypeWrapper<Scalars['GenericHookType']>;
+  SlackHookType: ResolverTypeWrapper<Scalars['SlackHookType']>;
+  GithubHookType: ResolverTypeWrapper<Scalars['GithubHookType']>;
+  BitbucketHookType: ResolverTypeWrapper<Scalars['BitbucketHookType']>;
+  DeleteHookInput: DeleteHookInput;
+  DeleteHookResponse: ResolverTypeWrapper<DeleteHookResponse>;
+  SlackHook: ResolverTypeWrapper<SlackHook>;
+  CreateSlackHookInput: CreateSlackHookInput;
+  UpdateSlackHookInput: UpdateSlackHookInput;
+  GithubHook: ResolverTypeWrapper<GithubHook>;
+  CreateGithubHookInput: CreateGithubHookInput;
+  UpdateGithubHookInput: UpdateGithubHookInput;
+  BitbucketHook: ResolverTypeWrapper<BitbucketHook>;
+  CreateBitbucketHookInput: CreateBitbucketHookInput;
+  UpdateBitbucketHookInput: UpdateBitbucketHookInput;
+  GenericHook: ResolverTypeWrapper<GenericHook>;
+  CreateGenericHookInput: CreateGenericHookInput;
+  UpdateGenericHookInput: UpdateGenericHookInput;
   Hook: ResolverTypeWrapper<Hook>;
   Project: ResolverTypeWrapper<Project>;
   HookInput: HookInput;
+  CreateProjectInput: CreateProjectInput;
+  UpdateProjectInput: UpdateProjectInput;
   ProjectInput: ProjectInput;
   DeleteProjectResponse: ResolverTypeWrapper<DeleteProjectResponse>;
   Run: ResolverTypeWrapper<Run>;
@@ -481,9 +672,29 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
   SpecStats: SpecStats;
   Int: Scalars['Int'];
+  GenericHookType: Scalars['GenericHookType'];
+  SlackHookType: Scalars['SlackHookType'];
+  GithubHookType: Scalars['GithubHookType'];
+  BitbucketHookType: Scalars['BitbucketHookType'];
+  DeleteHookInput: DeleteHookInput;
+  DeleteHookResponse: DeleteHookResponse;
+  SlackHook: SlackHook;
+  CreateSlackHookInput: CreateSlackHookInput;
+  UpdateSlackHookInput: UpdateSlackHookInput;
+  GithubHook: GithubHook;
+  CreateGithubHookInput: CreateGithubHookInput;
+  UpdateGithubHookInput: UpdateGithubHookInput;
+  BitbucketHook: BitbucketHook;
+  CreateBitbucketHookInput: CreateBitbucketHookInput;
+  UpdateBitbucketHookInput: UpdateBitbucketHookInput;
+  GenericHook: GenericHook;
+  CreateGenericHookInput: CreateGenericHookInput;
+  UpdateGenericHookInput: UpdateGenericHookInput;
   Hook: Hook;
   Project: Project;
   HookInput: HookInput;
+  CreateProjectInput: CreateProjectInput;
+  UpdateProjectInput: UpdateProjectInput;
   ProjectInput: ProjectInput;
   DeleteProjectResponse: DeleteProjectResponse;
   Run: Run;
@@ -524,8 +735,17 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteRuns?: Resolver<ResolversTypes['DeleteRunResponse'], ParentType, ContextType, RequireFields<MutationDeleteRunsArgs, 'runIds'>>;
   deleteRunsInDateRange?: Resolver<ResolversTypes['DeleteRunResponse'], ParentType, ContextType, RequireFields<MutationDeleteRunsInDateRangeArgs, 'startDate' | 'endDate'>>;
   deleteProject?: Resolver<ResolversTypes['DeleteProjectResponse'], ParentType, ContextType, RequireFields<MutationDeleteProjectArgs, 'projectId'>>;
-  createProject?: Resolver<ResolversTypes['Project'], ParentType, ContextType, RequireFields<MutationCreateProjectArgs, never>>;
-  updateProject?: Resolver<ResolversTypes['Project'], ParentType, ContextType, RequireFields<MutationUpdateProjectArgs, never>>;
+  createProject?: Resolver<ResolversTypes['Project'], ParentType, ContextType, RequireFields<MutationCreateProjectArgs, 'project'>>;
+  updateProject?: Resolver<ResolversTypes['Project'], ParentType, ContextType, RequireFields<MutationUpdateProjectArgs, 'input'>>;
+  createGenericHook?: Resolver<ResolversTypes['GenericHook'], ParentType, ContextType, RequireFields<MutationCreateGenericHookArgs, 'input'>>;
+  updateGenericHook?: Resolver<ResolversTypes['GenericHook'], ParentType, ContextType, RequireFields<MutationUpdateGenericHookArgs, 'input'>>;
+  createBitbucketHook?: Resolver<ResolversTypes['BitbucketHook'], ParentType, ContextType, RequireFields<MutationCreateBitbucketHookArgs, 'input'>>;
+  updateBitbucketHook?: Resolver<ResolversTypes['BitbucketHook'], ParentType, ContextType, RequireFields<MutationUpdateBitbucketHookArgs, 'input'>>;
+  createGithubHook?: Resolver<ResolversTypes['GithubHook'], ParentType, ContextType, RequireFields<MutationCreateGithubHookArgs, 'input'>>;
+  updateGithubHook?: Resolver<ResolversTypes['GithubHook'], ParentType, ContextType, RequireFields<MutationUpdateGithubHookArgs, 'input'>>;
+  createSlackHook?: Resolver<ResolversTypes['SlackHook'], ParentType, ContextType, RequireFields<MutationCreateSlackHookArgs, 'input'>>;
+  updateSlackHook?: Resolver<ResolversTypes['SlackHook'], ParentType, ContextType, RequireFields<MutationUpdateSlackHookArgs, 'input'>>;
+  deleteHook?: Resolver<ResolversTypes['DeleteHookResponse'], ParentType, ContextType, RequireFields<MutationDeleteHookArgs, 'input'>>;
 };
 
 export type DeleteRunResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteRunResponse'] = ResolversParentTypes['DeleteRunResponse']> = {
@@ -539,6 +759,68 @@ export type SpecStatsResolvers<ContextType = any, ParentType extends ResolversPa
   spec?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   avgWallClockDuration?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export interface GenericHookTypeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['GenericHookType'], any> {
+  name: 'GenericHookType';
+}
+
+export interface SlackHookTypeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['SlackHookType'], any> {
+  name: 'SlackHookType';
+}
+
+export interface GithubHookTypeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['GithubHookType'], any> {
+  name: 'GithubHookType';
+}
+
+export interface BitbucketHookTypeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['BitbucketHookType'], any> {
+  name: 'BitbucketHookType';
+}
+
+export type DeleteHookResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteHookResponse'] = ResolversParentTypes['DeleteHookResponse']> = {
+  projectId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  hookId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type SlackHookResolvers<ContextType = any, ParentType extends ResolversParentTypes['SlackHook'] = ResolversParentTypes['SlackHook']> = {
+  projectId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  hookId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  hookType?: Resolver<ResolversTypes['SlackHookType'], ParentType, ContextType>;
+  hookEvents?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type GithubHookResolvers<ContextType = any, ParentType extends ResolversParentTypes['GithubHook'] = ResolversParentTypes['GithubHook']> = {
+  projectId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  hookId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  hookType?: Resolver<ResolversTypes['GithubHookType'], ParentType, ContextType>;
+  githubToken?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  githubContext?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type BitbucketHookResolvers<ContextType = any, ParentType extends ResolversParentTypes['BitbucketHook'] = ResolversParentTypes['BitbucketHook']> = {
+  projectId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  hookId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  hookType?: Resolver<ResolversTypes['BitbucketHookType'], ParentType, ContextType>;
+  bitbucketUsername?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  bitbucketToken?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  bitbucketBuildName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type GenericHookResolvers<ContextType = any, ParentType extends ResolversParentTypes['GenericHook'] = ResolversParentTypes['GenericHook']> = {
+  projectId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  hookId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  headers?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  hookType?: Resolver<ResolversTypes['GenericHookType'], ParentType, ContextType>;
+  hookEvents?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
@@ -557,7 +839,7 @@ export type HookResolvers<ContextType = any, ParentType extends ResolversParentT
 };
 
 export type ProjectResolvers<ContextType = any, ParentType extends ResolversParentTypes['Project'] = ResolversParentTypes['Project']> = {
-  projectId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  projectId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   hooks?: Resolver<Array<ResolversTypes['Hook']>, ParentType, ContextType>;
   inactivityTimeoutSeconds?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
@@ -751,6 +1033,15 @@ export type Resolvers<ContextType = any> = {
   Mutation?: MutationResolvers<ContextType>;
   DeleteRunResponse?: DeleteRunResponseResolvers<ContextType>;
   SpecStats?: SpecStatsResolvers<ContextType>;
+  GenericHookType?: GraphQLScalarType;
+  SlackHookType?: GraphQLScalarType;
+  GithubHookType?: GraphQLScalarType;
+  BitbucketHookType?: GraphQLScalarType;
+  DeleteHookResponse?: DeleteHookResponseResolvers<ContextType>;
+  SlackHook?: SlackHookResolvers<ContextType>;
+  GithubHook?: GithubHookResolvers<ContextType>;
+  BitbucketHook?: BitbucketHookResolvers<ContextType>;
+  GenericHook?: GenericHookResolvers<ContextType>;
   Hook?: HookResolvers<ContextType>;
   Project?: ProjectResolvers<ContextType>;
   DeleteProjectResponse?: DeleteProjectResponseResolvers<ContextType>;

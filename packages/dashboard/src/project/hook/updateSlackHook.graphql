@@ -1,0 +1,5 @@
+mutation updateSlackHook($input: UpdateSlackHookInput!) {
+  updateSlackHook(input: $input) {
+    hookId
+  }
+}

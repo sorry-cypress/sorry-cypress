@@ -1,17 +1,6 @@
-mutation updateProject($project: ProjectInput!) {
-  updateProject(project: $project) {
+mutation updateProject($input: UpdateProjectInput!) {
+  updateProject(input: $input) {
     projectId
-    hooks {
-      hookId
-      url
-      headers
-      hookEvents
-      hookType
-      githubContext
-      githubToken
-      bitbucketUsername
-      bitbucketToken
-      bitbucketBuildName
-    }
+    inactivityTimeoutSeconds
   }
 }

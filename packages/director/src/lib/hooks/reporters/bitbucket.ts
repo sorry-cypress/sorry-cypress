@@ -1,4 +1,9 @@
-import { BitBucketHook, HookEvent, RunSummary } from '@sorry-cypress/common';
+import {
+  BitBucketHook,
+  getBitbucketBuildUrl,
+  HookEvent,
+  RunSummary,
+} from '@sorry-cypress/common';
 import { getDashboardRunURL } from '@src/lib/urls';
 import axios from 'axios';
 
@@ -15,7 +20,7 @@ export async function reportStatusToBitbucket({
   runSummary: RunSummary;
   hookEvent: string;
 }) {
-  const fullStatusPostUrl = getBitbucketUrl(hook.url, sha);
+  const fullStatusPostUrl = getBitbucketBuildUrl(hook.url, sha);
 
   const data = {
     state: 'INPROGRESS',
@@ -53,21 +58,3 @@ export async function reportStatusToBitbucket({
     Promise.resolve()
   );
 }
-
-const getBitbucketUrl = (url: string, sha: string) => {
-  const BITBUCKET_DOMAIN = 'bitbucket.org';
-  const BITBUCKET_API_ENDPOINT = 'api.bitbucket.org';
-
-  const [bitbucketProtocol, restOfBitbucketUrl] = url.split('://');
-  const [
-    bitBucketDomain,
-    bitBucketRepo,
-    bitBucketProject,
-  ] = restOfBitbucketUrl.split('/');
-  const bitBucketProjectStripped = bitBucketProject.replace('.git', '');
-  const bitbucketEndpoint =
-    bitBucketDomain === BITBUCKET_DOMAIN
-      ? BITBUCKET_API_ENDPOINT
-      : `${bitBucketDomain}`;
-  return `${bitbucketProtocol}://${bitbucketEndpoint}/2.0/repositories/${bitBucketRepo}/${bitBucketProjectStripped}/commit/${sha}/statuses/build`;
-};

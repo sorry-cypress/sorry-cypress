@@ -11,6 +11,10 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  GenericHookType: any;
+  SlackHookType: any;
+  GithubHookType: any;
+  BitbucketHookType: any;
   DateTime: string;
 };
 
@@ -73,6 +77,15 @@ export type Mutation = {
   deleteProject: DeleteProjectResponse;
   createProject: Project;
   updateProject: Project;
+  createGenericHook: GenericHook;
+  updateGenericHook: GenericHook;
+  createBitbucketHook: BitbucketHook;
+  updateBitbucketHook: BitbucketHook;
+  createGithubHook: GithubHook;
+  updateGithubHook: GithubHook;
+  createSlackHook: SlackHook;
+  updateSlackHook: SlackHook;
+  deleteHook: DeleteHookResponse;
 };
 
 
@@ -98,12 +111,57 @@ export type MutationDeleteProjectArgs = {
 
 
 export type MutationCreateProjectArgs = {
-  project: Maybe<ProjectInput>;
+  project: CreateProjectInput;
 };
 
 
 export type MutationUpdateProjectArgs = {
-  project: Maybe<ProjectInput>;
+  input: UpdateProjectInput;
+};
+
+
+export type MutationCreateGenericHookArgs = {
+  input: CreateGenericHookInput;
+};
+
+
+export type MutationUpdateGenericHookArgs = {
+  input: UpdateGenericHookInput;
+};
+
+
+export type MutationCreateBitbucketHookArgs = {
+  input: CreateBitbucketHookInput;
+};
+
+
+export type MutationUpdateBitbucketHookArgs = {
+  input: UpdateBitbucketHookInput;
+};
+
+
+export type MutationCreateGithubHookArgs = {
+  input: CreateGithubHookInput;
+};
+
+
+export type MutationUpdateGithubHookArgs = {
+  input: UpdateGithubHookInput;
+};
+
+
+export type MutationCreateSlackHookArgs = {
+  input: CreateSlackHookInput;
+};
+
+
+export type MutationUpdateSlackHookArgs = {
+  input: UpdateSlackHookInput;
+};
+
+
+export type MutationDeleteHookArgs = {
+  input: DeleteHookInput;
 };
 
 export type DeleteRunResponse = {
@@ -118,6 +176,109 @@ export type SpecStats = {
   spec: Scalars['String'];
   avgWallClockDuration: Scalars['Int'];
   count: Scalars['Int'];
+};
+
+
+
+
+
+export type DeleteHookInput = {
+  projectId: Scalars['ID'];
+  hookId: Scalars['ID'];
+};
+
+export type DeleteHookResponse = {
+  __typename?: 'DeleteHookResponse';
+  projectId: Scalars['ID'];
+  hookId: Scalars['ID'];
+};
+
+export type SlackHook = {
+  __typename?: 'SlackHook';
+  projectId: Scalars['ID'];
+  hookId: Scalars['ID'];
+  url: Scalars['String'];
+  hookType: Scalars['SlackHookType'];
+  hookEvents: Array<Scalars['String']>;
+};
+
+export type CreateSlackHookInput = {
+  projectId: Scalars['ID'];
+};
+
+export type UpdateSlackHookInput = {
+  projectId: Scalars['ID'];
+  hookId: Scalars['ID'];
+  url: Scalars['String'];
+  hookEvents: Array<Scalars['String']>;
+};
+
+export type GithubHook = {
+  __typename?: 'GithubHook';
+  projectId: Scalars['ID'];
+  hookId: Scalars['ID'];
+  url: Scalars['String'];
+  hookType: Scalars['GithubHookType'];
+  githubToken: Maybe<Scalars['String']>;
+  githubContext: Maybe<Scalars['String']>;
+};
+
+export type CreateGithubHookInput = {
+  projectId: Scalars['ID'];
+};
+
+export type UpdateGithubHookInput = {
+  projectId: Scalars['ID'];
+  hookId: Scalars['ID'];
+  url: Scalars['String'];
+  githubToken: Maybe<Scalars['String']>;
+  githubContext: Maybe<Scalars['String']>;
+};
+
+export type BitbucketHook = {
+  __typename?: 'BitbucketHook';
+  projectId: Scalars['ID'];
+  hookId: Scalars['ID'];
+  url: Scalars['String'];
+  hookType: Scalars['BitbucketHookType'];
+  bitbucketUsername: Maybe<Scalars['String']>;
+  bitbucketToken: Maybe<Scalars['String']>;
+  bitbucketBuildName: Maybe<Scalars['String']>;
+};
+
+export type CreateBitbucketHookInput = {
+  projectId: Scalars['ID'];
+};
+
+export type UpdateBitbucketHookInput = {
+  projectId: Scalars['ID'];
+  hookId: Scalars['ID'];
+  url: Maybe<Scalars['String']>;
+  bitbucketUsername: Scalars['String'];
+  bitbucketToken: Maybe<Scalars['String']>;
+  bitbucketBuildName: Maybe<Scalars['String']>;
+};
+
+export type GenericHook = {
+  __typename?: 'GenericHook';
+  projectId: Scalars['ID'];
+  hookId: Scalars['ID'];
+  url: Scalars['String'];
+  headers: Maybe<Scalars['String']>;
+  hookType: Scalars['GenericHookType'];
+  hookEvents: Array<Scalars['String']>;
+};
+
+export type CreateGenericHookInput = {
+  projectId: Scalars['ID'];
+};
+
+export type UpdateGenericHookInput = {
+  projectId: Scalars['ID'];
+  hookId: Scalars['ID'];
+  url: Scalars['String'];
+  headers: Maybe<Scalars['String']>;
+  hookEvents: Array<Scalars['String']>;
 };
 
 export type Hook = {
@@ -136,7 +297,7 @@ export type Hook = {
 
 export type Project = {
   __typename?: 'Project';
-  projectId: Scalars['String'];
+  projectId: Scalars['ID'];
   hooks: Array<Hook>;
   inactivityTimeoutSeconds: Maybe<Scalars['Int']>;
 };
@@ -152,6 +313,16 @@ export type HookInput = {
   bitbucketUsername: Maybe<Scalars['String']>;
   bitbucketToken: Maybe<Scalars['String']>;
   bitbucketBuildName: Maybe<Scalars['String']>;
+};
+
+export type CreateProjectInput = {
+  projectId: Scalars['ID'];
+  inactivityTimeoutSeconds: Scalars['Int'];
+};
+
+export type UpdateProjectInput = {
+  projectId: Scalars['ID'];
+  inactivityTimeoutSeconds: Scalars['Int'];
 };
 
 export type ProjectInput = {
@@ -367,11 +538,11 @@ export type GetInstanceQuery = { __typename?: 'Query', instance: Maybe<{ __typen
       ), tests: Array<{ __typename?: 'InstanceTest', testId: string, title: Array<string>, state: TestState, wallClockDuration: Maybe<number>, wallClockStartedAt: Maybe<string>, error: Maybe<string>, stack: Maybe<string> } | { __typename?: 'InstanceTestV5', testId: string, title: Array<string>, state: TestState, displayError: Maybe<string>, attempts: Array<{ __typename?: 'TestAttempt', state: Maybe<string>, wallClockDuration: Maybe<number>, wallClockStartedAt: Maybe<string>, error: Maybe<{ __typename?: 'TestError', name: string, message: string, stack: string }> }> }>, screenshots: Array<{ __typename?: 'InstanceScreeshot', testId: string, screenshotId: string, height: number, width: number, screenshotURL: Maybe<string> }>, cypressConfig: Maybe<{ __typename?: 'CypressConfig', video: boolean, videoUploadOnPasses: boolean }> }> }> };
 
 export type CreateProjectMutationVariables = Exact<{
-  project: Maybe<ProjectInput>;
+  project: CreateProjectInput;
 }>;
 
 
-export type CreateProjectMutation = { __typename?: 'Mutation', createProject: { __typename?: 'Project', projectId: string, hooks: Array<{ __typename?: 'Hook', hookId: Maybe<string>, url: Maybe<string>, headers: Maybe<string>, hookEvents: Maybe<Array<Maybe<string>>>, hookType: Maybe<string>, githubContext: Maybe<string>, githubToken: Maybe<string>, bitbucketUsername: Maybe<string>, bitbucketToken: Maybe<string>, bitbucketBuildName: Maybe<string> }> } };
+export type CreateProjectMutation = { __typename?: 'Mutation', createProject: { __typename?: 'Project', projectId: string, inactivityTimeoutSeconds: Maybe<number> } };
 
 export type DeleteProjectMutationVariables = Exact<{
   projectId: Scalars['ID'];
@@ -385,7 +556,7 @@ export type GetProjectQueryVariables = Exact<{
 }>;
 
 
-export type GetProjectQuery = { __typename?: 'Query', project: Maybe<{ __typename?: 'Project', projectId: string, inactivityTimeoutSeconds: Maybe<number>, hooks: Array<{ __typename?: 'Hook', hookId: Maybe<string>, url: Maybe<string>, headers: Maybe<string>, hookEvents: Maybe<Array<Maybe<string>>>, hookType: Maybe<string>, githubContext: Maybe<string>, bitbucketUsername: Maybe<string>, bitbucketBuildName: Maybe<string> }> }> };
+export type GetProjectQuery = { __typename?: 'Query', project: Maybe<{ __typename?: 'Project', projectId: string, inactivityTimeoutSeconds: Maybe<number>, hooks: Array<{ __typename?: 'Hook', hookId: Maybe<string>, url: Maybe<string>, headers: Maybe<string>, hookEvents: Maybe<Array<Maybe<string>>>, hookType: Maybe<string>, githubContext: Maybe<string>, githubToken: Maybe<string>, bitbucketUsername: Maybe<string>, bitbucketToken: Maybe<string>, bitbucketBuildName: Maybe<string> }> }> };
 
 export type GetProjectsQueryVariables = Exact<{
   orderDirection: Maybe<OrderingOptions>;
@@ -395,12 +566,75 @@ export type GetProjectsQueryVariables = Exact<{
 
 export type GetProjectsQuery = { __typename?: 'Query', projects: Array<{ __typename?: 'Project', projectId: string }> };
 
-export type UpdateProjectMutationVariables = Exact<{
-  project: ProjectInput;
+export type CreateBitbucketHookMutationVariables = Exact<{
+  input: CreateBitbucketHookInput;
 }>;
 
 
-export type UpdateProjectMutation = { __typename?: 'Mutation', updateProject: { __typename?: 'Project', projectId: string, hooks: Array<{ __typename?: 'Hook', hookId: Maybe<string>, url: Maybe<string>, headers: Maybe<string>, hookEvents: Maybe<Array<Maybe<string>>>, hookType: Maybe<string>, githubContext: Maybe<string>, githubToken: Maybe<string>, bitbucketUsername: Maybe<string>, bitbucketToken: Maybe<string>, bitbucketBuildName: Maybe<string> }> } };
+export type CreateBitbucketHookMutation = { __typename?: 'Mutation', createBitbucketHook: { __typename?: 'BitbucketHook', projectId: string, hookId: string, hookType: any, url: string, bitbucketUsername: Maybe<string>, bitbucketBuildName: Maybe<string> } };
+
+export type CreateGenericHookMutationVariables = Exact<{
+  input: CreateGenericHookInput;
+}>;
+
+
+export type CreateGenericHookMutation = { __typename?: 'Mutation', createGenericHook: { __typename?: 'GenericHook', hookId: string, hookType: any, url: string, hookEvents: Array<string>, headers: Maybe<string> } };
+
+export type CreateGithubHookMutationVariables = Exact<{
+  input: CreateGithubHookInput;
+}>;
+
+
+export type CreateGithubHookMutation = { __typename?: 'Mutation', createGithubHook: { __typename?: 'GithubHook', projectId: string, hookId: string, hookType: any, url: string, githubToken: Maybe<string>, githubContext: Maybe<string> } };
+
+export type CreateSlackHookMutationVariables = Exact<{
+  input: CreateSlackHookInput;
+}>;
+
+
+export type CreateSlackHookMutation = { __typename?: 'Mutation', createSlackHook: { __typename?: 'SlackHook', hookId: string, hookType: any, url: string, hookEvents: Array<string> } };
+
+export type DeleteHookMutationVariables = Exact<{
+  input: DeleteHookInput;
+}>;
+
+
+export type DeleteHookMutation = { __typename?: 'Mutation', deleteHook: { __typename?: 'DeleteHookResponse', hookId: string, projectId: string } };
+
+export type UpdateBitbucketHookMutationVariables = Exact<{
+  input: UpdateBitbucketHookInput;
+}>;
+
+
+export type UpdateBitbucketHookMutation = { __typename?: 'Mutation', updateBitbucketHook: { __typename?: 'BitbucketHook', hookId: string } };
+
+export type UpdateGenericHookMutationVariables = Exact<{
+  input: UpdateGenericHookInput;
+}>;
+
+
+export type UpdateGenericHookMutation = { __typename?: 'Mutation', updateGenericHook: { __typename?: 'GenericHook', hookId: string } };
+
+export type UpdateGithubHookMutationVariables = Exact<{
+  input: UpdateGithubHookInput;
+}>;
+
+
+export type UpdateGithubHookMutation = { __typename?: 'Mutation', updateGithubHook: { __typename?: 'GithubHook', hookId: string } };
+
+export type UpdateSlackHookMutationVariables = Exact<{
+  input: UpdateSlackHookInput;
+}>;
+
+
+export type UpdateSlackHookMutation = { __typename?: 'Mutation', updateSlackHook: { __typename?: 'SlackHook', hookId: string } };
+
+export type UpdateProjectMutationVariables = Exact<{
+  input: UpdateProjectInput;
+}>;
+
+
+export type UpdateProjectMutation = { __typename?: 'Mutation', updateProject: { __typename?: 'Project', projectId: string, inactivityTimeoutSeconds: Maybe<number> } };
 
 export type DeleteRunMutationVariables = Exact<{
   runId: Scalars['ID'];
@@ -625,21 +859,10 @@ export type GetInstanceQueryHookResult = ReturnType<typeof useGetInstanceQuery>;
 export type GetInstanceLazyQueryHookResult = ReturnType<typeof useGetInstanceLazyQuery>;
 export type GetInstanceQueryResult = Apollo.QueryResult<GetInstanceQuery, GetInstanceQueryVariables>;
 export const CreateProjectDocument = gql`
-    mutation createProject($project: ProjectInput) {
+    mutation createProject($project: CreateProjectInput!) {
   createProject(project: $project) {
     projectId
-    hooks {
-      hookId
-      url
-      headers
-      hookEvents
-      hookType
-      githubContext
-      githubToken
-      bitbucketUsername
-      bitbucketToken
-      bitbucketBuildName
-    }
+    inactivityTimeoutSeconds
   }
 }
     `;
@@ -714,7 +937,9 @@ export const GetProjectDocument = gql`
       hookEvents
       hookType
       githubContext
+      githubToken
       bitbucketUsername
+      bitbucketToken
       bitbucketBuildName
     }
   }
@@ -780,22 +1005,317 @@ export function useGetProjectsLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type GetProjectsQueryHookResult = ReturnType<typeof useGetProjectsQuery>;
 export type GetProjectsLazyQueryHookResult = ReturnType<typeof useGetProjectsLazyQuery>;
 export type GetProjectsQueryResult = Apollo.QueryResult<GetProjectsQuery, GetProjectsQueryVariables>;
-export const UpdateProjectDocument = gql`
-    mutation updateProject($project: ProjectInput!) {
-  updateProject(project: $project) {
+export const CreateBitbucketHookDocument = gql`
+    mutation createBitbucketHook($input: CreateBitbucketHookInput!) {
+  createBitbucketHook(input: $input) {
     projectId
-    hooks {
-      hookId
-      url
-      headers
-      hookEvents
-      hookType
-      githubContext
-      githubToken
-      bitbucketUsername
-      bitbucketToken
-      bitbucketBuildName
-    }
+    hookId
+    hookType
+    url
+    bitbucketUsername
+    bitbucketBuildName
+  }
+}
+    `;
+export type CreateBitbucketHookMutationFn = Apollo.MutationFunction<CreateBitbucketHookMutation, CreateBitbucketHookMutationVariables>;
+
+/**
+ * __useCreateBitbucketHookMutation__
+ *
+ * To run a mutation, you first call `useCreateBitbucketHookMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateBitbucketHookMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createBitbucketHookMutation, { data, loading, error }] = useCreateBitbucketHookMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateBitbucketHookMutation(baseOptions?: Apollo.MutationHookOptions<CreateBitbucketHookMutation, CreateBitbucketHookMutationVariables>) {
+        return Apollo.useMutation<CreateBitbucketHookMutation, CreateBitbucketHookMutationVariables>(CreateBitbucketHookDocument, baseOptions);
+      }
+export type CreateBitbucketHookMutationHookResult = ReturnType<typeof useCreateBitbucketHookMutation>;
+export type CreateBitbucketHookMutationResult = Apollo.MutationResult<CreateBitbucketHookMutation>;
+export type CreateBitbucketHookMutationOptions = Apollo.BaseMutationOptions<CreateBitbucketHookMutation, CreateBitbucketHookMutationVariables>;
+export const CreateGenericHookDocument = gql`
+    mutation createGenericHook($input: CreateGenericHookInput!) {
+  createGenericHook(input: $input) {
+    hookId
+    hookType
+    url
+    hookEvents
+    headers
+  }
+}
+    `;
+export type CreateGenericHookMutationFn = Apollo.MutationFunction<CreateGenericHookMutation, CreateGenericHookMutationVariables>;
+
+/**
+ * __useCreateGenericHookMutation__
+ *
+ * To run a mutation, you first call `useCreateGenericHookMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateGenericHookMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createGenericHookMutation, { data, loading, error }] = useCreateGenericHookMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateGenericHookMutation(baseOptions?: Apollo.MutationHookOptions<CreateGenericHookMutation, CreateGenericHookMutationVariables>) {
+        return Apollo.useMutation<CreateGenericHookMutation, CreateGenericHookMutationVariables>(CreateGenericHookDocument, baseOptions);
+      }
+export type CreateGenericHookMutationHookResult = ReturnType<typeof useCreateGenericHookMutation>;
+export type CreateGenericHookMutationResult = Apollo.MutationResult<CreateGenericHookMutation>;
+export type CreateGenericHookMutationOptions = Apollo.BaseMutationOptions<CreateGenericHookMutation, CreateGenericHookMutationVariables>;
+export const CreateGithubHookDocument = gql`
+    mutation createGithubHook($input: CreateGithubHookInput!) {
+  createGithubHook(input: $input) {
+    projectId
+    hookId
+    hookType
+    url
+    githubToken
+    githubContext
+  }
+}
+    `;
+export type CreateGithubHookMutationFn = Apollo.MutationFunction<CreateGithubHookMutation, CreateGithubHookMutationVariables>;
+
+/**
+ * __useCreateGithubHookMutation__
+ *
+ * To run a mutation, you first call `useCreateGithubHookMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateGithubHookMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createGithubHookMutation, { data, loading, error }] = useCreateGithubHookMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateGithubHookMutation(baseOptions?: Apollo.MutationHookOptions<CreateGithubHookMutation, CreateGithubHookMutationVariables>) {
+        return Apollo.useMutation<CreateGithubHookMutation, CreateGithubHookMutationVariables>(CreateGithubHookDocument, baseOptions);
+      }
+export type CreateGithubHookMutationHookResult = ReturnType<typeof useCreateGithubHookMutation>;
+export type CreateGithubHookMutationResult = Apollo.MutationResult<CreateGithubHookMutation>;
+export type CreateGithubHookMutationOptions = Apollo.BaseMutationOptions<CreateGithubHookMutation, CreateGithubHookMutationVariables>;
+export const CreateSlackHookDocument = gql`
+    mutation createSlackHook($input: CreateSlackHookInput!) {
+  createSlackHook(input: $input) {
+    hookId
+    hookType
+    url
+    hookEvents
+  }
+}
+    `;
+export type CreateSlackHookMutationFn = Apollo.MutationFunction<CreateSlackHookMutation, CreateSlackHookMutationVariables>;
+
+/**
+ * __useCreateSlackHookMutation__
+ *
+ * To run a mutation, you first call `useCreateSlackHookMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateSlackHookMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createSlackHookMutation, { data, loading, error }] = useCreateSlackHookMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateSlackHookMutation(baseOptions?: Apollo.MutationHookOptions<CreateSlackHookMutation, CreateSlackHookMutationVariables>) {
+        return Apollo.useMutation<CreateSlackHookMutation, CreateSlackHookMutationVariables>(CreateSlackHookDocument, baseOptions);
+      }
+export type CreateSlackHookMutationHookResult = ReturnType<typeof useCreateSlackHookMutation>;
+export type CreateSlackHookMutationResult = Apollo.MutationResult<CreateSlackHookMutation>;
+export type CreateSlackHookMutationOptions = Apollo.BaseMutationOptions<CreateSlackHookMutation, CreateSlackHookMutationVariables>;
+export const DeleteHookDocument = gql`
+    mutation deleteHook($input: DeleteHookInput!) {
+  deleteHook(input: $input) {
+    hookId
+    projectId
+  }
+}
+    `;
+export type DeleteHookMutationFn = Apollo.MutationFunction<DeleteHookMutation, DeleteHookMutationVariables>;
+
+/**
+ * __useDeleteHookMutation__
+ *
+ * To run a mutation, you first call `useDeleteHookMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteHookMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteHookMutation, { data, loading, error }] = useDeleteHookMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteHookMutation(baseOptions?: Apollo.MutationHookOptions<DeleteHookMutation, DeleteHookMutationVariables>) {
+        return Apollo.useMutation<DeleteHookMutation, DeleteHookMutationVariables>(DeleteHookDocument, baseOptions);
+      }
+export type DeleteHookMutationHookResult = ReturnType<typeof useDeleteHookMutation>;
+export type DeleteHookMutationResult = Apollo.MutationResult<DeleteHookMutation>;
+export type DeleteHookMutationOptions = Apollo.BaseMutationOptions<DeleteHookMutation, DeleteHookMutationVariables>;
+export const UpdateBitbucketHookDocument = gql`
+    mutation updateBitbucketHook($input: UpdateBitbucketHookInput!) {
+  updateBitbucketHook(input: $input) {
+    hookId
+  }
+}
+    `;
+export type UpdateBitbucketHookMutationFn = Apollo.MutationFunction<UpdateBitbucketHookMutation, UpdateBitbucketHookMutationVariables>;
+
+/**
+ * __useUpdateBitbucketHookMutation__
+ *
+ * To run a mutation, you first call `useUpdateBitbucketHookMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateBitbucketHookMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateBitbucketHookMutation, { data, loading, error }] = useUpdateBitbucketHookMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateBitbucketHookMutation(baseOptions?: Apollo.MutationHookOptions<UpdateBitbucketHookMutation, UpdateBitbucketHookMutationVariables>) {
+        return Apollo.useMutation<UpdateBitbucketHookMutation, UpdateBitbucketHookMutationVariables>(UpdateBitbucketHookDocument, baseOptions);
+      }
+export type UpdateBitbucketHookMutationHookResult = ReturnType<typeof useUpdateBitbucketHookMutation>;
+export type UpdateBitbucketHookMutationResult = Apollo.MutationResult<UpdateBitbucketHookMutation>;
+export type UpdateBitbucketHookMutationOptions = Apollo.BaseMutationOptions<UpdateBitbucketHookMutation, UpdateBitbucketHookMutationVariables>;
+export const UpdateGenericHookDocument = gql`
+    mutation updateGenericHook($input: UpdateGenericHookInput!) {
+  updateGenericHook(input: $input) {
+    hookId
+  }
+}
+    `;
+export type UpdateGenericHookMutationFn = Apollo.MutationFunction<UpdateGenericHookMutation, UpdateGenericHookMutationVariables>;
+
+/**
+ * __useUpdateGenericHookMutation__
+ *
+ * To run a mutation, you first call `useUpdateGenericHookMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateGenericHookMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateGenericHookMutation, { data, loading, error }] = useUpdateGenericHookMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateGenericHookMutation(baseOptions?: Apollo.MutationHookOptions<UpdateGenericHookMutation, UpdateGenericHookMutationVariables>) {
+        return Apollo.useMutation<UpdateGenericHookMutation, UpdateGenericHookMutationVariables>(UpdateGenericHookDocument, baseOptions);
+      }
+export type UpdateGenericHookMutationHookResult = ReturnType<typeof useUpdateGenericHookMutation>;
+export type UpdateGenericHookMutationResult = Apollo.MutationResult<UpdateGenericHookMutation>;
+export type UpdateGenericHookMutationOptions = Apollo.BaseMutationOptions<UpdateGenericHookMutation, UpdateGenericHookMutationVariables>;
+export const UpdateGithubHookDocument = gql`
+    mutation updateGithubHook($input: UpdateGithubHookInput!) {
+  updateGithubHook(input: $input) {
+    hookId
+  }
+}
+    `;
+export type UpdateGithubHookMutationFn = Apollo.MutationFunction<UpdateGithubHookMutation, UpdateGithubHookMutationVariables>;
+
+/**
+ * __useUpdateGithubHookMutation__
+ *
+ * To run a mutation, you first call `useUpdateGithubHookMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateGithubHookMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateGithubHookMutation, { data, loading, error }] = useUpdateGithubHookMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateGithubHookMutation(baseOptions?: Apollo.MutationHookOptions<UpdateGithubHookMutation, UpdateGithubHookMutationVariables>) {
+        return Apollo.useMutation<UpdateGithubHookMutation, UpdateGithubHookMutationVariables>(UpdateGithubHookDocument, baseOptions);
+      }
+export type UpdateGithubHookMutationHookResult = ReturnType<typeof useUpdateGithubHookMutation>;
+export type UpdateGithubHookMutationResult = Apollo.MutationResult<UpdateGithubHookMutation>;
+export type UpdateGithubHookMutationOptions = Apollo.BaseMutationOptions<UpdateGithubHookMutation, UpdateGithubHookMutationVariables>;
+export const UpdateSlackHookDocument = gql`
+    mutation updateSlackHook($input: UpdateSlackHookInput!) {
+  updateSlackHook(input: $input) {
+    hookId
+  }
+}
+    `;
+export type UpdateSlackHookMutationFn = Apollo.MutationFunction<UpdateSlackHookMutation, UpdateSlackHookMutationVariables>;
+
+/**
+ * __useUpdateSlackHookMutation__
+ *
+ * To run a mutation, you first call `useUpdateSlackHookMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateSlackHookMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateSlackHookMutation, { data, loading, error }] = useUpdateSlackHookMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateSlackHookMutation(baseOptions?: Apollo.MutationHookOptions<UpdateSlackHookMutation, UpdateSlackHookMutationVariables>) {
+        return Apollo.useMutation<UpdateSlackHookMutation, UpdateSlackHookMutationVariables>(UpdateSlackHookDocument, baseOptions);
+      }
+export type UpdateSlackHookMutationHookResult = ReturnType<typeof useUpdateSlackHookMutation>;
+export type UpdateSlackHookMutationResult = Apollo.MutationResult<UpdateSlackHookMutation>;
+export type UpdateSlackHookMutationOptions = Apollo.BaseMutationOptions<UpdateSlackHookMutation, UpdateSlackHookMutationVariables>;
+export const UpdateProjectDocument = gql`
+    mutation updateProject($input: UpdateProjectInput!) {
+  updateProject(input: $input) {
+    projectId
+    inactivityTimeoutSeconds
   }
 }
     `;
@@ -814,7 +1334,7 @@ export type UpdateProjectMutationFn = Apollo.MutationFunction<UpdateProjectMutat
  * @example
  * const [updateProjectMutation, { data, loading, error }] = useUpdateProjectMutation({
  *   variables: {
- *      project: // value for 'project'
+ *      input: // value for 'input'
  *   },
  * });
  */

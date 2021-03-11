@@ -1,55 +1,95 @@
 import { SlackHook as SlackHookType } from '@sorry-cypress/common';
 import { InputFieldLabel } from '@src/components';
-import { Cell, Grid, TextField } from 'bold-ui';
+import {
+  UpdateSlackHookInput,
+  useUpdateSlackHookMutation,
+} from '@src/generated/graphql';
+import { Button, Cell, Grid, TextField } from 'bold-ui';
 import React from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
 import { EditHookEvents } from './editHookEvents';
-import { HookFormAction } from './hookFormReducer';
+import { useCurrentProjectId } from './useCurrentProjectId';
+import { httpUrlValidation } from './validation';
 
 interface SlackHookProps {
   hook: SlackHookType;
-  disabled: boolean;
-
-  dispatch: React.Dispatch<HookFormAction>;
 }
-export const SlackHook = ({ hook, disabled, dispatch }: SlackHookProps) => (
-  <Grid>
-    <Cell xs={12}>
-      <InputFieldLabel
-        helpText="Incoming webhook URL. https://api.slack.com/messaging/webhooks"
-        label={
-          <span>
-            Incoming webhook URL &nbsp;
-            <a
-              target="_blank"
-              rel="noopener noreferrer"
-              href="https://api.slack.com/messaging/webhooks"
+export const SlackHook = ({ hook }: SlackHookProps) => {
+  const projectId = useCurrentProjectId();
+  const formMethods = useForm({
+    mode: 'onChange',
+  });
+
+  const { register, handleSubmit, errors } = formMethods;
+
+  const [updateGenericHook, { loading }] = useUpdateSlackHookMutation();
+
+  async function onSubmit(input: UpdateSlackHookInput) {
+    try {
+      await updateGenericHook({
+        variables: {
+          input: { ...input, hookId: hook.hookId, projectId },
+        },
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  const hasErrors = Object.keys(errors).length > 0;
+  return (
+    <FormProvider {...formMethods}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Grid>
+          <Cell xs={12}>
+            <InputFieldLabel
+              helpText="Incoming Webhook URL, e.g. https://hooks.slack.com/services/XXX/YYY/ZZZ"
+              label={
+                <span>
+                  Incoming webhook URL&nbsp;
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href="https://api.slack.com/messaging/webhooks"
+                  >
+                    (Guide)
+                  </a>
+                </span>
+              }
+              required
+              error={errors['url']?.message}
+              htmlFor="url"
             >
-              (Guide)
-            </a>
-          </span>
-        }
-        required
-        htmlFor="url"
-      >
-        <TextField
-          name="url"
-          placeholder="Enter your Incoming Webhook URL"
-          value={hook.url}
-          onChange={(e) => {
-            dispatch({
-              type: 'SET_HOOK_FIELD',
-              payload: {
-                hookId: hook.hookId,
-                data: {
-                  url: e.target.value,
-                },
-              },
-            });
-          }}
-          disabled={disabled}
-        />
-      </InputFieldLabel>
-    </Cell>
-    <EditHookEvents dispatch={dispatch} hook={hook} disabled={disabled} />
-  </Grid>
-);
+              <TextField
+                name="url"
+                placeholder="Enter your Incoming Webhook URL"
+                defaultValue={hook.url}
+                inputRef={register({
+                  required: {
+                    value: true,
+                    message: 'Webhook URL is required',
+                  },
+                  validate: {
+                    httpUrlValidation,
+                  },
+                })}
+                disabled={loading}
+              />
+            </InputFieldLabel>
+          </Cell>
+          <EditHookEvents hook={hook} disabled={loading} />
+          <Cell>
+            <Button
+              kind="primary"
+              size="small"
+              loading={loading}
+              disabled={hasErrors}
+              type="submit"
+            >
+              Save
+            </Button>
+          </Cell>
+        </Grid>
+      </form>
+    </FormProvider>
+  );
+};

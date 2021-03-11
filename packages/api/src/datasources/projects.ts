@@ -1,17 +1,20 @@
+import { HookType } from '@sorry-cypress/common';
 import {
-  BitBucketHook,
-  GithubHook,
+  CreateBitbucketHookInput,
+  CreateGenericHookInput,
+  CreateGithubHookInput,
+  CreateProjectInput,
+  CreateSlackHookInput,
+  DeleteHookInput,
   Hook,
-  isBitbucketHook,
-  isGenericHook,
-  isGithubHook,
-  isSlackHook,
-} from '@sorry-cypress/common';
-import {
-  HookInput,
   OrderingOptions,
   Project,
   ProjectInput,
+  UpdateBitbucketHookInput,
+  UpdateGenericHookInput,
+  UpdateGithubHookInput,
+  UpdateProjectInput,
+  UpdateSlackHookInput,
 } from '@src/generated/graphql';
 import { getProjectsCollection, init } from '@src/lib/mongo';
 import {
@@ -20,24 +23,34 @@ import {
   getSortByAggregation,
 } from '@src/lib/query';
 import { DataSource } from 'apollo-datasource';
-import { isNil, negate, pick } from 'lodash';
+import { isNil, negate } from 'lodash';
 import plur from 'plur';
 import { v4 as uuid } from 'uuid';
 
-interface IProjectsAPI extends DataSource {
-  getProjectById(id: string): Promise<Project | undefined>;
-  createProject(project: ProjectInput): Promise<Project>;
-  updateProject(project: ProjectInput): Promise<Project>;
-  getProjects({
-    orderDirection,
-    filters,
-  }: {
-    orderDirection: OrderingOptions;
-    filters: AggregationFilter[];
-  }): Promise<Project[]>;
-}
+export class ProjectsAPI extends DataSource {
+  createGenericHook = getCreateHook<CreateGenericHookInput>(
+    HookType.GENERIC_HOOK,
+    {
+      hookEvents: [],
+    }
+  );
+  createBitbucketHook = getCreateHook<CreateBitbucketHookInput>(
+    HookType.BITBUCKET_STATUS_HOOK
+  );
+  createGithubHook = getCreateHook<CreateGithubHookInput>(
+    HookType.GITHUB_STATUS_HOOK
+  );
+  createSlackHook = getCreateHook<CreateSlackHookInput>(HookType.SLACK_HOOK, {
+    hookEvents: [],
+  });
+  updateGenericHook = getUpdateHook<UpdateGenericHookInput>(
+    HookType.GENERIC_HOOK
+  );
+  updateSlackHook = getUpdateHook<UpdateSlackHookInput>(HookType.SLACK_HOOK);
+  updateGithubHook = updateGithubHook;
+  updateBitbucketHook = updateBitbucketHook;
+  deleteHook = deleteHook;
 
-export class ProjectsAPI extends DataSource implements IProjectsAPI {
   async initialize() {
     await init();
   }
@@ -51,10 +64,15 @@ export class ProjectsAPI extends DataSource implements IProjectsAPI {
       },
     ]);
 
-    return (await result.toArray()).pop();
+    const project = (await result.toArray()).pop();
+
+    return {
+      ...project,
+      hooks: project.hooks.map(removeSecrets),
+    };
   }
 
-  async createProject(projectInput: ProjectInput) {
+  async createProject(projectInput: CreateProjectInput) {
     if (!projectInput.projectId) {
       throw new Error('Missing projectId');
     }
@@ -71,18 +89,20 @@ export class ProjectsAPI extends DataSource implements IProjectsAPI {
     }
   }
 
-  async updateProject(projectInput: ProjectInput) {
-    const project = getUpdateProjectValue(
-      projectInput,
-      await this.getProjectById(projectInput.projectId)
+  async updateProject(input: UpdateProjectInput) {
+    await getProjectsCollection().updateOne(
+      { projectId: input.projectId },
+      {
+        $set: {
+          inactivityTimeoutSeconds: input.inactivityTimeoutSeconds,
+        },
+      },
+      {
+        upsert: false,
+      }
     );
 
-    await getProjectsCollection().replaceOne(
-      { projectId: project.projectId },
-      project
-    );
-
-    return project;
+    return this.getProjectById(input.projectId);
   }
 
   async getProjects({
@@ -101,7 +121,7 @@ export class ProjectsAPI extends DataSource implements IProjectsAPI {
       .aggregate(aggregationPipeline)
       .toArray();
 
-    return results;
+    return results.map((p) => ({ ...p, hooks: p.hooks.map(removeSecrets) }));
   }
 
   async deleteProjectsByIds(projectIds: string[]) {
@@ -121,105 +141,144 @@ export class ProjectsAPI extends DataSource implements IProjectsAPI {
   }
 }
 
+const getCreateHook = <T extends { projectId: string }>(
+  hookType: HookType,
+  defaults: Record<string, any> = {}
+) => async (input: T) => {
+  const hook = {
+    ...input,
+    hookId: uuid(),
+    hookType,
+    url: '',
+    ...defaults,
+  };
+  await getProjectsCollection().updateOne(
+    { projectId: input.projectId },
+    {
+      $addToSet: {
+        hooks: hook,
+      },
+    },
+    {
+      upsert: false,
+    }
+  );
+
+  return removeSecrets(hook);
+};
+
+const getUpdateHook = <T extends { projectId: string; hookId: string }>(
+  hookType: HookType
+) =>
+  async function updateGenericHook(input: T) {
+    const hook = { ...input, hookType };
+    await getProjectsCollection().updateOne(
+      { projectId: input.projectId },
+      {
+        $set: {
+          'hooks.$[hooks]': hook,
+        },
+      },
+      {
+        arrayFilters: [{ 'hooks.hookId': input.hookId }],
+        upsert: false,
+      }
+    );
+
+    return hook;
+  };
+
+async function updateBitbucketHook(input: UpdateBitbucketHookInput) {
+  const hook = { ...input, hookType: HookType.BITBUCKET_STATUS_HOOK };
+
+  const $set: Record<string, string> = {
+    'hooks.$[hooks].url': hook.url,
+    'hooks.$[hooks].bitbucketUsername': hook.bitbucketUsername,
+    'hooks.$[hooks].bitbucketBuildName': hook.bitbucketBuildName,
+  };
+  if (hook.bitbucketToken) {
+    $set['hooks.$[hooks].bitbucketToken'] = hook.bitbucketToken;
+  }
+
+  await getProjectsCollection().updateOne(
+    { projectId: input.projectId },
+    {
+      $set,
+    },
+    {
+      arrayFilters: [{ 'hooks.hookId': input.hookId }],
+      upsert: false,
+    }
+  );
+
+  return removeSecrets(hook);
+}
+
+async function updateGithubHook(input: UpdateGithubHookInput) {
+  const hook = { ...input, hookType: HookType.GITHUB_STATUS_HOOK };
+
+  const $set: Record<string, string> = {
+    'hooks.$[hooks].url': hook.url,
+    'hooks.$[hooks].githubContext': hook.githubContext,
+  };
+  if (hook.githubToken) {
+    $set['hooks.$[hooks].githubToken'] = hook.githubToken;
+  }
+
+  await getProjectsCollection().updateOne(
+    { projectId: input.projectId },
+    {
+      $set,
+    },
+    {
+      arrayFilters: [{ 'hooks.hookId': input.hookId }],
+      upsert: false,
+    }
+  );
+
+  return removeSecrets(hook);
+}
+
+async function deleteHook(input: DeleteHookInput) {
+  const { projectId, hookId } = input;
+  await getProjectsCollection().updateOne(
+    { projectId: projectId },
+    {
+      $pull: {
+        hooks: { hookId },
+      },
+    },
+    {
+      upsert: false,
+    }
+  );
+
+  return { projectId, hookId };
+}
+
 export function getUpdateProjectValue(
-  projectInput: ProjectInput,
+  projectInput: UpdateProjectInput,
   originalProject: Project
 ) {
   return {
     ...projectInput,
-    hooks: projectInput.hooks
-      .map(removeSensitiveData)
-      .map(addHookId)
-      .map((hook) => restoreSensitiveData(hook, originalProject)),
+    hooks: originalProject.hooks,
   } as Project;
 }
 
 export function getCreateProjectValue(projectInput: ProjectInput) {
   return {
     projectId: projectInput.projectId.trim(),
-    hooks: projectInput.hooks
-      .map(addHookId)
-      .map(removeSensitiveData) as HookInputWithId[],
+    hooks: [],
     createdAt: new Date().toString(),
     inactivityTimeoutSeconds: projectInput.inactivityTimeoutSeconds ?? 180,
   } as Project;
 }
-type HookInputWithId = HookInput & { hookId: string };
 
-const addHookId = (hook: HookInput): HookInputWithId => ({
-  ...hook,
-  hookId: hook.hookId || uuid(),
-});
-
-export const genericHookFields = [
-  'hookId',
-  'url',
-  'hookType',
-  'headers',
-  'hookEvents',
-];
-export const githubHookFields = [
-  'hookId',
-  'url',
-  'hookType',
-  'githubToken',
-  'githubContext',
-];
-export const bitbucketHookFields = [
-  'hookId',
-  'url',
-  'hookType',
-  'bitbucketUsername',
-  'bitbucketToken',
-  'bitbucketBuildName',
-];
-export const slackHookFields = ['hookId', 'url', 'hookType', 'hookEvents'];
-
-// Only keep specific data
-const removeSensitiveData = (hook: HookInput) => {
-  switch (true) {
-    case isGenericHook(hook as Hook):
-      return pick(hook, genericHookFields);
-    case isGithubHook(hook as Hook):
-      return pick(hook, githubHookFields);
-    case isBitbucketHook(hook as Hook):
-      return pick(hook, bitbucketHookFields);
-    case isSlackHook(hook as Hook):
-      return pick(hook, slackHookFields);
-    default:
-      return hook;
-  }
-};
-
-// Restore sensitive data when updating hooks
-const restoreSensitiveData = (
-  hook: HookInput & { hookId: string },
-  originalProject: Project
-) => {
-  const originalHook = originalProject.hooks.find(
-    (i) => i.hookId === hook.hookId
-  );
-  if (!originalHook) {
-    return hook;
-  }
-  switch (true) {
-    case isGithubHook(hook as Hook):
-      return {
-        ...hook,
-
-        githubToken:
-          hook.githubToken ?? (originalHook as GithubHook).githubToken,
-      };
-    case isBitbucketHook(hook as Hook):
-      return {
-        ...hook,
-        bitbucketToken:
-          hook.bitbucketToken ?? (originalHook as BitBucketHook).bitbucketToken,
-        bitbucketUsername:
-          hook.bitbucketUsername ??
-          (originalHook as BitBucketHook).bitbucketUsername,
-      };
-    default:
-      return { ...hook };
-  }
-};
+function removeSecrets(hook: Hook) {
+  return {
+    ...hook,
+    githubToken: hook.githubToken ? 'secret' : null,
+    bitbucketToken: hook.bitbucketToken ? 'secret' : null,
+  };
+}

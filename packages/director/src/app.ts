@@ -1,7 +1,7 @@
-import express from 'express';
 import bodyParser from 'body-parser';
-import { blockKeys, handleCreateRun } from './api/runs';
+import express from 'express';
 import { handleCreateInstance, handleUpdateInstance } from './api/instances';
+import { blockKeys, handleCreateRun } from './api/runs';
 
 export const app = express();
 
@@ -18,6 +18,12 @@ app.get('/', (_, res) =>
 app.post('/runs', blockKeys, handleCreateRun);
 app.post('/runs/:runId/instances', handleCreateInstance);
 app.put('/instances/:instanceId', handleUpdateInstance);
+
+app.post('/webhook', (req, res) => {
+  console.log('💥 webhook!');
+  console.log(req.body);
+  res.send('ok');
+});
 
 /*
 4. PUT https://api.cypress.io/instances/<instanceId>/stdout

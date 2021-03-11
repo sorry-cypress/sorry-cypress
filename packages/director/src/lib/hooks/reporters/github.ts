@@ -1,19 +1,11 @@
-import { GithubHook, HookEvent, RunSummary } from '@sorry-cypress/common';
+import {
+  getGithubStatusUrl,
+  GithubHook,
+  HookEvent,
+  RunSummary,
+} from '@sorry-cypress/common';
 import { getDashboardRunURL } from '@src/lib/urls';
 import axios from 'axios';
-
-const getGithubHookUrl = (url: string, sha: string) => {
-  const GITHUB_COM_DOMAIN = 'github.com';
-  const GITHUB_COM_ENDPOINT = 'api.github.com';
-
-  const [githubProtocol, restOfGithubUrl] = url.split('://');
-  const [githubDomain, githubProject, githubRepo] = restOfGithubUrl.split('/');
-  const githubEndpoint =
-    githubDomain === GITHUB_COM_DOMAIN
-      ? GITHUB_COM_ENDPOINT
-      : `${githubDomain}/api/v3`;
-  return `${githubProtocol}://${githubEndpoint}/repos/${githubProject}/${githubRepo}/statuses/${sha}`;
-};
 
 export async function reportStatusToGithub({
   hook,
@@ -28,7 +20,7 @@ export async function reportStatusToGithub({
   runSummary: RunSummary;
   hookEvent: string;
 }) {
-  const fullStatusPostUrl = getGithubHookUrl(hook.url, sha);
+  const fullStatusPostUrl = getGithubStatusUrl(hook.url, sha);
 
   const data = {
     state: '',

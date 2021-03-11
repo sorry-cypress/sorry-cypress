@@ -1,0 +1,6 @@
+mutation deleteHook($input: DeleteHookInput!) {
+  deleteHook(input: $input) {
+    hookId
+    projectId
+  }
+}

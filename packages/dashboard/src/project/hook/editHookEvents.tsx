@@ -3,44 +3,41 @@ import { InputFieldLabel } from '@src/components';
 import { Cell, Select } from 'bold-ui';
 import { isEqual } from 'lodash';
 import React from 'react';
+import { Controller, useFormContext } from 'react-hook-form';
 import { hookTypeToString } from './hook.utils';
-import { HookFormAction } from './hookFormReducer';
 
 interface EditHookEventsProps {
   hook: HookWithCustomEvents;
-  dispatch: React.Dispatch<HookFormAction>;
   disabled: boolean;
 }
-export const EditHookEvents = ({
-  dispatch,
-  hook,
-  disabled,
-}: EditHookEventsProps) => (
-  <Cell xs={12}>
-    <InputFieldLabel
-      label="Hook Events"
-      helpText="These are the events that will trigger an XHR POST call to the provided URL. Leaving this field blank has the same effect as selecting all hook events."
-    >
-      <Select
-        itemIsEqual={isEqual}
-        itemToString={hookTypeToString}
-        multiple={true}
-        items={Object.keys(HookEvent)}
-        name="hookEvents"
-        disabled={disabled}
-        onChange={(events: HookEvent[]) => {
-          dispatch({
-            type: 'SET_HOOK_FIELD',
-            payload: {
-              hookId: hook.hookId,
-              data: {
-                hookEvents: events,
-              },
-            },
-          });
-        }}
-        value={hook.hookEvents}
-      />
-    </InputFieldLabel>
-  </Cell>
-);
+export const EditHookEvents = ({ hook, disabled }: EditHookEventsProps) => {
+  const { errors, control } = useFormContext();
+  return (
+    <Cell xs={12}>
+      <InputFieldLabel
+        label="Hook Events"
+        helpText="Events to trigger the webhook. Leaving this field blank activates all the events."
+        error={errors['hookEvents']?.message}
+      >
+        <Controller
+          control={control}
+          name="hookEvents"
+          defaultValue={hook.hookEvents}
+          render={({ name, value, onChange, ref }) => (
+            <Select
+              itemIsEqual={isEqual}
+              itemToString={hookTypeToString}
+              multiple={true}
+              items={Object.keys(HookEvent)}
+              name={name}
+              inputRef={ref}
+              disabled={disabled}
+              onChange={(events: HookEvent[]) => onChange(events)}
+              value={value}
+            />
+          )}
+        />
+      </InputFieldLabel>
+    </Cell>
+  );
+};

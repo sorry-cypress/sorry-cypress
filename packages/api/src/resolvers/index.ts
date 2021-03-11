@@ -4,12 +4,30 @@ import { RunsAPI } from '@src/datasources/runs';
 import { SpecsAPI } from '@src/datasources/specs';
 import { AppDatasources } from '@src/datasources/types';
 import {
+  CreateBitbucketHookInput,
+  CreateGenericHookInput,
+  CreateGithubHookInput,
+  CreateProjectInput,
+  CreateSlackHookInput,
+  DeleteHookInput,
   InstanceTestUnion,
   InstanceTestV5,
   OrderingOptions,
-  ProjectInput,
+  UpdateBitbucketHookInput,
+  UpdateGenericHookInput,
+  UpdateGithubHookInput,
+  UpdateProjectInput,
+  UpdateSlackHookInput,
 } from '@src/generated/graphql';
+import { GraphQLScalarType } from 'graphql';
 import { GraphQLDateTime } from 'graphql-iso-date';
+import { get, identity } from 'lodash';
+
+const getDatasourceWithInput = <T>(path: string) => (
+  _: any,
+  { input }: { input: T },
+  { dataSources }: { dataSources: AppDatasources }
+) => get(dataSources, path)(input);
 
 function isInstanceV5(
   candidate: InstanceTestUnion
@@ -17,6 +35,14 @@ function isInstanceV5(
   return !!(candidate as InstanceTestV5).attempts;
 }
 
+function getStringLiteral(name: string) {
+  return new GraphQLScalarType({
+    name,
+    parseValue: identity,
+    serialize: identity,
+    parseLiteral: identity,
+  });
+}
 export const resolvers = {
   DateTime: GraphQLDateTime,
   TestState: {
@@ -25,6 +51,11 @@ export const resolvers = {
     pending: 'pending',
     skipped: 'skipped',
   },
+  GenericHookType: getStringLiteral('GenericHookType'),
+  SlackHookType: getStringLiteral('SlackHookType'),
+  GithubHookType: getStringLiteral('GithubHookType'),
+  BitbucketHookType: getStringLiteral('BitbucketHookType'),
+
   InstanceTestUnion: {
     __resolveType(obj: InstanceTestUnion) {
       if (isInstanceV5(obj)) {
@@ -118,14 +149,14 @@ export const resolvers = {
     },
     createProject: (
       _: any,
-      { project }: { project: ProjectInput },
+      { project }: { project: CreateProjectInput },
       { dataSources }: { dataSources: AppDatasources }
     ) => dataSources.projectsAPI.createProject(project),
     updateProject: (
       _: any,
-      { project }: { project: ProjectInput },
+      { input }: { input: UpdateProjectInput },
       { dataSources }: { dataSources: AppDatasources }
-    ) => dataSources.projectsAPI.updateProject(project),
+    ) => dataSources.projectsAPI.updateProject(input),
     deleteProject: async (
       _: any,
       { projectId }: { projectId: Project['projectId'] },
@@ -152,5 +183,32 @@ export const resolvers = {
         return runsDeleteResponse;
       }
     },
+    createGenericHook: getDatasourceWithInput<CreateGenericHookInput>(
+      'projectsAPI.createGenericHook'
+    ),
+    updateGenericHook: getDatasourceWithInput<UpdateGenericHookInput>(
+      'projectsAPI.updateGenericHook'
+    ),
+    createBitbucketHook: getDatasourceWithInput<CreateBitbucketHookInput>(
+      'projectsAPI.createBitbucketHook'
+    ),
+    updateBitbucketHook: getDatasourceWithInput<UpdateBitbucketHookInput>(
+      'projectsAPI.updateBitbucketHook'
+    ),
+    createGithubHook: getDatasourceWithInput<CreateGithubHookInput>(
+      'projectsAPI.createGithubHook'
+    ),
+    updateGithubHook: getDatasourceWithInput<UpdateGithubHookInput>(
+      'projectsAPI.updateGithubHook'
+    ),
+    createSlackHook: getDatasourceWithInput<CreateSlackHookInput>(
+      'projectsAPI.createSlackHook'
+    ),
+    updateSlackHook: getDatasourceWithInput<UpdateSlackHookInput>(
+      'projectsAPI.updateSlackHook'
+    ),
+    deleteHook: getDatasourceWithInput<DeleteHookInput>(
+      'projectsAPI.deleteHook'
+    ),
   },
 };
