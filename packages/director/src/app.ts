@@ -19,12 +19,6 @@ app.post('/runs', blockKeys, handleCreateRun);
 app.post('/runs/:runId/instances', handleCreateInstance);
 app.put('/instances/:instanceId', handleUpdateInstance);
 
-app.post('/webhook', (req, res) => {
-  console.log('💥 webhook!');
-  console.log(req.body);
-  res.send('ok');
-});
-
 /*
 4. PUT https://api.cypress.io/instances/<instanceId>/stdout
 >> response 'OK'
