@@ -6,7 +6,7 @@ export const DASHBOARD_URL =
   process.env.DASHBOARD_URL || `http://localhost:8080`;
 
 export const EXECUTION_DRIVER =
-  process.env.EXECUTION_DRIVER || '../execution/mongo/driver';
+  process.env.EXECUTION_DRIVER || '../execution/in-memory';
 
 export const SCREENSHOTS_DRIVER =
   process.env.SCREENSHOTS_DRIVER || '../screenshots/dummy.driver';

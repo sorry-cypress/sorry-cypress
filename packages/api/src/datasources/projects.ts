@@ -1,4 +1,4 @@
-import { HookType } from '@sorry-cypress/common';
+import { getCreateProjectValue, HookType } from '@sorry-cypress/common';
 import {
   CreateBitbucketHookInput,
   CreateGenericHookInput,
@@ -9,7 +9,6 @@ import {
   Hook,
   OrderingOptions,
   Project,
-  ProjectInput,
   UpdateBitbucketHookInput,
   UpdateGenericHookInput,
   UpdateGithubHookInput,
@@ -55,7 +54,7 @@ export class ProjectsAPI extends DataSource {
     await init();
   }
 
-  async getProjectById(id: string) {
+  async getProjectById(id: string): Promise<Project> {
     const result = await getProjectsCollection().aggregate<Project>([
       {
         $match: {
@@ -68,7 +67,7 @@ export class ProjectsAPI extends DataSource {
 
     return {
       ...project,
-      hooks: project.hooks.map(removeSecrets),
+      hooks: (project.hooks ?? []).map(removeSecrets),
     };
   }
 
@@ -78,7 +77,10 @@ export class ProjectsAPI extends DataSource {
     }
 
     try {
-      const project = getCreateProjectValue(projectInput);
+      const project = getCreateProjectValue(
+        projectInput.projectId,
+        projectInput.inactivityTimeoutSeconds
+      ) as Project;
       await getProjectsCollection().insertOne(project);
       return project;
     } catch (error) {
@@ -121,7 +123,10 @@ export class ProjectsAPI extends DataSource {
       .aggregate(aggregationPipeline)
       .toArray();
 
-    return results.map((p) => ({ ...p, hooks: p.hooks.map(removeSecrets) }));
+    return results.map((p) => ({
+      ...p,
+      hooks: (p.hooks || []).map(removeSecrets),
+    }));
   }
 
   async deleteProjectsByIds(projectIds: string[]) {
@@ -263,15 +268,6 @@ export function getUpdateProjectValue(
   return {
     ...projectInput,
     hooks: originalProject.hooks,
-  } as Project;
-}
-
-export function getCreateProjectValue(projectInput: ProjectInput) {
-  return {
-    projectId: projectInput.projectId.trim(),
-    hooks: [],
-    createdAt: new Date().toString(),
-    inactivityTimeoutSeconds: projectInput.inactivityTimeoutSeconds ?? 180,
   } as Project;
 }
 

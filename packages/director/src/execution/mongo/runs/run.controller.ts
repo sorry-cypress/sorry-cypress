@@ -15,6 +15,7 @@ import {
   CreateRunResponse,
   CreateRunWarning,
   ExecutionDriver,
+  getCreateProjectValue,
   Task,
 } from '@src/types';
 import {
@@ -53,11 +54,9 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
   };
 
   try {
-    await createProject({
-      inactivityTimeoutSeconds: INACTIVITY_TIMEOUT_SECONDS,
-      projectId: params.projectId,
-      createdAt: new Date().toISOString(),
-    });
+    await createProject(
+      getCreateProjectValue(params.projectId, INACTIVITY_TIMEOUT_SECONDS)
+    );
     await storageCreateRun({
       runId,
       createdAt: new Date().toISOString(),
