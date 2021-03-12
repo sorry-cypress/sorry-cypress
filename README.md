@@ -8,11 +8,7 @@
 ![Update Dockerhub Images](https://github.com/agoldis/sorry-cypress/workflows/Lint%20and%20test/badge.svg)
 <a href="https://join.slack.com/t/sorry-cypress/shared_invite/zt-eis1h6jl-tJELaD7q9UGEhMP8WHJOaw" target="_blank">![Join slack](https://img.shields.io/badge/join-slack-orange?logo=slack)<a/>
 
-# Hello 👋🏻
-
-https://sorry-cypress.dev/ | [GitHub Sponsors](https://github.com/sponsors/agoldis) | [Open Collective](https://opencollective.com/sorry-cypress)
-
-Thank you!
+# https://sorry-cypress.dev/ | [GitHub Sponsors](https://github.com/sponsors/agoldis) | [Open Collective](https://opencollective.com/sorry-cypress)
 
 ## Table of contents
 
