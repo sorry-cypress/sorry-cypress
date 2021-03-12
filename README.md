@@ -1,5 +1,5 @@
 <div align="center">
-<div>:octocat: An open-source, on-premise, self-hosted alternative to Cypress dashboard :evergreen_tree:</div>
+<div>:octocat: An open-source, on-premise, self-hosted parallelizaton for cypress tests :evergreen_tree:</div>
 </div>
 
 <br />
@@ -10,11 +10,8 @@
 
 # Hello 👋🏻
 
-Documentation has moved to https://sorry-cypress.dev/
+https://sorry-cypress.dev/
 
-Please help us by taking a short 1-minute [survey](https://forms.gle/qxoTPFiokLWuc6eZ7). 
-
-Show us your ❤️
 - [GitHub Sponsors](https://github.com/sponsors/agoldis)
 - [Open Collective](https://opencollective.com/sorry-cypress)
 
@@ -25,6 +22,7 @@ Thank you!
 - [Features](#features)
 - [Quickstart](#quickstart)
 - [FAQ](#faq)
+- [Changelog](#changelog)
 - [License](#license)
 - [Contributors](#contributors)
 
@@ -64,6 +62,9 @@ Check out our [Support](https://docs.sorry-cypress.dev/support) options
 
 Checkout out our [Contribution](https://docs.sorry-cypress.dev/contributions) guide
 
+### Changelog
+
+Check out the [Changelog](https://docs.sorry-cypress.dev/development/changelog)
 
 ## License
 
