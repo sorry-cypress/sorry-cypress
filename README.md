@@ -1,5 +1,5 @@
 <div align="center">
-<div>:octocat: An open-source, on-premise, self-hosted parallelizaton for cypress tests :evergreen_tree:</div>
+<div>:octocat: An open-source, on-premise, self-hosted parallelization for cypress tests :evergreen_tree:</div>
 </div>
 
 <br />
