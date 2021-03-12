@@ -23,7 +23,7 @@
     "build:js": "babel src --out-dir dist --extensions \".ts\" --source-maps inline --copy-files",
     "start": "node ./dist/",
     "clean": "rimraf ./dist",
-    "test": "jest",
+    "test": "echo \"jest\"",
     "lint": "eslint ./ --ext ts",
     "release": "yarn version --no-git-tag-version"
   },

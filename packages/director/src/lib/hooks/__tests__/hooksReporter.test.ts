@@ -1,7 +1,7 @@
 import {
   BitBucketHook,
   GithubHook,
-  hookEvents,
+  HookEvent,
   RunSummary,
 } from '@sorry-cypress/common';
 import axios from 'axios';
@@ -40,7 +40,7 @@ describe('Report Status to Github / Bitbucket', () => {
       sha: 'testCommitSha',
       runId: 'testRunId',
       runSummary: (runSummary as unknown) as RunSummary,
-      hookEvent: hookEvents.RUN_START,
+      hookEvent: HookEvent.RUN_START,
     });
 
     expect(axios).toBeCalledWith({
@@ -59,7 +59,7 @@ describe('Report Status to Github / Bitbucket', () => {
       sha: 'testCommitSha',
       runId: 'testRunId',
       runSummary: (runSummary as unknown) as RunSummary,
-      hookEvent: hookEvents.RUN_START,
+      hookEvent: HookEvent.RUN_START,
     });
 
     expect(axios).toBeCalledWith({
@@ -75,7 +75,7 @@ describe('Report Status to Github / Bitbucket', () => {
       sha: 'testCommitSha',
       runId: 'testRunId',
       runSummary: (runSummary as unknown) as RunSummary,
-      hookEvent: hookEvents.RUN_START,
+      hookEvent: HookEvent.RUN_START,
     });
 
     expect(axios).toBeCalledWith({
