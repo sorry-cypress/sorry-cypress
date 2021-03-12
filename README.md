@@ -10,10 +10,7 @@
 
 # Hello 👋🏻
 
-https://sorry-cypress.dev/
-
-- [GitHub Sponsors](https://github.com/sponsors/agoldis)
-- [Open Collective](https://opencollective.com/sorry-cypress)
+https://sorry-cypress.dev/ | [GitHub Sponsors](https://github.com/sponsors/agoldis) | [Open Collective](https://opencollective.com/sorry-cypress)
 
 Thank you!
 
