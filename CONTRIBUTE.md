@@ -1,18 +1,14 @@
-## Running the services in dev mode
+# Developments guide
 
-Starting the services with exposed ports by including the `docker-compose.dev.yml` file as following:
+We use yarn workspaces, please use `yarn`. Start the services in dev mode
 
-### default
+`yarn dev`
 
-`docker-compose -f docker-compose.yml -f docker-compose.dev.yml up`
+Make sure that associtated services are available on the localhost - e.g. `mongo`, `minio`
 
-### minio
+## Prevent CI
 
-`docker-compose -f docker-compose.minio.yml -f docker-compose.dev.yml up`
-
-### full
-
-`docker-compose -f docker-compose.full.yml -f docker-compose.dev.yml up`
+Add `[skip ci]` to commit message to skip running CI
 
 ## Releasing a new version
 
@@ -22,11 +18,7 @@ Every commit to master triggers [CI via GH Actions](https://github.com/sorry-cyp
 
 After pushing a new tagged please go ahead and create a new Github [release](https://github.com/sorry-cypress/sorry-cypress/releases) with a summary and attributions.
 
-### Prevent CI
-
-Add `skip ci` to commit message to skip running CI
-
-### Releasing `latest` tag
+## Releasing `latest` tag
 
 Pushing to master automatically created new docker images with `latest` tags
 

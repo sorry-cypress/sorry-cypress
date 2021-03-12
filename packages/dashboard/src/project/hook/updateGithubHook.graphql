@@ -1,0 +1,5 @@
+mutation updateGithubHook($input: UpdateGithubHookInput!) {
+  updateGithubHook(input: $input) {
+    hookId
+  }
+}

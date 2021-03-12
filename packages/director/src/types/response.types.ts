@@ -1,4 +1,4 @@
-import { ScreenshotUploadInstruction } from './instance.types';
+import { ScreenshotUploadInstruction } from '@sorry-cypress/common';
 
 export interface UpdateInstanceResponse {
   videoUploadUrl?: string;

@@ -1,6 +1,9 @@
 overwrite: true
 schema: '../api/src/schema/*.graphql'
 documents: './src/**/*.graphql'
+config:
+  scalars:
+    DateTime: string
 generates:
   ./src/generated/graphql.ts:
     plugins:
@@ -9,7 +12,9 @@ generates:
       - 'typescript-react-apollo'
       - 'fragment-matcher'
     config:
-      withComponent: false
-      withHooks: true
       withHOC: false
+      withHooks: true
+      withComponent: false
+      avoidOptionals: true
+      preResolveTypes: true
       apolloClientVersion: 3

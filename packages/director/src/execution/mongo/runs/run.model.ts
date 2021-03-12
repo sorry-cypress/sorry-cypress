@@ -1,7 +1,7 @@
-import { ExecutionDriver, Run, RunSpec, RunWithSpecs } from '@src/types';
+import { AppError, CLAIM_FAILED, RUN_EXISTS } from '@src/lib/errors';
 import { getMongoDB } from '@src/lib/mongo';
-import { AppError, RUN_EXISTS, CLAIM_FAILED } from '@src/lib/errors';
 import { getSanitizedMongoObject } from '@src/lib/results';
+import { ExecutionDriver, Run, RunSpec, RunWithSpecs } from '@src/types';
 
 const mergeRunSpecs = (run: any) => {
   // merge fullspec into spec
@@ -29,6 +29,7 @@ const projectAggregation = {
     meta: 1,
     specs: 1,
     createdAt: 1,
+    completion: 1,
     specsFull: {
       $map: {
         input: '$specs',
@@ -128,4 +129,50 @@ export const setSpecClaimed = async (
   } else {
     throw new AppError(CLAIM_FAILED);
   }
+};
+
+export const setRunCompleted: ExecutionDriver['setRunCompleted'] = async (
+  runId
+) => {
+  getMongoDB()
+    .collection('runs')
+    .updateOne(
+      {
+        runId,
+        completion: {
+          completed: false,
+        },
+      },
+      {
+        $set: {
+          completion: {
+            completed: true,
+          },
+        },
+      }
+    );
+};
+
+export const setRunCompletedWithTimeout: ExecutionDriver['setRunCompletedWithTimeout'] = async ({
+  runId,
+  timeoutMs,
+}) => {
+  getMongoDB()
+    .collection('runs')
+    .updateOne(
+      {
+        runId,
+        completion: {
+          completed: false,
+        },
+      },
+      {
+        $set: {
+          completion: {
+            completed: true,
+            inactivityTimeoutMs: timeoutMs,
+          },
+        },
+      }
+    );
 };

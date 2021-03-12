@@ -1,125 +1,108 @@
-import { hookTypes } from '@src/duplicatedFromDirector/hooksEnums';
-import { Project } from '@src/duplicatedFromDirector/project.types';
-import { getMongoDB, init } from '@src/lib/mongo';
-
+import { HookType } from '@sorry-cypress/common';
 import {
-  getSortByAggregation,
-  filtersToAggregations,
+  CreateBitbucketHookInput,
+  CreateGenericHookInput,
+  CreateGithubHookInput,
+  CreateProjectInput,
+  CreateSlackHookInput,
+  DeleteHookInput,
+  Hook,
+  OrderingOptions,
+  Project,
+  ProjectInput,
+  UpdateBitbucketHookInput,
+  UpdateGenericHookInput,
+  UpdateGithubHookInput,
+  UpdateProjectInput,
+  UpdateSlackHookInput,
+} from '@src/generated/graphql';
+import { getProjectsCollection, init } from '@src/lib/mongo';
+import {
   AggregationFilter,
+  filtersToAggregations,
+  getSortByAggregation,
 } from '@src/lib/query';
 import { DataSource } from 'apollo-datasource';
-import { v4 as uuid } from 'uuid';
-import { negate, isNil } from 'lodash';
-import { OrderingOptions } from '@src/generated/graphql';
+import { isNil, negate } from 'lodash';
 import plur from 'plur';
+import { v4 as uuid } from 'uuid';
 
-const addHookIdsToProjectHooks = (project: Project) => {
-  if (!project?.hooks) {
-    return project;
-  }
-
-  project.hooks = project.hooks.map((hook) => {
-    hook.hookId = hook.hookId || uuid();
-    return hook;
-  });
-
-  return project;
-};
-
-const removeUnusedHookDataFromProject = (project: Project) => {
-  if (!project?.hooks) {
-    return project;
-  }
-
-  project.hooks = project.hooks.map((hook) => {
-    if (hook.hookType === hookTypes.GENERIC_HOOK) {
-      delete hook.githubToken;
-      delete hook.githubContext;
+export class ProjectsAPI extends DataSource {
+  createGenericHook = getCreateHook<CreateGenericHookInput>(
+    HookType.GENERIC_HOOK,
+    {
+      hookEvents: [],
     }
-    if (hook.hookType === hookTypes.GITHUB_STATUS_HOOK) {
-      delete hook.headers;
-      delete hook.hookEvents;
-    }
-    return hook;
+  );
+  createBitbucketHook = getCreateHook<CreateBitbucketHookInput>(
+    HookType.BITBUCKET_STATUS_HOOK
+  );
+  createGithubHook = getCreateHook<CreateGithubHookInput>(
+    HookType.GITHUB_STATUS_HOOK
+  );
+  createSlackHook = getCreateHook<CreateSlackHookInput>(HookType.SLACK_HOOK, {
+    hookEvents: [],
   });
+  updateGenericHook = getUpdateHook<UpdateGenericHookInput>(
+    HookType.GENERIC_HOOK
+  );
+  updateSlackHook = getUpdateHook<UpdateSlackHookInput>(HookType.SLACK_HOOK);
+  updateGithubHook = updateGithubHook;
+  updateBitbucketHook = updateBitbucketHook;
+  deleteHook = deleteHook;
 
-  return project;
-};
-
-const restoreGithubTokensOnGithubHooks = async (
-  updatedProject: Project,
-  getProjectById: ProjectsAPI['getProjectById']
-) => {
-  const oldProject = await getProjectById(updatedProject.projectId);
-
-  // This is to ensure that we keep github tokens when the user only updaing the url
-  if (updatedProject?.hooks) {
-    updatedProject.hooks = updatedProject.hooks.map((hook) => {
-      if (!hook.githubToken) {
-        const oldhook = oldProject?.hooks?.find(
-          (oldHook) => oldHook.hookId === hook.hookId
-        );
-        if (oldhook?.githubToken) {
-          hook.githubToken = oldhook.githubToken;
-        }
-      }
-      return hook;
-    });
-  }
-  return updatedProject;
-};
-
-interface IProjectsAPI extends DataSource {
-  getProjectById(id: string): Promise<Project | undefined>;
-  createProject(project: Project): Promise<Project>;
-  getProjects({
-    orderDirection,
-    filters,
-  }: {
-    orderDirection: OrderingOptions;
-    filters: AggregationFilter[];
-  }): Promise<Project[]>;
-}
-export class ProjectsAPI extends DataSource implements IProjectsAPI {
   async initialize() {
     await init();
   }
 
   async getProjectById(id: string) {
-    const result = getMongoDB()
-      .collection('projects')
-      .aggregate<Project>([
-        {
-          $match: {
-            projectId: id,
-          },
+    const result = await getProjectsCollection().aggregate<Project>([
+      {
+        $match: {
+          projectId: id,
         },
-      ]);
+      },
+    ]);
 
-    return (await result.toArray()).pop();
+    const project = (await result.toArray()).pop();
+
+    return {
+      ...project,
+      hooks: project.hooks.map(removeSecrets),
+    };
   }
 
-  async createProject(project: Project) {
-    project = addHookIdsToProjectHooks(project);
-    project = removeUnusedHookDataFromProject(project);
-    await getMongoDB().collection('projects').insertOne(project);
-    // this needs sanitization and validation it would be great to share the logic between director and the api.
-    // its hard to do with the seperate yarn workspaces.
-    return project;
+  async createProject(projectInput: CreateProjectInput) {
+    if (!projectInput.projectId) {
+      throw new Error('Missing projectId');
+    }
+
+    try {
+      const project = getCreateProjectValue(projectInput);
+      await getProjectsCollection().insertOne(project);
+      return project;
+    } catch (error) {
+      if (error.code && error.code === 11000) {
+        throw new Error('Duplicate projectId');
+      }
+      throw error;
+    }
   }
 
-  async updateProject(project: Project) {
-    project = addHookIdsToProjectHooks(project);
-    project = removeUnusedHookDataFromProject(project);
-    project = await restoreGithubTokensOnGithubHooks(
-      project,
-      this.getProjectById
+  async updateProject(input: UpdateProjectInput) {
+    await getProjectsCollection().updateOne(
+      { projectId: input.projectId },
+      {
+        $set: {
+          inactivityTimeoutSeconds: input.inactivityTimeoutSeconds,
+        },
+      },
+      {
+        upsert: false,
+      }
     );
 
-    await getMongoDB()
-      .collection('projects')
-      .replaceOne({ projectId: project.projectId }, project);
-    return project;
+    return this.getProjectById(input.projectId);
   }
 
   async getProjects({
@@ -134,22 +117,19 @@ export class ProjectsAPI extends DataSource implements IProjectsAPI {
       getSortByAggregation(orderDirection),
     ].filter(negate(isNil));
 
-    const results = await getMongoDB()
-      .collection<Project>('projects')
+    const results = await getProjectsCollection()
       .aggregate(aggregationPipeline)
       .toArray();
 
-    return results;
+    return results.map((p) => ({ ...p, hooks: p.hooks.map(removeSecrets) }));
   }
 
   async deleteProjectsByIds(projectIds: string[]) {
-    const projectResult = await getMongoDB()
-      .collection<Project>('projects')
-      .deleteMany({
-        projectId: {
-          $in: projectIds,
-        },
-      });
+    const projectResult = await getProjectsCollection().deleteMany({
+      projectId: {
+        $in: projectIds,
+      },
+    });
     return {
       success: projectResult.result.ok === 1,
       message: `Deleted ${projectResult.deletedCount} ${plur(
@@ -159,4 +139,146 @@ export class ProjectsAPI extends DataSource implements IProjectsAPI {
       projectIds: projectResult.result.ok === 1 ? projectIds : [],
     };
   }
+}
+
+const getCreateHook = <T extends { projectId: string }>(
+  hookType: HookType,
+  defaults: Record<string, any> = {}
+) => async (input: T) => {
+  const hook = {
+    ...input,
+    hookId: uuid(),
+    hookType,
+    url: '',
+    ...defaults,
+  };
+  await getProjectsCollection().updateOne(
+    { projectId: input.projectId },
+    {
+      $addToSet: {
+        hooks: hook,
+      },
+    },
+    {
+      upsert: false,
+    }
+  );
+
+  return removeSecrets(hook);
+};
+
+const getUpdateHook = <T extends { projectId: string; hookId: string }>(
+  hookType: HookType
+) =>
+  async function updateGenericHook(input: T) {
+    const hook = { ...input, hookType };
+    await getProjectsCollection().updateOne(
+      { projectId: input.projectId },
+      {
+        $set: {
+          'hooks.$[hooks]': hook,
+        },
+      },
+      {
+        arrayFilters: [{ 'hooks.hookId': input.hookId }],
+        upsert: false,
+      }
+    );
+
+    return hook;
+  };
+
+async function updateBitbucketHook(input: UpdateBitbucketHookInput) {
+  const hook = { ...input, hookType: HookType.BITBUCKET_STATUS_HOOK };
+
+  const $set: Record<string, string> = {
+    'hooks.$[hooks].url': hook.url,
+    'hooks.$[hooks].bitbucketUsername': hook.bitbucketUsername,
+    'hooks.$[hooks].bitbucketBuildName': hook.bitbucketBuildName,
+  };
+  if (hook.bitbucketToken) {
+    $set['hooks.$[hooks].bitbucketToken'] = hook.bitbucketToken;
+  }
+
+  await getProjectsCollection().updateOne(
+    { projectId: input.projectId },
+    {
+      $set,
+    },
+    {
+      arrayFilters: [{ 'hooks.hookId': input.hookId }],
+      upsert: false,
+    }
+  );
+
+  return removeSecrets(hook);
+}
+
+async function updateGithubHook(input: UpdateGithubHookInput) {
+  const hook = { ...input, hookType: HookType.GITHUB_STATUS_HOOK };
+
+  const $set: Record<string, string> = {
+    'hooks.$[hooks].url': hook.url,
+    'hooks.$[hooks].githubContext': hook.githubContext,
+  };
+  if (hook.githubToken) {
+    $set['hooks.$[hooks].githubToken'] = hook.githubToken;
+  }
+
+  await getProjectsCollection().updateOne(
+    { projectId: input.projectId },
+    {
+      $set,
+    },
+    {
+      arrayFilters: [{ 'hooks.hookId': input.hookId }],
+      upsert: false,
+    }
+  );
+
+  return removeSecrets(hook);
+}
+
+async function deleteHook(input: DeleteHookInput) {
+  const { projectId, hookId } = input;
+  await getProjectsCollection().updateOne(
+    { projectId: projectId },
+    {
+      $pull: {
+        hooks: { hookId },
+      },
+    },
+    {
+      upsert: false,
+    }
+  );
+
+  return { projectId, hookId };
+}
+
+export function getUpdateProjectValue(
+  projectInput: UpdateProjectInput,
+  originalProject: Project
+) {
+  return {
+    ...projectInput,
+    hooks: originalProject.hooks,
+  } as Project;
+}
+
+export function getCreateProjectValue(projectInput: ProjectInput) {
+  return {
+    projectId: projectInput.projectId.trim(),
+    hooks: [],
+    createdAt: new Date().toString(),
+    inactivityTimeoutSeconds: projectInput.inactivityTimeoutSeconds ?? 180,
+  } as Project;
+}
+
+function removeSecrets(hook: Hook) {
+  return {
+    ...hook,
+    githubToken: hook.githubToken ? 'secret' : null,
+    bitbucketToken: hook.bitbucketToken ? 'secret' : null,
+  };
 }

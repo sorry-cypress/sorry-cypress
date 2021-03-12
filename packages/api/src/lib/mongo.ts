@@ -1,4 +1,5 @@
 import { MONGODB_DATABASE, MONGODB_URI } from '@src/config';
+import { Project } from '@src/generated/graphql';
 import mongodb from 'mongodb';
 
 export { ObjectID } from 'mongodb';
@@ -25,3 +26,6 @@ export const init = async () => {
 };
 
 export const getMongoDB = () => db;
+
+export const getProjectsCollection = () =>
+  getMongoDB().collection<Project>('projects');

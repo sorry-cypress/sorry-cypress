@@ -1,7 +1,7 @@
-import express from 'express';
 import bodyParser from 'body-parser';
-import { blockKeys, handleCreateRun } from './api/runs';
+import express from 'express';
 import { handleCreateInstance, handleUpdateInstance } from './api/instances';
+import { blockKeys, handleCreateRun } from './api/runs';
 
 export const app = express();
 

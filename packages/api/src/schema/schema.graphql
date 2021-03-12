@@ -25,8 +25,17 @@ type Mutation {
     endDate: DateTime!
   ): DeleteRunResponse!
   deleteProject(projectId: ID!): DeleteProjectResponse!
-  createProject(project: ProjectInput): Project!
-  updateProject(project: ProjectInput): Project!
+  createProject(project: CreateProjectInput!): Project!
+  updateProject(input: UpdateProjectInput!): Project!
+  createGenericHook(input: CreateGenericHookInput!): GenericHook!
+  updateGenericHook(input: UpdateGenericHookInput!): GenericHook!
+  createBitbucketHook(input: CreateBitbucketHookInput!): BitbucketHook!
+  updateBitbucketHook(input: UpdateBitbucketHookInput!): BitbucketHook!
+  createGithubHook(input: CreateGithubHookInput!): GithubHook!
+  updateGithubHook(input: UpdateGithubHookInput!): GithubHook!
+  createSlackHook(input: CreateSlackHookInput!): SlackHook!
+  updateSlackHook(input: UpdateSlackHookInput!): SlackHook!
+  deleteHook(input: DeleteHookInput!): DeleteHookResponse!
 }
 
 type DeleteRunResponse {
@@ -43,6 +52,105 @@ type SpecStats {
 }
 
 ### Project
+
+scalar GenericHookType
+scalar SlackHookType
+scalar GithubHookType
+scalar BitbucketHookType
+
+input DeleteHookInput {
+  projectId: ID!
+  hookId: ID!
+}
+type DeleteHookResponse {
+  projectId: ID!
+  hookId: ID!
+}
+
+type SlackHook {
+  projectId: ID!
+  hookId: ID!
+  url: String!
+  hookType: SlackHookType!
+  hookEvents: [String!]!
+}
+
+input CreateSlackHookInput {
+  projectId: ID!
+}
+
+input UpdateSlackHookInput {
+  projectId: ID!
+  hookId: ID!
+  url: String!
+  hookEvents: [String!]!
+}
+
+type GithubHook {
+  projectId: ID!
+  hookId: ID!
+  url: String!
+  hookType: GithubHookType!
+  githubToken: String
+  githubContext: String
+}
+
+input CreateGithubHookInput {
+  projectId: ID!
+}
+
+input UpdateGithubHookInput {
+  projectId: ID!
+  hookId: ID!
+  url: String!
+  githubToken: String
+  githubContext: String
+}
+
+type BitbucketHook {
+  projectId: ID!
+  hookId: ID!
+  url: String!
+  hookType: BitbucketHookType!
+  bitbucketUsername: String
+  bitbucketToken: String
+  bitbucketBuildName: String
+}
+
+input CreateBitbucketHookInput {
+  projectId: ID!
+}
+
+input UpdateBitbucketHookInput {
+  projectId: ID!
+  hookId: ID!
+  url: String
+  bitbucketUsername: String!
+  bitbucketToken: String
+  bitbucketBuildName: String
+}
+
+type GenericHook {
+  projectId: ID!
+  hookId: ID!
+  url: String!
+  headers: String
+  hookType: GenericHookType!
+  hookEvents: [String!]!
+}
+
+input CreateGenericHookInput {
+  projectId: ID!
+}
+
+input UpdateGenericHookInput {
+  projectId: ID!
+  hookId: ID!
+  url: String!
+  headers: String
+  hookEvents: [String!]!
+}
+
 type Hook {
   hookId: String
   url: String
@@ -51,25 +159,43 @@ type Hook {
   hookType: String
   githubToken: String
   githubContext: String
+  bitbucketUsername: String
+  bitbucketToken: String
+  bitbucketBuildName: String
 }
 
 type Project {
-  projectId: String!
-  hooks: [Hook!]
+  projectId: ID!
+  hooks: [Hook!]!
+  inactivityTimeoutSeconds: Int
 }
 
 input HookInput {
   hookId: String
-  url: String
+  url: String!
   headers: String
   hookEvents: [String]
   hookType: String
   githubToken: String
   githubContext: String
+  bitbucketUsername: String
+  bitbucketToken: String
+  bitbucketBuildName: String
+}
+
+input CreateProjectInput {
+  projectId: ID!
+  inactivityTimeoutSeconds: Int!
+}
+
+input UpdateProjectInput {
+  projectId: ID!
+  inactivityTimeoutSeconds: Int!
 }
 
 input ProjectInput {
   projectId: String!
+  inactivityTimeoutSeconds: Int
   hooks: [HookInput]
 }
 
@@ -83,8 +209,14 @@ type DeleteProjectResponse {
 type Run {
   runId: ID!
   createdAt: DateTime!
-  meta: RunMeta
+  meta: RunMeta!
   specs: [FullRunSpec!]!
+  completion: RunCompletion
+}
+
+type RunCompletion {
+  completed: Boolean!
+  inactivityTimeoutMs: Int
 }
 
 # Full spec data, including execution results
@@ -108,8 +240,8 @@ type Commit {
 }
 
 type RunMeta {
-  ciBuildId: String
-  projectId: String
+  ciBuildId: String!
+  projectId: String!
   commit: Commit
 }
 
@@ -149,7 +281,7 @@ type RunSpec {
 # Execution results of a single instance
 type InstanceResults {
   stats: InstanceStats!
-  tests: [InstanceTestUnion]
+  tests: [InstanceTestUnion!]!
   error: String
   stdout: String
   screenshots: [InstanceScreeshot!]!
@@ -160,15 +292,15 @@ type InstanceResults {
 
 # Aggregated stats for instance
 type InstanceStats {
-  suites: Int
-  tests: Int
-  passes: Int
-  pending: Int
-  skipped: Int
-  failures: Int
-  wallClockStartedAt: String
-  wallClockEndedAt: String
-  wallClockDuration: Int
+  suites: Int!
+  tests: Int!
+  passes: Int!
+  pending: Int!
+  skipped: Int!
+  failures: Int!
+  wallClockStartedAt: String!
+  wallClockEndedAt: String!
+  wallClockDuration: Int!
 }
 
 type CypressConfig {
@@ -199,12 +331,18 @@ type ReporterStats {
 
 ### InstanceTest - specific test within a suite / instance
 union InstanceTestUnion = InstanceTest | InstanceTestV5
+enum TestState {
+  failed
+  passed
+  pending
+  skipped
+}
 
 # InstanceTest is a test within an instance (test within a spec)
 type InstanceTest {
   testId: String!
-  title: [String]
-  state: String # prob enum
+  title: [String!]!
+  state: TestState!
   body: String
   stack: String
   error: String
@@ -216,8 +354,8 @@ type InstanceTest {
 # v5+
 type InstanceTestV5 {
   testId: String!
-  title: [String]
-  state: String # prob enum
+  title: [String!]!
+  state: TestState!
   body: String
   displayError: String
   attempts: [TestAttempt!]!

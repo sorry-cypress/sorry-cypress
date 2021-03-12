@@ -1,31 +1,21 @@
-import { createProject } from './../projects/project.model';
-import {
-  getRunById,
-  createRun as storageCreateRun,
-  setSpecClaimed,
-  addSpecsToRun,
-} from './run.model';
-
-import { createInstance } from '../instances/instance.controller';
-import { getDashboardRunURL } from '@src/lib/urls';
-
+import { INACTIVITY_TIMEOUT_SECONDS } from '@src/config';
 import {
   AppError,
+  CLAIM_FAILED,
   RUN_EXISTS,
   RUN_NOT_EXIST,
-  CLAIM_FAILED,
 } from '@src/lib/errors';
-
 import {
-  generateRunIdHash,
   generateGroupId,
+  generateRunIdHash,
   generateUUID,
 } from '@src/lib/hash';
+import { getDashboardRunURL } from '@src/lib/urls';
 import {
+  CreateRunResponse,
+  CreateRunWarning,
   ExecutionDriver,
   Task,
-  CreateRunWarning,
-  CreateRunResponse,
 } from '@src/types';
 import {
   enhanceSpec,
@@ -34,6 +24,14 @@ import {
   getNewSpecsInGroup,
   getSpecsForGroup,
 } from '../../utils';
+import { createInstance } from '../instances/instance.controller';
+import { createProject } from './../projects/project.model';
+import {
+  addSpecsToRun,
+  createRun as storageCreateRun,
+  getRunById,
+  setSpecClaimed,
+} from './run.model';
 
 export const getById = getRunById;
 
@@ -56,12 +54,16 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
 
   try {
     await createProject({
+      inactivityTimeoutSeconds: INACTIVITY_TIMEOUT_SECONDS,
       projectId: params.projectId,
       createdAt: new Date().toISOString(),
     });
     await storageCreateRun({
       runId,
       createdAt: new Date().toISOString(),
+      completion: {
+        completed: false,
+      },
       meta: {
         ciBuildId: params.ciBuildId,
         commit: params.commit,
@@ -74,8 +76,7 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
   } catch (error) {
     if (error.code && error.code === RUN_EXISTS) {
       response.isNewRun = false;
-      // update new specs for a new group
-      // TODO: prone to race condition on serverless
+      // serverless: prone to race condition on serverless
       const run = await getRunById(runId);
 
       const newSpecs = getNewSpecsInGroup({
@@ -92,7 +93,7 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
       const existingGroupSpecs = getSpecsForGroup(run, groupId);
       if (newSpecs.length && existingGroupSpecs.length) {
         response.warnings.push({
-          message: `Group ${groupId} has different specs for the same run. Make sure each group in run has the same specs.`,
+          message: `Group ${groupId} has different specs for the same run.`,
           originalSpecs: existingGroupSpecs.map((spec) => spec.spec).join(', '),
           newSpecs: newSpecs.join(','),
         });

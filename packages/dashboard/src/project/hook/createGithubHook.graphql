@@ -1,0 +1,10 @@
+mutation createGithubHook($input: CreateGithubHookInput!) {
+  createGithubHook(input: $input) {
+    projectId
+    hookId
+    hookType
+    url
+    githubToken
+    githubContext
+  }
+}

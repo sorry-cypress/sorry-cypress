@@ -1,7 +1,7 @@
 import { useCss } from 'bold-ui';
 import React, { PropsWithChildren } from 'react';
 
-export const Layout = ({ children }: PropsWithChildren<{}>) => {
+export const Layout = ({ children }: PropsWithChildren<any>) => {
   const { css } = useCss();
   const className = css`
     height: 100vh;
