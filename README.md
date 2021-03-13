@@ -8,7 +8,20 @@
 ![Update Dockerhub Images](https://github.com/agoldis/sorry-cypress/workflows/Lint%20and%20test/badge.svg)
 <a href="https://join.slack.com/t/sorry-cypress/shared_invite/zt-eis1h6jl-tJELaD7q9UGEhMP8WHJOaw" target="_blank">![Join slack](https://img.shields.io/badge/join-slack-orange?logo=slack)<a/>
 
-# https://sorry-cypress.dev/ | [GitHub Sponsors](https://github.com/sponsors/agoldis) | [Open Collective](https://opencollective.com/sorry-cypress)
+
+**Sorry-cypress** is an open-source solution for the parallelization and recording of cypress tests.
+
+Set up **sorry-cypress** on your infrastructure to run cypress tests in parallel with no limitations, store test results on private and secure storage. Sorry-cypress integrates with Github, Slack, and other systems via WebHooks.
+
+**Sorry-cypress** can be installed as a standalone service using Docker, docker-compose, or Kubernetes.
+
+<p align="center">
+  <a href="https://sorry-cypress.dev">https://sorry-cypress.dev</a>
+</p>
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/1637928/111021636-b45e5400-8382-11eb-92ed-3ca69182555b.png" height="500" />
+</p>
+
 
 ## Table of contents
 
@@ -17,6 +30,7 @@
 - [FAQ](#faq)
 - [Changelog](#changelog)
 - [License](#license)
+- [Donate](#donate)
 - [Contributors](#contributors)
 
 ## Features
@@ -62,6 +76,11 @@ Check out the [Changelog](https://docs.sorry-cypress.dev/development/changelog)
 ## License
 
 MIT
+
+## Donate
+
+- [GitHub Sponsors](https://github.com/sponsors/agoldis)
+- [Open Collective](https://opencollective.com/sorry-cypress)
 
 ## Contributors
 
