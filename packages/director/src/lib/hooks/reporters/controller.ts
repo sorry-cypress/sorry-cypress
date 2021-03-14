@@ -24,6 +24,9 @@ export function reportToHook({
   project: Project;
 }): Promise<void> {
   try {
+    if (!project.hooks.length) {
+      return;
+    }
     const runSummary = getRunSummary(
       compact(run.specsFull.map((s) => s.results?.stats))
     );
