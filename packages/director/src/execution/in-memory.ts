@@ -11,6 +11,7 @@ import {
   CreateRunResponse,
   CreateRunWarning,
   ExecutionDriver,
+  getCreateProjectValue,
   Instance,
   InstanceResult,
   Project,
@@ -86,11 +87,9 @@ const createRun: ExecutionDriver['createRun'] = async (
   }
 
   if (!projects[params.projectId]) {
-    createProject({
-      inactivityTimeoutSeconds: INACTIVITY_TIMEOUT_SECONDS,
-      projectId: params.projectId,
-      createdAt: new Date().toUTCString(),
-    });
+    createProject(
+      getCreateProjectValue(params.projectId, INACTIVITY_TIMEOUT_SECONDS)
+    );
   }
 
   runs[runId] = {
