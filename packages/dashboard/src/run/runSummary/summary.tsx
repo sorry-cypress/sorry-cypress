@@ -38,7 +38,9 @@ export function RunSummary({ runId }: RunSummaryProps) {
     return <CenteredContent>No run found</CenteredContent>;
   }
   if (error) {
-    return <CenteredContent>Error loading run</CenteredContent>;
+    return (
+      <CenteredContent>Error loading run {error.toString()}</CenteredContent>
+    );
   }
 
   return <RunSummaryComponent run={run} runId={runId} />;

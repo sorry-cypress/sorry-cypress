@@ -2,6 +2,7 @@ import {
   AssetUploadInstruction,
   CreateRunParameters,
   CreateRunResponse,
+  CypressConfig,
   Instance,
   InstanceResult,
   Project,
@@ -9,6 +10,7 @@ import {
   RunWithSpecs,
   ScreenshotUploadInstruction,
   Task,
+  TestV670,
 } from '@sorry-cypress/common';
 
 interface Driver {
@@ -31,12 +33,14 @@ interface GetNextTaskParams {
   runId: string;
   machineId: string;
   groupId: string;
+  cypressVersion: string;
 }
 
 interface SetRunCompletedWithTimeout {
   runId: string;
   timeoutMs: number;
 }
+
 export interface ExecutionDriver extends Driver {
   getRunWithSpecs: (runId: string) => Promise<RunWithSpecs>;
   getProjectById: (projectId: string) => Promise<Project>;
@@ -52,6 +56,14 @@ export interface ExecutionDriver extends Driver {
     instanceId: string,
     results: InstanceResult
   ) => Promise<void>;
+  setInstanceTests: (
+    instanceId: string,
+    payload: SetInstanceTestsPayload
+  ) => Promise<void>;
+  updateInstanceResults: (
+    instanceId: string,
+    payload: UpdateInstanceResultsPayload
+  ) => Promise<InstanceResult>;
   setScreenshotUrl: (
     instanceId: string,
     screenshotId: string,
@@ -62,3 +74,17 @@ export interface ExecutionDriver extends Driver {
     videoUrl: string;
   }) => Promise<void>;
 }
+
+/// Requests payload cypress v6.7.0+
+export interface SetInstanceTestsPayload {
+  config: CypressConfig;
+  tests: Pick<TestV670, 'clientId' | 'body' | 'title' | 'config' | 'hookIds'>[];
+  hooks: string[];
+}
+
+export type UpdateInstanceResultsPayload = Pick<
+  InstanceResult,
+  'stats' | 'exception' | 'video' | 'screenshots' | 'reporterStats'
+> & {
+  tests: Pick<TestV670, 'clientId' | 'state' | 'displayError' | 'attempts'>[];
+};

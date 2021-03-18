@@ -1,6 +1,10 @@
+import { Test } from '../tests';
+
 export interface Instance {
   instanceId: string;
   runId: string;
+  // 6.7.0+ reports tests before running specs
+  _createTestsPayload: Record<string, unknown>;
   results?: InstanceResult;
 }
 
@@ -26,6 +30,17 @@ export interface InstanceResultStats {
   wallClockDuration: number;
 }
 
+interface ReporterStats {
+  suites: number;
+  tests: number;
+  passes: number;
+  pending: number;
+  failures: number;
+  start: string;
+  end: string;
+  duration: number;
+}
+
 export interface CypressConfig {
   video: boolean;
   videoUploadOnPasses: boolean;
@@ -34,9 +49,10 @@ export interface CypressConfig {
 
 export interface InstanceResult {
   stats: InstanceResultStats;
-  tests: Record<string, unknown>[];
-  error: null | string;
-  reporterStats: Record<string, unknown>;
+  tests: Test[];
+  error?: string;
+  reporterStats: ReporterStats;
+  exception: null | string;
   cypressConfig?: CypressConfig;
   screenshots: Screenshot[];
   video: boolean;

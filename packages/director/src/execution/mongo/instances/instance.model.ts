@@ -1,33 +1,35 @@
-import { InstanceResult } from '@src/types';
-import { getMongoDB } from '@src/lib/mongo';
 import {
   AppError,
   INSTANCE_EXISTS,
-  VIDEO_URL_UPDATE_FAILED,
+  INSTANCE_RESULTS_UPDATE_FAILED,
+  INSTANCE_SET_TESTS_FAILED,
   SCREENSHOT_URL_UPDATE_FAILED,
-  INSTANCE_RESULTS_UPDATE_FAILED
+  VIDEO_URL_UPDATE_FAILED,
 } from '@src/lib/errors';
+import { getMongoDB } from '@src/lib/mongo';
 import { getSanitizedMongoObject } from '@src/lib/results';
+import { InstanceResult, SetInstanceTestsPayload } from '@src/types';
 
 const COLLECTION_NAME = 'instances';
 
 export const insertInstance = async ({
   runId,
   instanceId,
-  spec
+  spec,
+  cypressVersion,
 }: {
   runId: string;
   instanceId: string;
   spec: string;
+  cypressVersion: string;
 }) => {
   try {
-    await getMongoDB()
-      .collection(COLLECTION_NAME)
-      .insertOne({
-        spec,
-        runId,
-        instanceId
-      });
+    await getMongoDB().collection(COLLECTION_NAME).insertOne({
+      spec,
+      runId,
+      instanceId,
+      cypressVersion,
+    });
   } catch (error) {
     if (error.code && error.code === 11000) {
       throw new AppError(INSTANCE_EXISTS);
@@ -37,24 +39,22 @@ export const insertInstance = async ({
 };
 
 export const getInstanceById = async (instanceId: string) =>
-  await getMongoDB()
-    .collection(COLLECTION_NAME)
-    .findOne({ instanceId });
+  await getMongoDB().collection(COLLECTION_NAME).findOne({ instanceId });
 
 export const setInstanceResults = async (
   instanceId: string,
-  results: InstanceResult
+  results: InstanceResult | SetInstanceTestsPayload
 ) => {
   const { matchedCount, modifiedCount } = await getMongoDB()
     .collection(COLLECTION_NAME)
     .updateOne(
       {
-        instanceId
+        instanceId,
       },
       {
         $set: {
-          results: getSanitizedMongoObject(results)
-        }
+          results: getSanitizedMongoObject(results),
+        },
       }
     );
 
@@ -62,6 +62,30 @@ export const setInstanceResults = async (
     return;
   } else {
     throw new AppError(INSTANCE_RESULTS_UPDATE_FAILED);
+  }
+};
+
+export const setInstanceTests = async (
+  instanceId: string,
+  payload: SetInstanceTestsPayload
+) => {
+  const { matchedCount, modifiedCount } = await getMongoDB()
+    .collection(COLLECTION_NAME)
+    .updateOne(
+      {
+        instanceId,
+      },
+      {
+        $set: {
+          _createTestsPayload: getSanitizedMongoObject(payload),
+        },
+      }
+    );
+
+  if (matchedCount && modifiedCount) {
+    return;
+  } else {
+    throw new AppError(INSTANCE_SET_TESTS_FAILED);
   }
 };
 
@@ -74,15 +98,15 @@ export const setScreenshotUrl = async (
     .collection(COLLECTION_NAME)
     .updateOne(
       {
-        instanceId
+        instanceId,
       },
       {
         $set: {
-          'results.screenshots.$[screenshot].screenshotURL': screenshotURL
-        }
+          'results.screenshots.$[screenshot].screenshotURL': screenshotURL,
+        },
       },
       {
-        arrayFilters: [{ 'screenshot.screenshotId': screenshotId }]
+        arrayFilters: [{ 'screenshot.screenshotId': screenshotId }],
       }
     );
 
@@ -98,12 +122,12 @@ export const setvideoUrl = async (instanceId: string, videoUrl: string) => {
     .collection(COLLECTION_NAME)
     .updateOne(
       {
-        instanceId
+        instanceId,
       },
       {
         $set: {
-          'results.videoUrl': videoUrl
-        }
+          'results.videoUrl': videoUrl,
+        },
       }
     );
 

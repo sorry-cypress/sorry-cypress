@@ -3,7 +3,7 @@ import { getMongoDB } from '@src/lib/mongo';
 import { getSanitizedMongoObject } from '@src/lib/results';
 import { ExecutionDriver, Run, RunSpec, RunWithSpecs } from '@src/types';
 
-const mergeRunSpecs = (run: any) => {
+const mergeRunSpecs = (run?: RunWithSpecs) => {
   // merge fullspec into spec
   run.specs = run.specs.map((spec: any) =>
     Object.assign(
@@ -49,9 +49,7 @@ const lookupAggregation = {
   },
 };
 
-export const getRunWithSpecs: ExecutionDriver['getRunWithSpecs'] = async (
-  id: string
-): Promise<RunWithSpecs> =>
+export const getRunWithSpecs: ExecutionDriver['getRunWithSpecs'] = async (id) =>
   mergeRunSpecs(
     (
       await getMongoDB()
