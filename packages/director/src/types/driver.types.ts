@@ -8,7 +8,9 @@ import {
   Run,
   RunWithSpecs,
   ScreenshotUploadInstruction,
+  SetInstanceTestsPayload,
   Task,
+  UpdateInstanceResultsPayload,
 } from '@sorry-cypress/common';
 
 interface Driver {
@@ -31,12 +33,14 @@ interface GetNextTaskParams {
   runId: string;
   machineId: string;
   groupId: string;
+  cypressVersion: string;
 }
 
 interface SetRunCompletedWithTimeout {
   runId: string;
   timeoutMs: number;
 }
+
 export interface ExecutionDriver extends Driver {
   getRunWithSpecs: (runId: string) => Promise<RunWithSpecs>;
   getProjectById: (projectId: string) => Promise<Project>;
@@ -52,6 +56,14 @@ export interface ExecutionDriver extends Driver {
     instanceId: string,
     results: InstanceResult
   ) => Promise<void>;
+  setInstanceTests: (
+    instanceId: string,
+    payload: SetInstanceTestsPayload
+  ) => Promise<void>;
+  updateInstanceResults: (
+    instanceId: string,
+    payload: UpdateInstanceResultsPayload
+  ) => Promise<InstanceResult>;
   setScreenshotUrl: (
     instanceId: string,
     screenshotId: string,

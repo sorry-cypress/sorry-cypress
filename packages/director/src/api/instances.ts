@@ -5,13 +5,17 @@ import {
   AssetUploadInstruction,
   InstanceResult,
   ScreenshotUploadInstruction,
+  SetInstanceTestsPayload,
   UpdateInstanceResponse,
+  UpdateInstanceResultsPayload,
 } from '@src/types';
 import { RequestHandler } from 'express';
 
-export const handleCreateInstance: RequestHandler = async (req, res) => {
+export const createInstance: RequestHandler = async (req, res) => {
   const { groupId, machineId } = req.body;
   const { runId } = req.params;
+  const cypressVersion = req.headers['x-cypress-version'].toString();
+
   const executionDriver = await getExecutionDriver();
 
   console.log(`>> Machine is requesting a new task`, {
@@ -25,7 +29,12 @@ export const handleCreateInstance: RequestHandler = async (req, res) => {
       instance,
       claimedInstances,
       totalInstances,
-    } = await executionDriver.getNextTask({ runId, machineId, groupId });
+    } = await executionDriver.getNextTask({
+      runId,
+      machineId,
+      groupId,
+      cypressVersion,
+    });
 
     if (instance === null) {
       console.log(`<< All tasks claimed`, { runId, machineId, groupId });
@@ -57,20 +66,68 @@ export const handleCreateInstance: RequestHandler = async (req, res) => {
   }
 };
 
-export const handleUpdateInstance: RequestHandler = async (req, res) => {
+/**
+ * cypress prior to 6.7.0 sends instance results in a single API call
+ */
+export const updateInstance: RequestHandler = async (req, res) => {
   const { instanceId } = req.params;
   const result: InstanceResult = req.body;
-  const executionDriver = await getExecutionDriver();
-  const screenshotsDriver = await getScreenshotsDriver();
 
   console.log(`>> Received instance result`, { instanceId });
+  const executionDriver = await getExecutionDriver();
   await executionDriver.setInstanceResults(instanceId, result);
-  const instance = await executionDriver.getInstanceById(instanceId);
-  const run = await executionDriver.getRunWithSpecs(instance.runId);
+  completeInstance(instanceId);
+  return res.json(await getInstanceScreenshots(instanceId, result));
+};
 
+// - /instances/:instanceId/tests before running a spec
+export const setInstanceTests: RequestHandler<
+  any,
+  any,
+  SetInstanceTestsPayload
+> = async (req, res) => {
+  const instanceTests = req.body;
+  const { instanceId } = req.params;
+  const executionDriver = await getExecutionDriver();
+  console.log(`>> Received instance tests`, { instanceId });
+  await executionDriver.setInstanceTests(instanceId, instanceTests);
+  res.json({});
+};
+
+// 6.7.0+ /instances/:instanceId/results after completing a spec
+export const updateInstanceResults: RequestHandler<
+  any,
+  any,
+  UpdateInstanceResultsPayload
+> = async (req, res) => {
+  const { instanceId } = req.params;
+  const results = req.body;
+
+  console.log(`>> Received instance results`, { instanceId });
+  const executionDriver = await getExecutionDriver();
+  const instanceResult = await executionDriver.updateInstanceResults(
+    instanceId,
+    results
+  );
+
+  completeInstance(instanceId);
+  res.json(await getInstanceScreenshots(instanceId, instanceResult));
+  return;
+};
+
+async function completeInstance(instanceId: string) {
+  const executionDriver = await getExecutionDriver();
+  const instance = await executionDriver.getInstanceById(instanceId);
   emitInstanceFinish({
-    runId: run.runId,
+    runId: instance.runId,
   });
+}
+async function getInstanceScreenshots(
+  instanceId: string,
+  result: InstanceResult
+) {
+  const executionDriver = await getExecutionDriver();
+  const screenshotsDriver = await getScreenshotsDriver();
 
   const screenshotUploadUrls: ScreenshotUploadInstruction[] = await screenshotsDriver.getScreenshotsUploadUrls(
     instanceId,
@@ -111,5 +168,5 @@ export const handleUpdateInstance: RequestHandler = async (req, res) => {
   if (videoUploadInstructions) {
     responsePayload.videoUploadUrl = videoUploadInstructions.uploadUrl;
   }
-  return res.json(responsePayload);
-};
+  return responsePayload;
+}

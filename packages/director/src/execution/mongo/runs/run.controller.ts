@@ -59,6 +59,7 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
     );
     await storageCreateRun({
       runId,
+      cypressVersion: params.cypressVersion,
       createdAt: new Date().toISOString(),
       completion: {
         completed: false,
@@ -111,6 +112,7 @@ export const getNextTask: ExecutionDriver['getNextTask'] = async ({
   runId,
   groupId,
   machineId,
+  cypressVersion,
 }): Promise<Task> => {
   const run = await getById(runId);
   if (!run) {
@@ -133,6 +135,7 @@ export const getNextTask: ExecutionDriver['getNextTask'] = async ({
       runId,
       instanceId: spec.instanceId,
       spec: spec.spec,
+      cypressVersion,
     });
     return {
       instance: spec,
@@ -142,7 +145,7 @@ export const getNextTask: ExecutionDriver['getNextTask'] = async ({
   } catch (error) {
     if (error.code && error.code === CLAIM_FAILED) {
       // just try to get next available spec
-      return await getNextTask({ runId, machineId, groupId });
+      return await getNextTask({ runId, machineId, groupId, cypressVersion });
     }
     throw error;
   }

@@ -20,4 +20,6 @@ export const driver: ExecutionDriver = {
   setInstanceResults: mongoInstanceController.setInstanceResults,
   setRunCompleted: mongoRunModel.setRunCompleted,
   setRunCompletedWithTimeout: mongoRunModel.setRunCompletedWithTimeout,
+  setInstanceTests: mongoInstanceController.setInstanceTests,
+  updateInstanceResults: mongoInstanceController.updateInstanceResults,
 };

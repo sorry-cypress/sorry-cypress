@@ -7,10 +7,11 @@ import {
 } from '@src/generated/graphql';
 import { getSecondsDuration } from '@src/lib/duration';
 import { areTestsGteV5 } from '@src/lib/version';
-import { DataTable, Link, Text, Tooltip } from 'bold-ui';
+import { DataTable, Text, Tooltip } from 'bold-ui';
 import { truncate } from 'lodash';
 import React from 'react';
 import { generatePath, useParams } from 'react-router';
+import { Link } from 'react-router-dom';
 import { getTestDuration, getTestStartedAt } from './util';
 
 function TestStatus(test: InstanceTest) {
@@ -26,7 +27,7 @@ function TestDuration(test: InstanceTestUnion) {
 function TestLink(test: InstanceTest) {
   const { id } = useParams<{ id: string }>();
   return (
-    <Link href={generatePath(`/instance/${id}/test/${test.testId}`)}>
+    <Link to={generatePath(`/instance/${id}/test/${test.testId}`)}>
       {test.title?.join(' > ')}
     </Link>
   );

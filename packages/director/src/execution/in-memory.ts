@@ -1,10 +1,16 @@
 import { INACTIVITY_TIMEOUT_SECONDS } from '@src/config';
-import { AppError, INSTANCE_NOT_EXIST, RUN_NOT_EXIST } from '@src/lib/errors';
+import {
+  AppError,
+  INSTANCE_NOT_EXIST,
+  INSTANCE_NO_CREATE_TEST_DTO,
+  RUN_NOT_EXIST,
+} from '@src/lib/errors';
 import {
   generateGroupId,
   generateRunIdHash,
   generateUUID,
 } from '@src/lib/hash';
+import { mergeInstanceResults } from '@src/lib/instance';
 import { getDashboardRunURL } from '@src/lib/urls';
 import {
   CreateRunParameters,
@@ -17,7 +23,9 @@ import {
   Project,
   Run,
   RunMetaData,
+  SetInstanceTestsPayload,
   Task,
+  UpdateInstanceResultsPayload,
 } from '@src/types';
 import {
   enhanceSpec,
@@ -134,6 +142,7 @@ const getNextTask: ExecutionDriver['getNextTask'] = async ({
   );
   runs[runId].specs[unclaimedSpecIndex].claimed = true;
   instances[unclaimedSpec.instanceId] = {
+    _createTestsPayload: null,
     runId,
     instanceId: unclaimedSpec.instanceId,
   };
@@ -162,6 +171,41 @@ const setInstanceResults = async (
   instances[instanceId] = { ...instances[instanceId], results };
 };
 
+const setInstanceTests = async (
+  instanceId: string,
+  payload: SetInstanceTestsPayload
+) => {
+  if (!instances[instanceId]) {
+    throw new AppError(INSTANCE_NOT_EXIST);
+  }
+  instances[instanceId] = {
+    ...instances[instanceId],
+    _createTestsPayload: { ...payload },
+  };
+};
+
+const updateInstanceResults = async (
+  instanceId: string,
+  update: UpdateInstanceResultsPayload
+) => {
+  const instance = instances[instanceId];
+  if (!instance) {
+    throw new AppError(INSTANCE_NOT_EXIST);
+  }
+
+  if (!instance._createTestsPayload) {
+    throw new AppError(INSTANCE_NO_CREATE_TEST_DTO);
+  }
+
+  const instanceResult = mergeInstanceResults(
+    instance._createTestsPayload,
+    update
+  );
+
+  instances[instanceId].results = instanceResult;
+  return instanceResult;
+};
+
 export const driver: ExecutionDriver = {
   id: 'in-memory',
   init: () => Promise.resolve(),
@@ -173,6 +217,8 @@ export const driver: ExecutionDriver = {
   createRun,
   getNextTask,
   setInstanceResults,
+  setInstanceTests,
+  updateInstanceResults,
   setScreenshotUrl: () => Promise.resolve(),
   setVideoUrl: () => Promise.resolve(),
   setRunCompleted: async (runId) => {
