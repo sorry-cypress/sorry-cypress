@@ -63,15 +63,15 @@ Yes. Have been used by dozens of companies of different sizes around the globe.
 
 ### I need help, what do I do?
 
-Check out our [Support](https://docs.sorry-cypress.dev/support) options
+Thanks, here are our [Support Options](https://docs.sorry-cypress.dev/support)
 
 ### I want to help, how?
 
-Checkout out our [Contribution](https://docs.sorry-cypress.dev/contributions) guide
+Awesome, head to [Contribution Options](https://docs.sorry-cypress.dev/contributions)
 
 ### Changelog
 
-Check out the [Changelog](https://docs.sorry-cypress.dev/development/changelog)
+[Changelog](https://docs.sorry-cypress.dev/development/changelog)
 
 ## License
 
