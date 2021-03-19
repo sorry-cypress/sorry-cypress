@@ -1,10 +1,10 @@
-import { InstanceResult, TestV670 } from '@sorry-cypress/common';
 import {
   AppError,
   INSTANCE_NOT_EXIST,
   INSTANCE_NO_CREATE_TEST_DTO,
   SCREENSHOT_URL_UPDATE_FAILED,
 } from '@src/lib/errors';
+import { mergeInstanceResults } from '@src/lib/instance';
 import { ExecutionDriver } from '@src/types';
 import {
   getInstanceById,
@@ -50,19 +50,11 @@ export const updateInstanceResults: ExecutionDriver['updateInstanceResults'] = a
   if (!instance._createTestsPayload) {
     throw new AppError(INSTANCE_NO_CREATE_TEST_DTO);
   }
-  // fetch tokens from stored _createTestsPayload and merge
-  const { cypressConfig, tests } = instance._createTestsPayload;
-  const mergedTests = update.tests.map((t) => {
-    const existingTest = (tests as TestV670[]).find(
-      (i) => i.clientId === t.clientId
-    );
-    return { ...existingTest, ...t, testId: t.clientId };
-  });
-  const instanceResult: InstanceResult = {
-    ...update,
-    cypressConfig,
-    tests: mergedTests,
-  };
+  const instanceResult = mergeInstanceResults(
+    instance._createTestsPayload,
+    update
+  );
+
   await modelSetInstanceResults(instanceId, instanceResult);
 
   return instanceResult;

@@ -1,10 +1,10 @@
-import { Test } from '../tests';
+import { Test, TestV670 } from '../tests';
 
 export interface Instance {
   instanceId: string;
   runId: string;
   // 6.7.0+ reports tests before running specs
-  _createTestsPayload: Record<string, unknown>;
+  _createTestsPayload: SetInstanceTestsPayload;
   results?: InstanceResult;
 }
 
@@ -67,3 +67,17 @@ export interface AssetUploadInstruction {
 export interface ScreenshotUploadInstruction extends AssetUploadInstruction {
   screenshotId: string;
 }
+
+/// Requests payload cypress v6.7.0+
+export interface SetInstanceTestsPayload {
+  config: CypressConfig;
+  tests: Pick<TestV670, 'clientId' | 'body' | 'title' | 'config' | 'hookIds'>[];
+  hooks: string[];
+}
+
+export type UpdateInstanceResultsPayload = Pick<
+  InstanceResult,
+  'stats' | 'exception' | 'video' | 'screenshots' | 'reporterStats'
+> & {
+  tests: Pick<TestV670, 'clientId' | 'state' | 'displayError' | 'attempts'>[];
+};

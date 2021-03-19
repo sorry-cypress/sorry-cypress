@@ -8,7 +8,7 @@ import {
 } from '@src/lib/errors';
 import { getMongoDB } from '@src/lib/mongo';
 import { getSanitizedMongoObject } from '@src/lib/results';
-import { InstanceResult, SetInstanceTestsPayload } from '@src/types';
+import { Instance, InstanceResult, SetInstanceTestsPayload } from '@src/types';
 
 const COLLECTION_NAME = 'instances';
 
@@ -39,7 +39,9 @@ export const insertInstance = async ({
 };
 
 export const getInstanceById = async (instanceId: string) =>
-  await getMongoDB().collection(COLLECTION_NAME).findOne({ instanceId });
+  await getMongoDB()
+    .collection<Instance>(COLLECTION_NAME)
+    .findOne({ instanceId });
 
 export const setInstanceResults = async (
   instanceId: string,

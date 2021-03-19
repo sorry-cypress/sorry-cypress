@@ -18,7 +18,6 @@ import {
   DataTable,
   Grid,
   HFlow,
-  Link,
   Switch,
   Text,
   Tooltip,
@@ -26,6 +25,7 @@ import {
 } from 'bold-ui';
 import React from 'react';
 import { generatePath, useHistory } from 'react-router';
+import { Link } from 'react-router-dom';
 import stringHash from 'string-hash';
 
 export function RunDetails({ run }: { run: NonNullable<GetRunQuery['run']> }) {
@@ -166,7 +166,7 @@ const getMachineCell = (spec: RunDetailSpecFragment) => {
 };
 const getGroupIdCell = (spec: RunDetailSpecFragment) => spec.groupId;
 const getSpecNameCell = (spec: RunDetailSpecFragment) => (
-  <Link href={generatePath(`/instance/${spec.instanceId}`)}>{spec.spec}</Link>
+  <Link to={generatePath(`/instance/${spec.instanceId}`)}>{spec.spec}</Link>
 );
 
 const getDurationCell = (spec: RunDetailSpecFragment) => {

@@ -2,15 +2,15 @@ import {
   AssetUploadInstruction,
   CreateRunParameters,
   CreateRunResponse,
-  CypressConfig,
   Instance,
   InstanceResult,
   Project,
   Run,
   RunWithSpecs,
   ScreenshotUploadInstruction,
+  SetInstanceTestsPayload,
   Task,
-  TestV670,
+  UpdateInstanceResultsPayload,
 } from '@sorry-cypress/common';
 
 interface Driver {
@@ -74,17 +74,3 @@ export interface ExecutionDriver extends Driver {
     videoUrl: string;
   }) => Promise<void>;
 }
-
-/// Requests payload cypress v6.7.0+
-export interface SetInstanceTestsPayload {
-  config: CypressConfig;
-  tests: Pick<TestV670, 'clientId' | 'body' | 'title' | 'config' | 'hookIds'>[];
-  hooks: string[];
-}
-
-export type UpdateInstanceResultsPayload = Pick<
-  InstanceResult,
-  'stats' | 'exception' | 'video' | 'screenshots' | 'reporterStats'
-> & {
-  tests: Pick<TestV670, 'clientId' | 'state' | 'displayError' | 'attempts'>[];
-};
