@@ -6,6 +6,7 @@ import {
   S3_READ_URL_PREFIX,
   S3_IMAGE_KEY_PREFIX,
   S3_VIDEO_KEY_PREFIX,
+  S3_UPLOAD_URL,
 } from './config';
 import { S3SignedUploadResult } from './types';
 import { AssetUploadInstruction } from '@src/types';
@@ -49,7 +50,7 @@ export const getUploadUrl = async ({
         }
         return resolve({
           readUrl: `${S3_READ_URL_PREFIX || BUCKET_URL}/${key}`,
-          uploadUrl,
+          uploadUrl: S3_UPLOAD_URL || uploadUrl,
         });
       }
     );
