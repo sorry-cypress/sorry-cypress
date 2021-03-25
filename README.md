@@ -1,6 +1,5 @@
 <div align="center">
-<div><img src="https://sorry-cypress.dev/public/octolumbercat.png" width="256" /></div>
-<div>:octocat: An open-source, on-premise, self-hosted alternative to Cypress dashboard :evergreen_tree:</div>
+<div>:octocat: An open-source, on-premise, self-hosted parallelization for cypress tests :evergreen_tree:</div>
 </div>
 
 <br />
@@ -9,22 +8,29 @@
 ![Update Dockerhub Images](https://github.com/agoldis/sorry-cypress/workflows/Lint%20and%20test/badge.svg)
 <a href="https://join.slack.com/t/sorry-cypress/shared_invite/zt-eis1h6jl-tJELaD7q9UGEhMP8WHJOaw" target="_blank">![Join slack](https://img.shields.io/badge/join-slack-orange?logo=slack)<a/>
 
-# Hello 👋🏻
 
-Documentation has moved to https://sorry-cypress.dev/
+**Sorry-cypress** is an open-source solution for the parallelization and recording of cypress tests.
 
-Please help us by taking a short 1-minute [survey](https://forms.gle/qxoTPFiokLWuc6eZ7). 
+Set up **sorry-cypress** on your infrastructure to run cypress tests in parallel with no limitations, store test results on private and secure storage. Sorry-cypress integrates with Github, Slack, and other systems via WebHooks.
 
-Show us your ❤️ at [GitHub Sponsors](https://github.com/sponsors/agoldis).
+**Sorry-cypress** can be installed as a standalone service using Docker, docker-compose, or Kubernetes.
 
-Thank you!
+<p align="center">
+  <a href="https://sorry-cypress.dev">https://sorry-cypress.dev</a>
+</p>
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/1637928/111021636-b45e5400-8382-11eb-92ed-3ca69182555b.png" height="500" />
+</p>
+
 
 ## Table of contents
 
 - [Features](#features)
 - [Quickstart](#quickstart)
 - [FAQ](#faq)
+- [Changelog](#changelog)
 - [License](#license)
+- [Donate](#donate)
 - [Contributors](#contributors)
 
 ## Features
@@ -33,38 +39,48 @@ Thank you!
 - upload screenshots and videos to your own storage
 - browse test results, screenshots and video recordings
 - self-hosted - use your own infrastructure, own your data
-- integrate with GitHub or anything else via webhooks
-- ready to use Docker images, Kubernetes and AWS Cloud formation template
+- integrate with GitHub, Slack or anything else via webhooks
+- works on popular cloud platforms and your data center:
+  - Docker images
+  - Docker compose files
+  - Kubernetes Helm Charts
+  - AWS
+  - Heroku
+  - Google Cloud
+  - Azure
 
 ## Quickstart
 
-![Running Cypress test in parallel demo](https://sorry-cypress.dev/public/demo.gif)
-
 It takes just 5 minutes to setup sorry-cypress 🚀
 
-Follow our [Quickstart Guide](https://sorry-cypress.dev/quickstart).
+Follow our [Guide](https://docs.sorry-cypress.dev/guide/get-started).
 
 ## FAQ
 
-### Why?
-
-I was upset because:
-
-- official dashboard crashes and blocks test runs
-- no on-prem solution, I want to own my data
-- parallelization stops working after paid plan has reached its limit
-
-### Is it legal?
-
-Yes, Cypress is [MIT licensed open source software](https://github.com/cypress-io/cypress/blob/develop/LICENSE).
-
 ### Is it production-ready?
 
-Yes.
+Yes. Have been used by dozens of companies of different sizes around the globe.
+
+### I need help, what do I do?
+
+Thanks, here are our [Support Options](https://docs.sorry-cypress.dev/support)
+
+### I want to help, how?
+
+Awesome, head to [Contribution Options](https://docs.sorry-cypress.dev/contributions)
+
+### Changelog
+
+[Changelog](https://docs.sorry-cypress.dev/development/changelog)
 
 ## License
 
 MIT
+
+## Donate
+
+- [GitHub Sponsors](https://github.com/sponsors/agoldis)
+- [Open Collective](https://opencollective.com/sorry-cypress)
 
 ## Contributors
 

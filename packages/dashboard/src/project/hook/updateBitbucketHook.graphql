@@ -1,0 +1,5 @@
+mutation updateBitbucketHook($input: UpdateBitbucketHookInput!) {
+  updateBitbucketHook(input: $input) {
+    hookId
+  }
+}

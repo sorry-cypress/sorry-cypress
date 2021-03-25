@@ -1,27 +1,23 @@
-import { createProject } from './../projects/project.model';
-import {
-  getRunById,
-  createRun as storageCreateRun,
-  setSpecClaimed,
-  addSpecsToRun,
-} from './run.model';
-
-import { createInstance } from '../instances/instance.controller';
-import { getDashboardRunURL } from '@src/lib/urls';
-
+import { INACTIVITY_TIMEOUT_SECONDS } from '@src/config';
 import {
   AppError,
+  CLAIM_FAILED,
   RUN_EXISTS,
   RUN_NOT_EXIST,
-  CLAIM_FAILED,
 } from '@src/lib/errors';
-
 import {
-  generateRunIdHash,
   generateGroupId,
+  generateRunIdHash,
   generateUUID,
 } from '@src/lib/hash';
-import { ExecutionDriver, Task, CreateRunWarning } from '@src/types';
+import { getDashboardRunURL } from '@src/lib/urls';
+import {
+  CreateRunResponse,
+  CreateRunWarning,
+  ExecutionDriver,
+  getCreateProjectValue,
+  Task,
+} from '@src/types';
 import {
   enhanceSpec,
   getClaimedSpecs,
@@ -29,6 +25,14 @@ import {
   getNewSpecsInGroup,
   getSpecsForGroup,
 } from '../../utils';
+import { createInstance } from '../instances/instance.controller';
+import { createProject } from './../projects/project.model';
+import {
+  addSpecsToRun,
+  createRun as storageCreateRun,
+  getRunById,
+  setSpecClaimed,
+} from './run.model';
 
 export const getById = getRunById;
 
@@ -40,22 +44,26 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
   const machineId = generateUUID();
   const enhaceSpecForThisRun = enhanceSpec(groupId);
 
-  const response = {
+  const response: CreateRunResponse = {
     groupId,
     machineId,
     runId,
     runUrl: getDashboardRunURL(runId),
+    isNewRun: true,
     warnings: [] as CreateRunWarning[],
   };
 
   try {
-    await createProject({
-      projectId: params.projectId,
-      createdAt: new Date().toISOString(),
-    });
+    await createProject(
+      getCreateProjectValue(params.projectId, INACTIVITY_TIMEOUT_SECONDS)
+    );
     await storageCreateRun({
       runId,
+      cypressVersion: params.cypressVersion,
       createdAt: new Date().toISOString(),
+      completion: {
+        completed: false,
+      },
       meta: {
         ciBuildId: params.ciBuildId,
         commit: params.commit,
@@ -67,8 +75,8 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
     return response;
   } catch (error) {
     if (error.code && error.code === RUN_EXISTS) {
-      // update new specs for a new group
-      // TODO: prone to race condition on serverless
+      response.isNewRun = false;
+      // serverless: prone to race condition on serverless
       const run = await getRunById(runId);
 
       const newSpecs = getNewSpecsInGroup({
@@ -85,7 +93,7 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
       const existingGroupSpecs = getSpecsForGroup(run, groupId);
       if (newSpecs.length && existingGroupSpecs.length) {
         response.warnings.push({
-          message: `Group ${groupId} has different specs for the same run. Make sure each group in run has the same specs.`,
+          message: `Group ${groupId} has different specs for the same run.`,
           originalSpecs: existingGroupSpecs.map((spec) => spec.spec).join(', '),
           newSpecs: newSpecs.join(','),
         });
@@ -104,6 +112,7 @@ export const getNextTask: ExecutionDriver['getNextTask'] = async ({
   runId,
   groupId,
   machineId,
+  cypressVersion,
 }): Promise<Task> => {
   const run = await getById(runId);
   if (!run) {
@@ -126,6 +135,7 @@ export const getNextTask: ExecutionDriver['getNextTask'] = async ({
       runId,
       instanceId: spec.instanceId,
       spec: spec.spec,
+      cypressVersion,
     });
     return {
       instance: spec,
@@ -135,7 +145,7 @@ export const getNextTask: ExecutionDriver['getNextTask'] = async ({
   } catch (error) {
     if (error.code && error.code === CLAIM_FAILED) {
       // just try to get next available spec
-      return await getNextTask({ runId, machineId, groupId });
+      return await getNextTask({ runId, machineId, groupId, cypressVersion });
     }
     throw error;
   }

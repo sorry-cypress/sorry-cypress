@@ -29,5 +29,8 @@ jobs:
       - name: Run lint
         run: yarn lint
 
+      - name: Build common package
+        run: yarn workspace @sorry-cypress/common build
+
       - name: Run unit tests
         run: yarn test

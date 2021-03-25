@@ -1,17 +1,17 @@
 import {
-  Instance,
-  InstanceResult,
-  ScreenshotUploadInstruction,
   AssetUploadInstruction,
-} from './instance.types';
-import { Project } from './project.types';
-import {
   CreateRunParameters,
   CreateRunResponse,
+  Instance,
+  InstanceResult,
+  Project,
   Run,
   RunWithSpecs,
+  ScreenshotUploadInstruction,
+  SetInstanceTestsPayload,
   Task,
-} from './run.types';
+  UpdateInstanceResultsPayload,
+} from '@sorry-cypress/common';
 
 interface Driver {
   id: string;
@@ -33,7 +33,14 @@ interface GetNextTaskParams {
   runId: string;
   machineId: string;
   groupId: string;
+  cypressVersion: string;
 }
+
+interface SetRunCompletedWithTimeout {
+  runId: string;
+  timeoutMs: number;
+}
+
 export interface ExecutionDriver extends Driver {
   getRunWithSpecs: (runId: string) => Promise<RunWithSpecs>;
   getProjectById: (projectId: string) => Promise<Project>;
@@ -41,10 +48,22 @@ export interface ExecutionDriver extends Driver {
   getInstanceById: (instanceId: string) => Promise<Instance>;
   createRun: (params: CreateRunParameters) => Promise<CreateRunResponse>;
   getNextTask: (params: GetNextTaskParams) => Promise<Task>;
+  setRunCompleted: (runId: string) => Promise<void>;
+  setRunCompletedWithTimeout: (
+    params: SetRunCompletedWithTimeout
+  ) => Promise<void>;
   setInstanceResults: (
     instanceId: string,
     results: InstanceResult
   ) => Promise<void>;
+  setInstanceTests: (
+    instanceId: string,
+    payload: SetInstanceTestsPayload
+  ) => Promise<void>;
+  updateInstanceResults: (
+    instanceId: string,
+    payload: UpdateInstanceResultsPayload
+  ) => Promise<InstanceResult>;
   setScreenshotUrl: (
     instanceId: string,
     screenshotId: string,

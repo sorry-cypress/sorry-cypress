@@ -1,0 +1,4 @@
+fragment RunSummaryCompletion on RunCompletion {
+  completed
+  inactivityTimeoutMs
+}

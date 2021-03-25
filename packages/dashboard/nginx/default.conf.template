@@ -2,6 +2,6 @@ server {
 	listen ${PORT} default_server;
 	root /usr/share/nginx/html;
 	try_files $uri /index.html;
-	sub_filter '<?- SORRY_CYPRESS_ENVIRONMENT ?>' '{ GRAPHQL_SCHEMA_URL: "${GRAPHQL_SCHEMA_URL}", CI_URL: "${CI_URL}" }';
+	sub_filter '<?- SORRY_CYPRESS_ENVIRONMENT ?>' '{ GRAPHQL_CLIENT_CREDENTIALS: "${GRAPHQL_CLIENT_CREDENTIALS}", GRAPHQL_SCHEMA_URL: "${GRAPHQL_SCHEMA_URL}", CI_URL: "${CI_URL}" }';
 	sub_filter_once on;
 }

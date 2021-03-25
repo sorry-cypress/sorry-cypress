@@ -7,6 +7,8 @@ import {
 } from '@src/config';
 import mongodb, { MongoClientOptions } from 'mongodb';
 
+import { Project } from '@src/generated/graphql';
+
 export { ObjectID } from 'mongodb';
 
 let db: mongodb.Db;
@@ -38,3 +40,6 @@ export const init = async () => {
 };
 
 export const getMongoDB = () => db;
+
+export const getProjectsCollection = () =>
+  getMongoDB().collection<Project>('projects');

@@ -1,0 +1,9 @@
+mutation createGenericHook($input: CreateGenericHookInput!) {
+  createGenericHook(input: $input) {
+    hookId
+    hookType
+    url
+    hookEvents
+    headers
+  }
+}

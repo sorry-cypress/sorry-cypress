@@ -7,6 +7,14 @@ interface NavItem {
 }
 export const navStructure = makeVar<NavItem[]>([]);
 
+export const setNav = (elements: NavItem[]) =>
+  navStructure(
+    elements.map((e) => ({
+      ...e,
+      label: e.label ? encodeURIComponent(e.label) : e.label,
+    }))
+  );
+
 const detectBadPath = (fn: (value: string) => string) => (value: unknown) => {
   if (isNil(value)) {
     throw new Error(`Uknown path param for ${fn.name}`);
@@ -19,6 +27,5 @@ export const getProjectPath = detectBadPath(
 );
 export const getRunPath = detectBadPath((id: string) => `run/${id}`);
 export const getInstancePath = detectBadPath((id: string) => `instance/${id}`);
-const _getTestPath = (instanceId: string, testId: string) =>
+export const getTestPath = (instanceId: string, testId: string) =>
   `instance/${instanceId}/test/${testId}`;
-export const getTestPath = _getTestPath;

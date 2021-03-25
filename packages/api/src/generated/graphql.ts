@@ -1,17 +1,8 @@
-import {
-  GraphQLResolveInfo,
-  GraphQLScalarType,
-  GraphQLScalarTypeConfig,
-} from 'graphql';
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 export type Maybe<T> = T | null;
-export type Exact<T extends { [key: string]: unknown }> = {
-  [K in keyof T]: T[K];
-};
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
-export type RequireFields<T, K extends keyof T> = {
-  [X in Exclude<keyof T, K>]?: T[X];
-} &
-  { [P in K]-?: NonNullable<T[P]> };
+export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -19,6 +10,10 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  GenericHookType: any;
+  SlackHookType: any;
+  GithubHookType: any;
+  BitbucketHookType: any;
   DateTime: any;
 };
 
@@ -33,14 +28,17 @@ export type Query = {
   specStats?: Maybe<SpecStats>;
 };
 
+
 export type QueryProjectsArgs = {
   orderDirection?: Maybe<OrderingOptions>;
   filters?: Maybe<Array<Maybe<Filters>>>;
 };
 
+
 export type QueryProjectArgs = {
   id: Scalars['ID'];
 };
+
 
 export type QueryRunsArgs = {
   orderDirection?: Maybe<OrderingOptions>;
@@ -48,18 +46,22 @@ export type QueryRunsArgs = {
   filters?: Maybe<Array<Maybe<Filters>>>;
 };
 
+
 export type QueryRunFeedArgs = {
   cursor?: Maybe<Scalars['String']>;
   filters?: Maybe<Array<Maybe<Filters>>>;
 };
 
+
 export type QueryRunArgs = {
   id: Scalars['ID'];
 };
 
+
 export type QueryInstanceArgs = {
   id: Scalars['ID'];
 };
+
 
 export type QuerySpecStatsArgs = {
   spec: Scalars['String'];
@@ -74,31 +76,91 @@ export type Mutation = {
   deleteProject: DeleteProjectResponse;
   createProject: Project;
   updateProject: Project;
+  createGenericHook: GenericHook;
+  updateGenericHook: GenericHook;
+  createBitbucketHook: BitbucketHook;
+  updateBitbucketHook: BitbucketHook;
+  createGithubHook: GithubHook;
+  updateGithubHook: GithubHook;
+  createSlackHook: SlackHook;
+  updateSlackHook: SlackHook;
+  deleteHook: DeleteHookResponse;
 };
+
 
 export type MutationDeleteRunArgs = {
   runId: Scalars['ID'];
 };
 
+
 export type MutationDeleteRunsArgs = {
   runIds: Array<Maybe<Scalars['ID']>>;
 };
+
 
 export type MutationDeleteRunsInDateRangeArgs = {
   startDate: Scalars['DateTime'];
   endDate: Scalars['DateTime'];
 };
 
+
 export type MutationDeleteProjectArgs = {
   projectId: Scalars['ID'];
 };
 
+
 export type MutationCreateProjectArgs = {
-  project?: Maybe<ProjectInput>;
+  project: CreateProjectInput;
 };
 
+
 export type MutationUpdateProjectArgs = {
-  project?: Maybe<ProjectInput>;
+  input: UpdateProjectInput;
+};
+
+
+export type MutationCreateGenericHookArgs = {
+  input: CreateGenericHookInput;
+};
+
+
+export type MutationUpdateGenericHookArgs = {
+  input: UpdateGenericHookInput;
+};
+
+
+export type MutationCreateBitbucketHookArgs = {
+  input: CreateBitbucketHookInput;
+};
+
+
+export type MutationUpdateBitbucketHookArgs = {
+  input: UpdateBitbucketHookInput;
+};
+
+
+export type MutationCreateGithubHookArgs = {
+  input: CreateGithubHookInput;
+};
+
+
+export type MutationUpdateGithubHookArgs = {
+  input: UpdateGithubHookInput;
+};
+
+
+export type MutationCreateSlackHookArgs = {
+  input: CreateSlackHookInput;
+};
+
+
+export type MutationUpdateSlackHookArgs = {
+  input: UpdateSlackHookInput;
+};
+
+
+export type MutationDeleteHookArgs = {
+  input: DeleteHookInput;
 };
 
 export type DeleteRunResponse = {
@@ -115,6 +177,109 @@ export type SpecStats = {
   count: Scalars['Int'];
 };
 
+
+
+
+
+export type DeleteHookInput = {
+  projectId: Scalars['ID'];
+  hookId: Scalars['ID'];
+};
+
+export type DeleteHookResponse = {
+  __typename?: 'DeleteHookResponse';
+  projectId: Scalars['ID'];
+  hookId: Scalars['ID'];
+};
+
+export type SlackHook = {
+  __typename?: 'SlackHook';
+  projectId: Scalars['ID'];
+  hookId: Scalars['ID'];
+  url: Scalars['String'];
+  hookType: Scalars['SlackHookType'];
+  hookEvents: Array<Scalars['String']>;
+};
+
+export type CreateSlackHookInput = {
+  projectId: Scalars['ID'];
+};
+
+export type UpdateSlackHookInput = {
+  projectId: Scalars['ID'];
+  hookId: Scalars['ID'];
+  url: Scalars['String'];
+  hookEvents: Array<Scalars['String']>;
+};
+
+export type GithubHook = {
+  __typename?: 'GithubHook';
+  projectId: Scalars['ID'];
+  hookId: Scalars['ID'];
+  url: Scalars['String'];
+  hookType: Scalars['GithubHookType'];
+  githubToken?: Maybe<Scalars['String']>;
+  githubContext?: Maybe<Scalars['String']>;
+};
+
+export type CreateGithubHookInput = {
+  projectId: Scalars['ID'];
+};
+
+export type UpdateGithubHookInput = {
+  projectId: Scalars['ID'];
+  hookId: Scalars['ID'];
+  url: Scalars['String'];
+  githubToken?: Maybe<Scalars['String']>;
+  githubContext?: Maybe<Scalars['String']>;
+};
+
+export type BitbucketHook = {
+  __typename?: 'BitbucketHook';
+  projectId: Scalars['ID'];
+  hookId: Scalars['ID'];
+  url: Scalars['String'];
+  hookType: Scalars['BitbucketHookType'];
+  bitbucketUsername?: Maybe<Scalars['String']>;
+  bitbucketToken?: Maybe<Scalars['String']>;
+  bitbucketBuildName?: Maybe<Scalars['String']>;
+};
+
+export type CreateBitbucketHookInput = {
+  projectId: Scalars['ID'];
+};
+
+export type UpdateBitbucketHookInput = {
+  projectId: Scalars['ID'];
+  hookId: Scalars['ID'];
+  url?: Maybe<Scalars['String']>;
+  bitbucketUsername: Scalars['String'];
+  bitbucketToken?: Maybe<Scalars['String']>;
+  bitbucketBuildName?: Maybe<Scalars['String']>;
+};
+
+export type GenericHook = {
+  __typename?: 'GenericHook';
+  projectId: Scalars['ID'];
+  hookId: Scalars['ID'];
+  url: Scalars['String'];
+  headers?: Maybe<Scalars['String']>;
+  hookType: Scalars['GenericHookType'];
+  hookEvents: Array<Scalars['String']>;
+};
+
+export type CreateGenericHookInput = {
+  projectId: Scalars['ID'];
+};
+
+export type UpdateGenericHookInput = {
+  projectId: Scalars['ID'];
+  hookId: Scalars['ID'];
+  url: Scalars['String'];
+  headers?: Maybe<Scalars['String']>;
+  hookEvents: Array<Scalars['String']>;
+};
+
 export type Hook = {
   __typename?: 'Hook';
   hookId?: Maybe<Scalars['String']>;
@@ -124,26 +289,44 @@ export type Hook = {
   hookType?: Maybe<Scalars['String']>;
   githubToken?: Maybe<Scalars['String']>;
   githubContext?: Maybe<Scalars['String']>;
+  bitbucketUsername?: Maybe<Scalars['String']>;
+  bitbucketToken?: Maybe<Scalars['String']>;
+  bitbucketBuildName?: Maybe<Scalars['String']>;
 };
 
 export type Project = {
   __typename?: 'Project';
-  projectId: Scalars['String'];
-  hooks?: Maybe<Array<Maybe<Hook>>>;
+  projectId: Scalars['ID'];
+  hooks: Array<Hook>;
+  inactivityTimeoutSeconds?: Maybe<Scalars['Int']>;
 };
 
 export type HookInput = {
   hookId?: Maybe<Scalars['String']>;
-  url?: Maybe<Scalars['String']>;
+  url: Scalars['String'];
   headers?: Maybe<Scalars['String']>;
   hookEvents?: Maybe<Array<Maybe<Scalars['String']>>>;
   hookType?: Maybe<Scalars['String']>;
   githubToken?: Maybe<Scalars['String']>;
   githubContext?: Maybe<Scalars['String']>;
+  bitbucketUsername?: Maybe<Scalars['String']>;
+  bitbucketToken?: Maybe<Scalars['String']>;
+  bitbucketBuildName?: Maybe<Scalars['String']>;
+};
+
+export type CreateProjectInput = {
+  projectId: Scalars['ID'];
+  inactivityTimeoutSeconds: Scalars['Int'];
+};
+
+export type UpdateProjectInput = {
+  projectId: Scalars['ID'];
+  inactivityTimeoutSeconds: Scalars['Int'];
 };
 
 export type ProjectInput = {
   projectId: Scalars['String'];
+  inactivityTimeoutSeconds?: Maybe<Scalars['Int']>;
   hooks?: Maybe<Array<Maybe<HookInput>>>;
 };
 
@@ -158,8 +341,15 @@ export type Run = {
   __typename?: 'Run';
   runId: Scalars['ID'];
   createdAt: Scalars['DateTime'];
-  meta?: Maybe<RunMeta>;
+  meta: RunMeta;
   specs: Array<FullRunSpec>;
+  completion?: Maybe<RunCompletion>;
+};
+
+export type RunCompletion = {
+  __typename?: 'RunCompletion';
+  completed: Scalars['Boolean'];
+  inactivityTimeoutMs?: Maybe<Scalars['Int']>;
 };
 
 export type FullRunSpec = {
@@ -185,8 +375,8 @@ export type Commit = {
 
 export type RunMeta = {
   __typename?: 'RunMeta';
-  ciBuildId?: Maybe<Scalars['String']>;
-  projectId?: Maybe<Scalars['String']>;
+  ciBuildId: Scalars['String'];
+  projectId: Scalars['String'];
   commit?: Maybe<Commit>;
 };
 
@@ -227,7 +417,7 @@ export type RunSpec = {
 export type InstanceResults = {
   __typename?: 'InstanceResults';
   stats: InstanceStats;
-  tests?: Maybe<Array<Maybe<InstanceTestUnion>>>;
+  tests: Array<InstanceTestUnion>;
   error?: Maybe<Scalars['String']>;
   stdout?: Maybe<Scalars['String']>;
   screenshots: Array<InstanceScreeshot>;
@@ -238,15 +428,15 @@ export type InstanceResults = {
 
 export type InstanceStats = {
   __typename?: 'InstanceStats';
-  suites?: Maybe<Scalars['Int']>;
-  tests?: Maybe<Scalars['Int']>;
-  passes?: Maybe<Scalars['Int']>;
-  pending?: Maybe<Scalars['Int']>;
-  skipped?: Maybe<Scalars['Int']>;
-  failures?: Maybe<Scalars['Int']>;
-  wallClockStartedAt?: Maybe<Scalars['String']>;
-  wallClockEndedAt?: Maybe<Scalars['String']>;
-  wallClockDuration?: Maybe<Scalars['Int']>;
+  suites: Scalars['Int'];
+  tests: Scalars['Int'];
+  passes: Scalars['Int'];
+  pending: Scalars['Int'];
+  skipped: Scalars['Int'];
+  failures: Scalars['Int'];
+  wallClockStartedAt: Scalars['String'];
+  wallClockEndedAt: Scalars['String'];
+  wallClockDuration: Scalars['Int'];
 };
 
 export type CypressConfig = {
@@ -280,11 +470,18 @@ export type ReporterStats = {
 
 export type InstanceTestUnion = InstanceTest | InstanceTestV5;
 
+export enum TestState {
+  Failed = 'failed',
+  Passed = 'passed',
+  Pending = 'pending',
+  Skipped = 'skipped'
+}
+
 export type InstanceTest = {
   __typename?: 'InstanceTest';
   testId: Scalars['String'];
-  title?: Maybe<Array<Maybe<Scalars['String']>>>;
-  state?: Maybe<Scalars['String']>;
+  title: Array<Scalars['String']>;
+  state: TestState;
   body?: Maybe<Scalars['String']>;
   stack?: Maybe<Scalars['String']>;
   error?: Maybe<Scalars['String']>;
@@ -295,8 +492,8 @@ export type InstanceTest = {
 export type InstanceTestV5 = {
   __typename?: 'InstanceTestV5';
   testId: Scalars['String'];
-  title?: Maybe<Array<Maybe<Scalars['String']>>>;
-  state?: Maybe<Scalars['String']>;
+  title: Array<Scalars['String']>;
+  state: TestState;
   body?: Maybe<Scalars['String']>;
   displayError?: Maybe<Scalars['String']>;
   attempts: Array<TestAttempt>;
@@ -317,9 +514,10 @@ export type TestAttempt = {
   wallClockDuration?: Maybe<Scalars['Int']>;
 };
 
+
 export enum OrderingOptions {
   Desc = 'DESC',
-  Asc = 'ASC',
+  Asc = 'ASC'
 }
 
 export type Filters = {
@@ -328,7 +526,10 @@ export type Filters = {
   like?: Maybe<Scalars['String']>;
 };
 
+
+
 export type ResolverTypeWrapper<T> = Promise<T> | T;
+
 
 export type LegacyStitchingResolver<TResult, TParent, TContext, TArgs> = {
   fragment: string;
@@ -339,9 +540,7 @@ export type NewStitchingResolver<TResult, TParent, TContext, TArgs> = {
   selectionSet: string;
   resolve: ResolverFn<TResult, TParent, TContext, TArgs>;
 };
-export type StitchingResolver<TResult, TParent, TContext, TArgs> =
-  | LegacyStitchingResolver<TResult, TParent, TContext, TArgs>
-  | NewStitchingResolver<TResult, TParent, TContext, TArgs>;
+export type StitchingResolver<TResult, TParent, TContext, TArgs> = LegacyStitchingResolver<TResult, TParent, TContext, TArgs> | NewStitchingResolver<TResult, TParent, TContext, TArgs>;
 export type Resolver<TResult, TParent = {}, TContext = {}, TArgs = {}> =
   | ResolverFn<TResult, TParent, TContext, TArgs>
   | StitchingResolver<TResult, TParent, TContext, TArgs>;
@@ -367,25 +566,9 @@ export type SubscriptionResolveFn<TResult, TParent, TContext, TArgs> = (
   info: GraphQLResolveInfo
 ) => TResult | Promise<TResult>;
 
-export interface SubscriptionSubscriberObject<
-  TResult,
-  TKey extends string,
-  TParent,
-  TContext,
-  TArgs
-> {
-  subscribe: SubscriptionSubscribeFn<
-    { [key in TKey]: TResult },
-    TParent,
-    TContext,
-    TArgs
-  >;
-  resolve?: SubscriptionResolveFn<
-    TResult,
-    { [key in TKey]: TResult },
-    TContext,
-    TArgs
-  >;
+export interface SubscriptionSubscriberObject<TResult, TKey extends string, TParent, TContext, TArgs> {
+  subscribe: SubscriptionSubscribeFn<{ [key in TKey]: TResult }, TParent, TContext, TArgs>;
+  resolve?: SubscriptionResolveFn<TResult, { [key in TKey]: TResult }, TContext, TArgs>;
 }
 
 export interface SubscriptionResolverObject<TResult, TParent, TContext, TArgs> {
@@ -393,26 +576,12 @@ export interface SubscriptionResolverObject<TResult, TParent, TContext, TArgs> {
   resolve: SubscriptionResolveFn<TResult, any, TContext, TArgs>;
 }
 
-export type SubscriptionObject<
-  TResult,
-  TKey extends string,
-  TParent,
-  TContext,
-  TArgs
-> =
+export type SubscriptionObject<TResult, TKey extends string, TParent, TContext, TArgs> =
   | SubscriptionSubscriberObject<TResult, TKey, TParent, TContext, TArgs>
   | SubscriptionResolverObject<TResult, TParent, TContext, TArgs>;
 
-export type SubscriptionResolver<
-  TResult,
-  TKey extends string,
-  TParent = {},
-  TContext = {},
-  TArgs = {}
-> =
-  | ((
-      ...args: any[]
-    ) => SubscriptionObject<TResult, TKey, TParent, TContext, TArgs>)
+export type SubscriptionResolver<TResult, TKey extends string, TParent = {}, TContext = {}, TArgs = {}> =
+  | ((...args: any[]) => SubscriptionObject<TResult, TKey, TParent, TContext, TArgs>)
   | SubscriptionObject<TResult, TKey, TParent, TContext, TArgs>;
 
 export type TypeResolveFn<TTypes, TParent = {}, TContext = {}> = (
@@ -421,20 +590,11 @@ export type TypeResolveFn<TTypes, TParent = {}, TContext = {}> = (
   info: GraphQLResolveInfo
 ) => Maybe<TTypes> | Promise<Maybe<TTypes>>;
 
-export type IsTypeOfResolverFn<T = {}, TContext = {}> = (
-  obj: T,
-  context: TContext,
-  info: GraphQLResolveInfo
-) => boolean | Promise<boolean>;
+export type IsTypeOfResolverFn<T = {}> = (obj: T, info: GraphQLResolveInfo) => boolean | Promise<boolean>;
 
 export type NextResolverFn<T> = () => Promise<T>;
 
-export type DirectiveResolverFn<
-  TResult = {},
-  TParent = {},
-  TContext = {},
-  TArgs = {}
-> = (
+export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs = {}> = (
   next: NextResolverFn<TResult>,
   parent: TParent,
   args: TArgs,
@@ -452,12 +612,33 @@ export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   SpecStats: ResolverTypeWrapper<SpecStats>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
+  GenericHookType: ResolverTypeWrapper<Scalars['GenericHookType']>;
+  SlackHookType: ResolverTypeWrapper<Scalars['SlackHookType']>;
+  GithubHookType: ResolverTypeWrapper<Scalars['GithubHookType']>;
+  BitbucketHookType: ResolverTypeWrapper<Scalars['BitbucketHookType']>;
+  DeleteHookInput: DeleteHookInput;
+  DeleteHookResponse: ResolverTypeWrapper<DeleteHookResponse>;
+  SlackHook: ResolverTypeWrapper<SlackHook>;
+  CreateSlackHookInput: CreateSlackHookInput;
+  UpdateSlackHookInput: UpdateSlackHookInput;
+  GithubHook: ResolverTypeWrapper<GithubHook>;
+  CreateGithubHookInput: CreateGithubHookInput;
+  UpdateGithubHookInput: UpdateGithubHookInput;
+  BitbucketHook: ResolverTypeWrapper<BitbucketHook>;
+  CreateBitbucketHookInput: CreateBitbucketHookInput;
+  UpdateBitbucketHookInput: UpdateBitbucketHookInput;
+  GenericHook: ResolverTypeWrapper<GenericHook>;
+  CreateGenericHookInput: CreateGenericHookInput;
+  UpdateGenericHookInput: UpdateGenericHookInput;
   Hook: ResolverTypeWrapper<Hook>;
   Project: ResolverTypeWrapper<Project>;
   HookInput: HookInput;
+  CreateProjectInput: CreateProjectInput;
+  UpdateProjectInput: UpdateProjectInput;
   ProjectInput: ProjectInput;
   DeleteProjectResponse: ResolverTypeWrapper<DeleteProjectResponse>;
   Run: ResolverTypeWrapper<Run>;
+  RunCompletion: ResolverTypeWrapper<RunCompletion>;
   FullRunSpec: ResolverTypeWrapper<FullRunSpec>;
   Commit: ResolverTypeWrapper<Commit>;
   RunMeta: ResolverTypeWrapper<RunMeta>;
@@ -465,18 +646,13 @@ export type ResolversTypes = {
   Instance: ResolverTypeWrapper<Instance>;
   PartialRun: ResolverTypeWrapper<PartialRun>;
   RunSpec: ResolverTypeWrapper<RunSpec>;
-  InstanceResults: ResolverTypeWrapper<
-    Omit<InstanceResults, 'tests'> & {
-      tests?: Maybe<Array<Maybe<ResolversTypes['InstanceTestUnion']>>>;
-    }
-  >;
+  InstanceResults: ResolverTypeWrapper<Omit<InstanceResults, 'tests'> & { tests: Array<ResolversTypes['InstanceTestUnion']> }>;
   InstanceStats: ResolverTypeWrapper<InstanceStats>;
   CypressConfig: ResolverTypeWrapper<CypressConfig>;
   InstanceScreeshot: ResolverTypeWrapper<InstanceScreeshot>;
   ReporterStats: ResolverTypeWrapper<ReporterStats>;
-  InstanceTestUnion:
-    | ResolversTypes['InstanceTest']
-    | ResolversTypes['InstanceTestV5'];
+  InstanceTestUnion: ResolversTypes['InstanceTest'] | ResolversTypes['InstanceTestV5'];
+  TestState: TestState;
   InstanceTest: ResolverTypeWrapper<InstanceTest>;
   InstanceTestV5: ResolverTypeWrapper<InstanceTestV5>;
   TestError: ResolverTypeWrapper<TestError>;
@@ -496,12 +672,33 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
   SpecStats: SpecStats;
   Int: Scalars['Int'];
+  GenericHookType: Scalars['GenericHookType'];
+  SlackHookType: Scalars['SlackHookType'];
+  GithubHookType: Scalars['GithubHookType'];
+  BitbucketHookType: Scalars['BitbucketHookType'];
+  DeleteHookInput: DeleteHookInput;
+  DeleteHookResponse: DeleteHookResponse;
+  SlackHook: SlackHook;
+  CreateSlackHookInput: CreateSlackHookInput;
+  UpdateSlackHookInput: UpdateSlackHookInput;
+  GithubHook: GithubHook;
+  CreateGithubHookInput: CreateGithubHookInput;
+  UpdateGithubHookInput: UpdateGithubHookInput;
+  BitbucketHook: BitbucketHook;
+  CreateBitbucketHookInput: CreateBitbucketHookInput;
+  UpdateBitbucketHookInput: UpdateBitbucketHookInput;
+  GenericHook: GenericHook;
+  CreateGenericHookInput: CreateGenericHookInput;
+  UpdateGenericHookInput: UpdateGenericHookInput;
   Hook: Hook;
   Project: Project;
   HookInput: HookInput;
+  CreateProjectInput: CreateProjectInput;
+  UpdateProjectInput: UpdateProjectInput;
   ProjectInput: ProjectInput;
   DeleteProjectResponse: DeleteProjectResponse;
   Run: Run;
+  RunCompletion: RunCompletion;
   FullRunSpec: FullRunSpec;
   Commit: Commit;
   RunMeta: RunMeta;
@@ -509,16 +706,12 @@ export type ResolversParentTypes = {
   Instance: Instance;
   PartialRun: PartialRun;
   RunSpec: RunSpec;
-  InstanceResults: Omit<InstanceResults, 'tests'> & {
-    tests?: Maybe<Array<Maybe<ResolversParentTypes['InstanceTestUnion']>>>;
-  };
+  InstanceResults: Omit<InstanceResults, 'tests'> & { tests: Array<ResolversParentTypes['InstanceTestUnion']> };
   InstanceStats: InstanceStats;
   CypressConfig: CypressConfig;
   InstanceScreeshot: InstanceScreeshot;
   ReporterStats: ReporterStats;
-  InstanceTestUnion:
-    | ResolversParentTypes['InstanceTest']
-    | ResolversParentTypes['InstanceTestV5'];
+  InstanceTestUnion: ResolversParentTypes['InstanceTest'] | ResolversParentTypes['InstanceTestV5'];
   InstanceTest: InstanceTest;
   InstanceTestV5: InstanceTestV5;
   TestError: TestError;
@@ -527,417 +720,258 @@ export type ResolversParentTypes = {
   Filters: Filters;
 };
 
-export type QueryResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']
-> = {
-  projects?: Resolver<
-    Array<ResolversTypes['Project']>,
-    ParentType,
-    ContextType,
-    RequireFields<QueryProjectsArgs, 'orderDirection' | 'filters'>
-  >;
-  project?: Resolver<
-    Maybe<ResolversTypes['Project']>,
-    ParentType,
-    ContextType,
-    RequireFields<QueryProjectArgs, 'id'>
-  >;
-  runs?: Resolver<
-    Array<Maybe<ResolversTypes['Run']>>,
-    ParentType,
-    ContextType,
-    RequireFields<QueryRunsArgs, 'orderDirection' | 'cursor' | 'filters'>
-  >;
-  runFeed?: Resolver<
-    ResolversTypes['RunFeed'],
-    ParentType,
-    ContextType,
-    RequireFields<QueryRunFeedArgs, 'filters'>
-  >;
-  run?: Resolver<
-    Maybe<ResolversTypes['Run']>,
-    ParentType,
-    ContextType,
-    RequireFields<QueryRunArgs, 'id'>
-  >;
-  instance?: Resolver<
-    Maybe<ResolversTypes['Instance']>,
-    ParentType,
-    ContextType,
-    RequireFields<QueryInstanceArgs, 'id'>
-  >;
-  specStats?: Resolver<
-    Maybe<ResolversTypes['SpecStats']>,
-    ParentType,
-    ContextType,
-    RequireFields<QuerySpecStatsArgs, 'spec' | 'filters'>
-  >;
+export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  projects?: Resolver<Array<ResolversTypes['Project']>, ParentType, ContextType, RequireFields<QueryProjectsArgs, 'orderDirection' | 'filters'>>;
+  project?: Resolver<Maybe<ResolversTypes['Project']>, ParentType, ContextType, RequireFields<QueryProjectArgs, 'id'>>;
+  runs?: Resolver<Array<Maybe<ResolversTypes['Run']>>, ParentType, ContextType, RequireFields<QueryRunsArgs, 'orderDirection' | 'cursor' | 'filters'>>;
+  runFeed?: Resolver<ResolversTypes['RunFeed'], ParentType, ContextType, RequireFields<QueryRunFeedArgs, 'filters'>>;
+  run?: Resolver<Maybe<ResolversTypes['Run']>, ParentType, ContextType, RequireFields<QueryRunArgs, 'id'>>;
+  instance?: Resolver<Maybe<ResolversTypes['Instance']>, ParentType, ContextType, RequireFields<QueryInstanceArgs, 'id'>>;
+  specStats?: Resolver<Maybe<ResolversTypes['SpecStats']>, ParentType, ContextType, RequireFields<QuerySpecStatsArgs, 'spec' | 'filters'>>;
 };
 
-export type MutationResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']
-> = {
-  deleteRun?: Resolver<
-    ResolversTypes['DeleteRunResponse'],
-    ParentType,
-    ContextType,
-    RequireFields<MutationDeleteRunArgs, 'runId'>
-  >;
-  deleteRuns?: Resolver<
-    ResolversTypes['DeleteRunResponse'],
-    ParentType,
-    ContextType,
-    RequireFields<MutationDeleteRunsArgs, 'runIds'>
-  >;
-  deleteRunsInDateRange?: Resolver<
-    ResolversTypes['DeleteRunResponse'],
-    ParentType,
-    ContextType,
-    RequireFields<MutationDeleteRunsInDateRangeArgs, 'startDate' | 'endDate'>
-  >;
-  deleteProject?: Resolver<
-    ResolversTypes['DeleteProjectResponse'],
-    ParentType,
-    ContextType,
-    RequireFields<MutationDeleteProjectArgs, 'projectId'>
-  >;
-  createProject?: Resolver<
-    ResolversTypes['Project'],
-    ParentType,
-    ContextType,
-    RequireFields<MutationCreateProjectArgs, never>
-  >;
-  updateProject?: Resolver<
-    ResolversTypes['Project'],
-    ParentType,
-    ContextType,
-    RequireFields<MutationUpdateProjectArgs, never>
-  >;
+export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  deleteRun?: Resolver<ResolversTypes['DeleteRunResponse'], ParentType, ContextType, RequireFields<MutationDeleteRunArgs, 'runId'>>;
+  deleteRuns?: Resolver<ResolversTypes['DeleteRunResponse'], ParentType, ContextType, RequireFields<MutationDeleteRunsArgs, 'runIds'>>;
+  deleteRunsInDateRange?: Resolver<ResolversTypes['DeleteRunResponse'], ParentType, ContextType, RequireFields<MutationDeleteRunsInDateRangeArgs, 'startDate' | 'endDate'>>;
+  deleteProject?: Resolver<ResolversTypes['DeleteProjectResponse'], ParentType, ContextType, RequireFields<MutationDeleteProjectArgs, 'projectId'>>;
+  createProject?: Resolver<ResolversTypes['Project'], ParentType, ContextType, RequireFields<MutationCreateProjectArgs, 'project'>>;
+  updateProject?: Resolver<ResolversTypes['Project'], ParentType, ContextType, RequireFields<MutationUpdateProjectArgs, 'input'>>;
+  createGenericHook?: Resolver<ResolversTypes['GenericHook'], ParentType, ContextType, RequireFields<MutationCreateGenericHookArgs, 'input'>>;
+  updateGenericHook?: Resolver<ResolversTypes['GenericHook'], ParentType, ContextType, RequireFields<MutationUpdateGenericHookArgs, 'input'>>;
+  createBitbucketHook?: Resolver<ResolversTypes['BitbucketHook'], ParentType, ContextType, RequireFields<MutationCreateBitbucketHookArgs, 'input'>>;
+  updateBitbucketHook?: Resolver<ResolversTypes['BitbucketHook'], ParentType, ContextType, RequireFields<MutationUpdateBitbucketHookArgs, 'input'>>;
+  createGithubHook?: Resolver<ResolversTypes['GithubHook'], ParentType, ContextType, RequireFields<MutationCreateGithubHookArgs, 'input'>>;
+  updateGithubHook?: Resolver<ResolversTypes['GithubHook'], ParentType, ContextType, RequireFields<MutationUpdateGithubHookArgs, 'input'>>;
+  createSlackHook?: Resolver<ResolversTypes['SlackHook'], ParentType, ContextType, RequireFields<MutationCreateSlackHookArgs, 'input'>>;
+  updateSlackHook?: Resolver<ResolversTypes['SlackHook'], ParentType, ContextType, RequireFields<MutationUpdateSlackHookArgs, 'input'>>;
+  deleteHook?: Resolver<ResolversTypes['DeleteHookResponse'], ParentType, ContextType, RequireFields<MutationDeleteHookArgs, 'input'>>;
 };
 
-export type DeleteRunResponseResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['DeleteRunResponse'] = ResolversParentTypes['DeleteRunResponse']
-> = {
+export type DeleteRunResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteRunResponse'] = ResolversParentTypes['DeleteRunResponse']> = {
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  runIds?: Resolver<
-    Array<Maybe<ResolversTypes['ID']>>,
-    ParentType,
-    ContextType
-  >;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+  runIds?: Resolver<Array<Maybe<ResolversTypes['ID']>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
-export type SpecStatsResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['SpecStats'] = ResolversParentTypes['SpecStats']
-> = {
+export type SpecStatsResolvers<ContextType = any, ParentType extends ResolversParentTypes['SpecStats'] = ResolversParentTypes['SpecStats']> = {
   spec?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  avgWallClockDuration?: Resolver<
-    ResolversTypes['Int'],
-    ParentType,
-    ContextType
-  >;
+  avgWallClockDuration?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
-export type HookResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['Hook'] = ResolversParentTypes['Hook']
-> = {
+export interface GenericHookTypeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['GenericHookType'], any> {
+  name: 'GenericHookType';
+}
+
+export interface SlackHookTypeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['SlackHookType'], any> {
+  name: 'SlackHookType';
+}
+
+export interface GithubHookTypeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['GithubHookType'], any> {
+  name: 'GithubHookType';
+}
+
+export interface BitbucketHookTypeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['BitbucketHookType'], any> {
+  name: 'BitbucketHookType';
+}
+
+export type DeleteHookResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteHookResponse'] = ResolversParentTypes['DeleteHookResponse']> = {
+  projectId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  hookId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type SlackHookResolvers<ContextType = any, ParentType extends ResolversParentTypes['SlackHook'] = ResolversParentTypes['SlackHook']> = {
+  projectId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  hookId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  hookType?: Resolver<ResolversTypes['SlackHookType'], ParentType, ContextType>;
+  hookEvents?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type GithubHookResolvers<ContextType = any, ParentType extends ResolversParentTypes['GithubHook'] = ResolversParentTypes['GithubHook']> = {
+  projectId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  hookId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  hookType?: Resolver<ResolversTypes['GithubHookType'], ParentType, ContextType>;
+  githubToken?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  githubContext?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type BitbucketHookResolvers<ContextType = any, ParentType extends ResolversParentTypes['BitbucketHook'] = ResolversParentTypes['BitbucketHook']> = {
+  projectId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  hookId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  hookType?: Resolver<ResolversTypes['BitbucketHookType'], ParentType, ContextType>;
+  bitbucketUsername?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  bitbucketToken?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  bitbucketBuildName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type GenericHookResolvers<ContextType = any, ParentType extends ResolversParentTypes['GenericHook'] = ResolversParentTypes['GenericHook']> = {
+  projectId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  hookId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  headers?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  hookType?: Resolver<ResolversTypes['GenericHookType'], ParentType, ContextType>;
+  hookEvents?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type HookResolvers<ContextType = any, ParentType extends ResolversParentTypes['Hook'] = ResolversParentTypes['Hook']> = {
   hookId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   url?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   headers?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  hookEvents?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes['String']>>>,
-    ParentType,
-    ContextType
-  >;
+  hookEvents?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
   hookType?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  githubToken?: Resolver<
-    Maybe<ResolversTypes['String']>,
-    ParentType,
-    ContextType
-  >;
-  githubContext?: Resolver<
-    Maybe<ResolversTypes['String']>,
-    ParentType,
-    ContextType
-  >;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+  githubToken?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  githubContext?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  bitbucketUsername?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  bitbucketToken?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  bitbucketBuildName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
-export type ProjectResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['Project'] = ResolversParentTypes['Project']
-> = {
-  projectId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  hooks?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes['Hook']>>>,
-    ParentType,
-    ContextType
-  >;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+export type ProjectResolvers<ContextType = any, ParentType extends ResolversParentTypes['Project'] = ResolversParentTypes['Project']> = {
+  projectId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  hooks?: Resolver<Array<ResolversTypes['Hook']>, ParentType, ContextType>;
+  inactivityTimeoutSeconds?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
-export type DeleteProjectResponseResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['DeleteProjectResponse'] = ResolversParentTypes['DeleteProjectResponse']
-> = {
+export type DeleteProjectResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteProjectResponse'] = ResolversParentTypes['DeleteProjectResponse']> = {
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  projectIds?: Resolver<
-    Array<Maybe<ResolversTypes['ID']>>,
-    ParentType,
-    ContextType
-  >;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+  projectIds?: Resolver<Array<Maybe<ResolversTypes['ID']>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
-export type RunResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['Run'] = ResolversParentTypes['Run']
-> = {
+export type RunResolvers<ContextType = any, ParentType extends ResolversParentTypes['Run'] = ResolversParentTypes['Run']> = {
   runId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  meta?: Resolver<Maybe<ResolversTypes['RunMeta']>, ParentType, ContextType>;
-  specs?: Resolver<
-    Array<ResolversTypes['FullRunSpec']>,
-    ParentType,
-    ContextType
-  >;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+  meta?: Resolver<ResolversTypes['RunMeta'], ParentType, ContextType>;
+  specs?: Resolver<Array<ResolversTypes['FullRunSpec']>, ParentType, ContextType>;
+  completion?: Resolver<Maybe<ResolversTypes['RunCompletion']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
-export type FullRunSpecResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['FullRunSpec'] = ResolversParentTypes['FullRunSpec']
-> = {
+export type RunCompletionResolvers<ContextType = any, ParentType extends ResolversParentTypes['RunCompletion'] = ResolversParentTypes['RunCompletion']> = {
+  completed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  inactivityTimeoutMs?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type FullRunSpecResolvers<ContextType = any, ParentType extends ResolversParentTypes['FullRunSpec'] = ResolversParentTypes['FullRunSpec']> = {
   spec?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   instanceId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   claimed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  claimedAt?: Resolver<
-    Maybe<ResolversTypes['String']>,
-    ParentType,
-    ContextType
-  >;
-  machineId?: Resolver<
-    Maybe<ResolversTypes['String']>,
-    ParentType,
-    ContextType
-  >;
+  claimedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  machineId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   groupId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  results?: Resolver<
-    Maybe<ResolversTypes['InstanceResults']>,
-    ParentType,
-    ContextType
-  >;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+  results?: Resolver<Maybe<ResolversTypes['InstanceResults']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
-export type CommitResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['Commit'] = ResolversParentTypes['Commit']
-> = {
+export type CommitResolvers<ContextType = any, ParentType extends ResolversParentTypes['Commit'] = ResolversParentTypes['Commit']> = {
   sha?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   branch?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  authorName?: Resolver<
-    Maybe<ResolversTypes['String']>,
-    ParentType,
-    ContextType
-  >;
-  authorEmail?: Resolver<
-    Maybe<ResolversTypes['String']>,
-    ParentType,
-    ContextType
-  >;
+  authorName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  authorEmail?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  remoteOrigin?: Resolver<
-    Maybe<ResolversTypes['String']>,
-    ParentType,
-    ContextType
-  >;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+  remoteOrigin?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
-export type RunMetaResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['RunMeta'] = ResolversParentTypes['RunMeta']
-> = {
-  ciBuildId?: Resolver<
-    Maybe<ResolversTypes['String']>,
-    ParentType,
-    ContextType
-  >;
-  projectId?: Resolver<
-    Maybe<ResolversTypes['String']>,
-    ParentType,
-    ContextType
-  >;
+export type RunMetaResolvers<ContextType = any, ParentType extends ResolversParentTypes['RunMeta'] = ResolversParentTypes['RunMeta']> = {
+  ciBuildId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  projectId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   commit?: Resolver<Maybe<ResolversTypes['Commit']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
-export type RunFeedResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['RunFeed'] = ResolversParentTypes['RunFeed']
-> = {
+export type RunFeedResolvers<ContextType = any, ParentType extends ResolversParentTypes['RunFeed'] = ResolversParentTypes['RunFeed']> = {
   cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   hasMore?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   runs?: Resolver<Array<ResolversTypes['Run']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
-export type InstanceResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['Instance'] = ResolversParentTypes['Instance']
-> = {
+export type InstanceResolvers<ContextType = any, ParentType extends ResolversParentTypes['Instance'] = ResolversParentTypes['Instance']> = {
   runId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   run?: Resolver<ResolversTypes['PartialRun'], ParentType, ContextType>;
   spec?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   instanceId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  results?: Resolver<
-    Maybe<ResolversTypes['InstanceResults']>,
-    ParentType,
-    ContextType
-  >;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+  results?: Resolver<Maybe<ResolversTypes['InstanceResults']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
-export type PartialRunResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['PartialRun'] = ResolversParentTypes['PartialRun']
-> = {
+export type PartialRunResolvers<ContextType = any, ParentType extends ResolversParentTypes['PartialRun'] = ResolversParentTypes['PartialRun']> = {
   runId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   meta?: Resolver<Maybe<ResolversTypes['RunMeta']>, ParentType, ContextType>;
-  specs?: Resolver<
-    Array<Maybe<ResolversTypes['RunSpec']>>,
-    ParentType,
-    ContextType
-  >;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+  specs?: Resolver<Array<Maybe<ResolversTypes['RunSpec']>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
-export type RunSpecResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['RunSpec'] = ResolversParentTypes['RunSpec']
-> = {
+export type RunSpecResolvers<ContextType = any, ParentType extends ResolversParentTypes['RunSpec'] = ResolversParentTypes['RunSpec']> = {
   spec?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   instanceId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   claimed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  claimedAt?: Resolver<
-    Maybe<ResolversTypes['String']>,
-    ParentType,
-    ContextType
-  >;
+  claimedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   groupId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  machineId?: Resolver<
-    Maybe<ResolversTypes['String']>,
-    ParentType,
-    ContextType
-  >;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+  machineId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
-export type InstanceResultsResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['InstanceResults'] = ResolversParentTypes['InstanceResults']
-> = {
+export type InstanceResultsResolvers<ContextType = any, ParentType extends ResolversParentTypes['InstanceResults'] = ResolversParentTypes['InstanceResults']> = {
   stats?: Resolver<ResolversTypes['InstanceStats'], ParentType, ContextType>;
-  tests?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes['InstanceTestUnion']>>>,
-    ParentType,
-    ContextType
-  >;
+  tests?: Resolver<Array<ResolversTypes['InstanceTestUnion']>, ParentType, ContextType>;
   error?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   stdout?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  screenshots?: Resolver<
-    Array<ResolversTypes['InstanceScreeshot']>,
-    ParentType,
-    ContextType
-  >;
-  cypressConfig?: Resolver<
-    Maybe<ResolversTypes['CypressConfig']>,
-    ParentType,
-    ContextType
-  >;
-  reporterStats?: Resolver<
-    Maybe<ResolversTypes['ReporterStats']>,
-    ParentType,
-    ContextType
-  >;
+  screenshots?: Resolver<Array<ResolversTypes['InstanceScreeshot']>, ParentType, ContextType>;
+  cypressConfig?: Resolver<Maybe<ResolversTypes['CypressConfig']>, ParentType, ContextType>;
+  reporterStats?: Resolver<Maybe<ResolversTypes['ReporterStats']>, ParentType, ContextType>;
   videoUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
-export type InstanceStatsResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['InstanceStats'] = ResolversParentTypes['InstanceStats']
-> = {
-  suites?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  tests?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  passes?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  pending?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  skipped?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  failures?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  wallClockStartedAt?: Resolver<
-    Maybe<ResolversTypes['String']>,
-    ParentType,
-    ContextType
-  >;
-  wallClockEndedAt?: Resolver<
-    Maybe<ResolversTypes['String']>,
-    ParentType,
-    ContextType
-  >;
-  wallClockDuration?: Resolver<
-    Maybe<ResolversTypes['Int']>,
-    ParentType,
-    ContextType
-  >;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+export type InstanceStatsResolvers<ContextType = any, ParentType extends ResolversParentTypes['InstanceStats'] = ResolversParentTypes['InstanceStats']> = {
+  suites?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  tests?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  passes?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  pending?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  skipped?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  failures?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  wallClockStartedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  wallClockEndedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  wallClockDuration?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
-export type CypressConfigResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['CypressConfig'] = ResolversParentTypes['CypressConfig']
-> = {
+export type CypressConfigResolvers<ContextType = any, ParentType extends ResolversParentTypes['CypressConfig'] = ResolversParentTypes['CypressConfig']> = {
   video?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  videoUploadOnPasses?: Resolver<
-    ResolversTypes['Boolean'],
-    ParentType,
-    ContextType
-  >;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+  videoUploadOnPasses?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
-export type InstanceScreeshotResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['InstanceScreeshot'] = ResolversParentTypes['InstanceScreeshot']
-> = {
+export type InstanceScreeshotResolvers<ContextType = any, ParentType extends ResolversParentTypes['InstanceScreeshot'] = ResolversParentTypes['InstanceScreeshot']> = {
   screenshotId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   testId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   takenAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   height?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   width?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  screenshotURL?: Resolver<
-    Maybe<ResolversTypes['String']>,
-    ParentType,
-    ContextType
-  >;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+  screenshotURL?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
-export type ReporterStatsResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['ReporterStats'] = ResolversParentTypes['ReporterStats']
-> = {
+export type ReporterStatsResolvers<ContextType = any, ParentType extends ResolversParentTypes['ReporterStats'] = ResolversParentTypes['ReporterStats']> = {
   suites?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   tests?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   passes?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
@@ -946,103 +980,51 @@ export type ReporterStatsResolvers<
   start?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   end?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   duration?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
-export type InstanceTestUnionResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['InstanceTestUnion'] = ResolversParentTypes['InstanceTestUnion']
-> = {
-  __resolveType: TypeResolveFn<
-    'InstanceTest' | 'InstanceTestV5',
-    ParentType,
-    ContextType
-  >;
+export type InstanceTestUnionResolvers<ContextType = any, ParentType extends ResolversParentTypes['InstanceTestUnion'] = ResolversParentTypes['InstanceTestUnion']> = {
+  __resolveType: TypeResolveFn<'InstanceTest' | 'InstanceTestV5', ParentType, ContextType>;
 };
 
-export type InstanceTestResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['InstanceTest'] = ResolversParentTypes['InstanceTest']
-> = {
+export type InstanceTestResolvers<ContextType = any, ParentType extends ResolversParentTypes['InstanceTest'] = ResolversParentTypes['InstanceTest']> = {
   testId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  title?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes['String']>>>,
-    ParentType,
-    ContextType
-  >;
-  state?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  title?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  state?: Resolver<ResolversTypes['TestState'], ParentType, ContextType>;
   body?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   stack?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   error?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  wallClockStartedAt?: Resolver<
-    Maybe<ResolversTypes['String']>,
-    ParentType,
-    ContextType
-  >;
-  wallClockDuration?: Resolver<
-    Maybe<ResolversTypes['Int']>,
-    ParentType,
-    ContextType
-  >;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+  wallClockStartedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  wallClockDuration?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
-export type InstanceTestV5Resolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['InstanceTestV5'] = ResolversParentTypes['InstanceTestV5']
-> = {
+export type InstanceTestV5Resolvers<ContextType = any, ParentType extends ResolversParentTypes['InstanceTestV5'] = ResolversParentTypes['InstanceTestV5']> = {
   testId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  title?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes['String']>>>,
-    ParentType,
-    ContextType
-  >;
-  state?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  title?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  state?: Resolver<ResolversTypes['TestState'], ParentType, ContextType>;
   body?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  displayError?: Resolver<
-    Maybe<ResolversTypes['String']>,
-    ParentType,
-    ContextType
-  >;
-  attempts?: Resolver<
-    Array<ResolversTypes['TestAttempt']>,
-    ParentType,
-    ContextType
-  >;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+  displayError?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  attempts?: Resolver<Array<ResolversTypes['TestAttempt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
-export type TestErrorResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['TestError'] = ResolversParentTypes['TestError']
-> = {
+export type TestErrorResolvers<ContextType = any, ParentType extends ResolversParentTypes['TestError'] = ResolversParentTypes['TestError']> = {
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   stack?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
-export type TestAttemptResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['TestAttempt'] = ResolversParentTypes['TestAttempt']
-> = {
+export type TestAttemptResolvers<ContextType = any, ParentType extends ResolversParentTypes['TestAttempt'] = ResolversParentTypes['TestAttempt']> = {
   state?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   error?: Resolver<Maybe<ResolversTypes['TestError']>, ParentType, ContextType>;
-  wallClockStartedAt?: Resolver<
-    Maybe<ResolversTypes['String']>,
-    ParentType,
-    ContextType
-  >;
-  wallClockDuration?: Resolver<
-    Maybe<ResolversTypes['Int']>,
-    ParentType,
-    ContextType
-  >;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+  wallClockStartedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  wallClockDuration?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
-export interface DateTimeScalarConfig
-  extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
+export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
   name: 'DateTime';
 }
 
@@ -1051,10 +1033,20 @@ export type Resolvers<ContextType = any> = {
   Mutation?: MutationResolvers<ContextType>;
   DeleteRunResponse?: DeleteRunResponseResolvers<ContextType>;
   SpecStats?: SpecStatsResolvers<ContextType>;
+  GenericHookType?: GraphQLScalarType;
+  SlackHookType?: GraphQLScalarType;
+  GithubHookType?: GraphQLScalarType;
+  BitbucketHookType?: GraphQLScalarType;
+  DeleteHookResponse?: DeleteHookResponseResolvers<ContextType>;
+  SlackHook?: SlackHookResolvers<ContextType>;
+  GithubHook?: GithubHookResolvers<ContextType>;
+  BitbucketHook?: BitbucketHookResolvers<ContextType>;
+  GenericHook?: GenericHookResolvers<ContextType>;
   Hook?: HookResolvers<ContextType>;
   Project?: ProjectResolvers<ContextType>;
   DeleteProjectResponse?: DeleteProjectResponseResolvers<ContextType>;
   Run?: RunResolvers<ContextType>;
+  RunCompletion?: RunCompletionResolvers<ContextType>;
   FullRunSpec?: FullRunSpecResolvers<ContextType>;
   Commit?: CommitResolvers<ContextType>;
   RunMeta?: RunMetaResolvers<ContextType>;
@@ -1074,6 +1066,7 @@ export type Resolvers<ContextType = any> = {
   TestAttempt?: TestAttemptResolvers<ContextType>;
   DateTime?: GraphQLScalarType;
 };
+
 
 /**
  * @deprecated

@@ -1,0 +1,20 @@
+query getProject($projectId: ID!) {
+  project(id: $projectId) {
+    projectId
+    inactivityTimeoutSeconds
+    hooks {
+      hookId
+      url
+      headers
+      hookEvents
+      hookType
+
+      githubContext
+      githubToken
+
+      bitbucketUsername
+      bitbucketToken
+      bitbucketBuildName
+    }
+  }
+}

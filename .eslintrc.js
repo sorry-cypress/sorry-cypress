@@ -20,6 +20,7 @@ module.exports = {
   },
 
   rules: {
+    'no-warning-comments': 2,
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/triple-slash-reference': 0,
     '@typescript-eslint/ban-ts-ignore': 'off',

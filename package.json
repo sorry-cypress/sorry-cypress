@@ -1,6 +1,6 @@
 {
   "name": "sorry-cypress",
-  "version": "1.0.0-beta.11",
+  "version": "1.0.0-rc.2",
   "author": {
     "name": "Andrew Goldis",
     "email": "agoldis@gmail.com"
@@ -19,8 +19,7 @@
     "release-packages": "wsrun release",
     "test": "yarn workspaces run test",
     "lint": "yarn workspaces run lint",
-    "start": "yarn workspace @sorry-cypress/director start",
-    "build": "yarn workspace @sorry-cypress/director build"
+    "dev": "wsrun dev"
   },
   "bin": {
     "sorry-cypress": "bin/sorry-cypress.js"
@@ -41,6 +40,7 @@
     "husky": "^4.3.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.1.2",
+    "prettier-plugin-organize-imports": "^1.1.1",
     "pretty-quick": "^3.0.2",
     "rimraf": "^3.0.2",
     "semver": "^7.3.2",

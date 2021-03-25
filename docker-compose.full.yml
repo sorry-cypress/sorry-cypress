@@ -2,7 +2,12 @@ version: '3.6'
 
 services:
   mongo:
-    image: mongo:4.0
+    image: mongo:4.2
+    volumes:
+      - ./data/data-mongo-cypress:/data/db
+
+  redis:
+    image: redis:alpine
 
   director:
     image: agoldis/sorry-cypress-director:latest
@@ -15,10 +20,12 @@ services:
       AWS_ACCESS_KEY_ID: 'key'
       AWS_SECRET_ACCESS_KEY: 'secret'
       S3_BUCKET: sorry-cypress
+      REDIS_URI: 'redis://redis:6379'
     ports:
       - 1234:1234
     depends_on:
       - mongo
+      - redis
 
   api:
     image: agoldis/sorry-cypress-api:latest
@@ -34,6 +41,7 @@ services:
     image: agoldis/sorry-cypress-dashboard:latest
     environment:
       GRAPHQL_SCHEMA_URL: http://localhost:4000
+      GRAPHQL_CLIENT_CREDENTIALS: ''
       CI_URL: ''
       PORT: 8080
     ports:

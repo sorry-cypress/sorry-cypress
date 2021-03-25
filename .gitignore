@@ -4,7 +4,7 @@ logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
+.vscode/settings.json
 # Runtime data
 pids
 *.pid
@@ -68,3 +68,4 @@ credentials
 
 # Minio
 /data
+example/data

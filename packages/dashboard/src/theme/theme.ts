@@ -1,4 +1,4 @@
-import { lightTheme, createTheme, Theme } from 'bold-ui';
+import { createTheme, lightTheme, Theme } from 'bold-ui';
 interface ThemeExtra {
   sizes: Theme['typography']['sizes'] & Record<string, any>;
 }

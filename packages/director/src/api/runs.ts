@@ -1,7 +1,6 @@
 import { getExecutionDriver } from '@src/drivers';
 import { isKeyAllowed } from '@src/lib/allowedKeys';
-import { hookEvents } from '@src/lib/hooks/hooksEnums';
-import { reportToHook } from '@src/lib/hooks/hooksReporter';
+import { emitRunStart } from '@src/lib/hooks/events';
 import { CreateRunParameters } from '@src/types';
 import { RequestHandler } from 'express';
 export const blockKeys: RequestHandler = (req, res, next) => {
@@ -23,20 +22,19 @@ export const handleCreateRun: RequestHandler<
   CreateRunParameters
 > = async (req, res) => {
   const { group, ciBuildId } = req.body;
+  const cypressVersion = req.headers['x-cypress-version'].toString();
+
   const executionDriver = await getExecutionDriver();
 
   console.log(`>> Machine is joining / creating  a run`, { ciBuildId, group });
-
-  const response = await executionDriver.createRun(req.body);
-  const runWithSpecs = await executionDriver.getRunWithSpecs(response.runId);
-
-  reportToHook({
-    hookEvent: hookEvents.RUN_START,
-    reportData: { run: runWithSpecs },
-    project: await executionDriver.getProjectById(runWithSpecs.meta.projectId),
+  const response = await executionDriver.createRun({
+    ...req.body,
+    cypressVersion,
   });
 
-  console.log(`<< RUN_START hook called`, response);
+  if (response.isNewRun) {
+    emitRunStart({ runId: response.runId });
+  }
 
   console.log(`<< Responding to machine`, response);
   return res.json(response);

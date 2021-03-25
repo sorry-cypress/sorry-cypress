@@ -1,0 +1,6 @@
+mutation createProject($project: CreateProjectInput!) {
+  createProject(project: $project) {
+    projectId
+    inactivityTimeoutSeconds
+  }
+}

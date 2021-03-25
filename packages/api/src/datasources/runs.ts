@@ -1,5 +1,4 @@
-import { Instance } from '@src/duplicatedFromDirector/instance.types';
-import { Run } from '@src/duplicatedFromDirector/run.types';
+import { Instance, Run } from '@sorry-cypress/common';
 import { OrderingOptions } from '@src/generated/graphql';
 import { getMongoDB, init, ObjectID } from '@src/lib/mongo';
 import {
@@ -16,7 +15,7 @@ type RunWithFullSpecs = Run & {
   _id: string;
 };
 
-const PAGE_LIMIT = 5;
+const PAGE_LIMIT = 10;
 const mergeRunSpecs = (run: RunWithFullSpecs) => {
   // merge fullspec into spec
   run.specs = run.specs.map((s) => ({
@@ -57,6 +56,7 @@ const projectAggregation = {
     meta: 1,
     specs: 1,
     createdAt: 1,
+    completion: 1,
     specsFull: {
       $map: {
         input: '$specs',

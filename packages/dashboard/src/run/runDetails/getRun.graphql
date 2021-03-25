@@ -1,0 +1,15 @@
+query getRun($runId: ID!) {
+  run(id: $runId) {
+    runId
+    createdAt
+    completion {
+      ...RunSummaryCompletion
+    }
+    meta {
+      ...RunSummaryMeta
+    }
+    specs {
+      ...RunDetailSpec
+    }
+  }
+}

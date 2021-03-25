@@ -1,28 +1,38 @@
+import { INACTIVITY_TIMEOUT_SECONDS } from '@src/config';
 import {
-  Project,
-  Run,
-  Task,
-  RunMetaData,
-  Instance,
-  InstanceResult,
-  ExecutionDriver,
-  CreateRunResponse,
-  CreateRunParameters,
-  CreateRunWarning,
-} from '@src/types';
-import { getDashboardRunURL } from '@src/lib/urls';
-import { AppError, RUN_NOT_EXIST, INSTANCE_NOT_EXIST } from '@src/lib/errors';
+  AppError,
+  INSTANCE_NOT_EXIST,
+  INSTANCE_NO_CREATE_TEST_DTO,
+  RUN_NOT_EXIST,
+} from '@src/lib/errors';
 import {
-  generateRunIdHash,
   generateGroupId,
+  generateRunIdHash,
   generateUUID,
 } from '@src/lib/hash';
+import { mergeInstanceResults } from '@src/lib/instance';
+import { getDashboardRunURL } from '@src/lib/urls';
 import {
+  CreateRunParameters,
+  CreateRunResponse,
+  CreateRunWarning,
+  ExecutionDriver,
+  getCreateProjectValue,
+  Instance,
+  InstanceResult,
+  Project,
+  Run,
+  RunMetaData,
+  SetInstanceTestsPayload,
+  Task,
+  UpdateInstanceResultsPayload,
+} from '@src/types';
+import {
+  enhanceSpec,
   getClaimedSpecs,
   getFirstUnclaimedSpec,
   getNewSpecsInGroup,
   getSpecsForGroup,
-  enhanceSpec,
 } from './utils';
 
 const projects: { [key: string]: Project } = {};
@@ -46,15 +56,17 @@ const createRun: ExecutionDriver['createRun'] = async (
     params.group ?? generateGroupId(params.platform, params.ciBuildId);
   const enhaceSpecForThisRun = enhanceSpec(groupId);
 
-  const response = {
+  const response: CreateRunResponse = {
     groupId,
     machineId,
     runId,
     runUrl: getDashboardRunURL(runId),
+    isNewRun: true,
     warnings: [] as CreateRunWarning[],
   };
 
   if (runs[runId]) {
+    response.isNewRun = false;
     // update new specs for a new group
     const newSpecs = getNewSpecsInGroup({
       run: runs[runId],
@@ -83,15 +95,17 @@ const createRun: ExecutionDriver['createRun'] = async (
   }
 
   if (!projects[params.projectId]) {
-    createProject({
-      projectId: params.projectId,
-      createdAt: new Date().toUTCString(),
-    });
+    createProject(
+      getCreateProjectValue(params.projectId, INACTIVITY_TIMEOUT_SECONDS)
+    );
   }
 
   runs[runId] = {
     runId,
     createdAt: new Date().toUTCString(),
+    completion: {
+      completed: false,
+    },
     meta: {
       groupId,
       ciBuildId: params.ciBuildId,
@@ -128,6 +142,7 @@ const getNextTask: ExecutionDriver['getNextTask'] = async ({
   );
   runs[runId].specs[unclaimedSpecIndex].claimed = true;
   instances[unclaimedSpec.instanceId] = {
+    _createTestsPayload: null,
     runId,
     instanceId: unclaimedSpec.instanceId,
   };
@@ -155,6 +170,42 @@ const setInstanceResults = async (
   }
   instances[instanceId] = { ...instances[instanceId], results };
 };
+
+const setInstanceTests = async (
+  instanceId: string,
+  payload: SetInstanceTestsPayload
+) => {
+  if (!instances[instanceId]) {
+    throw new AppError(INSTANCE_NOT_EXIST);
+  }
+  instances[instanceId] = {
+    ...instances[instanceId],
+    _createTestsPayload: { ...payload },
+  };
+};
+
+const updateInstanceResults = async (
+  instanceId: string,
+  update: UpdateInstanceResultsPayload
+) => {
+  const instance = instances[instanceId];
+  if (!instance) {
+    throw new AppError(INSTANCE_NOT_EXIST);
+  }
+
+  if (!instance._createTestsPayload) {
+    throw new AppError(INSTANCE_NO_CREATE_TEST_DTO);
+  }
+
+  const instanceResult = mergeInstanceResults(
+    instance._createTestsPayload,
+    update
+  );
+
+  instances[instanceId].results = instanceResult;
+  return instanceResult;
+};
+
 export const driver: ExecutionDriver = {
   id: 'in-memory',
   init: () => Promise.resolve(),
@@ -166,6 +217,23 @@ export const driver: ExecutionDriver = {
   createRun,
   getNextTask,
   setInstanceResults,
+  setInstanceTests,
+  updateInstanceResults,
   setScreenshotUrl: () => Promise.resolve(),
   setVideoUrl: () => Promise.resolve(),
+  setRunCompleted: async (runId) => {
+    if (!runs[runId]) {
+      throw new AppError(RUN_NOT_EXIST);
+    }
+    runs[runId].completion = { completed: true };
+  },
+  setRunCompletedWithTimeout: async ({ runId, timeoutMs }) => {
+    if (!runs[runId]) {
+      throw new AppError(RUN_NOT_EXIST);
+    }
+    runs[runId].completion = {
+      completed: true,
+      inactivityTimeoutMs: timeoutMs,
+    };
+  },
 };

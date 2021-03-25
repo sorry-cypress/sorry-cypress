@@ -1,0 +1,12 @@
+fragment AllInstanceStats on InstanceStats {
+  suites
+  tests
+  pending
+  passes
+  failures
+  skipped
+  suites
+  wallClockDuration
+  wallClockStartedAt
+  wallClockEndedAt
+}

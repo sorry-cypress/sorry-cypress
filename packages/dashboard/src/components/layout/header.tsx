@@ -6,7 +6,7 @@ import { truncate } from 'lodash';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export const Header: React.FC = () => {
+export const Header = () => {
   const { css, theme } = useCss();
   const nav = useReactiveVar(navStructure);
   const [shouldAutoRefresh, setShouldAutoRefresh] = useAutoRefresh();
@@ -50,14 +50,14 @@ export const Header: React.FC = () => {
       </div>
       <Switch
         label="Auto Refresh"
-        checked={shouldAutoRefresh}
+        checked={!!shouldAutoRefresh}
         onChange={() => {
           setShouldAutoRefresh(!shouldAutoRefresh);
           window.location.reload();
         }}
       />
       &nbsp;
-      <Tooltip text="Toggle polling the api for updates.">
+      <Tooltip text="Toggle polling for updates">
         <Icon
           className={css`
             align-self: center;

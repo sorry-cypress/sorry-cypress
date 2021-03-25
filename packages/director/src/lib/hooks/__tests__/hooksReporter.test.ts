@@ -1,14 +1,31 @@
+import {
+  BitBucketHook,
+  GithubHook,
+  HookEvent,
+  RunSummary,
+} from '@sorry-cypress/common';
 import axios from 'axios';
-import { reportStatusToGithub } from '../githubReporter';
-import { hookEvents } from '../hooksEnums';
-
+import { reportStatusToBitbucket } from '../reporters/bitbucket';
+import { reportStatusToGithub } from '../reporters/github';
+import bitbucketHook from './fixtures/bitbucketHook.json';
+import bitbucketReportStatusRequest from './fixtures/bitbucketReportStatusRequest.json';
 import githubHook from './fixtures/githubHooks.json';
-import reportData from './fixtures/reportData.json';
-import reportStatusRequest from './fixtures/reportStatusRequest.json';
+import githubReportStatusRequest from './fixtures/githubReportStatusRequest.json';
+import runSummary from './fixtures/runSummary.json';
 
 jest.mock('axios');
 
-describe('test reportStatusToGithub', () => {
+const ghHook = ({
+  ...githubHook,
+  url: 'https://github.com/test-company/test-project/',
+} as unknown) as GithubHook;
+
+const bbHook = ({
+  ...bitbucketHook,
+  url: 'https://bitbucket.org/testcompany/testrepo.git',
+} as unknown) as BitBucketHook;
+
+describe('Report Status to Github / Bitbucket', () => {
   beforeEach(() => {
     ((axios as unknown) as jest.Mock).mockResolvedValueOnce({ status: 200 });
   });
@@ -19,16 +36,15 @@ describe('test reportStatusToGithub', () => {
 
   it('should send correct request to the github.com repo when run is started', async () => {
     await reportStatusToGithub({
-      hook: {
-        ...githubHook,
-        url: 'https://github.com/test-company/test-project/',
-      },
-      reportData: reportData,
-      hookEvent: hookEvents.RUN_START,
+      hook: ghHook,
+      sha: 'testCommitSha',
+      runId: 'testRunId',
+      runSummary: (runSummary as unknown) as RunSummary,
+      hookEvent: HookEvent.RUN_START,
     });
 
     expect(axios).toBeCalledWith({
-      ...reportStatusRequest,
+      ...githubReportStatusRequest,
       url:
         'https://api.github.com/repos/test-company/test-project/statuses/testCommitSha',
     });
@@ -37,17 +53,35 @@ describe('test reportStatusToGithub', () => {
   it('should send correct request to the github enterprise repo when run is started', async () => {
     await reportStatusToGithub({
       hook: {
-        ...githubHook,
+        ...ghHook,
         url: 'https://gh.testcompany.com/test-company/test-project/',
       },
-      reportData: reportData,
-      hookEvent: hookEvents.RUN_START,
+      sha: 'testCommitSha',
+      runId: 'testRunId',
+      runSummary: (runSummary as unknown) as RunSummary,
+      hookEvent: HookEvent.RUN_START,
     });
 
     expect(axios).toBeCalledWith({
-      ...reportStatusRequest,
+      ...githubReportStatusRequest,
       url:
         'https://gh.testcompany.com/api/v3/repos/test-company/test-project/statuses/testCommitSha',
+    });
+  });
+
+  it('should send correct request to the bitbucket.org repo when run is started', async () => {
+    await reportStatusToBitbucket({
+      hook: bbHook,
+      sha: 'testCommitSha',
+      runId: 'testRunId',
+      runSummary: (runSummary as unknown) as RunSummary,
+      hookEvent: HookEvent.RUN_START,
+    });
+
+    expect(axios).toBeCalledWith({
+      ...bitbucketReportStatusRequest,
+      url:
+        'https://api.bitbucket.org/2.0/repositories/testcompany/testrepo/commit/testCommitSha/statuses/build',
     });
   });
 });

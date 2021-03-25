@@ -1,8 +1,7 @@
+import { Instance, Run } from '@sorry-cypress/common';
+import { getMongoDB, init } from '@src/lib/mongo';
 import { DataSource } from 'apollo-datasource';
 import plur from 'plur';
-import { init, getMongoDB } from '@src/lib/mongo';
-import { Instance } from '@src/duplicatedFromDirector/instance.types';
-import { Run } from '@src/duplicatedFromDirector/run.types';
 
 type InstanceWithRuns = Instance & {
   run: Run[];
