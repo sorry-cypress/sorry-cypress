@@ -9,14 +9,16 @@ export async function reportToSlack({
   ciBuildId,
   runSummary,
   hookEvent,
+  branch
 }: {
   hook: SlackHook;
   runId: string;
   ciBuildId: string;
   runSummary: RunSummary;
   hookEvent: HookEvent;
+  branch: string
 }) {
-  if (!shouldHookHandleEvent(hookEvent, hook)) {
+  if (!shouldHookHandleEvent(hookEvent, hook, runSummary, branch)) {
     return;
   }
   let title = 'Test suite started';
@@ -30,6 +32,9 @@ export async function reportToSlack({
   if (runSummary.skipped) {
     description += ` 👟 skipped ${runSummary.skipped}`;
   }
+  // Add Pending tests, and mark them as Skipped
+  // Skipped should be marked as failed according to
+  // https://github.com/cypress-io/cypress/issues/3092
 
   if (hookEvent === HookEvent.RUN_START) {
     title = '🚀 Started Run';

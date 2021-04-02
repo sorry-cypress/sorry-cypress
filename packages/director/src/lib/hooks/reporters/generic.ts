@@ -5,16 +5,18 @@ import { shouldHookHandleEvent } from '../utils';
 
 export async function reportToGenericWebHook({
   hook,
+  runId,
+  branch,
   runSummary,
   hookEvent,
-  runId,
 }: {
-  runId: string;
   hook: GenericHook;
+  runId: string;
+  branch: string;
   runSummary: RunSummary;
   hookEvent: HookEvent;
 }) {
-  if (!shouldHookHandleEvent(hookEvent, hook)) {
+  if (!shouldHookHandleEvent(hookEvent, hook, runSummary, branch)) {
     return;
   }
 

@@ -1,4 +1,5 @@
 import {
+  EventFilter,
   getBitbucketBuildUrl,
   getGithubStatusUrl,
 } from '@sorry-cypress/common';
@@ -43,4 +44,11 @@ export const httpUrlValidation = (value: string) => {
   } catch (e) {
     return 'Please enter a valid URL';
   }
+};
+
+export const slackEventValidation = (value: string) => {
+  if (Object.values(EventFilter).includes(value as EventFilter)) {
+    return true;
+  }
+  return 'Please select an item';
 };

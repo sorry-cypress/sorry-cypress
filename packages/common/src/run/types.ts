@@ -2,6 +2,11 @@ import { Instance } from '../instance/types';
 
 export interface CommitData {
   sha: string;
+  branch?: string
+  authorName?: string
+  authorEmail?: string
+  message?: string
+  remoteOrigin?: string
 }
 export interface PlatformData {
   osName: string;

@@ -1,19 +1,27 @@
-import { SlackHook as SlackHookType } from '@sorry-cypress/common';
+import {
+  EventFilter,
+  HookEvent,
+  SlackHook as SlackHookType,
+} from '@sorry-cypress/common';
 import { InputFieldLabel } from '@src/components';
 import {
   UpdateSlackHookInput,
   useUpdateSlackHookMutation,
 } from '@src/generated/graphql';
-import { Button, Cell, Grid, TextField } from 'bold-ui';
+import { enumToString } from '@src/project/hook/hook.utils';
+import { Button, Cell, Grid, Select, TextField } from 'bold-ui';
+import { isEqual } from 'lodash';
 import React from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
+import { EditBranchFilter } from './editBranchFilter';
 import { EditHookEvents } from './editHookEvents';
 import { useCurrentProjectId } from './useCurrentProjectId';
-import { httpUrlValidation } from './validation';
+import { httpUrlValidation, slackEventValidation } from './validation';
 
 interface SlackHookProps {
   hook: SlackHookType;
 }
+
 export const SlackHook = ({ hook }: SlackHookProps) => {
   const projectId = useCurrentProjectId();
   const formMethods = useForm({
@@ -39,7 +47,7 @@ export const SlackHook = ({ hook }: SlackHookProps) => {
   return (
     <FormProvider {...formMethods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Grid>
+        <Grid wrap={true}>
           <Cell xs={12}>
             <InputFieldLabel
               helpText="Incoming Webhook URL, e.g. https://hooks.slack.com/services/XXX/YYY/ZZZ"
@@ -77,6 +85,43 @@ export const SlackHook = ({ hook }: SlackHookProps) => {
             </InputFieldLabel>
           </Cell>
           <EditHookEvents hook={hook} disabled={loading} />
+          <Cell xs={12}>
+            <InputFieldLabel
+              helpText="You can specify when a webhook should be triggered: only for failed builds, only for successful builds or for all builds."
+              label={<span>Event Filter</span>}
+              error={errors['slackEventFilter']?.message}
+              htmlFor="slackEventFilter"
+              required
+            >
+              <Controller
+                name="slackEventFilter"
+                defaultValue={hook.slackEventFilter}
+                rules={{
+                  required: {
+                    value: true,
+                    message: 'Event Filter is required',
+                  },
+                  validate: {
+                    slackEventValidation,
+                  },
+                }}
+                render={({ name, value, onChange, ref }) => (
+                  <Select
+                    itemIsEqual={isEqual}
+                    itemToString={enumToString}
+                    items={Object.keys(EventFilter)}
+                    name={name}
+                    inputRef={ref}
+                    onChange={(events: HookEvent[]) => onChange(events)}
+                    value={value}
+                    clearable={false}
+                    disabled={loading}
+                  />
+                )}
+              />
+            </InputFieldLabel>
+          </Cell>
+          <EditBranchFilter hook={hook} disabled={loading} />
           <Cell>
             <Button
               kind="primary"

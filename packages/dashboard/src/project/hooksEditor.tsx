@@ -20,7 +20,7 @@ import {
   Text,
 } from 'bold-ui';
 import React, { useState } from 'react';
-import { hookTypeToString } from './hook/hook.utils';
+import { enumToString } from './hook/hook.utils';
 import { HookEdit } from './hook/hookEdit';
 import { useHooksFormReducer } from './hook/hookFormReducer';
 import { useCurrentProjectId } from './hook/useCurrentProjectId';
@@ -114,7 +114,7 @@ export const HooksEditor = () => {
         <HFlow alignItems="center">
           <Text>Select hook type: </Text>
           <Select
-            itemToString={hookTypeToString}
+            itemToString={enumToString}
             items={Object.keys(HookType).sort()}
             name="hookType"
             onChange={(value: HookType) => {

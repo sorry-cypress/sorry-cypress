@@ -37,6 +37,7 @@ export function reportToHook({
           runSummary,
           runId: run.runId,
           ciBuildId: run.meta.ciBuildId,
+          branch: run.meta.commit.branch,
           hookEvent,
         });
       }
@@ -54,6 +55,7 @@ export function reportToHook({
         reportToGenericWebHook({
           hook,
           runId: run.runId,
+          branch: run.meta.commit.branch,
           runSummary,
           hookEvent,
         });
