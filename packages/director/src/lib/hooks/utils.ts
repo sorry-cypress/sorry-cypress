@@ -34,7 +34,7 @@ export function shouldHookHandleEvent(
       return false;
     }
 
-    if (hook.slackBranchFilter.length > 0) {
+    if (hook.slackBranchFilter && hook.slackBranchFilter.length > 0) {
       return !hook.slackBranchFilter.every((filter) => {
         const pattern = new RegExp(`^${filter}$`);
         return branch.search(pattern) === -1;

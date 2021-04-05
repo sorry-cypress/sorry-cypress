@@ -86,8 +86,8 @@ const BranchFilter = ({
       return;
     }
 
-    const newBranchesList = branches?.slice();
-    newBranchesList?.push(inputBranchName.trim().toLowerCase());
+    const newBranchesList = branches ? branches.slice() : [];
+    newBranchesList.push(inputBranchName.trim().toLowerCase());
     onChange(newBranchesList);
 
     setInputBranchName('');
