@@ -35,10 +35,25 @@ export function shouldHookHandleEvent(
     }
 
     if (hook.slackBranchFilter && hook.slackBranchFilter.length > 0) {
-      const isBranchInFilter = !hook.slackBranchFilter.every((filter) => {
-        const pattern = new RegExp(`^${filter}$`);
-        return branch.search(pattern) === -1;
-      });
+      const isBranchInFilter = !hook.slackBranchFilter
+        // Branch filter supports only '*' and '?' wildcard symbols, not full regex syntax,
+        // so first we escape all special symbols except '*' and '?'
+        // and then replace '*' with '.*' and '?' with '.' before passing this string to regex.
+        // We shouldn't warn about handling branch names having '*' or '?' symbols
+        // as such names are prohibited (see 'man git-check-ref-format')
+        .map((filter: string) =>
+          filter
+            .replace(/[\-\[\]\/\{\}\(\)\+\.\\\^\$\|]/g, '\\$&')
+            .replace(/\*/g, '.*')
+            .replace(/\?/g, '.')
+        )
+        // Then we just check all filters for a mach with a users' branch,
+        // and if all filters don't matched (returned -1)
+        // we return inverted value to set isBranchInFilter to 'false'
+        .every(
+          (filter: string) =>
+            branch.search(new RegExp(`^${filter}$`, 'i')) === -1
+        );
 
       if (!isBranchInFilter) return false;
     }

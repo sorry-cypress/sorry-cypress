@@ -101,8 +101,9 @@ const BranchFilter = ({
   return (
     <Cell xs={12}>
       <InputFieldLabel
-        helpText='Filter for branches. You can specify branch names ("master")
-          and regular expressions (will be matched as /^YOUR_TEXT$/) which only will trigger a webhook.
+        helpText='Filter for branches. You can specify branch names which only will trigger a webhook.
+          You can use "?" and "*" wildcard characters
+          (e.g. "release-20??-*" pattern will match both "release-2021-1" and "release-2022-alpha" branches).
           Leaving this control blank activates all the branches.'
         label={<span>Branch Filter</span>}
         htmlFor="slackBranchFilter"
