@@ -46,8 +46,7 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
     params.projectId
   );
 
-  const groupId =
-    params.group ?? generateGroupId(params.platform, params.ciBuildId);
+  const groupId = params.group ?? generateGroupId(params.platform, ciBuildId);
 
   const machineId = generateUUID();
   const enhaceSpecForThisRun = enhanceSpec(groupId);
@@ -73,7 +72,7 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
         completed: false,
       },
       meta: {
-        ciBuildId: ciBuildId,
+        ciBuildId,
         commit: params.commit,
         projectId: params.projectId,
         platform: params.platform,

@@ -60,8 +60,7 @@ const createRun: ExecutionDriver['createRun'] = async (
 
   const machineId = generateUUID();
 
-  const groupId =
-    params.group ?? generateGroupId(params.platform, params.ciBuildId);
+  const groupId = params.group ?? generateGroupId(params.platform, ciBuildId);
   const enhaceSpecForThisRun = enhanceSpec(groupId);
 
   const response: CreateRunResponse = {
