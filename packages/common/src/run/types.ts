@@ -7,11 +7,22 @@ export interface PlatformData {
   osName: string;
   osVersion: string;
 }
+
+// https://github.com/cypress-io/cypress/blob/develop/packages/server/lib/util/ci_provider.js#L133:L133
+export interface RunCIParams {
+  [key: string]: any;
+  ciBuildId?: string;
+}
+export interface RunCI {
+  params: RunCIParams | null;
+  provider: string | null; // that should be named
+}
 export interface CreateRunParameters {
   ciBuildId: string;
   commit: CommitData;
   projectId: string;
   specs: string[];
+  ci: RunCI;
   platform: PlatformData;
   group?: string;
   cypressVersion: string;
@@ -34,6 +45,7 @@ export interface RunMetaData {
   commit: CommitData;
   projectId: string;
   platform: PlatformData;
+  ci: RunCI;
 }
 export interface RunSpec {
   spec: string;
