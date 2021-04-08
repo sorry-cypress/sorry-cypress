@@ -1,4 +1,5 @@
 import { INACTIVITY_TIMEOUT_SECONDS } from '@src/config';
+import { getRunCiBuildId } from '@src/lib/ciBuildId';
 import {
   AppError,
   CLAIM_FAILED,
@@ -37,7 +38,14 @@ import {
 export const getById = getRunById;
 
 export const createRun: ExecutionDriver['createRun'] = async (params) => {
-  const runId = generateRunIdHash(params);
+  const ciBuildId = getRunCiBuildId(params);
+
+  const runId = generateRunIdHash(
+    ciBuildId,
+    params.commit.sha,
+    params.projectId
+  );
+
   const groupId =
     params.group ?? generateGroupId(params.platform, params.ciBuildId);
 
@@ -65,10 +73,11 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
         completed: false,
       },
       meta: {
-        ciBuildId: params.ciBuildId,
+        ciBuildId: ciBuildId,
         commit: params.commit,
         projectId: params.projectId,
         platform: params.platform,
+        ci: params.ci,
       },
       specs: params.specs.map(enhaceSpecForThisRun),
     });

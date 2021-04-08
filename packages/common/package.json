@@ -13,12 +13,12 @@
   "main": "dist/index.js",
   "typings": "dist/typings",
   "scripts": {
-    "dev": "run-p dev:nodemon types:watch",
-    "dev:nodemon": "nodemon",
+    "dev": "run-p types:watch build:js:watch",
     "build": "npm run build:types && npm run build:js",
-    "build:types": "tsc --emitDeclarationOnly",
-    "types:watch": "tsc --noEmit --watch",
+    "build:types": "tsc --emitDeclarationOnly --declarationMap",
+    "types:watch": "yarn build:types --watch --preserveWatchOutput",
     "build:js": "babel src --out-dir dist --extensions \".ts\" --source-maps inline",
+    "build:js:watch": "yarn run build:js --watch",
     "lint": "eslint ./ --ext ts,tsx",
     "release": "echo \"skipping release\"",
     "test": "jest"

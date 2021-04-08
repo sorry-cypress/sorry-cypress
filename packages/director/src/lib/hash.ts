@@ -1,12 +1,14 @@
+import { PlatformData } from '@src/types';
 import md5 from 'md5';
 import uuid from 'uuid/v4';
-import { CreateRunParameters, PlatformData } from '@src/types';
 
-export const generateRunIdHash = ({
-  ciBuildId,
-  commit,
-  projectId,
-}: CreateRunParameters) => md5(ciBuildId + commit.sha + projectId);
+export const generateRunIdHash = (
+  ciBuildId: string,
+  sha: string,
+  projectId: string
+) => {
+  return md5(ciBuildId + sha + projectId);
+};
 
 // not sure how specific that should be
 export const generateGroupId = (
