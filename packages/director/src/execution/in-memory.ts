@@ -1,4 +1,5 @@
 import { INACTIVITY_TIMEOUT_SECONDS } from '@src/config';
+import { getRunCiBuildId } from '@src/lib/ciBuildId';
 import {
   AppError,
   INSTANCE_NOT_EXIST,
@@ -49,11 +50,17 @@ const createProject = (project: Project) => {
 const createRun: ExecutionDriver['createRun'] = async (
   params: CreateRunParameters
 ): Promise<CreateRunResponse> => {
-  const runId = generateRunIdHash(params);
+  const ciBuildId = getRunCiBuildId(params);
+
+  const runId = generateRunIdHash(
+    ciBuildId,
+    params.commit.sha,
+    params.projectId
+  );
+
   const machineId = generateUUID();
 
-  const groupId =
-    params.group ?? generateGroupId(params.platform, params.ciBuildId);
+  const groupId = params.group ?? generateGroupId(params.platform, ciBuildId);
   const enhaceSpecForThisRun = enhanceSpec(groupId);
 
   const response: CreateRunResponse = {
@@ -108,10 +115,11 @@ const createRun: ExecutionDriver['createRun'] = async (
     },
     meta: {
       groupId,
-      ciBuildId: params.ciBuildId,
+      ciBuildId,
       commit: params.commit,
       projectId: params.projectId,
       platform: params.platform,
+      ci: params.ci,
     } as RunMetaData,
     specs: params.specs.map(enhaceSpecForThisRun),
   };

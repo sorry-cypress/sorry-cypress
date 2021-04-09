@@ -21,12 +21,17 @@ export const handleCreateRun: RequestHandler<
   unknown,
   CreateRunParameters
 > = async (req, res) => {
-  const { group, ciBuildId } = req.body;
+  const { group, ciBuildId, ci } = req.body;
   const cypressVersion = req.headers['x-cypress-version'].toString();
 
   const executionDriver = await getExecutionDriver();
 
-  console.log(`>> Machine is joining / creating  a run`, { ciBuildId, group });
+  console.log(`>> Machine is joining / creating a run`, {
+    ciBuildId,
+    group,
+    ci,
+  });
+
   const response = await executionDriver.createRun({
     ...req.body,
     cypressVersion,
