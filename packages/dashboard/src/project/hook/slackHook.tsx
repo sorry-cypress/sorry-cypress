@@ -1,5 +1,5 @@
 import {
-  EventFilter,
+  ResultFilter,
   HookEvent,
   SlackHook as SlackHookType,
 } from '@sorry-cypress/common';
@@ -16,7 +16,7 @@ import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { EditBranchFilter } from './editBranchFilter';
 import { EditHookEvents } from './editHookEvents';
 import { useCurrentProjectId } from './useCurrentProjectId';
-import { httpUrlValidation, slackEventValidation } from './validation';
+import { httpUrlValidation, slackResultValidation } from './validation';
 
 interface SlackHookProps {
   hook: SlackHookType;
@@ -88,28 +88,28 @@ export const SlackHook = ({ hook }: SlackHookProps) => {
           <Cell xs={12}>
             <InputFieldLabel
               helpText="You can specify when a webhook should be triggered: only for failed builds, only for successful builds or for all builds."
-              label={<span>Event Filter</span>}
-              error={errors['slackEventFilter']?.message}
-              htmlFor="slackEventFilter"
+              label={<span>Result Filter</span>}
+              error={errors['slackResultFilter']?.message}
+              htmlFor="slackResultFilter"
               required
             >
               <Controller
-                name="slackEventFilter"
-                defaultValue={hook.slackEventFilter}
+                name="slackResultFilter"
+                defaultValue={hook.slackResultFilter}
                 rules={{
                   required: {
                     value: true,
                     message: 'Event Filter is required',
                   },
                   validate: {
-                    slackEventValidation,
+                    slackResultValidation,
                   },
                 }}
                 render={({ name, value, onChange, ref }) => (
                   <Select
                     itemIsEqual={isEqual}
                     itemToString={enumToString}
-                    items={Object.keys(EventFilter)}
+                    items={Object.keys(ResultFilter)}
                     name={name}
                     inputRef={ref}
                     onChange={(events: HookEvent[]) => onChange(events)}
