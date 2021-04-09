@@ -1,12 +1,12 @@
 import {
-CommitData,
-HookEvent,
-RunSummary,
-SlackHook
+  CommitData,
+  HookEvent,
+  RunSummary,
+  SlackHook,
 } from '@sorry-cypress/common';
 import { getDashboardRunURL } from '@src/lib/urls';
 import axios from 'axios';
-import { isResultSuccessful,shouldHookHandleEvent } from '../utils';
+import { isResultSuccessful, shouldHookHandleEvent } from '../utils';
 
 export async function reportToSlack({
   hook,
@@ -61,18 +61,11 @@ export async function reportToSlack({
     message.length > 100 ? `${message.substring(0, 100)}...` : message
   }`;
 
-  if (hookEvent === HookEvent.RUN_FINISH) {
-    await new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(null);
-      }, 5000);
-    });
-  }
-
-  return axios
-    .post(
-      hook.url,
-      JSON.stringify({
+  return (
+    axios({
+      method: 'post',
+      url: hook.url,
+      data: {
         username: 'sorry-cypress',
         blocks: [
           {
@@ -115,9 +108,9 @@ export async function reportToSlack({
           },
         ],
         icon_url: 'https://sorry-cypress.s3.amazonaws.com/images/icon-bg.png',
-      })
-    )
-    .catch((err) => {
+      },
+    }).catch((err) => {
       console.error(`Error: Hook Post to ${hook.url} responded with `, err);
-    });
+    }) || Promise.resolve()
+  );
 }
