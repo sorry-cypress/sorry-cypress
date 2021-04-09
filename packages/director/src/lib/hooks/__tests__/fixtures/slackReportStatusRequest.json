@@ -1,0 +1,48 @@
+{
+  "method": "post",
+  "url": "https://hooks.slack.com/services/123/XXX/zzz",
+  "data": {
+    "username": "sorry-cypress",
+    "blocks": [
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": ":white_check_mark: *Run finished* (testCiBuildId)"
+        },
+        "accessory": {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "text": "View Results",
+            "emoji": true
+          },
+          "value": "view_run_testRunId",
+          "url": "http://localhost:8080/run/testRunId",
+          "action_id": "view_run_testRunId"
+        }
+      }
+    ],
+    "attachments": [
+      {
+        "color": "#0E8A16",
+        "blocks": [
+          {
+            "type": "section",
+            "fields": [
+              {
+                "type": "mrkdwn",
+                "text": ":large_green_circle: *Passed:* 1\n\n\n:white_circle: *Skipped:* 0\n\n\n:white_circle: *Failed*: 0"
+              },
+              {
+                "type": "mrkdwn",
+                "text": "*Branch:*\ntestBranch\n\n*Commit:*\ntestMessage"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "icon_url": "https://sorry-cypress.s3.amazonaws.com/images/icon-bg.png"
+  }
+}
