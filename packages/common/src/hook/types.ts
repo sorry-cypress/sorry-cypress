@@ -16,7 +16,7 @@ export enum HookEvent {
   INSTANCE_FINISH = 'INSTANCE_FINISH',
 }
 
-export enum EventFilter {
+export enum ResultFilter {
   ALL = 'ALL',
   ONLY_FAILED = 'ONLY_FAILED',
   ONLY_SUCCESSFUL = 'ONLY_SUCCESSFUL',
@@ -31,7 +31,7 @@ export type SlackHook = BaseHook & {
   username?: string;
   hookEvents: HookEvent[];
   hookType: HookType.SLACK_HOOK;
-  slackEventFilter: EventFilter;
+  slackResultFilter: ResultFilter;
   slackBranchFilter?: string[];
 };
 

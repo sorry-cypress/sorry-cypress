@@ -55,7 +55,7 @@ type SpecStats {
 
 scalar GenericHookType
 scalar SlackHookType
-scalar SlackEventFilter
+scalar SlackResultFilter
 scalar GithubHookType
 scalar BitbucketHookType
 
@@ -74,13 +74,13 @@ type SlackHook {
   url: String!
   hookType: SlackHookType!
   hookEvents: [String!]!
-  slackEventFilter: SlackEventFilter!
+  slackResultFilter: SlackResultFilter!
   slackBranchFilter: [String]
 }
 
 input CreateSlackHookInput {
   projectId: ID!
-  slackEventFilter: SlackEventFilter = "ALL"
+  slackResultFilter: SlackResultFilter = "ALL"
 }
 
 input UpdateSlackHookInput {
@@ -88,7 +88,7 @@ input UpdateSlackHookInput {
   hookId: ID!
   url: String!
   hookEvents: [String!]!
-  slackEventFilter: SlackEventFilter!
+  slackResultFilter: SlackResultFilter!
   slackBranchFilter: [String]
 }
 
@@ -168,7 +168,7 @@ type Hook {
   bitbucketUsername: String
   bitbucketToken: String
   bitbucketBuildName: String
-  slackEventFilter: String
+  slackResultFilter: String
   slackBranchFilter: [String]
 }
 
@@ -189,7 +189,7 @@ input HookInput {
   bitbucketUsername: String
   bitbucketToken: String
   bitbucketBuildName: String
-  slackEventFilter: String
+  slackResultFilter: String
   slackBranchFilter: [String]
 }
 

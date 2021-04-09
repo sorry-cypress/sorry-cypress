@@ -4,7 +4,7 @@ mutation createSlackHook($input: CreateSlackHookInput!) {
     hookType
     url
     hookEvents
-    slackEventFilter
+    slackResultFilter
     slackBranchFilter
   }
 }

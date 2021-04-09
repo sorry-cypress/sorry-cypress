@@ -13,7 +13,7 @@ export type Scalars = {
   Float: number;
   GenericHookType: any;
   SlackHookType: any;
-  SlackEventFilter: any;
+  SlackResultFilter: any;
   GithubHookType: any;
   BitbucketHookType: any;
   DateTime: string;
@@ -202,13 +202,13 @@ export type SlackHook = {
   url: Scalars['String'];
   hookType: Scalars['SlackHookType'];
   hookEvents: Array<Scalars['String']>;
-  slackEventFilter: Scalars['SlackEventFilter'];
+  slackResultFilter: Scalars['SlackResultFilter'];
   slackBranchFilter: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
 export type CreateSlackHookInput = {
   projectId: Scalars['ID'];
-  slackEventFilter: Maybe<Scalars['SlackEventFilter']>;
+  slackResultFilter: Maybe<Scalars['SlackResultFilter']>;
 };
 
 export type UpdateSlackHookInput = {
@@ -216,7 +216,7 @@ export type UpdateSlackHookInput = {
   hookId: Scalars['ID'];
   url: Scalars['String'];
   hookEvents: Array<Scalars['String']>;
-  slackEventFilter: Scalars['SlackEventFilter'];
+  slackResultFilter: Scalars['SlackResultFilter'];
   slackBranchFilter: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
@@ -300,7 +300,7 @@ export type Hook = {
   bitbucketUsername: Maybe<Scalars['String']>;
   bitbucketToken: Maybe<Scalars['String']>;
   bitbucketBuildName: Maybe<Scalars['String']>;
-  slackEventFilter: Maybe<Scalars['String']>;
+  slackResultFilter: Maybe<Scalars['String']>;
   slackBranchFilter: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
@@ -322,7 +322,7 @@ export type HookInput = {
   bitbucketUsername: Maybe<Scalars['String']>;
   bitbucketToken: Maybe<Scalars['String']>;
   bitbucketBuildName: Maybe<Scalars['String']>;
-  slackEventFilter: Maybe<Scalars['String']>;
+  slackResultFilter: Maybe<Scalars['String']>;
   slackBranchFilter: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
@@ -567,7 +567,7 @@ export type GetProjectQueryVariables = Exact<{
 }>;
 
 
-export type GetProjectQuery = { __typename?: 'Query', project: Maybe<{ __typename?: 'Project', projectId: string, inactivityTimeoutSeconds: Maybe<number>, hooks: Array<{ __typename?: 'Hook', hookId: Maybe<string>, url: Maybe<string>, headers: Maybe<string>, hookEvents: Maybe<Array<Maybe<string>>>, hookType: Maybe<string>, slackEventFilter: Maybe<string>, slackBranchFilter: Maybe<Array<Maybe<string>>>, githubContext: Maybe<string>, githubToken: Maybe<string>, bitbucketUsername: Maybe<string>, bitbucketToken: Maybe<string>, bitbucketBuildName: Maybe<string> }> }> };
+export type GetProjectQuery = { __typename?: 'Query', project: Maybe<{ __typename?: 'Project', projectId: string, inactivityTimeoutSeconds: Maybe<number>, hooks: Array<{ __typename?: 'Hook', hookId: Maybe<string>, url: Maybe<string>, headers: Maybe<string>, hookEvents: Maybe<Array<Maybe<string>>>, hookType: Maybe<string>, slackResultFilter: Maybe<string>, slackBranchFilter: Maybe<Array<Maybe<string>>>, githubContext: Maybe<string>, githubToken: Maybe<string>, bitbucketUsername: Maybe<string>, bitbucketToken: Maybe<string>, bitbucketBuildName: Maybe<string> }> }> };
 
 export type GetProjectsQueryVariables = Exact<{
   orderDirection: Maybe<OrderingOptions>;
@@ -603,7 +603,7 @@ export type CreateSlackHookMutationVariables = Exact<{
 }>;
 
 
-export type CreateSlackHookMutation = { __typename?: 'Mutation', createSlackHook: { __typename?: 'SlackHook', hookId: string, hookType: any, url: string, hookEvents: Array<string>, slackEventFilter: any, slackBranchFilter: Maybe<Array<Maybe<string>>> } };
+export type CreateSlackHookMutation = { __typename?: 'Mutation', createSlackHook: { __typename?: 'SlackHook', hookId: string, hookType: any, url: string, hookEvents: Array<string>, slackResultFilter: any, slackBranchFilter: Maybe<Array<Maybe<string>>> } };
 
 export type DeleteHookMutationVariables = Exact<{
   input: DeleteHookInput;
@@ -947,7 +947,7 @@ export const GetProjectDocument = gql`
       headers
       hookEvents
       hookType
-      slackEventFilter
+      slackResultFilter
       slackBranchFilter
       githubContext
       githubToken
@@ -1135,7 +1135,7 @@ export const CreateSlackHookDocument = gql`
     hookType
     url
     hookEvents
-    slackEventFilter
+    slackResultFilter
     slackBranchFilter
   }
 }

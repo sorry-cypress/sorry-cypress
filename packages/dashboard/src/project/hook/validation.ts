@@ -1,5 +1,5 @@
 import {
-  EventFilter,
+  ResultFilter,
   getBitbucketBuildUrl,
   getGithubStatusUrl,
 } from '@sorry-cypress/common';
@@ -46,8 +46,8 @@ export const httpUrlValidation = (value: string) => {
   }
 };
 
-export const slackEventValidation = (value: string) => {
-  if (Object.values(EventFilter).includes(value as EventFilter)) {
+export const slackResultValidation = (value: string) => {
+  if (Object.values(ResultFilter).includes(value as ResultFilter)) {
     return true;
   }
   return 'Please select an item';
