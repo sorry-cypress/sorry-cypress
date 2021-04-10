@@ -1,4 +1,5 @@
 import {
+  ResultFilter,
   getBitbucketBuildUrl,
   getGithubStatusUrl,
 } from '@sorry-cypress/common';
@@ -43,4 +44,11 @@ export const httpUrlValidation = (value: string) => {
   } catch (e) {
     return 'Please enter a valid URL';
   }
+};
+
+export const slackResultValidation = (value: string) => {
+  if (Object.values(ResultFilter).includes(value as ResultFilter)) {
+    return true;
+  }
+  return 'Please select an item';
 };

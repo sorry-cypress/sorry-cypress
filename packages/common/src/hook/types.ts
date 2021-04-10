@@ -16,15 +16,25 @@ export enum HookEvent {
   INSTANCE_FINISH = 'INSTANCE_FINISH',
 }
 
+export enum ResultFilter {
+  ALL = 'ALL',
+  ONLY_FAILED = 'ONLY_FAILED',
+  ONLY_SUCCESSFUL = 'ONLY_SUCCESSFUL',
+}
+
 type BaseHook = {
   hookId: string;
   url: string;
 };
+
 export type SlackHook = BaseHook & {
   username?: string;
   hookEvents: HookEvent[];
   hookType: HookType.SLACK_HOOK;
+  slackResultFilter: ResultFilter;
+  slackBranchFilter?: string[];
 };
+
 export type GenericHook = BaseHook & {
   headers?: string;
   hookEvents: HookEvent[];

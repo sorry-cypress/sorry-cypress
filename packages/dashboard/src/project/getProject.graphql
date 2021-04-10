@@ -9,6 +9,9 @@ query getProject($projectId: ID!) {
       hookEvents
       hookType
 
+      slackResultFilter
+      slackBranchFilter
+
       githubContext
       githubToken
 

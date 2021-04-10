@@ -4,7 +4,7 @@ import { Cell, Select } from 'bold-ui';
 import { isEqual } from 'lodash';
 import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { hookTypeToString } from './hook.utils';
+import { enumToString } from './hook.utils';
 
 interface EditHookEventsProps {
   hook: HookWithCustomEvents;
@@ -26,7 +26,7 @@ export const EditHookEvents = ({ hook, disabled }: EditHookEventsProps) => {
           render={({ name, value, onChange, ref }) => (
             <Select
               itemIsEqual={isEqual}
-              itemToString={hookTypeToString}
+              itemToString={enumToString}
               multiple={true}
               items={Object.keys(HookEvent)}
               name={name}

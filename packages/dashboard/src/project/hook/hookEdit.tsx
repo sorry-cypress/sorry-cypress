@@ -14,7 +14,7 @@ import { useRouteMatch } from 'react-router';
 import { BitbucketHook } from './bitbucketHook';
 import { GenericHook } from './genericHook';
 import { GithubHook } from './githubHook';
-import { hookTypeToString } from './hook.utils';
+import { enumToString } from './hook.utils';
 import { HookFormAction } from './hookFormReducer';
 import { SlackHook } from './slackHook';
 
@@ -79,7 +79,7 @@ export const HookEdit = ({
         <Toggler
           toggleExpanded={toggleExpanded}
           isExpanded={isExpanded}
-          title={`${hookTypeToString(hook.hookType)}: ${
+          title={`${enumToString(hook.hookType)}: ${
             hook.url || 'New Hook'
           }`}
         />

@@ -12,6 +12,7 @@ export type Scalars = {
   Float: number;
   GenericHookType: any;
   SlackHookType: any;
+  SlackResultFilter: any;
   GithubHookType: any;
   BitbucketHookType: any;
   DateTime: any;
@@ -181,6 +182,7 @@ export type SpecStats = {
 
 
 
+
 export type DeleteHookInput = {
   projectId: Scalars['ID'];
   hookId: Scalars['ID'];
@@ -199,10 +201,13 @@ export type SlackHook = {
   url: Scalars['String'];
   hookType: Scalars['SlackHookType'];
   hookEvents: Array<Scalars['String']>;
+  slackResultFilter: Scalars['SlackResultFilter'];
+  slackBranchFilter?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
 export type CreateSlackHookInput = {
   projectId: Scalars['ID'];
+  slackResultFilter?: Maybe<Scalars['SlackResultFilter']>;
 };
 
 export type UpdateSlackHookInput = {
@@ -210,6 +215,8 @@ export type UpdateSlackHookInput = {
   hookId: Scalars['ID'];
   url: Scalars['String'];
   hookEvents: Array<Scalars['String']>;
+  slackResultFilter: Scalars['SlackResultFilter'];
+  slackBranchFilter?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
 export type GithubHook = {
@@ -292,6 +299,8 @@ export type Hook = {
   bitbucketUsername?: Maybe<Scalars['String']>;
   bitbucketToken?: Maybe<Scalars['String']>;
   bitbucketBuildName?: Maybe<Scalars['String']>;
+  slackResultFilter?: Maybe<Scalars['String']>;
+  slackBranchFilter?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
 export type Project = {
@@ -312,6 +321,8 @@ export type HookInput = {
   bitbucketUsername?: Maybe<Scalars['String']>;
   bitbucketToken?: Maybe<Scalars['String']>;
   bitbucketBuildName?: Maybe<Scalars['String']>;
+  slackResultFilter?: Maybe<Scalars['String']>;
+  slackBranchFilter?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
 export type CreateProjectInput = {
@@ -614,6 +625,7 @@ export type ResolversTypes = {
   Int: ResolverTypeWrapper<Scalars['Int']>;
   GenericHookType: ResolverTypeWrapper<Scalars['GenericHookType']>;
   SlackHookType: ResolverTypeWrapper<Scalars['SlackHookType']>;
+  SlackResultFilter: ResolverTypeWrapper<Scalars['SlackResultFilter']>;
   GithubHookType: ResolverTypeWrapper<Scalars['GithubHookType']>;
   BitbucketHookType: ResolverTypeWrapper<Scalars['BitbucketHookType']>;
   DeleteHookInput: DeleteHookInput;
@@ -674,6 +686,7 @@ export type ResolversParentTypes = {
   Int: Scalars['Int'];
   GenericHookType: Scalars['GenericHookType'];
   SlackHookType: Scalars['SlackHookType'];
+  SlackResultFilter: Scalars['SlackResultFilter'];
   GithubHookType: Scalars['GithubHookType'];
   BitbucketHookType: Scalars['BitbucketHookType'];
   DeleteHookInput: DeleteHookInput;
@@ -770,6 +783,10 @@ export interface SlackHookTypeScalarConfig extends GraphQLScalarTypeConfig<Resol
   name: 'SlackHookType';
 }
 
+export interface SlackResultFilterScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['SlackResultFilter'], any> {
+  name: 'SlackResultFilter';
+}
+
 export interface GithubHookTypeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['GithubHookType'], any> {
   name: 'GithubHookType';
 }
@@ -790,6 +807,8 @@ export type SlackHookResolvers<ContextType = any, ParentType extends ResolversPa
   url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   hookType?: Resolver<ResolversTypes['SlackHookType'], ParentType, ContextType>;
   hookEvents?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  slackResultFilter?: Resolver<ResolversTypes['SlackResultFilter'], ParentType, ContextType>;
+  slackBranchFilter?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
@@ -835,6 +854,8 @@ export type HookResolvers<ContextType = any, ParentType extends ResolversParentT
   bitbucketUsername?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   bitbucketToken?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   bitbucketBuildName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  slackResultFilter?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  slackBranchFilter?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
@@ -1035,6 +1056,7 @@ export type Resolvers<ContextType = any> = {
   SpecStats?: SpecStatsResolvers<ContextType>;
   GenericHookType?: GraphQLScalarType;
   SlackHookType?: GraphQLScalarType;
+  SlackResultFilter?: GraphQLScalarType;
   GithubHookType?: GraphQLScalarType;
   BitbucketHookType?: GraphQLScalarType;
   DeleteHookResponse?: DeleteHookResponseResolvers<ContextType>;

@@ -1,8 +1,8 @@
 import { capitalize } from 'lodash';
 
-export const hookTypeToString = (item: string | null) => {
+export const enumToString = (item: string | null) => {
   if (!item) {
-    throw new Error('No item');
+    return "";
   }
   return capitalize(item).replace(/_/g, ' ');
 };
