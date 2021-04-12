@@ -8,6 +8,7 @@ import {
 } from '@src/lib/query';
 import { DataSource } from 'apollo-datasource';
 import { isNil, negate } from 'lodash';
+import { WithId } from 'mongodb';
 
 type RunWithFullSpecs = Run & {
   specsFull: Instance[];
@@ -25,7 +26,7 @@ const mergeRunSpecs = (run: RunWithFullSpecs) => {
   return run;
 };
 
-const getCursor = (runs: RunWithFullSpecs[]) => {
+const getCursor = (runs: WithId<Run>[]) => {
   if (!runs.length) {
     return 0;
   }
@@ -37,8 +38,8 @@ const getCursor = (runs: RunWithFullSpecs[]) => {
   return runs[runs.length - 1]._id;
 };
 
-const runFeedReducer = (runs: RunWithFullSpecs[]) => ({
-  runs: runs.slice(0, PAGE_LIMIT).map(mergeRunSpecs),
+const runFeedReducer = (runs: WithId<Run>[]) => ({
+  runs: runs.slice(0, PAGE_LIMIT),
   cursor: getCursor(runs),
   hasMore: runs.length > PAGE_LIMIT,
 });
@@ -102,13 +103,11 @@ export class RunsAPI extends DataSource {
         // get one extra to know if there's more
         $limit: PAGE_LIMIT + 1,
       },
-      projectAggregation,
-      lookupAggregation,
     ].filter(negate(isNil));
 
-    const results = (await (
+    const results = await (
       await getMongoDB().collection('runs').aggregate(aggregationPipeline)
-    ).toArray()) as RunWithFullSpecs[];
+    ).toArray();
 
     return runFeedReducer(results);
   }
