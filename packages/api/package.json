@@ -19,7 +19,7 @@
     "generate:watch": "graphql-codegen --watch",
     "build": "npm run generate && npm run build:types && npm run build:js",
     "build:types": "tsc --emitDeclarationOnly",
-    "types:watch": "tsc --noEmit --watch",
+    "types:watch": "tsc --noEmit --watch --preserveWatchOutput",
     "build:js": "babel src --out-dir dist --extensions \".ts\" --source-maps inline --copy-files",
     "start": "node ./dist/",
     "clean": "rimraf ./dist",
@@ -45,11 +45,12 @@
     "jest": "^26.6.3",
     "nodemon": "^2.0.5",
     "npm-run-all": "^4.1.5",
+    "pretty-quick": "^2.0.1",
     "typescript": "^4.0.3"
   },
   "dependencies": {
-    "@graphql-tools/graphql-file-loader": "^6.2.6",
-    "@graphql-tools/load": "^6.2.5",
+    "@graphql-tools/load-files": "^6.3.2",
+    "@graphql-tools/merge": "^6.2.11",
     "@sorry-cypress/common": "1.0.0",
     "apollo-server": "^2.18.1",
     "dotenv": "^8.1.0",
@@ -58,7 +59,6 @@
     "lodash": "^4.17.20",
     "mongodb": "^3.6.2",
     "plur": "^4.0.0",
-    "pretty-quick": "^2.0.1",
     "uuid": "^3.3.2"
   },
   "jest": {
