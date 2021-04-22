@@ -1,11 +1,13 @@
 Thanks a lot for the PR 👍🏻
 
-Your contribution us very valuable, we **really appreciate your time and effort**!
+Your contribution is very valuable, we **really appreciate your time and effort**!
 
 For bug fixes:
 
 - [ ] Add a reference to the original issue
 - [ ] Add a test and / or some kind of instructions to verify the fix
+
+---
 
 For new features:
 
@@ -18,12 +20,10 @@ For new features:
 
 Time is very valuable resource and we are trying to use it wisely - your time and our time. The reality of maintaining on open-source software is:
 
-- Adding a new code and / or feature complicates the maintainance
+- Adding a new code and / or feature complicates the maintenance
 - Most people disappear after contributing a feature, leaving the support to core maintainers
 
-
-Given that, please don't be offended if your PR is rejected or significantly modified. 
-
+Given that, please don't be offended if your PR is rejected or significantly modified.
 
 P.S.
 Here's an interesting discussion about OSS contributions https://changelog.com/podcast/433
