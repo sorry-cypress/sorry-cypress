@@ -4,9 +4,6 @@ import {
   MONGODB_PASSWORD,
   MONGODB_URI,
   MONGODB_USER,
-  RUNS_TTL_OPTIONS,
-  INSTANCES_TTL_OPTIONS,
-  PROJECTS_TTL_OPTIONS
 } from '@src/config';
 import mongodb, { MongoClientOptions } from 'mongodb';
 
@@ -37,9 +34,9 @@ export const init = async () => {
 
   db = client.db(MONGODB_DATABASE);
 
-  db.collection('runs').createIndex({ runId: 1 }, { unique: true, ...RUNS_TTL_OPTIONS });
-  db.collection('instances').createIndex({ instanceId: 1 }, { unique: true, ...INSTANCES_TTL_OPTIONS });
-  db.collection('projects').createIndex({ projectId: 1 }, { unique: true, ...PROJECTS_TTL_OPTIONS });
+  db.collection('runs').createIndex({ runId: 1 }, { unique: true });
+  db.collection('instances').createIndex({ instanceId: 1 }, { unique: true });
+  db.collection('projects').createIndex({ projectId: 1 }, { unique: true });
 };
 
 export const getMongoDB = () => db;
