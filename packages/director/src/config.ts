@@ -29,6 +29,11 @@ export const INACTIVITY_TIMEOUT_SECONDS = Number(
 
 export const REDIS_URI = process.env.REDIS_URI;
 
-export const RUNS_TTL_OPTIONS = { expireAfterSeconds: Number(process.env.MONGO_RUNS_SECONDS) } || {};
-export const INSTANCES_TTL_OPTIONS = { expireAfterSeconds: Number(process.env.MONGO_INSTANCES_SECONDS) } || {};
-export const PROJECTS_TTL_OPTIONS = { expireAfterSeconds: Number(process.env.MONGO_PROJECTS_SECONDS) } || {};
+export const MONGO_COLLECTIONS_TTL_SECONDS =
+  Number(process.env.MONGO_COLLECTIONS_TTL_SECONDS) ?? null;
+export const MONGO_RUNS_TTL_SECONDS =
+  Number(process.env.MONGO_RUNS_TTL_SECONDS) ?? null;
+export const MONGO_INSTANCES_TTL_SECONDS =
+  Number(process.env.MONGO_INSTANCES_TTL_SECONDS) ?? null;
+export const MONGO_PROJECTS_TTL_SECONDS =
+  Number(process.env.MONGO_PROJECTS_TTL_SECONDS) ?? null;
