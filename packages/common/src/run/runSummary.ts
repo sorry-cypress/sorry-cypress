@@ -53,7 +53,7 @@ export function isAllRunSpecsCompleted(run: RunWithSpecs) {
 
   const claimedInstanceIds = allClaimedSpecs.map((s) => s.instanceId);
   const completedInstanceIds = run.specsFull
-    .filter((s) => !!s.results.stats.wallClockEndedAt)
+    .filter((s) => !!s.results?.stats.wallClockEndedAt)
     .map((s) => s.instanceId);
   return claimedInstanceIds.length === completedInstanceIds.length;
 }
