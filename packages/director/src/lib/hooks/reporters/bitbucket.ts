@@ -24,7 +24,7 @@ export async function reportStatusToBitbucket({
 
   const data = {
     state: 'INPROGRESS',
-    key: sha,
+    key: hook.hookId,
     name: hook.bitbucketBuildName || 'sorry-cypress',
     url: getDashboardRunURL(runId),
   };

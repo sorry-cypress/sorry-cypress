@@ -9,7 +9,7 @@
     "Accept": "application/json"
   },
   "data": {
-    "key": "testCommitSha",
+    "key": "testHook",
     "name": "cypress-build",
     "state": "INPROGRESS",
     "url": "http://localhost:8080/run/testRunId"
