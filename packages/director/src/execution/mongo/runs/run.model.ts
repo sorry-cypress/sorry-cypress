@@ -30,13 +30,7 @@ const projectAggregation = {
     specs: 1,
     createdAt: 1,
     completion: 1,
-    specsFull: {
-      $map: {
-        input: '$specs',
-        as: 'spec',
-        in: '$$spec.instanceId',
-      },
-    },
+    specsFull: '$specs.instanceId',
   },
 };
 
