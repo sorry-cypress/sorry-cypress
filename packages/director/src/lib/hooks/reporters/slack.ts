@@ -57,9 +57,11 @@ export async function reportToSlack({
       failures + skipped
     }`;
 
-  const commitDescription = `*Branch:*\n${branch}\n\n*Commit:*\n${
-    message.length > 100 ? `${message.substring(0, 100)}...` : message
-  }`;
+  const commitDescription =
+    (branch || message) &&
+    `*Branch:*\n${branch}\n\n*Commit:*\n${
+      message?.length > 100 ? `${message.substring(0, 100)}...` : message
+    }`;
 
   return (
     axios({
@@ -98,10 +100,14 @@ export async function reportToSlack({
                     type: 'mrkdwn',
                     text: `${resultsDescription}`,
                   },
-                  {
-                    type: 'mrkdwn',
-                    text: `${commitDescription}`,
-                  },
+                  ...(commitDescription
+                    ? [
+                        {
+                          type: 'mrkdwn',
+                          text: `${commitDescription}`,
+                        },
+                      ]
+                    : []),
                 ],
               },
             ],
