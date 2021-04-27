@@ -50,25 +50,24 @@ export async function reportStatusToGithub({
     }
   }
 
-  return (
-    (data.state &&
-      axios({
-        method: 'post',
-        url: fullStatusPostUrl,
-        auth: {
-          username: 'sorry-cypress',
-          password: hook.githubToken,
-        },
-        headers: {
-          Accept: 'application/vnd.github.v3+json',
-        },
-        data,
-      }).catch((err) => {
-        console.error(
-          `Error: Hook post to ${fullStatusPostUrl} responded with `,
-          err
-        );
-      })) ||
-    Promise.resolve()
-  );
+  if (!data.state) {
+    return;
+  }
+  axios({
+    method: 'post',
+    url: fullStatusPostUrl,
+    auth: {
+      username: 'sorry-cypress',
+      password: hook.githubToken,
+    },
+    headers: {
+      Accept: 'application/vnd.github.v3+json',
+    },
+    data,
+  }).catch((err) => {
+    console.error(
+      `Error: Hook post to ${fullStatusPostUrl} responded with `,
+      err
+    );
+  });
 }

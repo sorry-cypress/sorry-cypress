@@ -17,6 +17,7 @@ export function isSlackHook(hook: Hook): hook is SlackHook {
 export function isGithubHook(hook: Hook): hook is GithubHook {
   return hook.hookType === 'GITHUB_STATUS_HOOK';
 }
+
 export function isBitbucketHook(hook: Hook): hook is BitBucketHook {
   return hook.hookType === 'BITBUCKET_STATUS_HOOK';
 }

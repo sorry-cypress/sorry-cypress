@@ -2,7 +2,7 @@ import { HookEvent } from '@sorry-cypress/common';
 import { getExecutionDriver } from '@src/drivers';
 import { pubsub } from '../pubsub';
 import { PubSubHookEventPayload } from './events';
-import { reportToHook } from './reporters/controller';
+import { reportToHooks } from './reporters/controller';
 
 const handleHookEvent = (eventType: HookEvent) => async ({
   runId,
@@ -11,7 +11,7 @@ const handleHookEvent = (eventType: HookEvent) => async ({
   const run = await executionDriver.getRunWithSpecs(runId);
   const project = await executionDriver.getProjectById(run.meta.projectId);
   console.log(`Reporting ${eventType} for ${runId}...`);
-  reportToHook({
+  reportToHooks({
     hookEvent: eventType,
     run,
     project,

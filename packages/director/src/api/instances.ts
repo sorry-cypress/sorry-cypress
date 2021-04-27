@@ -111,7 +111,17 @@ export const updateInstanceResults: RequestHandler<
   );
 
   completeInstance(instanceId);
-  res.json(await getInstanceScreenshots(instanceId, instanceResult));
+  try {
+    const uploadInstructions = await getInstanceScreenshots(
+      instanceId,
+      instanceResult
+    );
+    return res.json(uploadInstructions);
+  } catch (error) {
+    console.error('Unable to get upload instructions', instanceId);
+    res.json({});
+  }
+
   return;
 };
 

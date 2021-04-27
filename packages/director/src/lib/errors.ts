@@ -6,6 +6,7 @@ export class AppError extends Error {
   }
 }
 
+export const UNKNOWN_HOOK_TYPE = 'UNKNOWN_HOOK_TYPE';
 export const INSTANCE_EXISTS = 'INSTANCE_EXISTS';
 export const INSTANCE_NOT_EXIST = 'INSTANCE_NOT_EXIST';
 export const INSTANCE_NO_CREATE_TEST_DTO = 'INSTANCE_NO_CREATE_TEST_DTO';
