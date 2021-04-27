@@ -223,6 +223,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "pbeckham",
+      "name": "Peter Beckham",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1321331?v=4",
+      "profile": "https://github.com/pbeckham",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
