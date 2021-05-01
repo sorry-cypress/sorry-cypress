@@ -10,6 +10,7 @@ import {
   CreateProjectInput,
   CreateSlackHookInput,
   DeleteHookInput,
+  FullRunSpec,
   InstanceTestUnion,
   InstanceTestV5,
   OrderingOptions,
@@ -63,6 +64,20 @@ export const resolvers = {
       }
 
       return 'InstanceTest';
+    },
+  },
+  FullRunSpec: {
+    results: async (
+      { instanceId }: FullRunSpec,
+      _: any,
+      { dataSources }: { dataSources: AppDatasources }
+    ) => {
+      const response = await dataSources.instancesAPI.getResultsByInstanceId(
+        instanceId
+      );
+      const { results } = response;
+
+      return results;
     },
   },
   Query: {

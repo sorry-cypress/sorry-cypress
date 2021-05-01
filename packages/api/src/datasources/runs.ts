@@ -135,16 +135,7 @@ export class RunsAPI extends DataSource {
   }
 
   async getRunById(id: string) {
-    const result = (await getMongoDB()
-      .collection<Run>('runs')
-      .aggregate([
-        matchRunAggregation(id),
-        projectAggregation,
-        lookupAggregation,
-      ])
-      .toArray()) as RunWithFullSpecs[];
-
-    return result.map(mergeRunSpecs).pop();
+    return getMongoDB().collection<Run>('runs').findOne({ runId: id });
   }
 
   async deleteRunsByIds(runIds: string[]) {
