@@ -61,8 +61,8 @@ export const Root = () => {
               <Content>
                 <Route path="/" exact component={ProjectsView} />
 
-                <Route path="/:projectId/runs" component={RunsView} />
-                <Route path="/:projectId/edit" component={ProjectEditView} />
+                <Route path="/:projectId+/runs" component={RunsView} />
+                <Route path="/:projectId+/edit" component={ProjectEditView} />
                 <Route path="/run/:id" component={RunDetailsView} />
                 <Route
                   path="/instance/:id"
