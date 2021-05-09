@@ -4,6 +4,7 @@ import { camelCase, isEmpty } from 'lodash';
 // https://github.com/cypress-io/cypress/blob/develop/packages/server/lib/util/ci_provider.js#L133:L133
 const ciParams = [
   'CI_BUILD_ID',
+  'CI_PIPELINE_ID',
   'APPVEYOR_JOB_ID',
   'BUILD_BUILDID',
   'CODEBUILD_BUILD_ID',
