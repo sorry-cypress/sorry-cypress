@@ -4,5 +4,5 @@ export const driver: ScreenshotsDriver = {
   id: 'dummy',
   init: () => Promise.resolve(),
   getScreenshotsUploadUrls: async () => [],
-  getVideoUploadUrl: async () => null
+  getVideoUploadUrl: async () => null,
 };

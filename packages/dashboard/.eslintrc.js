@@ -9,7 +9,7 @@ module.exports = {
       jsx: true,
     },
   },
-  extends: ['plugin:react/recommended'],
+  extends: ['plugin:react/recommended', '../../.eslintrc.js'],
 
   settings: {
     react: {
