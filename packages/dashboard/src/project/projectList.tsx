@@ -50,7 +50,7 @@ const ProjectsList = ({ search }: ProjectsListProps) => {
       <CenteredContent>
         <Heading level={1}>Welcome to Sorry Cypress!</Heading>
         <p>
-          Your projects will appears here.{' '}
+          Your projects will appear here.{' '}
           <a
             href="https://github.com/agoldis/sorry-cypress"
             target="_blank"
