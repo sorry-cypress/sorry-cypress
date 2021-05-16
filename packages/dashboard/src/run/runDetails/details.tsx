@@ -2,9 +2,12 @@ import {
   RenderOnInterval,
   SpecStateTag,
   TestFailureBadge,
-  TestSkippedBadge,
   TestSuccessBadge,
+  TestRetriesSkippedBadge,
 } from '@src/components/';
+import {
+  getNumRetries
+} from '@sorry-cypress/common';
 import { getSpecState } from '@src/components/common/executionState';
 import {
   GetRunQuery,
@@ -120,10 +123,10 @@ export function RunDetails({ run }: { run: NonNullable<GetRunQuery['run']> }) {
                 render: getPassesCell,
               },
               {
-                name: 'skipped',
+                name: 'retriesSkipped',
                 header: '',
                 sortable: false,
-                render: getSkippedCell,
+                render: getRetriesSkippedCell,
               },
             ]}
           />
@@ -132,13 +135,6 @@ export function RunDetails({ run }: { run: NonNullable<GetRunQuery['run']> }) {
     </Grid>
   );
 }
-
-const getSkippedCell = (spec: RunDetailSpecFragment) => {
-  if (!spec.results?.stats?.pending) {
-    return null;
-  }
-  return <TestSkippedBadge value={spec.results?.stats?.pending} />;
-};
 
 const getPassesCell = (spec: RunDetailSpecFragment) => {
   if (!spec.results?.stats?.passes) {
@@ -152,6 +148,13 @@ const getFailuresCell = (spec: RunDetailSpecFragment) => {
     return null;
   }
   return <TestFailureBadge value={spec.results?.stats?.failures} />;
+};
+
+const getRetriesSkippedCell = (spec: RunDetailSpecFragment) => {
+  const skipped = spec.results?.stats?.pending ?? 0;
+  const retries = getNumRetries(spec.results?.tests);
+
+  return <TestRetriesSkippedBadge skipped={skipped} retries={retries} />;
 };
 
 const getItemStatusCell = (spec: RunDetailSpecFragment) => (

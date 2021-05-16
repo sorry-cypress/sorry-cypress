@@ -1,6 +1,7 @@
+import { Test, TestV5 } from '@src/tests';
 import { differenceInSeconds, parseISO } from 'date-fns';
-import { orderBy } from 'lodash';
-import { InstanceResultStats } from '../instance';
+import { compact, orderBy, sum } from 'lodash';
+import { InstanceResult, InstanceResultStats } from '../instance';
 import { RunSummary, RunWithSpecs } from './types';
 
 export function getRunDurationSeconds(specs: InstanceResultStats[]): number {
@@ -22,23 +23,43 @@ export function getRunDurationSeconds(specs: InstanceResultStats[]): number {
   );
 }
 
-export function getRunSummary(specs: InstanceResultStats[]): RunSummary {
+export function getNumRetries(tests: Test[]) {
+  // Only InstanceTestV5 tests have an `attempts` property
+  const passes = (tests || [])
+    .filter(test => test?.state === 'passed' && 'attempts' in test) as TestV5[];
+  // # of retries = # attempts for successful tests - # successful tests
+  return sum(passes.map(test => test.attempts.length)) - passes.length;
+}
+
+export function getRunSummary(specs: InstanceResult[]): RunSummary {
   return specs.reduce(
-    (agg: RunSummary, spec) => ({
-      ...agg,
-      tests: agg.tests + spec.tests,
-      failures: agg.failures + spec.failures,
-      passes: agg.passes + spec.passes,
-      pending: agg.pending + spec.pending,
-      skipped: agg.skipped + spec.skipped,
-    }),
+    (agg: RunSummary, spec) => {
+      const stats = {
+        tests: spec.stats?.tests || 0,
+        failures: spec.stats?.failures || 0,
+        passes: spec.stats?.passes || 0,
+        pending: spec.stats?.pending || 0,
+        skipped: spec.stats?.skipped || 0,
+        retries: getNumRetries(spec.tests),
+      }
+      return {
+        ...agg,
+        tests: agg.tests + stats.tests,
+        failures: agg.failures + stats.failures,
+        passes: agg.passes + stats.passes,
+        pending: agg.pending + stats.pending,
+        skipped: agg.skipped + stats.skipped,
+        retries: agg.retries + stats.retries,
+      };
+    },
     {
+      tests: 0,
       failures: 0,
       passes: 0,
       skipped: 0,
-      tests: 0,
       pending: 0,
-      wallClockDurationSeconds: getRunDurationSeconds(specs),
+      retries: 0,
+      wallClockDurationSeconds: getRunDurationSeconds(compact(specs.map(spec => spec.stats))),
     }
   );
 }

@@ -1,0 +1,57 @@
+[
+  {
+    "testId": "id1",
+    "title": ["title"],
+    "state": "passed",
+    "body": "Test body",
+    "displayError": null,
+    "attempts": [
+      { "state": "passed" }
+    ]
+  },
+  {
+    "testId": "id2",
+    "title": ["title"],
+    "state": "passed",
+    "body": "Test body",
+    "displayError": null,
+    "attempts": [
+      { "state": "failed" },
+      { "state": "failed" },
+      { "state": "failed" },
+      { "state": "passed" }
+    ]
+  },
+  {
+    "testId": "id3",
+    "title": ["title"],
+    "state": "failed",
+    "body": "Test body",
+    "displayError": null,
+    "attempts": [
+      { "state": "failed" }
+    ]
+  },
+  {
+    "testId": "id4",
+    "title": ["title"],
+    "state": "failed",
+    "body": "Test body",
+    "displayError": null,
+    "attempts": [
+      { "state": "failed" },
+      { "state": "failed" },
+      { "state": "failed" }
+    ]
+  },
+  {
+    "testId": "id",
+    "title": "title",
+    "state": "passed",
+    "body": "Test body",
+    "stack": "Error stack",
+    "timings": null,
+    "wallClockStartedAt": "start",
+    "wallClockDuration": 100
+  }
+]

@@ -58,6 +58,6 @@ module.exports = {
     }],
     camelcase: 'off',
     quotes: ['off', 'single'],
-    semi: 0
+    semi: 0,
   },
 };

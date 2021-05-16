@@ -10,6 +10,7 @@ import {
   HeaderLink,
   Paper,
   TestFailureBadge,
+  TestRetriesBadge,
   TestOverallBadge,
   TestSkippedBadge,
   TestSuccessBadge,
@@ -61,7 +62,7 @@ export function RunSummaryComponent({
   const runCreatedAt = run.createdAt;
 
   const runSummary = getRunSummary(
-    compact(runSpecs.map((s) => s.results?.stats))
+    compact(runSpecs.map((s) => s.results))
   );
 
   const hasCompletion = !!run.completion;
@@ -136,6 +137,7 @@ function RunSummaryTestResults({ runSummary }: { runSummary: RunSummaryType }) {
       <TestSuccessBadge value={runSummary.passes} />
       <TestFailureBadge value={runSummary.failures} />
       <TestSkippedBadge value={runSummary.pending} />
+      <TestRetriesBadge value={runSummary.retries} />
     </HFlow>
   );
 }

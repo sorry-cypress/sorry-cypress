@@ -1,0 +1,38 @@
+[
+    {
+        "stats": {
+          "suites": 3,
+          "tests": 6,
+          "passes": 4,
+          "pending": 1,
+          "failures": 1,
+          "skipped": 0,
+          "wallClockDuration": 100,
+          "wallClockStartedAt": "start",
+          "wallClockEndedAt": "end"
+        },
+        "tests": null,
+        "reporterStats": null,
+        "exception": null,
+        "screenshots": null,
+        "video": null
+      },
+      {
+        "stats": {
+          "suites": 1,
+          "tests": 1,
+          "passes": 1,
+          "pending": 0,
+          "failures": 0,
+          "skipped": 0,
+          "wallClockDuration": 100,
+          "wallClockStartedAt": "start",
+          "wallClockEndedAt": "end"
+        },
+        "tests": null,
+        "reporterStats": null,
+        "exception": null,
+        "screenshots": null,
+        "video": null
+      }
+]

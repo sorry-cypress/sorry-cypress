@@ -32,7 +32,7 @@ export function reportToHooks({
       return;
     }
     const runSummary = getRunSummary(
-      compact(run.specsFull.map((s) => s.results?.stats))
+      compact(run.specsFull.map((s) => s.results))
     );
     const reporterArgs = {
       runSummary,
