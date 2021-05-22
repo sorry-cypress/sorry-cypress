@@ -241,6 +241,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "anishkargaonkar",
+      "name": "Anish Kargaonkar",
+      "avatar_url": "https://avatars.githubusercontent.com/u/32673168?v=4",
+      "profile": "https://github.com/anishkargaonkar",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
