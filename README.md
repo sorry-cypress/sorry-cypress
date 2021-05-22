@@ -1,5 +1,5 @@
 <div align="center">
-<div>:octocat: An open-source, on-premise, self-hosted parallelization for cypress tests :evergreen_tree:</div>
+<div>:octocat: An open-source, on-premise, self-hosted cypress tests dashboard :evergreen_tree:</div>
 </div>
 
 <br />
@@ -8,20 +8,22 @@
 ![Update Dockerhub Images](https://github.com/agoldis/sorry-cypress/workflows/Lint%20and%20test/badge.svg)
 <a href="https://join.slack.com/t/sorry-cypress/shared_invite/zt-eis1h6jl-tJELaD7q9UGEhMP8WHJOaw" target="_blank">![Join slack](https://img.shields.io/badge/join-slack-orange?logo=slack)<a/>
 
+**Sorry-cypress** is an open-source cypress tests dashboard that unlocks unlimited parallelization, test recordings, integration with Github, Slack and more.
 
-**Sorry-cypress** is an open-source solution for the parallelization and recording of cypress tests.
+**Currens.dev** is reasonably priced SaaS, that allows running cypress tests in parallel for less, which is based on sorry-cypress.
 
-Set up **sorry-cypress** on your infrastructure to run cypress tests in parallel with no limitations, store test results on private and secure storage. Sorry-cypress integrates with Github, Slack, and other systems via WebHooks.
+<p align="center">
+  <a href="https://currents.dev">https://currents.dev</a>
+</p>
 
-**Sorry-cypress** can be installed as a standalone service using Docker, docker-compose, or Kubernetes.
+**Sorry-cypress** can be installed as a standalone service on your own infrastructure (cloud and on-premise) using Docker, docker-compose, or Kubernetes.
 
 <p align="center">
   <a href="https://sorry-cypress.dev">https://sorry-cypress.dev</a>
 </p>
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/1637928/111021636-b45e5400-8382-11eb-92ed-3ca69182555b.png" height="500" />
+  <img src="https://user-images.githubusercontent.com/1637928/111021636-b45e5400-8382-11eb-92ed-3ca69182555b.png"  width="320" />
 </p>
-
 
 ## Table of contents
 
