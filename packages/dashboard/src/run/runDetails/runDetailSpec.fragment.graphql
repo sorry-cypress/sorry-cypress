@@ -12,6 +12,9 @@ fragment RunDetailSpec on Spec {
       }
       ... on InstanceTestV5 {
         state
+        attempts {
+          state
+        }
       }
     }
     stats {

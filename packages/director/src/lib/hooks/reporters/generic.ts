@@ -1,35 +1,44 @@
-import axios from 'axios';
+import {
+  CommitData,
+  GenericHook,
+  HookEvent,
+  RunSummary,
+} from '@sorry-cypress/common';
 import { getDashboardRunURL } from '@src/lib/urls';
-import { HookEvent, GenericHook, RunSummary } from '@sorry-cypress/common';
-import { shouldHookHandleEvent } from '../utils';
+import axios from 'axios';
 
 export async function reportToGenericWebHook({
   hook,
   runId,
-  branch,
   runSummary,
+  commit,
   hookEvent,
 }: {
   hook: GenericHook;
   runId: string;
-  branch: string;
+  commit: CommitData;
   runSummary: RunSummary;
   hookEvent: HookEvent;
 }) {
-  if (!shouldHookHandleEvent(hookEvent, hook, runSummary, branch)) {
+  if (!shouldHandleGenericHook(hook, hookEvent)) {
     return;
   }
 
-  return axios({
+  axios({
     method: 'post',
     headers: hook.headers ? JSON.parse(hook.headers) : {},
     url: hook.url,
     data: {
       event: hookEvent,
       runUrl: getDashboardRunURL(runId),
+      commit,
       ...runSummary,
     },
   }).catch((err) => {
     console.error(`Error: Hook Post to ${hook.url} responded with `, err);
   });
+}
+
+function shouldHandleGenericHook(hook: GenericHook, hookEvent: HookEvent) {
+  return hook.hookEvents.includes(hookEvent);
 }

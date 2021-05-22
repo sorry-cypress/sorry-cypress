@@ -92,5 +92,6 @@ export interface RunSummary {
   skipped: number;
   tests: number;
   pending: number;
+  retries: number;
   wallClockDurationSeconds: number;
 }

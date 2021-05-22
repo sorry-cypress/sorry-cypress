@@ -24,7 +24,7 @@ export async function reportStatusToBitbucket({
 
   const data = {
     state: 'INPROGRESS',
-    key: sha,
+    key: hook.hookId,
     name: hook.bitbucketBuildName || 'sorry-cypress',
     url: getDashboardRunURL(runId),
   };
@@ -36,25 +36,25 @@ export async function reportStatusToBitbucket({
     }
   }
 
-  return (
-    (data.state &&
-      axios({
-        method: 'post',
-        url: fullStatusPostUrl,
-        auth: {
-          username: hook.bitbucketUsername,
-          password: hook.bitbucketToken,
-        },
-        headers: {
-          Accept: 'application/json',
-        },
-        data,
-      }).catch((err) => {
-        console.error(
-          `Error: Hook post to ${fullStatusPostUrl} responded with `,
-          err
-        );
-      })) ||
-    Promise.resolve()
-  );
+  if (!data.state) {
+    return;
+  }
+
+  axios({
+    method: 'post',
+    url: fullStatusPostUrl,
+    auth: {
+      username: hook.bitbucketUsername,
+      password: hook.bitbucketToken,
+    },
+    headers: {
+      Accept: 'application/json',
+    },
+    data,
+  }).catch((err) => {
+    console.error(
+      `Error: Hook post to ${fullStatusPostUrl} responded with `,
+      err
+    );
+  });
 }

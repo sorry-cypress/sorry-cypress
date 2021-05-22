@@ -223,6 +223,24 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "pbeckham",
+      "name": "Peter Beckham",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1321331?v=4",
+      "profile": "https://github.com/pbeckham",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "mathpaquette",
+      "name": "Mathieu Paquette",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4358455?v=4",
+      "profile": "https://www.linkedin.com/in/mathpaquette/",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,

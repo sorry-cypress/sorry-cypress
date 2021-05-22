@@ -1,5 +1,6 @@
 import {
   BitBucketHook,
+  CommitData,
   GithubHook,
   HookEvent,
   RunSummary,
@@ -16,6 +17,7 @@ import githubReportStatusRequest from './fixtures/githubReportStatusRequest.json
 import runSummary from './fixtures/runSummary.json';
 import slackHook from './fixtures/slackHook.json';
 import slackReportStatusRequest from './fixtures/slackReportStatusRequest.json';
+import slackReportStatusRequestWithoutCommitData from './fixtures/slackReportStatusRequestWithoutCommitData.json';
 
 jest.mock('axios');
 
@@ -98,7 +100,7 @@ describe('Report status to Slack', () => {
     url: 'https://hooks.slack.com/services/123/XXX/zzz',
     hookEvents: ['RUN_FINISH'],
     slackResultFilter: 'ONLY_SUCCESSFUL',
-    slackBranchFilter: ['testBranch']
+    slackBranchFilter: ['testBranch'],
   } as unknown) as SlackHook;
 
   it('should send correct request to the Slack when run is finished', async () => {
@@ -117,6 +119,25 @@ describe('Report status to Slack', () => {
 
     expect(axios).toBeCalledWith({
       ...slackReportStatusRequest,
+      url: 'https://hooks.slack.com/services/123/XXX/zzz',
+    });
+  });
+
+  it('should report correctly to Slack with no commit data', async () => {
+    await reportToSlack({
+      hook: ({
+        ...slackHook,
+        url: 'https://hooks.slack.com/services/123/XXX/zzz',
+      } as unknown) as SlackHook,
+      runId: 'testRunId',
+      ciBuildId: 'testCiBuildId',
+      runSummary: (runSummary as unknown) as RunSummary,
+      hookEvent: HookEvent.RUN_FINISH,
+      commit: {} as CommitData,
+    });
+
+    expect(axios).toBeCalledWith({
+      ...slackReportStatusRequestWithoutCommitData,
       url: 'https://hooks.slack.com/services/123/XXX/zzz',
     });
   });
