@@ -42,7 +42,6 @@ interface BranchFilterProps {
 }
 
 const BranchFilter = ({
-  hook,
   branches,
   disabled,
   errors,

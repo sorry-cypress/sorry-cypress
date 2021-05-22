@@ -677,7 +677,7 @@ export type GetRunQuery = { __typename?: 'Query', run: Maybe<{ __typename?: 'Run
       & RunDetailSpecFragment
     )> }> };
 
-export type RunDetailSpecFragment = { __typename?: 'FullRunSpec', instanceId: string, spec: string, claimed: boolean, claimedAt: Maybe<string>, machineId: Maybe<string>, groupId: Maybe<string>, results: Maybe<{ __typename?: 'InstanceResults', tests: Array<{ __typename?: 'InstanceTest', state: TestState } | { __typename?: 'InstanceTestV5', state: TestState }>, stats: (
+export type RunDetailSpecFragment = { __typename?: 'FullRunSpec', instanceId: string, spec: string, claimed: boolean, claimedAt: Maybe<string>, machineId: Maybe<string>, groupId: Maybe<string>, results: Maybe<{ __typename?: 'InstanceResults', tests: Array<{ __typename?: 'InstanceTest', state: TestState } | { __typename?: 'InstanceTestV5', state: TestState, attempts: Array<{ __typename?: 'TestAttempt', state: Maybe<string> }> }>, stats: (
       { __typename?: 'InstanceStats' }
       & AllInstanceStatsFragment
     ) }> };
@@ -746,6 +746,9 @@ export const RunDetailSpecFragmentDoc = gql`
       }
       ... on InstanceTestV5 {
         state
+        attempts {
+          state
+        }
       }
     }
     stats {

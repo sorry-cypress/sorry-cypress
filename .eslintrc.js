@@ -37,6 +37,7 @@ module.exports = {
       'warn',
       {
         argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
       },
     ],
     '@typescript-eslint/no-use-before-define': 'off',
@@ -48,6 +49,13 @@ module.exports = {
     'no-fallthrough': 'warn',
     'no-useless-escape': 'warn',
     'max-depth': ['error', 4],
+    'comma-dangle': ['error', {
+      'arrays': 'always-multiline',
+      'objects': 'always-multiline',
+      'imports': 'ignore',
+      'exports': 'ignore',
+      'functions': 'ignore'
+    }],
     camelcase: 'off',
     quotes: ['off', 'single'],
     semi: 0,
