@@ -1,7 +1,7 @@
-import { Test, TestV5 } from '@src/tests';
 import { differenceInSeconds, parseISO } from 'date-fns';
 import { compact, orderBy, sum } from 'lodash';
 import { InstanceResult, InstanceResultStats } from '../instance';
+import { Test, TestV5 } from '../tests';
 import { RunSummary, RunWithSpecs } from './types';
 
 export function getRunDurationSeconds(specs: InstanceResultStats[]): number {
@@ -25,10 +25,11 @@ export function getRunDurationSeconds(specs: InstanceResultStats[]): number {
 
 export function getNumRetries(tests: Test[]) {
   // Only InstanceTestV5 tests have an `attempts` property
-  const passes = (tests || [])
-    .filter(test => test?.state === 'passed' && 'attempts' in test) as TestV5[];
+  const passes = (tests || []).filter(
+    (test) => test?.state === 'passed' && 'attempts' in test
+  ) as TestV5[];
   // # of retries = # attempts for successful tests - # successful tests
-  return sum(passes.map(test => test.attempts.length)) - passes.length;
+  return sum(passes.map((test) => test.attempts.length)) - passes.length;
 }
 
 export function getRunSummary(specs: InstanceResult[]): RunSummary {
@@ -41,7 +42,7 @@ export function getRunSummary(specs: InstanceResult[]): RunSummary {
         pending: spec.stats?.pending || 0,
         skipped: spec.stats?.skipped || 0,
         retries: getNumRetries(spec.tests),
-      }
+      };
       return {
         ...agg,
         tests: agg.tests + stats.tests,
@@ -59,7 +60,9 @@ export function getRunSummary(specs: InstanceResult[]): RunSummary {
       skipped: 0,
       pending: 0,
       retries: 0,
-      wallClockDurationSeconds: getRunDurationSeconds(compact(specs.map(spec => spec.stats))),
+      wallClockDurationSeconds: getRunDurationSeconds(
+        compact(specs.map((spec) => spec.stats))
+      ),
     }
   );
 }
