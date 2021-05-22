@@ -353,7 +353,7 @@ export type Run = {
   runId: Scalars['ID'];
   createdAt: Scalars['DateTime'];
   meta: RunMeta;
-  specs: Array<FullRunSpec>;
+  specs: Array<Spec>;
   completion?: Maybe<RunCompletion>;
 };
 
@@ -363,8 +363,8 @@ export type RunCompletion = {
   inactivityTimeoutMs?: Maybe<Scalars['Int']>;
 };
 
-export type FullRunSpec = {
-  __typename?: 'FullRunSpec';
+export type Spec = {
+  __typename?: 'Spec';
   spec: Scalars['String'];
   instanceId: Scalars['String'];
   claimed: Scalars['Boolean'];
@@ -401,18 +401,10 @@ export type RunFeed = {
 export type Instance = {
   __typename?: 'Instance';
   runId: Scalars['ID'];
-  run: PartialRun;
+  run: Run;
   spec: Scalars['String'];
   instanceId: Scalars['ID'];
   results?: Maybe<InstanceResults>;
-};
-
-export type PartialRun = {
-  __typename?: 'PartialRun';
-  runId: Scalars['ID'];
-  createdAt: Scalars['DateTime'];
-  meta?: Maybe<RunMeta>;
-  specs: Array<Maybe<RunSpec>>;
 };
 
 export type RunSpec = {
@@ -651,12 +643,11 @@ export type ResolversTypes = {
   DeleteProjectResponse: ResolverTypeWrapper<DeleteProjectResponse>;
   Run: ResolverTypeWrapper<Run>;
   RunCompletion: ResolverTypeWrapper<RunCompletion>;
-  FullRunSpec: ResolverTypeWrapper<FullRunSpec>;
+  Spec: ResolverTypeWrapper<Spec>;
   Commit: ResolverTypeWrapper<Commit>;
   RunMeta: ResolverTypeWrapper<RunMeta>;
   RunFeed: ResolverTypeWrapper<RunFeed>;
   Instance: ResolverTypeWrapper<Instance>;
-  PartialRun: ResolverTypeWrapper<PartialRun>;
   RunSpec: ResolverTypeWrapper<RunSpec>;
   InstanceResults: ResolverTypeWrapper<Omit<InstanceResults, 'tests'> & { tests: Array<ResolversTypes['InstanceTestUnion']> }>;
   InstanceStats: ResolverTypeWrapper<InstanceStats>;
@@ -712,12 +703,11 @@ export type ResolversParentTypes = {
   DeleteProjectResponse: DeleteProjectResponse;
   Run: Run;
   RunCompletion: RunCompletion;
-  FullRunSpec: FullRunSpec;
+  Spec: Spec;
   Commit: Commit;
   RunMeta: RunMeta;
   RunFeed: RunFeed;
   Instance: Instance;
-  PartialRun: PartialRun;
   RunSpec: RunSpec;
   InstanceResults: Omit<InstanceResults, 'tests'> & { tests: Array<ResolversParentTypes['InstanceTestUnion']> };
   InstanceStats: InstanceStats;
@@ -877,7 +867,7 @@ export type RunResolvers<ContextType = any, ParentType extends ResolversParentTy
   runId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   meta?: Resolver<ResolversTypes['RunMeta'], ParentType, ContextType>;
-  specs?: Resolver<Array<ResolversTypes['FullRunSpec']>, ParentType, ContextType>;
+  specs?: Resolver<Array<ResolversTypes['Spec']>, ParentType, ContextType>;
   completion?: Resolver<Maybe<ResolversTypes['RunCompletion']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
@@ -888,7 +878,7 @@ export type RunCompletionResolvers<ContextType = any, ParentType extends Resolve
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
-export type FullRunSpecResolvers<ContextType = any, ParentType extends ResolversParentTypes['FullRunSpec'] = ResolversParentTypes['FullRunSpec']> = {
+export type SpecResolvers<ContextType = any, ParentType extends ResolversParentTypes['Spec'] = ResolversParentTypes['Spec']> = {
   spec?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   instanceId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   claimed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -925,18 +915,10 @@ export type RunFeedResolvers<ContextType = any, ParentType extends ResolversPare
 
 export type InstanceResolvers<ContextType = any, ParentType extends ResolversParentTypes['Instance'] = ResolversParentTypes['Instance']> = {
   runId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  run?: Resolver<ResolversTypes['PartialRun'], ParentType, ContextType>;
+  run?: Resolver<ResolversTypes['Run'], ParentType, ContextType>;
   spec?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   instanceId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   results?: Resolver<Maybe<ResolversTypes['InstanceResults']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
-};
-
-export type PartialRunResolvers<ContextType = any, ParentType extends ResolversParentTypes['PartialRun'] = ResolversParentTypes['PartialRun']> = {
-  runId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  meta?: Resolver<Maybe<ResolversTypes['RunMeta']>, ParentType, ContextType>;
-  specs?: Resolver<Array<Maybe<ResolversTypes['RunSpec']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
@@ -1069,12 +1051,11 @@ export type Resolvers<ContextType = any> = {
   DeleteProjectResponse?: DeleteProjectResponseResolvers<ContextType>;
   Run?: RunResolvers<ContextType>;
   RunCompletion?: RunCompletionResolvers<ContextType>;
-  FullRunSpec?: FullRunSpecResolvers<ContextType>;
+  Spec?: SpecResolvers<ContextType>;
   Commit?: CommitResolvers<ContextType>;
   RunMeta?: RunMetaResolvers<ContextType>;
   RunFeed?: RunFeedResolvers<ContextType>;
   Instance?: InstanceResolvers<ContextType>;
-  PartialRun?: PartialRunResolvers<ContextType>;
   RunSpec?: RunSpecResolvers<ContextType>;
   InstanceResults?: InstanceResultsResolvers<ContextType>;
   InstanceStats?: InstanceStatsResolvers<ContextType>;

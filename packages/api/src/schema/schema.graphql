@@ -220,7 +220,7 @@ type Run {
   runId: ID!
   createdAt: DateTime!
   meta: RunMeta!
-  specs: [FullRunSpec!]!
+  specs: [Spec!]!
   completion: RunCompletion
 }
 
@@ -230,7 +230,7 @@ type RunCompletion {
 }
 
 # Full spec data, including execution results
-type FullRunSpec {
+type Spec {
   spec: String!
   instanceId: String!
   claimed: Boolean!
@@ -265,19 +265,12 @@ type RunFeed {
 ### Instance - a claimed spec that's being executed
 type Instance {
   runId: ID!
-  run: PartialRun!
+  run: Run!
   spec: String!
   instanceId: ID!
   results: InstanceResults
 }
 
-# Concise representation of a run
-type PartialRun {
-  runId: ID!
-  createdAt: DateTime!
-  meta: RunMeta
-  specs: [RunSpec]!
-}
 # Spec within a run. Instance is a claimed spec
 type RunSpec {
   spec: String!

@@ -10,10 +10,10 @@ import {
   CreateProjectInput,
   CreateSlackHookInput,
   DeleteHookInput,
-  FullRunSpec,
   InstanceTestUnion,
   InstanceTestV5,
   OrderingOptions,
+  Spec,
   UpdateBitbucketHookInput,
   UpdateGenericHookInput,
   UpdateGithubHookInput,
@@ -66,18 +66,19 @@ export const resolvers = {
       return 'InstanceTest';
     },
   },
-  FullRunSpec: {
+  Spec: {
     results: async (
-      { instanceId }: FullRunSpec,
+      { instanceId }: Spec,
       _: any,
       { dataSources }: { dataSources: AppDatasources }
     ) => {
       const response = await dataSources.instancesAPI.getResultsByInstanceId(
         instanceId
       );
-      const { results } = response;
-
-      return results;
+      if (!response) {
+        return null;
+      }
+      return response.results;
     },
   },
   Query: {
