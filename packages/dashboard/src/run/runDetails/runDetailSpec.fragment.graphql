@@ -1,4 +1,4 @@
-fragment RunDetailSpec on FullRunSpec {
+fragment RunDetailSpec on Spec {
   instanceId
   spec
   claimed

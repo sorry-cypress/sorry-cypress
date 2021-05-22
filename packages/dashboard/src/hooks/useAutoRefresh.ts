@@ -6,7 +6,7 @@ export const useAutoRefresh = () =>
 export const useAutoRefreshRate = () => {
   const [shouldRefresh] = useAutoRefresh();
   if (shouldRefresh) {
-    return 1500 as number;
+    return 5_000 as number;
   }
   return undefined;
 };

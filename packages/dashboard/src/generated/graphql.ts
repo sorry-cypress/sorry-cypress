@@ -354,7 +354,7 @@ export type Run = {
   runId: Scalars['ID'];
   createdAt: Scalars['DateTime'];
   meta: RunMeta;
-  specs: Array<FullRunSpec>;
+  specs: Array<Spec>;
   completion: Maybe<RunCompletion>;
 };
 
@@ -364,8 +364,8 @@ export type RunCompletion = {
   inactivityTimeoutMs: Maybe<Scalars['Int']>;
 };
 
-export type FullRunSpec = {
-  __typename?: 'FullRunSpec';
+export type Spec = {
+  __typename?: 'Spec';
   spec: Scalars['String'];
   instanceId: Scalars['String'];
   claimed: Scalars['Boolean'];
@@ -402,18 +402,10 @@ export type RunFeed = {
 export type Instance = {
   __typename?: 'Instance';
   runId: Scalars['ID'];
-  run: PartialRun;
+  run: Run;
   spec: Scalars['String'];
   instanceId: Scalars['ID'];
   results: Maybe<InstanceResults>;
-};
-
-export type PartialRun = {
-  __typename?: 'PartialRun';
-  runId: Scalars['ID'];
-  createdAt: Scalars['DateTime'];
-  meta: Maybe<RunMeta>;
-  specs: Array<Maybe<RunSpec>>;
 };
 
 export type RunSpec = {
@@ -543,7 +535,7 @@ export type GetInstanceQueryVariables = Exact<{
 }>;
 
 
-export type GetInstanceQuery = { __typename?: 'Query', instance: Maybe<{ __typename?: 'Instance', instanceId: string, runId: string, spec: string, run: { __typename?: 'PartialRun', meta: Maybe<{ __typename?: 'RunMeta', ciBuildId: string, projectId: string }> }, results: Maybe<{ __typename?: 'InstanceResults', videoUrl: Maybe<string>, stats: (
+export type GetInstanceQuery = { __typename?: 'Query', instance: Maybe<{ __typename?: 'Instance', instanceId: string, runId: string, spec: string, run: { __typename?: 'Run', meta: { __typename?: 'RunMeta', ciBuildId: string, projectId: string } }, results: Maybe<{ __typename?: 'InstanceResults', videoUrl: Maybe<string>, stats: (
         { __typename?: 'InstanceStats' }
         & AllInstanceStatsFragment
       ), tests: Array<{ __typename?: 'InstanceTest', testId: string, title: Array<string>, state: TestState, wallClockDuration: Maybe<number>, wallClockStartedAt: Maybe<string>, error: Maybe<string>, stack: Maybe<string> } | { __typename?: 'InstanceTestV5', testId: string, title: Array<string>, state: TestState, displayError: Maybe<string>, attempts: Array<{ __typename?: 'TestAttempt', state: Maybe<string>, wallClockDuration: Maybe<number>, wallClockStartedAt: Maybe<string>, error: Maybe<{ __typename?: 'TestError', name: string, message: string, stack: string }> }> }>, screenshots: Array<{ __typename?: 'InstanceScreeshot', testId: string, screenshotId: string, height: number, width: number, screenshotURL: Maybe<string> }>, cypressConfig: Maybe<{ __typename?: 'CypressConfig', video: boolean, videoUploadOnPasses: boolean }> }> }> };
@@ -673,11 +665,11 @@ export type GetRunQuery = { __typename?: 'Query', run: Maybe<{ __typename?: 'Run
       { __typename?: 'RunMeta' }
       & RunSummaryMetaFragment
     ), specs: Array<(
-      { __typename?: 'FullRunSpec' }
+      { __typename?: 'Spec' }
       & RunDetailSpecFragment
     )> }> };
 
-export type RunDetailSpecFragment = { __typename?: 'FullRunSpec', instanceId: string, spec: string, claimed: boolean, claimedAt: Maybe<string>, machineId: Maybe<string>, groupId: Maybe<string>, results: Maybe<{ __typename?: 'InstanceResults', tests: Array<{ __typename?: 'InstanceTest', state: TestState } | { __typename?: 'InstanceTestV5', state: TestState, attempts: Array<{ __typename?: 'TestAttempt', state: Maybe<string> }> }>, stats: (
+export type RunDetailSpecFragment = { __typename?: 'Spec', instanceId: string, spec: string, claimed: boolean, claimedAt: Maybe<string>, machineId: Maybe<string>, groupId: Maybe<string>, results: Maybe<{ __typename?: 'InstanceResults', tests: Array<{ __typename?: 'InstanceTest', state: TestState } | { __typename?: 'InstanceTestV5', state: TestState, attempts: Array<{ __typename?: 'TestAttempt', state: Maybe<string> }> }>, stats: (
       { __typename?: 'InstanceStats' }
       & AllInstanceStatsFragment
     ) }> };
@@ -694,7 +686,7 @@ export type GetRunSummaryQuery = { __typename?: 'Query', run: Maybe<{ __typename
       { __typename?: 'RunCompletion' }
       & RunSummaryCompletionFragment
     )>, specs: Array<(
-      { __typename?: 'FullRunSpec' }
+      { __typename?: 'Spec' }
       & RunSummarySpecFragment
     )> }> };
 
@@ -704,7 +696,7 @@ export type RunSummaryCompletionFragment = { __typename?: 'RunCompletion', compl
 
 export type RunSummaryMetaFragment = { __typename?: 'RunMeta', ciBuildId: string, projectId: string, commit: Maybe<{ __typename?: 'Commit', sha: Maybe<string>, branch: Maybe<string>, remoteOrigin: Maybe<string>, message: Maybe<string>, authorEmail: Maybe<string>, authorName: Maybe<string> }> };
 
-export type RunSummarySpecFragment = { __typename?: 'FullRunSpec', claimed: boolean, results: Maybe<{ __typename?: 'InstanceResults', stats: (
+export type RunSummarySpecFragment = { __typename?: 'Spec', claimed: boolean, results: Maybe<{ __typename?: 'InstanceResults', stats: (
       { __typename?: 'InstanceStats' }
       & AllInstanceStatsFragment
     ) }> };
@@ -732,7 +724,7 @@ export const AllInstanceStatsFragmentDoc = gql`
 }
     `;
 export const RunDetailSpecFragmentDoc = gql`
-    fragment RunDetailSpec on FullRunSpec {
+    fragment RunDetailSpec on Spec {
   instanceId
   spec
   claimed
@@ -778,7 +770,7 @@ export const RunSummaryMetaFragmentDoc = gql`
 }
     `;
 export const RunSummarySpecFragmentDoc = gql`
-    fragment RunSummarySpec on FullRunSpec {
+    fragment RunSummarySpec on Spec {
   claimed
   results {
     stats {

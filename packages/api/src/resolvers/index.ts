@@ -13,6 +13,7 @@ import {
   InstanceTestUnion,
   InstanceTestV5,
   OrderingOptions,
+  Spec,
   UpdateBitbucketHookInput,
   UpdateGenericHookInput,
   UpdateGithubHookInput,
@@ -63,6 +64,21 @@ export const resolvers = {
       }
 
       return 'InstanceTest';
+    },
+  },
+  Spec: {
+    results: async (
+      { instanceId }: Spec,
+      _: any,
+      { dataSources }: { dataSources: AppDatasources }
+    ) => {
+      const response = await dataSources.instancesAPI.getResultsByInstanceId(
+        instanceId
+      );
+      if (!response) {
+        return null;
+      }
+      return response.results;
     },
   },
   Query: {

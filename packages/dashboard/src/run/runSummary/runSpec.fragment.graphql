@@ -1,4 +1,4 @@
-fragment RunSummarySpec on FullRunSpec {
+fragment RunSummarySpec on Spec {
   claimed
   results {
     stats {

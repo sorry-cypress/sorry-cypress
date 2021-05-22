@@ -48,6 +48,14 @@ export class InstancesAPI extends DataSource {
     return getInstanceReducer(response);
   }
 
+  async getResultsByInstanceId(instanceId: string) {
+    const result = await getMongoDB()
+      .collection('instances')
+      .findOne({ instanceId }, { projection: { results: 1 } });
+
+    return result;
+  }
+
   async deleteInstancesByRunIds(runIds: string[]) {
     const result = await getMongoDB()
       .collection('instances')
