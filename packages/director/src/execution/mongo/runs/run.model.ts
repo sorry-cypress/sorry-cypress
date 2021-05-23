@@ -1,5 +1,10 @@
 import { Collection } from '@sorry-cypress/mongo/dist';
-import { AppError, CLAIM_FAILED, RUN_EXISTS } from '@src/lib/errors';
+import {
+  AppError,
+  CLAIM_FAILED,
+  RUN_EXISTS,
+  SPEC_COMPLETE_FAILED,
+} from '@src/lib/errors';
 import { getSanitizedMongoObject } from '@src/lib/results';
 import { ExecutionDriver, Run, RunSpec, RunWithSpecs } from '@src/types';
 
@@ -157,4 +162,34 @@ export const setRunCompletedWithTimeout: ExecutionDriver['setRunCompletedWithTim
       },
     }
   );
+};
+
+// atomic operation to avoid concurrency issues
+// filter document prevents concurrent writes
+export const setSpecCompleted = async (runId: string, instanceId: string) => {
+  const { matchedCount, modifiedCount } = await Collection.run().updateOne(
+    {
+      runId,
+      specs: {
+        $elemMatch: {
+          instanceId,
+          completedAt: null,
+        },
+      },
+    },
+    {
+      $set: {
+        'specs.$[spec].completedAt': new Date(),
+      },
+    },
+    {
+      arrayFilters: [{ 'spec.instanceId': instanceId }],
+    }
+  );
+
+  if (matchedCount && modifiedCount) {
+    return;
+  } else {
+    throw new AppError(SPEC_COMPLETE_FAILED);
+  }
 };

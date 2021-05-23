@@ -33,6 +33,7 @@ import {
   createRun as storageCreateRun,
   getRunById,
   setSpecClaimed,
+  setSpecCompleted,
 } from './run.model';
 
 export const getById = getRunById;
@@ -158,3 +159,5 @@ export const getNextTask: ExecutionDriver['getNextTask'] = async ({
     throw error;
   }
 };
+
+export const updateRunSpecCompleted = setSpecCompleted;

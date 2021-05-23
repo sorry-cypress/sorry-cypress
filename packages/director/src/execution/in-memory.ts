@@ -213,7 +213,7 @@ const updateInstanceResults = async (
   );
 
   instances[instanceId].results = instanceResult;
-  return instanceResult;
+  return instances[instanceId];
 };
 
 export const driver: ExecutionDriver = {

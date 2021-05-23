@@ -105,7 +105,7 @@ export const updateInstanceResults: RequestHandler<
 
   console.log(`>> Received instance results`, { instanceId });
   const executionDriver = await getExecutionDriver();
-  const instanceResult = await executionDriver.updateInstanceResults(
+  const instance = await executionDriver.updateInstanceResults(
     instanceId,
     results
   );
@@ -114,7 +114,7 @@ export const updateInstanceResults: RequestHandler<
   try {
     const uploadInstructions = await getInstanceScreenshots(
       instanceId,
-      instanceResult
+      instance.results
     );
     return res.json(uploadInstructions);
   } catch (error) {

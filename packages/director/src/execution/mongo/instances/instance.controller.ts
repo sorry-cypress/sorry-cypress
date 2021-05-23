@@ -6,6 +6,7 @@ import {
 } from '@src/lib/errors';
 import { mergeInstanceResults } from '@src/lib/instance';
 import { ExecutionDriver } from '@src/types';
+import { updateRunSpecCompleted } from '../runs/run.controller';
 import {
   getInstanceById,
   insertInstance,
@@ -55,7 +56,10 @@ export const updateInstanceResults: ExecutionDriver['updateInstanceResults'] = a
     update
   );
 
-  await modelSetInstanceResults(instanceId, instanceResult);
+  await Promise.all([
+    modelSetInstanceResults(instanceId, instanceResult),
+    updateRunSpecCompleted(instance.runId, instanceId),
+  ]);
 
-  return instanceResult;
+  return { ...instance, results: instanceResult };
 };

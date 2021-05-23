@@ -63,7 +63,7 @@ export interface ExecutionDriver extends Driver {
   updateInstanceResults: (
     instanceId: string,
     payload: UpdateInstanceResultsPayload
-  ) => Promise<InstanceResult>;
+  ) => Promise<Instance>;
   setScreenshotUrl: (
     instanceId: string,
     screenshotId: string,
