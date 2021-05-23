@@ -3,12 +3,16 @@ import { ExecutionDriver } from '@src/types';
 import * as mongoInstanceController from './instances/instance.controller';
 import * as mongoInstanceModel from './instances/instance.model';
 import * as mongoProjectModel from './projects/project.model';
+import { initRunCompletion } from './runCompletion';
 import * as mongoRunController from './runs/run.controller';
 import * as mongoRunModel from './runs/run.model';
 
 export const driver: ExecutionDriver = {
   id: 'stateful-mongo',
-  init: initMongo,
+  init: async () => {
+    await initMongo();
+    initRunCompletion();
+  },
   getProjectById: mongoProjectModel.getProjectById,
   getRunById: mongoRunModel.getRunById,
   getRunWithSpecs: mongoRunModel.getRunWithSpecs,
