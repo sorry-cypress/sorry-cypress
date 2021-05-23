@@ -4,7 +4,6 @@ import { Collection } from './db';
 
 interface CreateRunTimeoutParams {
   runId: string;
-  orgId: string;
   timeoutSeconds: number;
   timeoutAfter: Date;
 }

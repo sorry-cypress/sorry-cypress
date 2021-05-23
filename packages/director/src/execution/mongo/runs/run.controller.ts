@@ -1,3 +1,4 @@
+import { runTimeoutModel } from '@sorry-cypress/mongo/dist';
 import { INACTIVITY_TIMEOUT_SECONDS } from '@src/config';
 import { getRunCiBuildId } from '@src/lib/ciBuildId';
 import {
@@ -21,6 +22,7 @@ import {
   Run,
   Task,
 } from '@src/types';
+import { addSeconds } from 'date-fns';
 import { curry, property, uniq } from 'lodash';
 import {
   enhanceSpec,
@@ -30,7 +32,7 @@ import {
   getSpecsForGroup,
 } from '../../utils';
 import { createInstance } from '../instances/instance.controller';
-import { createProject } from './../projects/project.model';
+import { createProject, getProjectById } from './../projects/project.model';
 import {
   addSpecsToRun,
   createRun as storageCreateRun,
@@ -38,7 +40,6 @@ import {
   setSpecClaimed,
   setSpecCompleted,
 } from './run.model';
-
 export const getById = getRunById;
 
 export const createRun: ExecutionDriver['createRun'] = async (params) => {
@@ -65,9 +66,13 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
   };
 
   try {
-    await createProject(
-      getCreateProjectValue(params.projectId, INACTIVITY_TIMEOUT_SECONDS)
-    );
+    let project = await getProjectById(params.projectId);
+    if (!project) {
+      project = await createProject(
+        getCreateProjectValue(params.projectId, INACTIVITY_TIMEOUT_SECONDS)
+      );
+    }
+
     await storageCreateRun({
       runId,
       cypressVersion: params.cypressVersion,
@@ -84,13 +89,20 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
       },
       specs: params.specs.map(enhaceSpecForThisRun),
     });
+    const timeoutSeconds =
+      project.inactivityTimeoutSeconds ?? INACTIVITY_TIMEOUT_SECONDS;
+    await runTimeoutModel.createRunTimeout({
+      runId,
+      timeoutSeconds,
+      timeoutAfter: addSeconds(new Date(), project.inactivityTimeoutSeconds),
+    });
+
     return response;
   } catch (error) {
     if (error.code && error.code === RUN_EXISTS) {
       response.isNewRun = false;
       // serverless: prone to race condition on serverless
       const run = await getRunById(runId);
-
       const newSpecs = getNewSpecsInGroup({
         run,
         groupId,

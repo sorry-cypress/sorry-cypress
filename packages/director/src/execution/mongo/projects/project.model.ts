@@ -7,14 +7,8 @@ export const getProjectById = (id: string) =>
 
 export const createProject = async (project: Project) => {
   try {
-    // serverless: there's a potential race condition here when running on two machines / serverless environments
-    const storedProject = await getProjectById(project.projectId);
-    if (!storedProject) {
-      const { result } = await Collection.project().insertOne(project);
-      return result;
-    } else {
-      return storedProject;
-    }
+    await Collection.project().insertOne(project);
+    return project;
   } catch (error) {
     if (error.code) {
       throw new AppError(PROJECT_CREATE_FAILED);
