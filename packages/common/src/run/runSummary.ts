@@ -69,7 +69,7 @@ export function getRunSummary(specs: InstanceResult[]): RunSummary {
 
 export function isAllRunSpecsCompleted(run: RunWithSpecs) {
   const allCandidateSpecs = run.specs.map((s) => s.spec);
-  const allClaimedSpecs = run.specs.filter((s) => s.claimed);
+  const allClaimedSpecs = run.specs.filter((s) => s.claimedAt);
 
   if (allCandidateSpecs.length !== allClaimedSpecs.length) {
     return false;

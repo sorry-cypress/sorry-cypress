@@ -23,7 +23,7 @@ export const VisualTestState = ({ state }: TestStateProps) => {
 
 export type StateType = 'passed' | 'failed' | 'pending' | 'running' | 'notests';
 export const getSpecState = (spec: RunDetailSpecFragment): StateType => {
-  if (spec.claimed && !spec.results) {
+  if (spec.claimedAt && !spec.results) {
     return 'running';
   }
 

@@ -95,14 +95,13 @@ export const setSpecClaimed = async (
       specs: {
         $elemMatch: {
           instanceId,
-          claimed: false,
+          claimedAt: null,
         },
       },
     },
     {
       $set: {
         'specs.$[spec].machineId': machineId,
-        'specs.$[spec].claimed': true,
         'specs.$[spec].claimedAt': new Date().toISOString(),
       },
     },

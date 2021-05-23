@@ -1,5 +1,5 @@
-fragment RunSummarySpec on Spec {
-  claimed
+fragment RunSummarySpec on RunSpec {
+  claimedAt
   results {
     stats {
       ...AllInstanceStats

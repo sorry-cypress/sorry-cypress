@@ -1,13 +1,13 @@
 import { generateUUID } from '@src/lib/hash';
-import { Run } from '@src/types';
+import { Run, RunSpec } from '@src/types';
 import { difference } from 'lodash';
 
 export const getSpecsForGroup = (run: Run, groupId: string) =>
   run.specs.filter((spec) => spec.groupId === groupId);
 export const getClaimedSpecs = (run: Run, groupId: string) =>
-  getSpecsForGroup(run, groupId).filter((s) => s.claimed);
+  getSpecsForGroup(run, groupId).filter((s) => s.claimedAt);
 export const getFirstUnclaimedSpec = (run: Run, groupId: string) =>
-  getSpecsForGroup(run, groupId).find((s) => !s.claimed);
+  getSpecsForGroup(run, groupId).find((s) => !s.claimedAt);
 
 interface GetNewSpecsForGroupParams {
   run: Run;
@@ -24,9 +24,10 @@ export const getNewSpecsInGroup = ({
   return difference(candidateSpecs, existingSpecs);
 };
 
-export const enhanceSpec = (groupId: string) => (spec: string) => ({
+export const enhanceSpec = (groupId: string) => (spec: string): RunSpec => ({
   spec,
   instanceId: generateUUID(),
-  claimed: false,
+  claimedAt: null,
+  completedAt: null,
   groupId,
 });

@@ -220,7 +220,7 @@ type Run {
   runId: ID!
   createdAt: DateTime!
   meta: RunMeta!
-  specs: [Spec!]!
+  specs: [RunSpec!]!
   completion: RunCompletion
 }
 
@@ -229,12 +229,11 @@ type RunCompletion {
   inactivityTimeoutMs: Int
 }
 
-# Full spec data, including execution results
-type Spec {
+type RunSpec {
   spec: String!
   instanceId: String!
-  claimed: Boolean!
   claimedAt: String
+  completedAt: String
   machineId: String
   groupId: String
   results: InstanceResults
@@ -269,16 +268,6 @@ type Instance {
   spec: String!
   instanceId: ID!
   results: InstanceResults
-}
-
-# Spec within a run. Instance is a claimed spec
-type RunSpec {
-  spec: String!
-  instanceId: String!
-  claimed: Boolean!
-  claimedAt: String
-  groupId: String
-  machineId: String
 }
 
 # Execution results of a single instance

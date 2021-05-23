@@ -148,7 +148,7 @@ const getNextTask: ExecutionDriver['getNextTask'] = async ({
   const unclaimedSpecIndex = runs[runId].specs.findIndex(
     (s) => s === unclaimedSpec
   );
-  runs[runId].specs[unclaimedSpecIndex].claimed = true;
+  runs[runId].specs[unclaimedSpecIndex].claimedAt = new Date().toISOString();
   instances[unclaimedSpec.instanceId] = {
     _createTestsPayload: null,
     spec: runs[runId].specs[unclaimedSpecIndex].spec,

@@ -1,7 +1,6 @@
-fragment RunDetailSpec on Spec {
+fragment RunDetailSpec on RunSpec {
   instanceId
   spec
-  claimed
   claimedAt
   machineId
   groupId

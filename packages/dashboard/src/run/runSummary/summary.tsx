@@ -10,8 +10,8 @@ import {
   HeaderLink,
   Paper,
   TestFailureBadge,
-  TestRetriesBadge,
   TestOverallBadge,
+  TestRetriesBadge,
   TestSkippedBadge,
   TestSuccessBadge,
 } from '@src/components/';
@@ -61,9 +61,7 @@ export function RunSummaryComponent({
   const runSpecs = run.specs;
   const runCreatedAt = run.createdAt;
 
-  const runSummary = getRunSummary(
-    compact(runSpecs.map((s) => s.results))
-  );
+  const runSummary = getRunSummary(compact(runSpecs.map((s) => s.results)));
 
   const hasCompletion = !!run.completion;
   const completed = !!run.completion?.completed;
@@ -111,7 +109,7 @@ export function RunSummaryComponent({
             <li>
               <Text>Spec Files: </Text>
               <Text>
-                claimed {runSpecs.filter((s) => s.claimed).length} out of{' '}
+                claimed {runSpecs.filter((s) => s.claimedAt).length} out of{' '}
                 {runSpecs.length}
               </Text>
             </li>

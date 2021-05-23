@@ -354,7 +354,7 @@ export type Run = {
   runId: Scalars['ID'];
   createdAt: Scalars['DateTime'];
   meta: RunMeta;
-  specs: Array<Spec>;
+  specs: Array<RunSpec>;
   completion: Maybe<RunCompletion>;
 };
 
@@ -364,12 +364,12 @@ export type RunCompletion = {
   inactivityTimeoutMs: Maybe<Scalars['Int']>;
 };
 
-export type Spec = {
-  __typename?: 'Spec';
+export type RunSpec = {
+  __typename?: 'RunSpec';
   spec: Scalars['String'];
   instanceId: Scalars['String'];
-  claimed: Scalars['Boolean'];
   claimedAt: Maybe<Scalars['String']>;
+  completedAt: Maybe<Scalars['String']>;
   machineId: Maybe<Scalars['String']>;
   groupId: Maybe<Scalars['String']>;
   results: Maybe<InstanceResults>;
@@ -406,16 +406,6 @@ export type Instance = {
   spec: Scalars['String'];
   instanceId: Scalars['ID'];
   results: Maybe<InstanceResults>;
-};
-
-export type RunSpec = {
-  __typename?: 'RunSpec';
-  spec: Scalars['String'];
-  instanceId: Scalars['String'];
-  claimed: Scalars['Boolean'];
-  claimedAt: Maybe<Scalars['String']>;
-  groupId: Maybe<Scalars['String']>;
-  machineId: Maybe<Scalars['String']>;
 };
 
 export type InstanceResults = {
@@ -665,11 +655,11 @@ export type GetRunQuery = { __typename?: 'Query', run: Maybe<{ __typename?: 'Run
       { __typename?: 'RunMeta' }
       & RunSummaryMetaFragment
     ), specs: Array<(
-      { __typename?: 'Spec' }
+      { __typename?: 'RunSpec' }
       & RunDetailSpecFragment
     )> }> };
 
-export type RunDetailSpecFragment = { __typename?: 'Spec', instanceId: string, spec: string, claimed: boolean, claimedAt: Maybe<string>, machineId: Maybe<string>, groupId: Maybe<string>, results: Maybe<{ __typename?: 'InstanceResults', tests: Array<{ __typename?: 'InstanceTest', state: TestState } | { __typename?: 'InstanceTestV5', state: TestState, attempts: Array<{ __typename?: 'TestAttempt', state: Maybe<string> }> }>, stats: (
+export type RunDetailSpecFragment = { __typename?: 'RunSpec', instanceId: string, spec: string, claimedAt: Maybe<string>, machineId: Maybe<string>, groupId: Maybe<string>, results: Maybe<{ __typename?: 'InstanceResults', tests: Array<{ __typename?: 'InstanceTest', state: TestState } | { __typename?: 'InstanceTestV5', state: TestState, attempts: Array<{ __typename?: 'TestAttempt', state: Maybe<string> }> }>, stats: (
       { __typename?: 'InstanceStats' }
       & AllInstanceStatsFragment
     ) }> };
@@ -686,7 +676,7 @@ export type GetRunSummaryQuery = { __typename?: 'Query', run: Maybe<{ __typename
       { __typename?: 'RunCompletion' }
       & RunSummaryCompletionFragment
     )>, specs: Array<(
-      { __typename?: 'Spec' }
+      { __typename?: 'RunSpec' }
       & RunSummarySpecFragment
     )> }> };
 
@@ -696,7 +686,7 @@ export type RunSummaryCompletionFragment = { __typename?: 'RunCompletion', compl
 
 export type RunSummaryMetaFragment = { __typename?: 'RunMeta', ciBuildId: string, projectId: string, commit: Maybe<{ __typename?: 'Commit', sha: Maybe<string>, branch: Maybe<string>, remoteOrigin: Maybe<string>, message: Maybe<string>, authorEmail: Maybe<string>, authorName: Maybe<string> }> };
 
-export type RunSummarySpecFragment = { __typename?: 'Spec', claimed: boolean, results: Maybe<{ __typename?: 'InstanceResults', stats: (
+export type RunSummarySpecFragment = { __typename?: 'RunSpec', claimedAt: Maybe<string>, results: Maybe<{ __typename?: 'InstanceResults', stats: (
       { __typename?: 'InstanceStats' }
       & AllInstanceStatsFragment
     ) }> };
@@ -724,10 +714,9 @@ export const AllInstanceStatsFragmentDoc = gql`
 }
     `;
 export const RunDetailSpecFragmentDoc = gql`
-    fragment RunDetailSpec on Spec {
+    fragment RunDetailSpec on RunSpec {
   instanceId
   spec
-  claimed
   claimedAt
   machineId
   groupId
@@ -770,8 +759,8 @@ export const RunSummaryMetaFragmentDoc = gql`
 }
     `;
 export const RunSummarySpecFragmentDoc = gql`
-    fragment RunSummarySpec on Spec {
-  claimed
+    fragment RunSummarySpec on RunSpec {
+  claimedAt
   results {
     stats {
       ...AllInstanceStats
