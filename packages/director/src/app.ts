@@ -3,7 +3,7 @@ import express from 'express';
 import {
   createInstance,
   setInstanceTests,
-  updateInstance,
+  // updateInstance,
   updateInstanceResults,
 } from './api/instances';
 import { blockKeys, handleCreateRun } from './api/runs';
@@ -29,7 +29,14 @@ app.post('/runs/:runId/instances', createInstance);
  * cypress prior to 6.7.0 sends instance results in a single API call
  * https://github.com/cypress-io/cypress/blob/757ddc81c0565de5c4328e231c612f458a956b05/packages/server/lib/api.js#L266
  */
-app.put('/instances/:instanceId', updateInstance);
+app.put('/instances/:instanceId', (req, res) => {
+  res.status(422).json({
+    message: 'Unsupported cypress version',
+    errors: [
+      'sorry-cypress supports cypress versions gte 6.7.0. Please update your cypress version.',
+    ],
+  });
+});
 
 /**
  * cypress 6.7.0+ sends two separate API calls

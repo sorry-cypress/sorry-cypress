@@ -5,6 +5,7 @@ export interface Instance {
   runId: string;
   spec: string;
   cypressVersion: string;
+  groupId: string;
   // 6.7.0+ reports tests before running specs
   _createTestsPayload?: SetInstanceTestsPayload;
   results?: InstanceResult;

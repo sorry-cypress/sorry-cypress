@@ -15,10 +15,12 @@ export const insertInstance = async ({
   instanceId,
   spec,
   cypressVersion,
+  groupId,
 }: {
   runId: string;
   instanceId: string;
   spec: string;
+  groupId: string;
   cypressVersion: string;
 }) => {
   try {
@@ -27,6 +29,7 @@ export const insertInstance = async ({
       runId,
       instanceId,
       cypressVersion,
+      groupId,
     });
   } catch (error) {
     if (error.code && error.code === 11000) {

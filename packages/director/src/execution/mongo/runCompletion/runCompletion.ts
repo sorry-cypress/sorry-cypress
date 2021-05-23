@@ -9,7 +9,6 @@ import {
   setRunCompleted,
   setRunCompletedWithTimeout,
 } from '../runs/run.model';
-// import { emitGroupTimedout } from '@src/lib/hooks/events';
 
 export const maybeSetRunCompleted = async (runId: string) => {
   if (await allRunSpecsCompleted(runId)) {
@@ -45,7 +44,7 @@ export const checkRunCompletionOnTimeout = async (
   getNonCompletedGroups(run).forEach((groupId) =>
     emitGroupTimedout({
       runId,
-      // groupId,
+      groupId,
     })
   );
 };

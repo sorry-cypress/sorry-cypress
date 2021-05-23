@@ -172,9 +172,9 @@ function RunStatus({
 function Timedout({ inactivityTimeoutMs }: { inactivityTimeoutMs: number }) {
   return (
     <Tooltip
-      text={`The run has been marked as timed out after ${getSecondsDuration(
+      text={`Timed out after ${getSecondsDuration(
         inactivityTimeoutMs / 1000
-      )} of inactiviy`}
+      )}. Set the timeout value in project settings.`}
     >
       <Icon icon="clockOutline" fill="danger" stroke="danger" size={0.9} />
     </Tooltip>

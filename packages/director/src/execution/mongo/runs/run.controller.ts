@@ -37,6 +37,7 @@ import {
   addSpecsToRun,
   createRun as storageCreateRun,
   getRunById,
+  setRunCompleted,
   setSpecClaimed,
   setSpecCompleted,
 } from './run.model';
@@ -149,6 +150,7 @@ export const getNextTask: ExecutionDriver['getNextTask'] = async ({
       instance: null,
       claimedInstances: getClaimedSpecs(run, runId).length,
       totalInstances: getSpecsForGroup(run, groupId).length,
+      projectId: run.meta.projectId,
     };
   }
 
@@ -158,6 +160,7 @@ export const getNextTask: ExecutionDriver['getNextTask'] = async ({
     await createInstance({
       runId,
       instanceId: spec.instanceId,
+      groupId,
       spec: spec.spec,
       cypressVersion,
     });
@@ -165,6 +168,7 @@ export const getNextTask: ExecutionDriver['getNextTask'] = async ({
       instance: spec,
       claimedInstances: getClaimedSpecs(run, groupId).length + 1,
       totalInstances: getSpecsForGroup(run, groupId).length,
+      projectId: run.meta.projectId,
     };
   } catch (error) {
     if (error.code && error.code === CLAIM_FAILED) {
@@ -188,6 +192,27 @@ export const allRunSpecsCompleted = async (runId: string): Promise<boolean> => {
 export const getNonCompletedGroups = (run: Run) => {
   const groups: string[] = uniq(run.specs.map(property('groupId')));
   return groups.filter(curry(hasIncompletedGroupSpecs)(run));
+};
+
+export const allGroupSpecsCompleted: ExecutionDriver['allGroupSpecsCompleted'] = async (
+  runId,
+  groupId
+) => {
+  const run = await getById(runId);
+  if (!run) {
+    throw new AppError(RUN_NOT_EXIST);
+  }
+  return !hasIncompletedGroupSpecs(run, groupId);
+};
+
+export const maybeSetRunCompleted = async (runId: string) => {
+  if (await allRunSpecsCompleted(runId)) {
+    console.log(`[run-completion] Run completed`, { runId });
+    setRunCompleted(runId).catch(console.error);
+    return true;
+  }
+  // timeout should handle
+  return false;
 };
 
 const hasIncompletedGroupSpecs = (run: Run, groupId: string) =>

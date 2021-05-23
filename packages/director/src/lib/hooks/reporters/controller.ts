@@ -28,7 +28,7 @@ export function reportToHooks({
   project: Project;
 }): Promise<void> {
   try {
-    if (!project.hooks.length) {
+    if (!project.hooks?.length) {
       return;
     }
     const runSummary = getRunSummary(
@@ -41,7 +41,7 @@ export function reportToHooks({
       commit: run.meta.commit,
       hookEvent,
     };
-    project.hooks?.forEach((hook) => {
+    project.hooks.forEach((hook) => {
       // swallow errors, don't trust reporters to catch errors
       runSingleReporter({ ...reporterArgs, hook }).catch((error) => {
         console.error(error);

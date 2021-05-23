@@ -266,6 +266,7 @@ type Instance {
   runId: ID!
   run: Run!
   spec: String!
+  groupId: String!
   instanceId: ID!
   results: InstanceResults
 }

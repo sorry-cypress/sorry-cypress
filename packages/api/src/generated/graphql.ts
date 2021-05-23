@@ -403,6 +403,7 @@ export type Instance = {
   runId: Scalars['ID'];
   run: Run;
   spec: Scalars['String'];
+  groupId: Scalars['String'];
   instanceId: Scalars['ID'];
   results?: Maybe<InstanceResults>;
 };
@@ -905,6 +906,7 @@ export type InstanceResolvers<ContextType = any, ParentType extends ResolversPar
   runId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   run?: Resolver<ResolversTypes['Run'], ParentType, ContextType>;
   spec?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  groupId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   instanceId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   results?: Resolver<Maybe<ResolversTypes['InstanceResults']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;

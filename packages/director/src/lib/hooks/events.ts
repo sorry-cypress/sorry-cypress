@@ -3,15 +3,24 @@ import { pubsub } from '../pubsub';
 
 export interface PubSubHookEventPayload {
   runId: string;
+  groupId: string;
 }
-export const emitRunStart = (payload: PubSubHookEventPayload) =>
-  pubsub.emit(HookEvent.RUN_START, payload);
+type InstanceEventPayload = PubSubHookEventPayload & {
+  spec: string;
+};
 
-export const emitInstanceStart = (payload: PubSubHookEventPayload) =>
+type GroupStartEventPayload = PubSubHookEventPayload & {
+  projectId: string;
+};
+
+export const emitInstanceStart = (payload: InstanceEventPayload) =>
   pubsub.emit(HookEvent.INSTANCE_START, payload);
 
-export const emitInstanceFinish = (payload: PubSubHookEventPayload) =>
+export const emitInstanceFinish = (payload: InstanceEventPayload) =>
   pubsub.emit(HookEvent.INSTANCE_FINISH, payload);
+
+export const emitGroupStart = (payload: GroupStartEventPayload) =>
+  pubsub.emit(HookEvent.RUN_START, payload);
 
 export const emitGroupFinish = (payload: PubSubHookEventPayload) =>
   pubsub.emit(HookEvent.RUN_FINISH, payload);

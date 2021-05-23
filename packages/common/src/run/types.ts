@@ -82,6 +82,7 @@ export interface Task {
   instance: RunSpec | null;
   claimedInstances: number;
   totalInstances: number;
+  projectId: string;
 }
 
 export type RunWithSpecs = Run & {

@@ -13,6 +13,8 @@ export const driver: ExecutionDriver = {
     await initMongo();
     initRunCompletion();
   },
+  maybeSetRunCompleted: mongoRunController.maybeSetRunCompleted,
+  allGroupSpecsCompleted: mongoRunController.allGroupSpecsCompleted,
   getProjectById: mongoProjectModel.getProjectById,
   getRunById: mongoRunModel.getRunById,
   getRunWithSpecs: mongoRunModel.getRunWithSpecs,

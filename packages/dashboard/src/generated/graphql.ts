@@ -404,6 +404,7 @@ export type Instance = {
   runId: Scalars['ID'];
   run: Run;
   spec: Scalars['String'];
+  groupId: Scalars['String'];
   instanceId: Scalars['ID'];
   results: Maybe<InstanceResults>;
 };

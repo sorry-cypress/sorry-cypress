@@ -17,19 +17,13 @@ export async function reportToSlack({
   runSummary,
   hookEvent,
   commit: { branch, message },
-}: {
-  hook: SlackHook;
-  runId: string;
-  ciBuildId: string;
-  runSummary: RunSummary;
-  hookEvent: HookEvent;
-  commit: CommitData;
-}) {
-  if (!isShouldReportSlackHook(hookEvent, hook, runSummary, branch)) {
+}: SlackHookParams) {
+  if (!shouldReportSlackHook(hookEvent, hook, runSummary, branch)) {
     return;
   }
 
   let title = '';
+  let color = isResultSuccessful(runSummary) ? successColor : failureColor;
   switch (hookEvent) {
     case HookEvent.RUN_START:
       title = `:rocket: *Run started* (${ciBuildId})`;
@@ -44,6 +38,10 @@ export async function reportToSlack({
       title = `${
         isResultSuccessful(runSummary) ? ':white_check_mark:' : ':x:'
       } *Run finished* (${ciBuildId})`;
+      break;
+    case HookEvent.RUN_TIMEOUT:
+      title = `:hourglass_flowing_sand: *Run timedout* (${ciBuildId})`;
+      color = failureColor;
       break;
   }
 
@@ -92,7 +90,7 @@ export async function reportToSlack({
       ],
       attachments: [
         {
-          color: isResultSuccessful(runSummary) ? '#0E8A16' : '#D93F0B',
+          color,
           blocks: [
             {
               type: 'section',
@@ -121,7 +119,7 @@ export async function reportToSlack({
   });
 }
 
-export function isShouldReportSlackHook(
+export function shouldReportSlackHook(
   event: HookEvent,
   hook: SlackHook,
   runSummary: RunSummary,
@@ -185,4 +183,15 @@ export function isSlackBranchFilterPassed(hook: SlackHook, branch: string) {
     .every(
       (filter: string) => branch.search(new RegExp(`^${filter}$`, 'i')) === -1
     );
+}
+
+const successColor = '#0E8A16';
+const failureColor = '#AB1616';
+interface SlackHookParams {
+  hook: SlackHook;
+  runId: string;
+  ciBuildId: string;
+  runSummary: RunSummary;
+  hookEvent: HookEvent;
+  commit: CommitData;
 }
