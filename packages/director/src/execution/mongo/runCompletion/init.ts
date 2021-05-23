@@ -1,12 +1,12 @@
 import { setInterval } from 'timers';
-// import { checkRunTimeouts } from './runCompletion';
+import { checkRunTimeouts } from './runCompletion';
 
 export function initRunCompletion() {
   console.log('🎧 Initializing inactivity timeout task...');
 
   setInterval(async () => {
     try {
-      // await checkRunTimeouts();
+      await checkRunTimeouts();
     } catch (error) {
       console.error(error);
     }

@@ -17,8 +17,11 @@ import {
   CreateRunWarning,
   ExecutionDriver,
   getCreateProjectValue,
+  isAllRunSpecsCompleted,
+  Run,
   Task,
 } from '@src/types';
+import { curry, property, uniq } from 'lodash';
 import {
   enhanceSpec,
   getClaimedSpecs,
@@ -161,3 +164,19 @@ export const getNextTask: ExecutionDriver['getNextTask'] = async ({
 };
 
 export const updateRunSpecCompleted = setSpecCompleted;
+
+export const allRunSpecsCompleted = async (runId: string): Promise<boolean> => {
+  const run = await getById(runId);
+  if (!run) {
+    throw new AppError(RUN_NOT_EXIST);
+  }
+  return isAllRunSpecsCompleted(run);
+};
+
+export const getNonCompletedGroups = (run: Run) => {
+  const groups: string[] = uniq(run.specs.map(property('groupId')));
+  return groups.filter(curry(hasIncompletedGroupSpecs)(run));
+};
+
+const hasIncompletedGroupSpecs = (run: Run, groupId: string) =>
+  run.specs.some((s) => s.groupId === groupId && !s.completedAt);

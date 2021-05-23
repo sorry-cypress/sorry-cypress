@@ -1,6 +1,7 @@
 import { init as initHooks } from '@src/lib/hooks/init';
 import { app } from './app';
 import { PORT } from './config';
+import { getExecutionDriver, getScreenshotsDriver } from './drivers';
 
 async function main() {
   app.on('error', (error) => {
@@ -9,6 +10,8 @@ async function main() {
   app.listen(PORT, async () => {
     console.log(`🚀 Director service is ready at http://0.0.0.0:${PORT}/...`);
     await initHooks();
+    await getExecutionDriver();
+    await getScreenshotsDriver();
   });
 }
 

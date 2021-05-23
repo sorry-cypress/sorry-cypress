@@ -2,7 +2,7 @@ import { differenceInSeconds, parseISO } from 'date-fns';
 import { compact, orderBy, sum } from 'lodash';
 import { InstanceResult, InstanceResultStats } from '../instance';
 import { Test, TestV5 } from '../tests';
-import { RunSummary, RunWithSpecs } from './types';
+import { Run, RunSummary } from './types';
 
 export function getRunDurationSeconds(specs: InstanceResultStats[]): number {
   if (specs.length === 0) {
@@ -67,17 +67,17 @@ export function getRunSummary(specs: InstanceResult[]): RunSummary {
   );
 }
 
-export function isAllRunSpecsCompleted(run: RunWithSpecs) {
+export function isAllRunSpecsCompleted(run: Run) {
   const allCandidateSpecs = run.specs.map((s) => s.spec);
-  const allClaimedSpecs = run.specs.filter((s) => s.claimedAt);
+  const allClaimedSpecs = run.specs.filter((s) => !!s.claimedAt);
 
   if (allCandidateSpecs.length !== allClaimedSpecs.length) {
     return false;
   }
 
   const claimedInstanceIds = allClaimedSpecs.map((s) => s.instanceId);
-  const completedInstanceIds = run.specsFull
-    .filter((s) => !!s.results?.stats.wallClockEndedAt)
+  const completedInstanceIds = run.specs
+    .filter((s) => !!s.completedAt)
     .map((s) => s.instanceId);
   return claimedInstanceIds.length === completedInstanceIds.length;
 }

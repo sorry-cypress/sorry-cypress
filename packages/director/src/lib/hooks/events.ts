@@ -13,5 +13,8 @@ export const emitInstanceStart = (payload: PubSubHookEventPayload) =>
 export const emitInstanceFinish = (payload: PubSubHookEventPayload) =>
   pubsub.emit(HookEvent.INSTANCE_FINISH, payload);
 
-export const emitRunFinish = (payload: PubSubHookEventPayload) =>
+export const emitGroupFinish = (payload: PubSubHookEventPayload) =>
   pubsub.emit(HookEvent.RUN_FINISH, payload);
+
+export const emitGroupTimedout = (payload: PubSubHookEventPayload) =>
+  pubsub.emit(HookEvent.RUN_TIMEOUT, payload);
