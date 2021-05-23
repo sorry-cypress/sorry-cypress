@@ -15,6 +15,8 @@ import { useHooksFormReducer, WithHooksForm } from './hook/hookFormReducer';
 import { useCurrentProjectId } from './hook/useCurrentProjectId';
 import { HooksEditor } from './hooksEditor';
 
+const DEFAULT_TIMEOUT_SECONDS = 180;
+
 export function ProjectEditView() {
   return (
     <WithHooksForm>
@@ -22,19 +24,18 @@ export function ProjectEditView() {
     </WithHooksForm>
   );
 }
+
+interface ProjectFormFields {
+  projectId: string;
+  inactivityTimeoutMinutes: number;
+}
 function _ProjectEditView() {
   const projectId = useCurrentProjectId();
-  const {
-    register,
-    handleSubmit,
-    errors,
-    reset,
-    formState: { isDirty },
-  } = useForm({
+  const { register, handleSubmit, errors, reset } = useForm<ProjectFormFields>({
     mode: 'onChange',
     defaultValues: {
       projectId: '',
-      inactivityTimeoutSeconds: 180,
+      inactivityTimeoutMinutes: DEFAULT_TIMEOUT_SECONDS / 60,
     },
   });
   const history = useHistory();
@@ -73,7 +74,10 @@ function _ProjectEditView() {
       });
       reset({
         projectId: decodeURIComponent(data?.project.projectId),
-        inactivityTimeoutSeconds: data?.project.inactivityTimeoutSeconds ?? 180,
+        inactivityTimeoutMinutes: Math.ceil(
+          (data?.project.inactivityTimeoutSeconds ?? DEFAULT_TIMEOUT_SECONDS) /
+            60
+        ),
       });
     },
   });
@@ -128,12 +132,19 @@ function _ProjectEditView() {
     }
   }
 
-  const onSubmit = (data: CreateProjectInput | UpdateProjectInput) => {
-    data.inactivityTimeoutSeconds = data.inactivityTimeoutSeconds || 180;
+  const onSubmit = (data: ProjectFormFields) => {
     if (isNewProject) {
-      createProject(data as CreateProjectInput);
+      createProject({
+        projectId: data.projectId,
+        inactivityTimeoutSeconds:
+          data.inactivityTimeoutMinutes * 60 ?? DEFAULT_TIMEOUT_SECONDS,
+      });
     } else {
-      updateProject(data as UpdateProjectInput);
+      updateProject({
+        projectId: data.projectId,
+        inactivityTimeoutSeconds:
+          data.inactivityTimeoutMinutes * 60 ?? DEFAULT_TIMEOUT_SECONDS,
+      });
     }
   };
 
@@ -164,7 +175,7 @@ function _ProjectEditView() {
               required
               htmlFor="projectId"
               label="Project Id"
-              helpText="This must match the 'projectId' value in your cypress.json configuration."
+              helpText="This is the 'projectId' value from cypress.json."
               error={errors['projectId']?.message}
             >
               <TextField
@@ -182,29 +193,29 @@ function _ProjectEditView() {
           </Cell>
           <Cell xs={12} sm={6}>
             <InputFieldLabel
-              htmlFor="inactivityTimeoutSeconds"
-              label="Inactivity Timeout (seconds)"
-              helpText="If any test runs longer than this value, the whole run will be considered as timed out"
+              htmlFor="inactivityTimeoutMinutes"
+              label="Runs Timeout (minutes)"
+              helpText="Runs exceeding this value will be considered as timed out"
               required
-              error={errors['inactivityTimeoutSeconds']?.message}
+              error={errors['inactivityTimeoutMinutes']?.message}
             >
               <TextField
-                name="inactivityTimeoutSeconds"
-                placeholder="Inactivity timeout in seconds"
+                name="inactivityTimeoutMinutes"
+                placeholder="Runs timeout in minutes"
                 type="number"
                 inputRef={register({
                   valueAsNumber: true,
                   required: {
                     value: true,
-                    message: 'Inactivity timeout is required',
+                    message: 'Runs timeout is required',
                   },
                   max: {
-                    value: 900,
-                    message: 'Max value is 900 seconds',
+                    value: 720,
+                    message: 'Max value is 720 minutes (12 hours)',
                   },
                   min: {
-                    value: 0,
-                    message: 'Min value is 0 seconds',
+                    value: 1,
+                    message: 'Min value is 1 minute',
                   },
                 })}
                 disabled={disabled}
@@ -212,20 +223,15 @@ function _ProjectEditView() {
             </InputFieldLabel>
           </Cell>
 
-          {(isDirty || isNewProject) && (
-            <Cell>
-              <Button style={{ marginRight: '15px' }} component="a" href="/">
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                kind="primary"
-                disabled={disabled || hasErrors}
-              >
-                {isNewProject ? 'Create Project' : 'Save Settings'}
-              </Button>
-            </Cell>
-          )}
+          <Cell>
+            <Button
+              type="submit"
+              kind="primary"
+              disabled={disabled || hasErrors}
+            >
+              {isNewProject ? 'Create Project' : 'Save Settings'}
+            </Button>
+          </Cell>
         </Grid>
       </form>
 
