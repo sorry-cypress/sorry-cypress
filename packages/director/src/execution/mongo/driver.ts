@@ -1,4 +1,4 @@
-import { init } from '@src/lib/mongo';
+import { initMongo } from '@sorry-cypress/mongo';
 import { ExecutionDriver } from '@src/types';
 import * as mongoInstanceController from './instances/instance.controller';
 import * as mongoInstanceModel from './instances/instance.model';
@@ -8,7 +8,7 @@ import * as mongoRunModel from './runs/run.model';
 
 export const driver: ExecutionDriver = {
   id: 'stateful-mongo',
-  init,
+  init: initMongo,
   getProjectById: mongoProjectModel.getProjectById,
   getRunById: mongoRunModel.getRunById,
   getRunWithSpecs: mongoRunModel.getRunWithSpecs,

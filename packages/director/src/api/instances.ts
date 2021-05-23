@@ -119,6 +119,7 @@ export const updateInstanceResults: RequestHandler<
     return res.json(uploadInstructions);
   } catch (error) {
     console.error('Unable to get upload instructions', instanceId);
+    console.error(error);
     res.json({});
   }
 

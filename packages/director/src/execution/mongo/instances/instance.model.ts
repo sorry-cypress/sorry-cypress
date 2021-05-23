@@ -1,3 +1,4 @@
+import { Collection } from '@sorry-cypress/mongo';
 import {
   AppError,
   INSTANCE_EXISTS,
@@ -6,11 +7,8 @@ import {
   SCREENSHOT_URL_UPDATE_FAILED,
   VIDEO_URL_UPDATE_FAILED,
 } from '@src/lib/errors';
-import { getMongoDB } from '@src/lib/mongo';
 import { getSanitizedMongoObject } from '@src/lib/results';
-import { Instance, InstanceResult, SetInstanceTestsPayload } from '@src/types';
-
-const COLLECTION_NAME = 'instances';
+import { InstanceResult, SetInstanceTestsPayload } from '@src/types';
 
 export const insertInstance = async ({
   runId,
@@ -24,7 +22,7 @@ export const insertInstance = async ({
   cypressVersion: string;
 }) => {
   try {
-    await getMongoDB().collection(COLLECTION_NAME).insertOne({
+    await Collection.instance().insertOne({
       spec,
       runId,
       instanceId,
@@ -38,27 +36,23 @@ export const insertInstance = async ({
   }
 };
 
-export const getInstanceById = async (instanceId: string) =>
-  await getMongoDB()
-    .collection<Instance>(COLLECTION_NAME)
-    .findOne({ instanceId });
+export const getInstanceById = (instanceId: string) =>
+  Collection.instance().findOne({ instanceId });
 
 export const setInstanceResults = async (
   instanceId: string,
   results: InstanceResult | SetInstanceTestsPayload
 ) => {
-  const { matchedCount, modifiedCount } = await getMongoDB()
-    .collection(COLLECTION_NAME)
-    .updateOne(
-      {
-        instanceId,
+  const { matchedCount, modifiedCount } = await Collection.instance().updateOne(
+    {
+      instanceId,
+    },
+    {
+      $set: {
+        results: getSanitizedMongoObject(results),
       },
-      {
-        $set: {
-          results: getSanitizedMongoObject(results),
-        },
-      }
-    );
+    }
+  );
 
   if (matchedCount && modifiedCount) {
     return;
@@ -71,18 +65,16 @@ export const setInstanceTests = async (
   instanceId: string,
   payload: SetInstanceTestsPayload
 ) => {
-  const { matchedCount, modifiedCount } = await getMongoDB()
-    .collection(COLLECTION_NAME)
-    .updateOne(
-      {
-        instanceId,
+  const { matchedCount, modifiedCount } = await Collection.instance().updateOne(
+    {
+      instanceId,
+    },
+    {
+      $set: {
+        _createTestsPayload: getSanitizedMongoObject(payload),
       },
-      {
-        $set: {
-          _createTestsPayload: getSanitizedMongoObject(payload),
-        },
-      }
-    );
+    }
+  );
 
   if (matchedCount && modifiedCount) {
     return;
@@ -96,21 +88,19 @@ export const setScreenshotUrl = async (
   screenshotId: string,
   screenshotURL: string
 ) => {
-  const { matchedCount, modifiedCount } = await getMongoDB()
-    .collection(COLLECTION_NAME)
-    .updateOne(
-      {
-        instanceId,
+  const { matchedCount, modifiedCount } = await Collection.instance().updateOne(
+    {
+      instanceId,
+    },
+    {
+      $set: {
+        'results.screenshots.$[screenshot].screenshotURL': screenshotURL,
       },
-      {
-        $set: {
-          'results.screenshots.$[screenshot].screenshotURL': screenshotURL,
-        },
-      },
-      {
-        arrayFilters: [{ 'screenshot.screenshotId': screenshotId }],
-      }
-    );
+    },
+    {
+      arrayFilters: [{ 'screenshot.screenshotId': screenshotId }],
+    }
+  );
 
   if (matchedCount && modifiedCount) {
     return;
@@ -120,18 +110,16 @@ export const setScreenshotUrl = async (
 };
 
 export const setvideoUrl = async (instanceId: string, videoUrl: string) => {
-  const { matchedCount, modifiedCount } = await getMongoDB()
-    .collection(COLLECTION_NAME)
-    .updateOne(
-      {
-        instanceId,
+  const { matchedCount, modifiedCount } = await Collection.instance().updateOne(
+    {
+      instanceId,
+    },
+    {
+      $set: {
+        'results.videoUrl': videoUrl,
       },
-      {
-        $set: {
-          'results.videoUrl': videoUrl,
-        },
-      }
-    );
+    }
+  );
 
   if (matchedCount && modifiedCount) {
     return;

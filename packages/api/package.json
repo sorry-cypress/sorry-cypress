@@ -51,6 +51,7 @@
   "dependencies": {
     "@graphql-tools/load-files": "^6.3.2",
     "@graphql-tools/merge": "^6.2.11",
+    "@sorry-cypress/mongo": "1.0.0",
     "@sorry-cypress/common": "1.0.0",
     "apollo-server": "^2.18.1",
     "dotenv": "^8.1.0",

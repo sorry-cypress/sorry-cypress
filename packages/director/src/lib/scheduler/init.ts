@@ -1,39 +1,14 @@
-/**
- * serverless: This implementation is unfriendly for serverless environments
- */
-import { HookEvent } from '@sorry-cypress/common';
-import { REDIS_URI } from '@src/config';
-import { PubSubHookEventPayload } from '../hooks/events';
-import { pubsub } from '../pubsub';
-import { inMemoryScheduler } from './inmemory';
+import { setInterval } from 'timers';
+// import { checkRunTimeouts } from './runCompletion';
 
-const schedulerType: 'queue' | 'memory' = REDIS_URI ? 'queue' : 'memory';
-let _queueScheduler: any = null;
+export function init() {
+  console.log('🎧 Initializing inactivity timeout task...');
 
-export async function init() {
-  console.log('🎧 Initializing listeners for inactivity timeout scheduler...');
-  [HookEvent.RUN_START, HookEvent.INSTANCE_START].forEach((event) => {
-    pubsub.on(event, scheduleInactivityTimeout);
-  });
-
-  if (schedulerType === 'queue' && !_queueScheduler) {
-    console.log('🎧 Initializing inactivity timeout queue...');
-    _queueScheduler = await import('./queue');
-  }
+  setInterval(async () => {
+    try {
+      // await checkRunTimeouts();
+    } catch (error) {
+      console.error(error);
+    }
+  }, 10000);
 }
-
-export async function shutdown() {
-  if (!_queueScheduler) {
-    return;
-  }
-  await _queueScheduler.scheduler.close();
-}
-
-const scheduleInactivityTimeout = async ({ runId }: PubSubHookEventPayload) => {
-  if (schedulerType === 'memory') {
-    inMemoryScheduler(runId).catch(console.error);
-    return;
-  }
-
-  _queueScheduler.setInactivityTimeoutJob(runId);
-};

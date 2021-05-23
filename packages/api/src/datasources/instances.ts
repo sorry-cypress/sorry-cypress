@@ -1,7 +1,71 @@
 import { Instance, Run } from '@sorry-cypress/common';
-import { getMongoDB, init } from '@src/lib/mongo';
+import { Collection } from '@sorry-cypress/mongo/dist';
 import { DataSource } from 'apollo-datasource';
 import plur from 'plur';
+
+export class InstancesAPI extends DataSource {
+  async getInstanceById(instanceId: string) {
+    const response = (await Collection.instance()
+      .aggregate([
+        {
+          $match: { instanceId },
+        },
+        lookupAggregation,
+      ])
+      .toArray()) as InstanceWithRuns[];
+
+    return getInstanceReducer(response);
+  }
+
+  getResultsByInstanceId(instanceId: string) {
+    return Collection.instance().findOne(
+      { instanceId },
+      { projection: { results: 1 } }
+    );
+  }
+
+  async deleteInstancesByRunIds(runIds: string[]) {
+    const result = await Collection.instance().deleteMany({
+      runId: {
+        $in: runIds,
+      },
+    });
+    return {
+      success: result.result.ok === 1,
+      message: `${result.deletedCount} ${plur(
+        'document',
+        result.deletedCount
+      )} deleted`,
+      runIds: result.result.ok === 1 ? runIds : [],
+    };
+  }
+
+  async deleteInstancesInDateRange(startDate: Date, endDate: Date) {
+    if (startDate > endDate) {
+      return {
+        success: false,
+        message: `startDate: ${startDate.toISOString()} should be less than endDate: ${endDate.toISOString()}`,
+        runIds: [],
+      };
+    }
+    const response = (await Collection.instance()
+      .aggregate([
+        lookupAggregation,
+        {
+          $match: {
+            'run.createdAt': {
+              $lte: endDate.toISOString(),
+              $gte: startDate.toISOString(),
+            },
+          },
+        },
+      ])
+      .toArray()) as InstanceWithRuns[];
+
+    const runIds = response.map((x) => x.run[0].runId) as string[];
+    return await this.deleteInstancesByRunIds(runIds);
+  }
+}
 
 type InstanceWithRuns = Instance & {
   run: Run[];
@@ -28,76 +92,3 @@ const lookupAggregation = {
     as: 'run',
   },
 };
-
-export class InstancesAPI extends DataSource {
-  async initialize() {
-    await init();
-  }
-
-  async getInstanceById(instanceId: string) {
-    const response = (await getMongoDB()
-      .collection<Instance>('instances')
-      .aggregate([
-        {
-          $match: { instanceId },
-        },
-        lookupAggregation,
-      ])
-      .toArray()) as InstanceWithRuns[];
-
-    return getInstanceReducer(response);
-  }
-
-  async getResultsByInstanceId(instanceId: string) {
-    const result = await getMongoDB()
-      .collection('instances')
-      .findOne({ instanceId }, { projection: { results: 1 } });
-
-    return result;
-  }
-
-  async deleteInstancesByRunIds(runIds: string[]) {
-    const result = await getMongoDB()
-      .collection('instances')
-      .deleteMany({
-        runId: {
-          $in: runIds,
-        },
-      });
-    return {
-      success: result.result.ok === 1,
-      message: `${result.deletedCount} ${plur(
-        'document',
-        result.deletedCount
-      )} deleted`,
-      runIds: result.result.ok === 1 ? runIds : [],
-    };
-  }
-
-  async deleteInstancesInDateRange(startDate: Date, endDate: Date) {
-    if (startDate > endDate) {
-      return {
-        success: false,
-        message: `startDate: ${startDate.toISOString()} should be less than endDate: ${endDate.toISOString()}`,
-        runIds: [],
-      };
-    }
-    const response = (await getMongoDB()
-      .collection('instances')
-      .aggregate([
-        lookupAggregation,
-        {
-          $match: {
-            'run.createdAt': {
-              $lte: endDate.toISOString(),
-              $gte: startDate.toISOString(),
-            },
-          },
-        },
-      ])
-      .toArray()) as InstanceWithRuns[];
-
-    const runIds = response.map((x) => x.run[0].runId) as string[];
-    return await this.deleteInstancesByRunIds(runIds);
-  }
-}

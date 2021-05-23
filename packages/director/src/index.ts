@@ -1,8 +1,5 @@
 import { init as initHooks } from '@src/lib/hooks/init';
-import {
-  init as initInactivityTimeout,
-  shutdown,
-} from '@src/lib/scheduler/init';
+import { init as initInactivityTimeout } from '@src/lib/scheduler/init';
 import { app } from './app';
 import { PORT } from './config';
 
@@ -17,12 +14,7 @@ async function main() {
   });
 }
 
-process.on('SIGABRT', async () => {
-  await shutdown();
-});
-
 main().catch(async (error) => {
-  await shutdown();
   console.error(error);
   process.exit(1);
 });

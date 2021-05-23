@@ -151,8 +151,10 @@ const getNextTask: ExecutionDriver['getNextTask'] = async ({
   runs[runId].specs[unclaimedSpecIndex].claimed = true;
   instances[unclaimedSpec.instanceId] = {
     _createTestsPayload: null,
+    spec: runs[runId].specs[unclaimedSpecIndex].spec,
     runId,
     instanceId: unclaimedSpec.instanceId,
+    cypressVersion: '',
   };
 
   return {
