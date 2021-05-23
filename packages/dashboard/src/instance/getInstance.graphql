@@ -4,6 +4,7 @@ query getInstance($instanceId: ID!) {
     runId
     spec
     run {
+      runId
       meta {
         ciBuildId
         projectId

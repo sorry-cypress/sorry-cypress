@@ -16,8 +16,8 @@ const getInstanceReducer = (
   if (instanceWithRuns.length === 0) {
     return null;
   }
-  const result = instanceWithRuns.pop();
-  return { ...result, run: result.run.pop() };
+  const result = instanceWithRuns[0];
+  return { ...result, run: result.run[0] };
 };
 
 const lookupAggregation = {
