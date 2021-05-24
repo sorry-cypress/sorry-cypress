@@ -1,10 +1,10 @@
 import { getExecutionDriver, getScreenshotsDriver } from '@src/drivers';
 import { RUN_NOT_EXIST } from '@src/lib/errors';
 import {
-  emitGroupFinish,
-  emitGroupStart,
   emitInstanceFinish,
   emitInstanceStart,
+  emitRunFinish,
+  emitRunStart,
 } from '@src/lib/hooks/events';
 import {
   AssetUploadInstruction,
@@ -54,7 +54,7 @@ export const createInstance: RequestHandler = async (req, res) => {
     });
 
     if (task.claimedInstances === 1) {
-      emitGroupStart({
+      emitRunStart({
         runId,
         groupId,
         projectId: task.projectId,
@@ -138,7 +138,7 @@ async function completeInstance(
   if (await executionDriver.allGroupSpecsCompleted(runId, groupId)) {
     // delay for a few seconds to prevent concurrent updates
     await new Promise((resolve) => setTimeout(resolve, 3000));
-    emitGroupFinish({
+    emitRunFinish({
       runId,
       groupId,
     });

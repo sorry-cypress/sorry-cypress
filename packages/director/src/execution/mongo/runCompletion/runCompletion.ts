@@ -1,5 +1,5 @@
 import { runTimeoutModel } from '@sorry-cypress/mongo';
-import { emitGroupTimedout } from '@src/lib/hooks/events';
+import { emitRunTimedout } from '@src/lib/hooks/events';
 import {
   allRunSpecsCompleted,
   getNonCompletedGroups,
@@ -42,7 +42,7 @@ export const checkRunCompletionOnTimeout = async (
 
   // report timeout for non-completed groups
   getNonCompletedGroups(run).forEach((groupId) =>
-    emitGroupTimedout({
+    emitRunTimedout({
       runId,
       groupId,
     })

@@ -1,43 +1,61 @@
 import {
-  CommitData,
   HookEvent,
+  isResultSuccessful,
   ResultFilter,
+  Run,
   RunSummary,
   SlackHook,
 } from '@sorry-cypress/common';
 import { getDashboardRunURL } from '@src/lib/urls';
 import axios from 'axios';
 import { truncate } from 'lodash';
-import { isResultSuccessful } from '../utils';
 
-export async function reportToSlack({
-  hook,
-  runId,
-  ciBuildId,
-  runSummary,
-  hookEvent,
-  commit: { branch, message },
-}: SlackHookParams) {
-  if (!shouldReportSlackHook(hookEvent, hook, runSummary, branch)) {
+interface SlackReporterEventPayload {
+  eventType: HookEvent;
+  run: Run;
+  groupId: string;
+  runSummary: RunSummary;
+  spec: string;
+}
+
+export async function reportToSlack(
+  hook: SlackHook,
+  event: SlackReporterEventPayload
+) {
+  if (
+    !shouldReportSlackHook(
+      event.eventType,
+      hook,
+      event.runSummary,
+      event.run.meta.commit.branch
+    )
+  ) {
     return;
   }
-
+  const ciBuildId = event.run.meta.ciBuildId;
+  let groupLabel = '';
+  if (event.groupId !== event.run.meta.ciBuildId) {
+    groupLabel = `, group ${event.groupId}`;
+  }
   let title = '';
-  let color = isResultSuccessful(runSummary) ? successColor : failureColor;
-  switch (hookEvent) {
+  let color = isResultSuccessful(event.runSummary)
+    ? successColor
+    : failureColor;
+
+  switch (event.eventType) {
     case HookEvent.RUN_START:
-      title = `:rocket: *Run started* (${ciBuildId})`;
+      title = `:rocket: *Run started* (${ciBuildId}${groupLabel})`;
       break;
     case HookEvent.INSTANCE_START:
-      title = `*Instance started* (${ciBuildId})`;
+      title = `*Instance started* ${event.spec} (${ciBuildId}${groupLabel})`;
       break;
     case HookEvent.INSTANCE_FINISH:
-      title = `*Instance finished* (${ciBuildId})`;
+      title = `*Instance finished* ${event.spec} (${ciBuildId}${groupLabel})`;
       break;
     case HookEvent.RUN_FINISH:
       title = `${
-        isResultSuccessful(runSummary) ? ':white_check_mark:' : ':x:'
-      } *Run finished* (${ciBuildId})`;
+        isResultSuccessful(event.runSummary) ? ':white_check_mark:' : ':x:'
+      } *Run finished* (${ciBuildId}${groupLabel})`;
       break;
     case HookEvent.RUN_TIMEOUT:
       title = `:hourglass_flowing_sand: *Run timedout* (${ciBuildId})`;
@@ -45,7 +63,7 @@ export async function reportToSlack({
       break;
   }
 
-  const { passes, pending, skipped, failures } = runSummary;
+  const { passes, pending, skipped, failures } = event.runSummary;
   const resultsDescription =
     `${
       passes > 0 ? ':large_green_circle:' : ':white_circle:'
@@ -58,10 +76,13 @@ export async function reportToSlack({
     }`;
 
   const commitDescription =
-    (branch || message) &&
-    `*Branch:*\n${branch}\n\n*Commit:*\n${truncate(message, {
-      length: 100,
-    })}`;
+    (event.run.meta.commit.branch || event.run.meta.commit.message) &&
+    `*Branch:*\n${event.run.meta.commit.branch}\n\n*Commit:*\n${truncate(
+      event.run.meta.commit.message,
+      {
+        length: 100,
+      }
+    )}`;
 
   axios({
     method: 'post',
@@ -82,9 +103,9 @@ export async function reportToSlack({
               text: 'View Results',
               emoji: true,
             },
-            value: `view_run_${runId}`,
-            url: getDashboardRunURL(runId),
-            action_id: `view_run_${runId}`,
+            value: `view_run_${event.run.runId}`,
+            url: getDashboardRunURL(event.run.runId),
+            action_id: `view_run_${event.run.runId}`,
           },
         },
       ],
@@ -187,11 +208,3 @@ export function isSlackBranchFilterPassed(hook: SlackHook, branch: string) {
 
 const successColor = '#0E8A16';
 const failureColor = '#AB1616';
-interface SlackHookParams {
-  hook: SlackHook;
-  runId: string;
-  ciBuildId: string;
-  runSummary: RunSummary;
-  hookEvent: HookEvent;
-  commit: CommitData;
-}
