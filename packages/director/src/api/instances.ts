@@ -77,6 +77,22 @@ export const createInstance: RequestHandler = async (req, res) => {
   }
 };
 
+/**
+ * cypress prior to 6.7.0 sends instance results in a single API call
+ */
+export const updateInstance: RequestHandler = async (req, res) => {
+  const { instanceId } = req.params;
+  const result: InstanceResult = req.body;
+
+  console.log(`>> Received instance result`, { instanceId });
+  const executionDriver = await getExecutionDriver();
+  await executionDriver.setInstanceResults(instanceId, result);
+  const instance = await executionDriver.getInstanceById(instanceId);
+
+  completeInstance(instanceId, instance.runId, instance.groupId);
+  return res.json(await getInstanceScreenshots(instanceId, result));
+};
+
 // - /instances/:instanceId/tests before running a spec
 export const setInstanceTests: RequestHandler<
   any,
