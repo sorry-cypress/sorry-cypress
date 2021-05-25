@@ -1,5 +1,5 @@
 import { RunSummary } from '@sorry-cypress/common';
-import { isResultSuccessful } from '../utils';
+import { isResultSuccessful } from '../runSummary';
 
 describe('isResultSuccessful', () => {
   it.each([

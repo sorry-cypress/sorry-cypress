@@ -8,7 +8,7 @@
         "type": "section",
         "text": {
           "type": "mrkdwn",
-          "text": ":white_check_mark: *Run finished* (testCiBuildId)"
+          "text": ":white_check_mark: *Run finished* (testCiBuildId, group groupId)"
         },
         "accessory": {
           "type": "button",

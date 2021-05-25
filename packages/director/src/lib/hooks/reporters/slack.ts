@@ -27,7 +27,7 @@ export async function reportToSlack(
       event.eventType,
       hook,
       event.runSummary,
-      event.run.meta.commit.branch
+      event.run.meta.commit?.branch
     )
   ) {
     return;
@@ -76,7 +76,7 @@ export async function reportToSlack(
     }`;
 
   const commitDescription =
-    (event.run.meta.commit.branch || event.run.meta.commit.message) &&
+    (event.run.meta.commit?.branch || event.run.meta.commit?.message) &&
     `*Branch:*\n${event.run.meta.commit.branch}\n\n*Commit:*\n${truncate(
       event.run.meta.commit.message,
       {
@@ -182,9 +182,12 @@ export function isSlackResultFilterPassed(
   return false;
 }
 
-export function isSlackBranchFilterPassed(hook: SlackHook, branch: string) {
-  if (!hook.slackBranchFilter || hook.slackBranchFilter.length === 0)
-    return true;
+export function isSlackBranchFilterPassed(hook: SlackHook, branch?: string) {
+  console.log({ hook, branch });
+  if (!hook.slackBranchFilter?.length) return true;
+
+  // if slackBranchFilter is defined, not no branch known - skip
+  if (!branch) return false;
 
   return !hook.slackBranchFilter
     // Branch filter supports only '*' and '?' wildcard symbols, not full regex syntax,

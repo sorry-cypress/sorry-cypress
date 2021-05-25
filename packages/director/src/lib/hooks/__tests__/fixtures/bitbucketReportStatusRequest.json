@@ -9,8 +9,9 @@
     "Accept": "application/json"
   },
   "data": {
-    "key": "testHook",
-    "name": "cypress-build",
+    "description": "failed:0 passed:1 skipped:0",
+    "key": "f305778e838a5aba424b941a4452dab4",
+    "name": "cypress-build: ciBuildId",
     "state": "INPROGRESS",
     "url": "http://localhost:8080/run/testRunId"
   }
