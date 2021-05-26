@@ -1,4 +1,5 @@
 import { getCreateProjectValue, HookType } from '@sorry-cypress/common';
+import { Collection } from '@sorry-cypress/mongo';
 import {
   CreateBitbucketHookInput,
   CreateGenericHookInput,
@@ -15,7 +16,6 @@ import {
   UpdateProjectInput,
   UpdateSlackHookInput,
 } from '@src/generated/graphql';
-import { getProjectsCollection, init } from '@src/lib/mongo';
 import {
   AggregationFilter,
   filtersToAggregations,
@@ -50,12 +50,8 @@ export class ProjectsAPI extends DataSource {
   updateBitbucketHook = updateBitbucketHook;
   deleteHook = deleteHook;
 
-  async initialize() {
-    await init();
-  }
-
   async getProjectById(id: string): Promise<Project> {
-    const result = await getProjectsCollection().aggregate<Project>([
+    const result = await Collection.project().aggregate<Project>([
       {
         $match: {
           projectId: id,
@@ -80,8 +76,8 @@ export class ProjectsAPI extends DataSource {
       const project = getCreateProjectValue(
         projectInput.projectId,
         projectInput.inactivityTimeoutSeconds
-      ) as Project;
-      await getProjectsCollection().insertOne(project);
+      );
+      await Collection.project().insertOne(project);
       return project;
     } catch (error) {
       if (error.code && error.code === 11000) {
@@ -92,7 +88,7 @@ export class ProjectsAPI extends DataSource {
   }
 
   async updateProject(input: UpdateProjectInput) {
-    await getProjectsCollection().updateOne(
+    await Collection.project().updateOne(
       { projectId: input.projectId },
       {
         $set: {
@@ -119,7 +115,7 @@ export class ProjectsAPI extends DataSource {
       getSortByAggregation(orderDirection),
     ].filter(negate(isNil));
 
-    const results = await getProjectsCollection()
+    const results = await Collection.project()
       .aggregate(aggregationPipeline)
       .toArray();
 
@@ -130,7 +126,7 @@ export class ProjectsAPI extends DataSource {
   }
 
   async deleteProjectsByIds(projectIds: string[]) {
-    const projectResult = await getProjectsCollection().deleteMany({
+    const projectResult = await Collection.project().deleteMany({
       projectId: {
         $in: projectIds,
       },
@@ -152,15 +148,16 @@ const getCreateHook = <T extends { projectId: string }>(
 ) => async (input: T) => {
   const hook = {
     ...input,
-    hookId: uuid(),
     hookType,
     url: '',
     ...defaults,
+    hookId: uuid(),
   };
-  await getProjectsCollection().updateOne(
+  await Collection.project().updateOne(
     { projectId: input.projectId },
     {
       $addToSet: {
+        // @ts-ignore 😤
         hooks: hook,
       },
     },
@@ -177,7 +174,7 @@ const getUpdateHook = <T extends { projectId: string; hookId: string }>(
 ) =>
   async function updateGenericHook(input: T) {
     const hook = { ...input, hookType };
-    await getProjectsCollection().updateOne(
+    await Collection.project().updateOne(
       { projectId: input.projectId },
       {
         $set: {
@@ -205,7 +202,7 @@ async function updateBitbucketHook(input: UpdateBitbucketHookInput) {
     $set['hooks.$[hooks].bitbucketToken'] = hook.bitbucketToken;
   }
 
-  await getProjectsCollection().updateOne(
+  await Collection.project().updateOne(
     { projectId: input.projectId },
     {
       $set,
@@ -230,7 +227,7 @@ async function updateGithubHook(input: UpdateGithubHookInput) {
     $set['hooks.$[hooks].githubToken'] = hook.githubToken;
   }
 
-  await getProjectsCollection().updateOne(
+  await Collection.project().updateOne(
     { projectId: input.projectId },
     {
       $set,
@@ -246,7 +243,7 @@ async function updateGithubHook(input: UpdateGithubHookInput) {
 
 async function deleteHook(input: DeleteHookInput) {
   const { projectId, hookId } = input;
-  await getProjectsCollection().updateOne(
+  await Collection.project().updateOne(
     { projectId: projectId },
     {
       $pull: {

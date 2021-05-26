@@ -1,5 +1,10 @@
-import { AppError, CLAIM_FAILED, RUN_EXISTS } from '@src/lib/errors';
-import { getMongoDB } from '@src/lib/mongo';
+import { Collection } from '@sorry-cypress/mongo/dist';
+import {
+  AppError,
+  CLAIM_FAILED,
+  RUN_EXISTS,
+  SPEC_COMPLETE_FAILED,
+} from '@src/lib/errors';
 import { getSanitizedMongoObject } from '@src/lib/results';
 import { ExecutionDriver, Run, RunSpec, RunWithSpecs } from '@src/types';
 
@@ -46,9 +51,8 @@ const lookupAggregation = {
 export const getRunWithSpecs: ExecutionDriver['getRunWithSpecs'] = async (id) =>
   mergeRunSpecs(
     (
-      await getMongoDB()
-        .collection('runs')
-        .aggregate([
+      await Collection.run()
+        .aggregate<RunWithSpecs>([
           matchRunAggregation(id),
           projectAggregation,
           lookupAggregation,
@@ -57,14 +61,14 @@ export const getRunWithSpecs: ExecutionDriver['getRunWithSpecs'] = async (id) =>
     ).pop()
   );
 
-export const getRunById = async (id: string) =>
-  await getMongoDB().collection('runs').findOne<Run>({ runId: id });
+export const getRunById = (id: string) =>
+  Collection.run().findOne<Run>({ runId: id });
 
 export const createRun = async (run: Run) => {
   try {
-    const result = await getMongoDB()
-      .collection('runs')
-      .insertOne(getSanitizedMongoObject(run));
+    const result = await Collection.run().insertOne(
+      getSanitizedMongoObject(run)
+    );
     return result.ops[0];
   } catch (error) {
     if (error.code && error.code === 11000) {
@@ -75,14 +79,12 @@ export const createRun = async (run: Run) => {
 };
 
 export const addSpecsToRun = async (runId: string, specs: RunSpec[]) => {
-  await getMongoDB()
-    .collection('runs')
-    .updateOne(
-      { runId },
-      {
-        $push: { specs: { $each: specs } },
-      }
-    );
+  await Collection.run().updateOne(
+    { runId },
+    {
+      $push: { specs: { $each: specs } },
+    }
+  );
 };
 
 // atomic operation to avoid concurrency issues
@@ -92,29 +94,26 @@ export const setSpecClaimed = async (
   instanceId: string,
   machineId: string
 ) => {
-  const { matchedCount, modifiedCount } = await getMongoDB()
-    .collection('runs')
-    .updateOne(
-      {
-        runId,
-        specs: {
-          $elemMatch: {
-            instanceId,
-            claimed: false,
-          },
+  const { matchedCount, modifiedCount } = await Collection.run().updateOne(
+    {
+      runId,
+      specs: {
+        $elemMatch: {
+          instanceId,
+          claimedAt: null,
         },
       },
-      {
-        $set: {
-          'specs.$[spec].machineId': machineId,
-          'specs.$[spec].claimed': true,
-          'specs.$[spec].claimedAt': new Date().toISOString(),
-        },
+    },
+    {
+      $set: {
+        'specs.$[spec].machineId': machineId,
+        'specs.$[spec].claimedAt': new Date().toISOString(),
       },
-      {
-        arrayFilters: [{ 'spec.instanceId': instanceId }],
-      }
-    );
+    },
+    {
+      arrayFilters: [{ 'spec.instanceId': instanceId }],
+    }
+  );
 
   if (matchedCount && modifiedCount) {
     return;
@@ -126,45 +125,71 @@ export const setSpecClaimed = async (
 export const setRunCompleted: ExecutionDriver['setRunCompleted'] = async (
   runId
 ) => {
-  getMongoDB()
-    .collection('runs')
-    .updateOne(
-      {
-        runId,
+  Collection.run().updateOne(
+    {
+      runId,
+      completion: {
+        completed: false,
+      },
+    },
+    {
+      $set: {
         completion: {
-          completed: false,
+          completed: true,
         },
       },
-      {
-        $set: {
-          completion: {
-            completed: true,
-          },
-        },
-      }
-    );
+    }
+  );
 };
 
 export const setRunCompletedWithTimeout: ExecutionDriver['setRunCompletedWithTimeout'] = async ({
   runId,
   timeoutMs,
 }) => {
-  getMongoDB()
-    .collection('runs')
-    .updateOne(
-      {
-        runId,
+  Collection.run().updateOne(
+    {
+      runId,
+      completion: {
+        completed: false,
+      },
+    },
+    {
+      $set: {
         completion: {
-          completed: false,
+          completed: true,
+          inactivityTimeoutMs: timeoutMs,
         },
       },
-      {
-        $set: {
-          completion: {
-            completed: true,
-            inactivityTimeoutMs: timeoutMs,
-          },
+    }
+  );
+};
+
+// atomic operation to avoid concurrency issues
+// filter document prevents concurrent writes
+export const setSpecCompleted = async (runId: string, instanceId: string) => {
+  const { matchedCount, modifiedCount } = await Collection.run().updateOne(
+    {
+      runId,
+      specs: {
+        $elemMatch: {
+          instanceId,
+          completedAt: null,
         },
-      }
-    );
+      },
+    },
+    {
+      $set: {
+        'specs.$[spec].completedAt': new Date(),
+      },
+    },
+    {
+      arrayFilters: [{ 'spec.instanceId': instanceId }],
+    }
+  );
+
+  if (matchedCount && modifiedCount) {
+    return;
+  } else {
+    throw new AppError(SPEC_COMPLETE_FAILED);
+  }
 };

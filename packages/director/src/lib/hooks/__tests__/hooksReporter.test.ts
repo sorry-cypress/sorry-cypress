@@ -1,9 +1,9 @@
 import {
   BitBucketHook,
-  CommitData,
   GithubHook,
   HookEvent,
   RunSummary,
+  RunWithSpecs,
   SlackHook,
 } from '@sorry-cypress/common';
 import axios from 'axios';
@@ -22,12 +22,25 @@ import slackReportStatusRequestWithoutCommitData from './fixtures/slackReportSta
 jest.mock('axios');
 
 beforeEach(() => {
+  ((axios as unknown) as jest.Mock).mockReset();
   ((axios as unknown) as jest.Mock).mockResolvedValueOnce({ status: 200 });
 });
 
 afterEach(() => {
   jest.restoreAllMocks();
 });
+
+const run = {
+  runId: 'testRunId',
+  meta: {
+    ciBuildId: 'testCiBuildId',
+    commit: {
+      sha: 'testCommitSha',
+      branch: 'testBranch',
+      message: 'testMessage',
+    },
+  },
+} as RunWithSpecs;
 
 describe('Report status to GitHub', () => {
   const ghHook = ({
@@ -36,12 +49,11 @@ describe('Report status to GitHub', () => {
   } as unknown) as GithubHook;
 
   it('should send correct request to the github.com repo when run is started', async () => {
-    await reportStatusToGithub({
-      hook: ghHook,
-      sha: 'testCommitSha',
-      runId: 'testRunId',
+    await reportStatusToGithub(ghHook, {
+      run,
+      groupId: 'ciBuildId',
       runSummary: (runSummary as unknown) as RunSummary,
-      hookEvent: HookEvent.RUN_START,
+      eventType: HookEvent.RUN_START,
     });
 
     expect(axios).toBeCalledWith({
@@ -52,16 +64,18 @@ describe('Report status to GitHub', () => {
   });
 
   it('should send correct request to the github enterprise repo when run is started', async () => {
-    await reportStatusToGithub({
-      hook: {
+    await reportStatusToGithub(
+      {
         ...ghHook,
         url: 'https://gh.testcompany.com/test-company/test-project/',
       },
-      sha: 'testCommitSha',
-      runId: 'testRunId',
-      runSummary: (runSummary as unknown) as RunSummary,
-      hookEvent: HookEvent.RUN_START,
-    });
+      {
+        run,
+        groupId: 'ciBuildId',
+        runSummary: (runSummary as unknown) as RunSummary,
+        eventType: HookEvent.RUN_START,
+      }
+    );
 
     expect(axios).toBeCalledWith({
       ...githubReportStatusRequest,
@@ -78,12 +92,11 @@ describe('Report status to BitBucket', () => {
   } as unknown) as BitBucketHook;
 
   it('should send correct request to the bitbucket.org repo when run is started', async () => {
-    await reportStatusToBitbucket({
-      hook: bbHook,
-      sha: 'testCommitSha',
-      runId: 'testRunId',
+    await reportStatusToBitbucket(bbHook, {
+      run,
+      groupId: 'ciBuildId',
       runSummary: (runSummary as unknown) as RunSummary,
-      hookEvent: HookEvent.RUN_START,
+      eventType: HookEvent.RUN_START,
     });
 
     expect(axios).toBeCalledWith({
@@ -104,17 +117,12 @@ describe('Report status to Slack', () => {
   } as unknown) as SlackHook;
 
   it('should send correct request to the Slack when run is finished', async () => {
-    await reportToSlack({
-      hook: slkHook,
-      runId: 'testRunId',
-      ciBuildId: 'testCiBuildId',
+    await reportToSlack(slkHook, {
+      run,
       runSummary: (runSummary as unknown) as RunSummary,
-      hookEvent: HookEvent.RUN_FINISH,
-      commit: {
-        sha: 'testSha123',
-        branch: 'testBranch',
-        message: 'testMessage',
-      },
+      eventType: HookEvent.RUN_FINISH,
+      spec: 'spec',
+      groupId: 'groupId',
     });
 
     expect(axios).toBeCalledWith({
@@ -124,17 +132,25 @@ describe('Report status to Slack', () => {
   });
 
   it('should report correctly to Slack with no commit data', async () => {
-    await reportToSlack({
-      hook: ({
+    await reportToSlack(
+      ({
         ...slackHook,
         url: 'https://hooks.slack.com/services/123/XXX/zzz',
       } as unknown) as SlackHook,
-      runId: 'testRunId',
-      ciBuildId: 'testCiBuildId',
-      runSummary: (runSummary as unknown) as RunSummary,
-      hookEvent: HookEvent.RUN_FINISH,
-      commit: {} as CommitData,
-    });
+      {
+        run: {
+          ...run,
+          meta: {
+            ...run.meta,
+            commit: null,
+          },
+        },
+        runSummary: (runSummary as unknown) as RunSummary,
+        eventType: HookEvent.RUN_FINISH,
+        groupId: 'groupId',
+        spec: 'spec',
+      }
+    );
 
     expect(axios).toBeCalledWith({
       ...slackReportStatusRequestWithoutCommitData,

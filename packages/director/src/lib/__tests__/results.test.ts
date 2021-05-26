@@ -23,13 +23,13 @@ describe('getSanitizedMongoObject', () => {
         {
           spec: 'cypress/integration/groupA/a.spec.js',
           instanceId: 'bd3a8df5-08f0-4b87-9f50-f4c02743be94',
-          claimed: false,
+          claimedAt: 'date',
           groupId: '1614831046',
         },
         {
           spec: 'cypress/integration/groupA/b.spec.js',
           instanceId: '55a620d1-6ce5-4057-9f9f-cedbd2ec02fd',
-          claimed: false,
+          claimedAt: 'date',
           groupId: '1614831046',
         },
       ],

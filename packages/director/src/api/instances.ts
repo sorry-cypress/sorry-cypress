@@ -1,6 +1,11 @@
 import { getExecutionDriver, getScreenshotsDriver } from '@src/drivers';
 import { RUN_NOT_EXIST } from '@src/lib/errors';
-import { emitInstanceFinish, emitInstanceStart } from '@src/lib/hooks/events';
+import {
+  emitInstanceFinish,
+  emitInstanceStart,
+  emitRunFinish,
+  emitRunStart,
+} from '@src/lib/hooks/events';
 import {
   AssetUploadInstruction,
   InstanceResult,
@@ -25,38 +30,44 @@ export const createInstance: RequestHandler = async (req, res) => {
   });
 
   try {
-    const {
-      instance,
-      claimedInstances,
-      totalInstances,
-    } = await executionDriver.getNextTask({
+    const task = await executionDriver.getNextTask({
       runId,
       machineId,
       groupId,
       cypressVersion,
     });
 
-    if (instance === null) {
+    if (task.instance === null) {
       console.log(`<< All tasks claimed`, { runId, machineId, groupId });
       return res.json({
         spec: null,
         instanceId: null,
-        claimedInstances,
-        totalInstances,
+        claimedInstances: task.claimedInstances,
+        totalInstances: task.totalInstances,
       });
     }
 
     emitInstanceStart({
       runId,
+      groupId,
+      spec: task.instance.spec,
     });
 
+    if (task.claimedInstances === 1) {
+      emitRunStart({
+        runId,
+        groupId,
+        projectId: task.projectId,
+      });
+    }
+
     //Instance Start
-    console.log(`<< Sending new task to machine`, instance);
+    console.log(`<< Sending new task to machine`, task.instance);
     return res.json({
-      spec: instance.spec,
-      instanceId: instance.instanceId,
-      claimedInstances,
-      totalInstances,
+      spec: task.instance.spec,
+      instanceId: task.instance.instanceId,
+      claimedInstances: task.claimedInstances,
+      totalInstances: task.totalInstances,
     });
   } catch (error) {
     if (error.code && error.code === RUN_NOT_EXIST) {
@@ -76,7 +87,9 @@ export const updateInstance: RequestHandler = async (req, res) => {
   console.log(`>> Received instance result`, { instanceId });
   const executionDriver = await getExecutionDriver();
   await executionDriver.setInstanceResults(instanceId, result);
-  completeInstance(instanceId);
+  const instance = await executionDriver.getInstanceById(instanceId);
+
+  completeInstance(instanceId, instance.runId, instance.groupId);
   return res.json(await getInstanceScreenshots(instanceId, result));
 };
 
@@ -89,6 +102,7 @@ export const setInstanceTests: RequestHandler<
   const instanceTests = req.body;
   const { instanceId } = req.params;
   const executionDriver = await getExecutionDriver();
+
   console.log(`>> Received instance tests`, { instanceId });
   await executionDriver.setInstanceTests(instanceId, instanceTests);
   res.json({});
@@ -105,32 +119,48 @@ export const updateInstanceResults: RequestHandler<
 
   console.log(`>> Received instance results`, { instanceId });
   const executionDriver = await getExecutionDriver();
-  const instanceResult = await executionDriver.updateInstanceResults(
+  const instance = await executionDriver.updateInstanceResults(
     instanceId,
     results
   );
 
-  completeInstance(instanceId);
+  completeInstance(instanceId, instance.runId, instance.groupId);
+
   try {
-    const uploadInstructions = await getInstanceScreenshots(
-      instanceId,
-      instanceResult
-    );
-    return res.json(uploadInstructions);
+    res.json(await getInstanceScreenshots(instanceId, instance.results));
   } catch (error) {
     console.error('Unable to get upload instructions', instanceId);
+    console.error(error);
     res.json({});
   }
 
   return;
 };
 
-async function completeInstance(instanceId: string) {
+async function completeInstance(
+  instanceId: string,
+  runId: string,
+  groupId: string
+) {
   const executionDriver = await getExecutionDriver();
+
   const instance = await executionDriver.getInstanceById(instanceId);
   emitInstanceFinish({
     runId: instance.runId,
+    groupId: instance.groupId,
+    spec: instance.spec,
   });
+
+  if (await executionDriver.allGroupSpecsCompleted(runId, groupId)) {
+    // delay for a few seconds to prevent concurrent updates
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+    emitRunFinish({
+      runId,
+      groupId,
+    });
+  }
+
+  await executionDriver.maybeSetRunCompleted(runId);
 }
 async function getInstanceScreenshots(
   instanceId: string,

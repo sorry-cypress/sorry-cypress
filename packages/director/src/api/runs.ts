@@ -1,6 +1,5 @@
 import { getExecutionDriver } from '@src/drivers';
 import { isKeyAllowed } from '@src/lib/allowedKeys';
-import { emitRunStart } from '@src/lib/hooks/events';
 import { CreateRunParameters } from '@src/types';
 import { RequestHandler } from 'express';
 export const blockKeys: RequestHandler = (req, res, next) => {
@@ -36,10 +35,6 @@ export const handleCreateRun: RequestHandler<
     ...req.body,
     cypressVersion,
   });
-
-  if (response.isNewRun) {
-    emitRunStart({ runId: response.runId });
-  }
 
   console.log(`<< Responding to machine`, response);
   return res.json(response);

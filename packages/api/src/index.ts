@@ -1,3 +1,4 @@
+import { initMongoNoIndexes } from '@sorry-cypress/mongo/dist';
 import { ApolloServer } from 'apollo-server';
 import { PORT } from './config';
 import { InstancesAPI } from './datasources/instances';
@@ -8,6 +9,7 @@ import { resolvers } from './resolvers';
 import { typeDefs } from './schema/schema';
 
 async function start() {
+  await initMongoNoIndexes();
   const dataSources = {
     runsAPI: new RunsAPI(),
     instancesAPI: new InstancesAPI(),

@@ -3,8 +3,11 @@ import { Test, TestV670 } from '../tests';
 export interface Instance {
   instanceId: string;
   runId: string;
+  spec: string;
+  cypressVersion: string;
+  groupId: string;
   // 6.7.0+ reports tests before running specs
-  _createTestsPayload: SetInstanceTestsPayload;
+  _createTestsPayload?: SetInstanceTestsPayload;
   results?: InstanceResult;
 }
 

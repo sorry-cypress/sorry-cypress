@@ -1,6 +1,6 @@
 import { Instance, Run } from '@sorry-cypress/common';
+import { Collection, ObjectId } from '@sorry-cypress/mongo';
 import { OrderingOptions } from '@src/generated/graphql';
-import { getMongoDB, init, ObjectID } from '@src/lib/mongo';
 import {
   AggregationFilter,
   filtersToAggregations,
@@ -44,12 +44,6 @@ const runFeedReducer = (runs: WithId<Run>[]) => ({
   hasMore: runs.length > PAGE_LIMIT,
 });
 
-const matchRunAggregation = (runId: string) => ({
-  $match: {
-    runId,
-  },
-});
-
 const projectAggregation = {
   $project: {
     _id: 1,
@@ -72,10 +66,6 @@ const lookupAggregation = {
 };
 
 export class RunsAPI extends DataSource {
-  async initialize() {
-    await init();
-  }
-
   async getRunFeed({
     cursor,
     filters,
@@ -89,7 +79,7 @@ export class RunsAPI extends DataSource {
       cursor
         ? {
             $match: {
-              _id: { $lt: new ObjectID(cursor) },
+              _id: { $lt: new ObjectId(cursor) },
             },
           }
         : null,
@@ -100,7 +90,7 @@ export class RunsAPI extends DataSource {
     ].filter(negate(isNil));
 
     const results = await (
-      await getMongoDB().collection('runs').aggregate(aggregationPipeline)
+      await Collection.run().aggregate<WithId<Run>>(aggregationPipeline)
     ).toArray();
 
     return runFeedReducer(results);
@@ -120,26 +110,23 @@ export class RunsAPI extends DataSource {
       lookupAggregation,
     ].filter(negate(isNil));
 
-    const results = (await getMongoDB()
-      .collection<Run>('runs')
+    const results = (await Collection.run()
       .aggregate(aggregationPipeline)
       .toArray()) as RunWithFullSpecs[];
 
     return results.map(mergeRunSpecs);
   }
 
-  async getRunById(id: string) {
-    return getMongoDB().collection<Run>('runs').findOne({ runId: id });
+  getRunById(id: string) {
+    return Collection.run().findOne({ runId: id });
   }
 
   async deleteRunsByIds(runIds: string[]) {
-    const result = await getMongoDB()
-      .collection('runs')
-      .deleteMany({
-        runId: {
-          $in: runIds,
-        },
-      });
+    const result = await Collection.run().deleteMany({
+      runId: {
+        $in: runIds,
+      },
+    });
     return {
       success: result.result.ok === 1,
       message: `${result.deletedCount} document${
@@ -157,8 +144,7 @@ export class RunsAPI extends DataSource {
         runIds: [],
       };
     }
-    const response = (await getMongoDB()
-      .collection('runs')
+    const response = (await Collection.run()
       .find({
         createdAt: {
           $lte: endDate.toISOString(),

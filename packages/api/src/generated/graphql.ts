@@ -353,7 +353,7 @@ export type Run = {
   runId: Scalars['ID'];
   createdAt: Scalars['DateTime'];
   meta: RunMeta;
-  specs: Array<Spec>;
+  specs: Array<RunSpec>;
   completion?: Maybe<RunCompletion>;
 };
 
@@ -363,12 +363,12 @@ export type RunCompletion = {
   inactivityTimeoutMs?: Maybe<Scalars['Int']>;
 };
 
-export type Spec = {
-  __typename?: 'Spec';
+export type RunSpec = {
+  __typename?: 'RunSpec';
   spec: Scalars['String'];
   instanceId: Scalars['String'];
-  claimed: Scalars['Boolean'];
   claimedAt?: Maybe<Scalars['String']>;
+  completedAt?: Maybe<Scalars['String']>;
   machineId?: Maybe<Scalars['String']>;
   groupId?: Maybe<Scalars['String']>;
   results?: Maybe<InstanceResults>;
@@ -403,18 +403,9 @@ export type Instance = {
   runId: Scalars['ID'];
   run: Run;
   spec: Scalars['String'];
+  groupId: Scalars['String'];
   instanceId: Scalars['ID'];
   results?: Maybe<InstanceResults>;
-};
-
-export type RunSpec = {
-  __typename?: 'RunSpec';
-  spec: Scalars['String'];
-  instanceId: Scalars['String'];
-  claimed: Scalars['Boolean'];
-  claimedAt?: Maybe<Scalars['String']>;
-  groupId?: Maybe<Scalars['String']>;
-  machineId?: Maybe<Scalars['String']>;
 };
 
 export type InstanceResults = {
@@ -643,12 +634,11 @@ export type ResolversTypes = {
   DeleteProjectResponse: ResolverTypeWrapper<DeleteProjectResponse>;
   Run: ResolverTypeWrapper<Run>;
   RunCompletion: ResolverTypeWrapper<RunCompletion>;
-  Spec: ResolverTypeWrapper<Spec>;
+  RunSpec: ResolverTypeWrapper<RunSpec>;
   Commit: ResolverTypeWrapper<Commit>;
   RunMeta: ResolverTypeWrapper<RunMeta>;
   RunFeed: ResolverTypeWrapper<RunFeed>;
   Instance: ResolverTypeWrapper<Instance>;
-  RunSpec: ResolverTypeWrapper<RunSpec>;
   InstanceResults: ResolverTypeWrapper<Omit<InstanceResults, 'tests'> & { tests: Array<ResolversTypes['InstanceTestUnion']> }>;
   InstanceStats: ResolverTypeWrapper<InstanceStats>;
   CypressConfig: ResolverTypeWrapper<CypressConfig>;
@@ -703,12 +693,11 @@ export type ResolversParentTypes = {
   DeleteProjectResponse: DeleteProjectResponse;
   Run: Run;
   RunCompletion: RunCompletion;
-  Spec: Spec;
+  RunSpec: RunSpec;
   Commit: Commit;
   RunMeta: RunMeta;
   RunFeed: RunFeed;
   Instance: Instance;
-  RunSpec: RunSpec;
   InstanceResults: Omit<InstanceResults, 'tests'> & { tests: Array<ResolversParentTypes['InstanceTestUnion']> };
   InstanceStats: InstanceStats;
   CypressConfig: CypressConfig;
@@ -867,7 +856,7 @@ export type RunResolvers<ContextType = any, ParentType extends ResolversParentTy
   runId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   meta?: Resolver<ResolversTypes['RunMeta'], ParentType, ContextType>;
-  specs?: Resolver<Array<ResolversTypes['Spec']>, ParentType, ContextType>;
+  specs?: Resolver<Array<ResolversTypes['RunSpec']>, ParentType, ContextType>;
   completion?: Resolver<Maybe<ResolversTypes['RunCompletion']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
@@ -878,11 +867,11 @@ export type RunCompletionResolvers<ContextType = any, ParentType extends Resolve
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
-export type SpecResolvers<ContextType = any, ParentType extends ResolversParentTypes['Spec'] = ResolversParentTypes['Spec']> = {
+export type RunSpecResolvers<ContextType = any, ParentType extends ResolversParentTypes['RunSpec'] = ResolversParentTypes['RunSpec']> = {
   spec?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   instanceId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  claimed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   claimedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  completedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   machineId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   groupId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   results?: Resolver<Maybe<ResolversTypes['InstanceResults']>, ParentType, ContextType>;
@@ -917,18 +906,9 @@ export type InstanceResolvers<ContextType = any, ParentType extends ResolversPar
   runId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   run?: Resolver<ResolversTypes['Run'], ParentType, ContextType>;
   spec?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  groupId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   instanceId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   results?: Resolver<Maybe<ResolversTypes['InstanceResults']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
-};
-
-export type RunSpecResolvers<ContextType = any, ParentType extends ResolversParentTypes['RunSpec'] = ResolversParentTypes['RunSpec']> = {
-  spec?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  instanceId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  claimed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  claimedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  groupId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  machineId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
@@ -1051,12 +1031,11 @@ export type Resolvers<ContextType = any> = {
   DeleteProjectResponse?: DeleteProjectResponseResolvers<ContextType>;
   Run?: RunResolvers<ContextType>;
   RunCompletion?: RunCompletionResolvers<ContextType>;
-  Spec?: SpecResolvers<ContextType>;
+  RunSpec?: RunSpecResolvers<ContextType>;
   Commit?: CommitResolvers<ContextType>;
   RunMeta?: RunMetaResolvers<ContextType>;
   RunFeed?: RunFeedResolvers<ContextType>;
   Instance?: InstanceResolvers<ContextType>;
-  RunSpec?: RunSpecResolvers<ContextType>;
   InstanceResults?: InstanceResultsResolvers<ContextType>;
   InstanceStats?: InstanceStatsResolvers<ContextType>;
   CypressConfig?: CypressConfigResolvers<ContextType>;

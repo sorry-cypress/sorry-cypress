@@ -2,59 +2,86 @@ import {
   BitBucketHook,
   getBitbucketBuildUrl,
   HookEvent,
+  isResultSuccessful,
   RunSummary,
+  RunWithSpecs,
 } from '@sorry-cypress/common';
+import { APP_NAME } from '@src/config';
 import { getDashboardRunURL } from '@src/lib/urls';
 import axios from 'axios';
+import md5 from 'md5';
 
-export async function reportStatusToBitbucket({
-  hook,
-  runId,
-  runSummary,
-  sha,
-  hookEvent,
-}: {
-  hook: BitBucketHook;
-  runId: string;
-  sha: string;
+interface BBReporterStatusParams {
+  run: RunWithSpecs;
+  eventType: HookEvent;
   runSummary: RunSummary;
-  hookEvent: string;
-}) {
-  const fullStatusPostUrl = getBitbucketBuildUrl(hook.url, sha);
+  groupId: string;
+}
+export async function reportStatusToBitbucket(
+  hook: BitBucketHook,
+  eventData: BBReporterStatusParams
+) {
+  const { eventType, runSummary, groupId, run } = eventData;
+
+  const fullStatusPostUrl = getBitbucketBuildUrl(hook.url, run.meta.commit.sha);
+
+  // don't append group name if groupId is non-explicit
+  // otherwise rerunning would create a new status context in GH
+  let context = `${hook.bitbucketBuildName || APP_NAME}`;
+  if (run.meta.ciBuildId !== groupId) {
+    context = `${context}: ${groupId}`;
+  }
+  const description = `failed:${
+    runSummary.failures + runSummary.skipped
+  } passed:${runSummary.passes} skipped:${runSummary.pending}`;
 
   const data = {
     state: 'INPROGRESS',
-    key: hook.hookId,
-    name: hook.bitbucketBuildName || 'sorry-cypress',
-    url: getDashboardRunURL(runId),
+    // see https://github.com/sorry-cypress/sorry-cypress/pull/325
+    key: md5(`${hook.hookId}_${context}`),
+    name: `${context}`,
+    description,
+    url: getDashboardRunURL(run.runId),
   };
 
-  if (hookEvent === HookEvent.RUN_FINISH) {
-    data.state = 'SUCCESSFUL';
-    if (runSummary.failures > 0) {
-      data.state = 'FAILED';
+  if (eventType === HookEvent.RUN_FINISH) {
+    data.state = 'FAILED';
+    if (isResultSuccessful(runSummary)) {
+      data.state = 'SUCCESSFUL';
     }
+  }
+
+  if (eventType === HookEvent.RUN_TIMEOUT) {
+    data.state = 'FAILED';
+    data.description = `timedout - ${data.description}`;
   }
 
   if (!data.state) {
     return;
   }
 
-  axios({
-    method: 'post',
-    url: fullStatusPostUrl,
-    auth: {
-      username: hook.bitbucketUsername,
-      password: hook.bitbucketToken,
-    },
-    headers: {
-      Accept: 'application/json',
-    },
+  console.log(`[bitbucket-reporter] Posting hook`, {
+    eventType,
     data,
-  }).catch((err) => {
-    console.error(
-      `Error: Hook post to ${fullStatusPostUrl} responded with `,
-      err
-    );
   });
+
+  try {
+    await axios({
+      method: 'post',
+      url: fullStatusPostUrl,
+      auth: {
+        username: hook.bitbucketUsername,
+        password: hook.bitbucketToken,
+      },
+      headers: {
+        Accept: 'application/json',
+      },
+      data,
+    });
+  } catch (err) {
+    console.error(
+      `[bitbucket-reporter] Hook post to ${fullStatusPostUrl} error`
+    );
+    console.error(err);
+  }
 }

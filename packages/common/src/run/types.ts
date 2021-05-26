@@ -1,12 +1,12 @@
-import { Instance } from '../instance/types';
+import { Instance, InstanceResult } from '../instance/types';
 
 export interface CommitData {
   sha: string;
-  branch?: string
-  authorName?: string
-  authorEmail?: string
-  message?: string
-  remoteOrigin?: string
+  branch?: string;
+  authorName?: string;
+  authorEmail?: string;
+  message?: string;
+  remoteOrigin?: string;
 }
 export interface PlatformData {
   osName: string;
@@ -54,10 +54,12 @@ export interface RunMetaData {
 }
 export interface RunSpec {
   spec: string;
+  groupId: string;
   instanceId: string;
-  claimed: boolean;
-  groupId?: string;
+  claimedAt: string | null;
+  completedAt: string | null;
   machineId?: string;
+  results?: InstanceResult;
 }
 
 type RunCompletion =
@@ -80,6 +82,7 @@ export interface Task {
   instance: RunSpec | null;
   claimedInstances: number;
   totalInstances: number;
+  projectId: string;
 }
 
 export type RunWithSpecs = Run & {

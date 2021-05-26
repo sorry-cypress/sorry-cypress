@@ -1,6 +1,5 @@
 import {
   getRunSummary,
-  isRunPendingInactivityTimeout,
   RunSummary as RunSummaryType,
 } from '@sorry-cypress/common';
 import {
@@ -10,8 +9,8 @@ import {
   HeaderLink,
   Paper,
   TestFailureBadge,
-  TestRetriesBadge,
   TestOverallBadge,
+  TestRetriesBadge,
   TestSkippedBadge,
   TestSuccessBadge,
 } from '@src/components/';
@@ -61,14 +60,11 @@ export function RunSummaryComponent({
   const runSpecs = run.specs;
   const runCreatedAt = run.createdAt;
 
-  const runSummary = getRunSummary(
-    compact(runSpecs.map((s) => s.results))
-  );
+  const runSummary = getRunSummary(compact(runSpecs.map((s) => s.results)));
 
   const hasCompletion = !!run.completion;
   const completed = !!run.completion?.completed;
   const inactivityTimeoutMs = run.completion?.inactivityTimeoutMs;
-  const pendingInactivity = isRunPendingInactivityTimeout(runSpecs);
 
   return (
     <Paper>
@@ -77,7 +73,6 @@ export function RunSummaryComponent({
           <HFlow alignItems="center">
             {hasCompletion && (
               <RunStatus
-                pendingInactivity={pendingInactivity}
                 completed={completed}
                 inactivityTimeoutMs={inactivityTimeoutMs}
               />
@@ -102,7 +97,6 @@ export function RunSummaryComponent({
               <Text>Duration: </Text>
               <Duration
                 hasCompletion={hasCompletion}
-                pendingInactivity={pendingInactivity}
                 completed={completed}
                 createdAtISO={runCreatedAt}
                 wallClockDurationSeconds={runSummary.wallClockDurationSeconds}
@@ -111,7 +105,7 @@ export function RunSummaryComponent({
             <li>
               <Text>Spec Files: </Text>
               <Text>
-                claimed {runSpecs.filter((s) => s.claimed).length} out of{' '}
+                claimed {runSpecs.filter((s) => s.claimedAt).length} out of{' '}
                 {runSpecs.length}
               </Text>
             </li>
@@ -145,23 +139,14 @@ function RunSummaryTestResults({ runSummary }: { runSummary: RunSummaryType }) {
 function RunStatus({
   completed,
   inactivityTimeoutMs,
-  pendingInactivity,
 }: {
-  pendingInactivity: boolean;
   completed: boolean;
   inactivityTimeoutMs?: number | null;
 }) {
-  if (!completed && !pendingInactivity) {
+  if (!completed) {
     return (
       <Tooltip text={`Run is being executed`}>
         <Icon icon="rocket" fill="info" stroke="info" size={1} />
-      </Tooltip>
-    );
-  }
-  if (!completed && pendingInactivity) {
-    return (
-      <Tooltip text={`Run has been waiting for inactivity timeout`}>
-        <Icon icon="clockOutline" stroke="info" size={1} />
       </Tooltip>
     );
   }
@@ -174,9 +159,9 @@ function RunStatus({
 function Timedout({ inactivityTimeoutMs }: { inactivityTimeoutMs: number }) {
   return (
     <Tooltip
-      text={`The run has been marked as timed out after ${getSecondsDuration(
+      text={`Timed out after ${getSecondsDuration(
         inactivityTimeoutMs / 1000
-      )} of inactiviy`}
+      )}. Set the timeout value in project settings.`}
     >
       <Icon icon="clockOutline" fill="danger" stroke="danger" size={0.9} />
     </Tooltip>

@@ -140,6 +140,7 @@ const getNextTask: ExecutionDriver['getNextTask'] = async ({
   if (!unclaimedSpec) {
     return {
       instance: null,
+      projectId: runs[runId].meta.projectId,
       claimedInstances: runs[runId].specs.length,
       totalInstances: runs[runId].specs.length,
     };
@@ -148,14 +149,18 @@ const getNextTask: ExecutionDriver['getNextTask'] = async ({
   const unclaimedSpecIndex = runs[runId].specs.findIndex(
     (s) => s === unclaimedSpec
   );
-  runs[runId].specs[unclaimedSpecIndex].claimed = true;
+  runs[runId].specs[unclaimedSpecIndex].claimedAt = new Date().toISOString();
   instances[unclaimedSpec.instanceId] = {
     _createTestsPayload: null,
+    spec: runs[runId].specs[unclaimedSpecIndex].spec,
     runId,
+    groupId,
     instanceId: unclaimedSpec.instanceId,
+    cypressVersion: '',
   };
 
   return {
+    projectId: runs[runId].meta.projectId,
     instance: unclaimedSpec,
     claimedInstances: getClaimedSpecs(runs[runId], groupId).length + 1,
     totalInstances: getSpecsForGroup(runs[runId], groupId).length,
@@ -211,7 +216,7 @@ const updateInstanceResults = async (
   );
 
   instances[instanceId].results = instanceResult;
-  return instanceResult;
+  return instances[instanceId];
 };
 
 export const driver: ExecutionDriver = {
@@ -219,6 +224,8 @@ export const driver: ExecutionDriver = {
   init: () => Promise.resolve(),
   getProjectById: (projectId: string) => Promise.resolve(projects[projectId]),
   getRunById: (runId: string) => Promise.resolve(runs[runId]),
+  maybeSetRunCompleted: async (_runId: string) => true,
+  allGroupSpecsCompleted: async () => true,
   getRunWithSpecs,
   getInstanceById: (instanceId: string) =>
     Promise.resolve(instances[instanceId]),

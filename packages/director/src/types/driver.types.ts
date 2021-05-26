@@ -42,6 +42,8 @@ interface SetRunCompletedWithTimeout {
 }
 
 export interface ExecutionDriver extends Driver {
+  maybeSetRunCompleted: (runId: string) => Promise<boolean>;
+  allGroupSpecsCompleted: (runId: string, groupId: string) => Promise<boolean>;
   getRunWithSpecs: (runId: string) => Promise<RunWithSpecs>;
   getProjectById: (projectId: string) => Promise<Project>;
   getRunById: (runId: string) => Promise<Run>;
@@ -63,7 +65,7 @@ export interface ExecutionDriver extends Driver {
   updateInstanceResults: (
     instanceId: string,
     payload: UpdateInstanceResultsPayload
-  ) => Promise<InstanceResult>;
+  ) => Promise<Instance>;
   setScreenshotUrl: (
     instanceId: string,
     screenshotId: string,

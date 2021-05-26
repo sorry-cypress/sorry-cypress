@@ -11,6 +11,7 @@ export enum HookType {
 
 export enum HookEvent {
   RUN_START = 'RUN_START',
+  RUN_TIMEOUT = 'RUN_TIMEOUT',
   RUN_FINISH = 'RUN_FINISH',
   INSTANCE_START = 'INSTANCE_START',
   INSTANCE_FINISH = 'INSTANCE_FINISH',

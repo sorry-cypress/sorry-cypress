@@ -2,7 +2,7 @@ import { differenceInSeconds, parseISO } from 'date-fns';
 import { compact, orderBy, sum } from 'lodash';
 import { InstanceResult, InstanceResultStats } from '../instance';
 import { Test, TestV5 } from '../tests';
-import { RunSummary, RunWithSpecs } from './types';
+import { Run, RunSummary } from './types';
 
 export function getRunDurationSeconds(specs: InstanceResultStats[]): number {
   if (specs.length === 0) {
@@ -67,17 +67,26 @@ export function getRunSummary(specs: InstanceResult[]): RunSummary {
   );
 }
 
-export function isAllRunSpecsCompleted(run: RunWithSpecs) {
+export function isAllRunSpecsCompleted(run: Run) {
   const allCandidateSpecs = run.specs.map((s) => s.spec);
-  const allClaimedSpecs = run.specs.filter((s) => s.claimed);
+  const allClaimedSpecs = run.specs.filter((s) => !!s.claimedAt);
 
   if (allCandidateSpecs.length !== allClaimedSpecs.length) {
     return false;
   }
 
   const claimedInstanceIds = allClaimedSpecs.map((s) => s.instanceId);
-  const completedInstanceIds = run.specsFull
-    .filter((s) => !!s.results?.stats.wallClockEndedAt)
+  const completedInstanceIds = run.specs
+    .filter((s) => !!s.completedAt)
     .map((s) => s.instanceId);
   return claimedInstanceIds.length === completedInstanceIds.length;
+}
+
+export function isResultSuccessful(runSummary: RunSummary) {
+  // Cypress is based on Mocha framework which has a not obvious results naming:
+  // Pending: tests you don't plan to run (it.skip(), for example)
+  // Skipped: tests you have planned to run, but, for example, before hook was failed
+  // Therefore we mark skipped tests as failed
+  // See details here: https://github.com/cypress-io/cypress/issues/3092
+  return !(runSummary.failures > 0 || runSummary.skipped > 0);
 }

@@ -1,5 +1,4 @@
 import {
-  CommitData,
   getRunSummary,
   Hook,
   HookEvent,
@@ -11,78 +10,105 @@ import {
   RunSummary,
   RunWithSpecs,
 } from '@sorry-cypress/common';
-import { AppError, UNKNOWN_HOOK_TYPE } from '@src/lib/errors';
 import { compact } from 'lodash';
 import { reportStatusToBitbucket } from './bitbucket';
 import { reportToGenericWebHook } from './generic';
 import { reportStatusToGithub } from './github';
 import { reportToSlack } from './slack';
 
-export function reportToHooks({
-  hookEvent,
-  run,
-  project,
-}: {
-  hookEvent: HookEvent;
+interface ReportHooksParams {
+  eventType: HookEvent;
   run: RunWithSpecs;
+  groupId: string;
   project: Project;
-}): Promise<void> {
+  spec?: string;
+}
+export async function reportToHooks(
+  reportParams: ReportHooksParams
+): Promise<void> {
   try {
-    if (!project.hooks.length) {
+    if (!reportParams.project.hooks?.length) {
       return;
     }
     const runSummary = getRunSummary(
-      compact(run.specsFull.map((s) => s.results))
+      compact(
+        reportParams.run.specsFull
+          .filter((s) => s.groupId === reportParams.groupId)
+          .map((s) => s.results)
+      )
     );
-    const reporterArgs = {
-      runSummary,
-      runId: run.runId,
-      ciBuildId: run.meta.ciBuildId,
-      commit: run.meta.commit,
-      hookEvent,
-    };
-    project.hooks?.forEach((hook) => {
+
+    reportParams.project.hooks.forEach((hook) => {
       // swallow errors, don't trust reporters to catch errors
-      runSingleReporter({ ...reporterArgs, hook }).catch((error) => {
-        console.error(error);
-        console.error('Error while reporting hook', hook.hookId, hook.hookType);
-      });
+      runSingleReporter({ ...reportParams, runSummary, hook }).catch(
+        (error) => {
+          console.error(
+            '[hooks] Error while reporting hook',
+            reportParams.run.runId,
+            hook.hookId,
+            hook.hookType
+          );
+          console.error(error);
+        }
+      );
     });
   } catch (error) {
-    console.error(`Failed to run hooks for ${project.projectId}`, error);
+    console.error(
+      `[hooks] Failed to run hooks`,
+      reportParams.run.runId,
+      reportParams.project.projectId
+    );
+    console.error(error);
   }
-  return Promise.resolve();
+  return;
 }
 
-interface RunSingleReporterParams {
+interface RunSingleReporterParams extends ReportHooksParams {
   runSummary: RunSummary;
   hook: Hook;
-  runId: string;
-  ciBuildId: string;
-  commit: CommitData;
-  hookEvent: HookEvent;
 }
-const runSingleReporter = (params: RunSingleReporterParams) => {
-  if (isGithubHook(params.hook)) {
-    return reportStatusToGithub({
-      ...params,
-      hook: params.hook,
-      sha: params.commit.sha,
+const runSingleReporter = async ({
+  hook,
+  run,
+  runSummary,
+  groupId,
+  eventType,
+  spec,
+}: RunSingleReporterParams) => {
+  if (isGithubHook(hook)) {
+    return reportStatusToGithub(hook, {
+      run,
+      runSummary,
+      groupId,
+      eventType,
     });
   }
-  if (isGenericHook(params.hook)) {
-    return reportToGenericWebHook({ ...params, hook: params.hook });
-  }
-  if (isBitbucketHook(params.hook)) {
-    return reportStatusToBitbucket({
-      ...params,
-      hook: params.hook,
-      sha: params.commit.sha,
+  if (isSlackHook(hook)) {
+    return reportToSlack(hook, {
+      eventType,
+      run,
+      groupId,
+      runSummary,
+      spec,
     });
   }
-  if (isSlackHook(params.hook)) {
-    return reportToSlack({ ...params, hook: params.hook });
+  if (isBitbucketHook(hook)) {
+    return reportStatusToBitbucket(hook, {
+      run,
+      runSummary,
+      groupId,
+      eventType,
+    });
+  }
+  if (isGenericHook(hook)) {
+    return reportToGenericWebHook(hook, {
+      run,
+      groupId,
+      runSummary,
+      eventType,
+      spec,
+    });
   }
 
-  throw new AppError(UNKNOWN_HOOK_TYPE);
+  // throw new AppError(UNKNOWN_HOOK_TYPE);
 };

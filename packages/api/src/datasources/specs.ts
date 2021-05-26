@@ -1,13 +1,14 @@
+import { Collection } from '@sorry-cypress/mongo/dist';
 import { SpecStats } from '@src/generated/graphql';
-import { getMongoDB, init } from '@src/lib/mongo';
 import { AggregationFilter, filtersToAggregations } from '@src/lib/query';
 import { DataSource } from 'apollo-datasource';
 
+interface SpecsAggregationResult {
+  _id: string;
+  avgWallClockDuration: number;
+  count: number;
+}
 export class SpecsAPI extends DataSource {
-  async initialize() {
-    await init();
-  }
-
   async getSpecStats({
     spec,
     filter,
@@ -42,7 +43,7 @@ export class SpecsAPI extends DataSource {
     ];
 
     const results = await (
-      await getMongoDB().collection('instances').aggregate(pipeline)
+      await Collection.instance().aggregate<SpecsAggregationResult>(pipeline)
     ).toArray();
 
     const result = results.pop();
