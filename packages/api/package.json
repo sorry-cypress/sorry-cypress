@@ -1,6 +1,6 @@
 {
   "name": "@sorry-cypress/api",
-  "version": "1.0.0-rc.12",
+  "version": "1.0.0",
   "author": {
     "name": "Andrew Goldis",
     "email": "agoldis@gmail.com"
@@ -51,8 +51,8 @@
   "dependencies": {
     "@graphql-tools/load-files": "^6.3.2",
     "@graphql-tools/merge": "^6.2.11",
-    "@sorry-cypress/mongo": "1.0.0",
     "@sorry-cypress/common": "1.0.0",
+    "@sorry-cypress/mongo": "1.0.0",
     "apollo-server": "^2.18.1",
     "dotenv": "^8.1.0",
     "graphql": "^15.3.0",
