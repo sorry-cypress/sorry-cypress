@@ -14,20 +14,20 @@
     "build:types": "tsc --emitDeclarationOnly --declarationMap",
     "types:watch": "yarn run build:types --watch --preserveWatchOutput",
     "js:watch": "yarn build:js --watch",
-    "build:js": "esbuild ./src/index.ts --bundle  --platform=node --sourcemap --outdir=dist",
+    "build:js": "esbuild ./src/index.ts --bundle  --platform=node --sourcemap --external:mongodb-client-encryption --outdir=dist",
     "lint": "eslint ./ --ext ts,tsx",
     "release": "echo \"skipping release\"",
     "test": "jest --passWithNoTests"
   },
   "devDependencies": {
     "@types/jest": "^26.0.20",
+    "@types/mongodb": "^3.6.16",
     "esbuild": "^0.11.14",
     "jest": "^26.6.3"
   },
   "dependencies": {
     "@sorry-cypress/common": "1.0.0",
     "date-fns": "^2.21.1",
-    "mongodb": "^3.6.5",
-    "mongodb-client-encryption": "^1.2.3"
+    "mongodb": "^3.6.5"
   }
 }

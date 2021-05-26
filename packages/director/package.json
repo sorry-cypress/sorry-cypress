@@ -41,7 +41,6 @@
     "lodash": "^4.17.21",
     "md5": "^2.2.1",
     "minio": "^7.0.15",
-    "mongodb": "^3.3.0",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
@@ -57,7 +56,6 @@
     "@types/lodash": "^4.14.149",
     "@types/md5": "^2.1.33",
     "@types/minio": "^7.0.5",
-    "@types/mongodb": "^3.3.1",
     "@types/node": "^14.11.2",
     "@types/redis": "^2.8.28",
     "@types/uuid": "^3.4.5",

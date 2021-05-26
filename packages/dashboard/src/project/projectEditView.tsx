@@ -4,7 +4,7 @@ import {
   UpdateProjectInput,
   useCreateProjectMutation,
   useGetProjectQuery,
-  useUpdateProjectMutation,
+  useUpdateProjectMutation
 } from '@src/generated/graphql';
 import { setNav } from '@src/lib/navigation';
 import { Alert, Button, Cell, Grid, Text, TextField } from 'bold-ui';
@@ -15,7 +15,7 @@ import { useHooksFormReducer, WithHooksForm } from './hook/hookFormReducer';
 import { useCurrentProjectId } from './hook/useCurrentProjectId';
 import { HooksEditor } from './hooksEditor';
 
-const DEFAULT_TIMEOUT_SECONDS = 180;
+const DEFAULT_TIMEOUT_SECONDS = 600;
 
 export function ProjectEditView() {
   return (
