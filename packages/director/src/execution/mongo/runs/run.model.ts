@@ -1,4 +1,4 @@
-import { Collection } from '@sorry-cypress/mongo/dist';
+import { Collection } from '@sorry-cypress/mongo';
 import {
   AppError,
   CLAIM_FAILED,

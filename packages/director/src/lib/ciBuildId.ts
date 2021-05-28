@@ -26,7 +26,7 @@ export const getRunCiBuildId = (params: CreateRunParameters): string => {
     return params.ciBuildId;
   }
   for (const paramName of ciParams) {
-    if (!isEmpty(params.ci.params[paramName])) {
+    if (params.ci.params && !isEmpty(params.ci.params[paramName])) {
       return params.ci.params[paramName];
     }
   }
