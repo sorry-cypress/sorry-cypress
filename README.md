@@ -10,13 +10,7 @@
 
 **Sorry-cypress** is an open-source cypress tests dashboard that unlocks unlimited parallelization, test recordings, integration with Github, Slack and more.
 
-**Currens.dev** is reasonably priced SaaS, that allows running cypress tests in parallel for less, which is based on sorry-cypress.
-
-<p align="center">
-  <a href="https://currents.dev">https://currents.dev</a>
-</p>
-
-**Sorry-cypress** can be installed as a standalone service on your own infrastructure (cloud and on-premise) using Docker, docker-compose, or Kubernetes.
+**Sorry-cypress** can be installed on AWS, Google Cloud, Heroku or any other infrastructure - cloud and on-premise - using Docker, docker-compose, or Kubernetes.
 
 <p align="center">
   <a href="https://sorry-cypress.dev">https://sorry-cypress.dev</a>
@@ -24,6 +18,17 @@
 <p align="center">
   <img src="https://user-images.githubusercontent.com/1637928/111021636-b45e5400-8382-11eb-92ed-3ca69182555b.png"  width="320" />
 </p>
+
+---
+
+<p align="center"><strong>Currens.dev</strong>  - pay less for cypress tests.</p>
+<p  align="center">Cost-effective alternative cypress dashboard. Pay less for parallelization, test recordings and integrations.</p>
+
+<p align="center">
+  <a href="https://currents.dev">https://currents.dev</a> | <a href="https://currents.dev#pricing">$18/mo</a> | <a href="https://currents.dev#pricing">$55/mo</a> | <a href="https://currents.dev#pricing">$215/mo</a> 
+</p>
+
+---
 
 ## Table of contents
 
