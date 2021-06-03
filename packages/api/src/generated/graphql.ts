@@ -411,7 +411,7 @@ export type Instance = {
 export type InstanceResults = {
   __typename?: 'InstanceResults';
   stats: InstanceStats;
-  tests: Array<InstanceTestUnion>;
+  tests?: Maybe<Array<InstanceTestUnion>>;
   error?: Maybe<Scalars['String']>;
   stdout?: Maybe<Scalars['String']>;
   screenshots: Array<InstanceScreeshot>;
@@ -639,7 +639,7 @@ export type ResolversTypes = {
   RunMeta: ResolverTypeWrapper<RunMeta>;
   RunFeed: ResolverTypeWrapper<RunFeed>;
   Instance: ResolverTypeWrapper<Instance>;
-  InstanceResults: ResolverTypeWrapper<Omit<InstanceResults, 'tests'> & { tests: Array<ResolversTypes['InstanceTestUnion']> }>;
+  InstanceResults: ResolverTypeWrapper<Omit<InstanceResults, 'tests'> & { tests?: Maybe<Array<ResolversTypes['InstanceTestUnion']>> }>;
   InstanceStats: ResolverTypeWrapper<InstanceStats>;
   CypressConfig: ResolverTypeWrapper<CypressConfig>;
   InstanceScreeshot: ResolverTypeWrapper<InstanceScreeshot>;
@@ -698,7 +698,7 @@ export type ResolversParentTypes = {
   RunMeta: RunMeta;
   RunFeed: RunFeed;
   Instance: Instance;
-  InstanceResults: Omit<InstanceResults, 'tests'> & { tests: Array<ResolversParentTypes['InstanceTestUnion']> };
+  InstanceResults: Omit<InstanceResults, 'tests'> & { tests?: Maybe<Array<ResolversParentTypes['InstanceTestUnion']>> };
   InstanceStats: InstanceStats;
   CypressConfig: CypressConfig;
   InstanceScreeshot: InstanceScreeshot;
@@ -914,7 +914,7 @@ export type InstanceResolvers<ContextType = any, ParentType extends ResolversPar
 
 export type InstanceResultsResolvers<ContextType = any, ParentType extends ResolversParentTypes['InstanceResults'] = ResolversParentTypes['InstanceResults']> = {
   stats?: Resolver<ResolversTypes['InstanceStats'], ParentType, ContextType>;
-  tests?: Resolver<Array<ResolversTypes['InstanceTestUnion']>, ParentType, ContextType>;
+  tests?: Resolver<Maybe<Array<ResolversTypes['InstanceTestUnion']>>, ParentType, ContextType>;
   error?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   stdout?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   screenshots?: Resolver<Array<ResolversTypes['InstanceScreeshot']>, ParentType, ContextType>;

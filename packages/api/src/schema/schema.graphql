@@ -274,7 +274,7 @@ type Instance {
 # Execution results of a single instance
 type InstanceResults {
   stats: InstanceStats!
-  tests: [InstanceTestUnion!]!
+  tests: [InstanceTestUnion!]
   error: String
   stdout: String
   screenshots: [InstanceScreeshot!]!

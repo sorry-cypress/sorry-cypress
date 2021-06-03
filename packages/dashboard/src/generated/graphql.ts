@@ -412,7 +412,7 @@ export type Instance = {
 export type InstanceResults = {
   __typename?: 'InstanceResults';
   stats: InstanceStats;
-  tests: Array<InstanceTestUnion>;
+  tests: Maybe<Array<InstanceTestUnion>>;
   error: Maybe<Scalars['String']>;
   stdout: Maybe<Scalars['String']>;
   screenshots: Array<InstanceScreeshot>;
@@ -526,10 +526,10 @@ export type GetInstanceQueryVariables = Exact<{
 }>;
 
 
-export type GetInstanceQuery = { __typename?: 'Query', instance: Maybe<{ __typename?: 'Instance', instanceId: string, runId: string, spec: string, run: { __typename?: 'Run', runId: string, meta: { __typename?: 'RunMeta', ciBuildId: string, projectId: string } }, results: Maybe<{ __typename?: 'InstanceResults', videoUrl: Maybe<string>, stats: (
+export type GetInstanceQuery = { __typename?: 'Query', instance: Maybe<{ __typename?: 'Instance', instanceId: string, runId: string, spec: string, run: { __typename?: 'Run', runId: string, meta: { __typename?: 'RunMeta', ciBuildId: string, projectId: string } }, results: Maybe<{ __typename?: 'InstanceResults', error: Maybe<string>, videoUrl: Maybe<string>, stats: (
         { __typename?: 'InstanceStats' }
         & AllInstanceStatsFragment
-      ), tests: Array<{ __typename?: 'InstanceTest', testId: string, title: Array<string>, state: TestState, wallClockDuration: Maybe<number>, wallClockStartedAt: Maybe<string>, error: Maybe<string>, stack: Maybe<string> } | { __typename?: 'InstanceTestV5', testId: string, title: Array<string>, state: TestState, displayError: Maybe<string>, attempts: Array<{ __typename?: 'TestAttempt', state: Maybe<string>, wallClockDuration: Maybe<number>, wallClockStartedAt: Maybe<string>, error: Maybe<{ __typename?: 'TestError', name: string, message: string, stack: string }> }> }>, screenshots: Array<{ __typename?: 'InstanceScreeshot', testId: string, screenshotId: string, height: number, width: number, screenshotURL: Maybe<string> }>, cypressConfig: Maybe<{ __typename?: 'CypressConfig', video: boolean, videoUploadOnPasses: boolean }> }> }> };
+      ), tests: Maybe<Array<{ __typename?: 'InstanceTest', testId: string, title: Array<string>, state: TestState, wallClockDuration: Maybe<number>, wallClockStartedAt: Maybe<string>, error: Maybe<string>, stack: Maybe<string> } | { __typename?: 'InstanceTestV5', testId: string, title: Array<string>, state: TestState, displayError: Maybe<string>, attempts: Array<{ __typename?: 'TestAttempt', state: Maybe<string>, wallClockDuration: Maybe<number>, wallClockStartedAt: Maybe<string>, error: Maybe<{ __typename?: 'TestError', name: string, message: string, stack: string }> }> }>>, screenshots: Array<{ __typename?: 'InstanceScreeshot', testId: string, screenshotId: string, height: number, width: number, screenshotURL: Maybe<string> }>, cypressConfig: Maybe<{ __typename?: 'CypressConfig', video: boolean, videoUploadOnPasses: boolean }> }> }> };
 
 export type CreateProjectMutationVariables = Exact<{
   project: CreateProjectInput;
@@ -660,7 +660,7 @@ export type GetRunQuery = { __typename?: 'Query', run: Maybe<{ __typename?: 'Run
       & RunDetailSpecFragment
     )> }> };
 
-export type RunDetailSpecFragment = { __typename?: 'RunSpec', instanceId: string, spec: string, claimedAt: Maybe<string>, machineId: Maybe<string>, groupId: Maybe<string>, results: Maybe<{ __typename?: 'InstanceResults', tests: Array<{ __typename?: 'InstanceTest', state: TestState } | { __typename?: 'InstanceTestV5', state: TestState, attempts: Array<{ __typename?: 'TestAttempt', state: Maybe<string> }> }>, stats: (
+export type RunDetailSpecFragment = { __typename?: 'RunSpec', instanceId: string, spec: string, claimedAt: Maybe<string>, machineId: Maybe<string>, groupId: Maybe<string>, results: Maybe<{ __typename?: 'InstanceResults', error: Maybe<string>, tests: Maybe<Array<{ __typename?: 'InstanceTest', state: TestState } | { __typename?: 'InstanceTestV5', state: TestState, attempts: Array<{ __typename?: 'TestAttempt', state: Maybe<string> }> }>>, stats: (
       { __typename?: 'InstanceStats' }
       & AllInstanceStatsFragment
     ) }> };
@@ -722,6 +722,7 @@ export const RunDetailSpecFragmentDoc = gql`
   machineId
   groupId
   results {
+    error
     tests {
       ... on InstanceTest {
         state
@@ -783,6 +784,7 @@ export const GetInstanceDocument = gql`
       }
     }
     results {
+      error
       stats {
         ...AllInstanceStats
       }

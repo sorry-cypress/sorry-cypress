@@ -11,6 +11,7 @@ query getInstance($instanceId: ID!) {
       }
     }
     results {
+      error
       stats {
         ...AllInstanceStats
       }

@@ -22,8 +22,8 @@ export function InstanceSummary({ instance }: InstanceSummaryProps) {
       <Grid>
         <Cell xs={12} lg={6}>
           <HFlow>
-            <SpecStateTag state={getInstanceState(instance)} />
-            <Heading level={1}>{instance.spec}</Heading>
+            <SpecStateTag state={getInstanceState(instance.results?.stats)} />
+            <Heading level={2}>{instance.spec}</Heading>
           </HFlow>
           <ul>
             {(['suites', 'tests', 'passes', 'failures', 'pending'] as Array<
