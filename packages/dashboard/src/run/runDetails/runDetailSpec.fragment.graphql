@@ -5,6 +5,7 @@ fragment RunDetailSpec on RunSpec {
   machineId
   groupId
   results {
+    error
     tests {
       ... on InstanceTest {
         state

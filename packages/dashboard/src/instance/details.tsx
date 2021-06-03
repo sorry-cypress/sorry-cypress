@@ -7,6 +7,7 @@ import {
 } from '@src/generated/graphql';
 import { getSecondsDuration } from '@src/lib/duration';
 import { areTestsGteV5 } from '@src/lib/version';
+import { TestError } from '@src/testItem/details/common';
 import { DataTable, Text, Tooltip } from 'bold-ui';
 import { truncate } from 'lodash';
 import React from 'react';
@@ -99,7 +100,11 @@ export const InstanceDetails = ({
 
   const tests = instance.results.tests;
 
-  if (!tests) {
+  if (instance.results.error) {
+    return <TestError error={instance.results.error} />;
+  }
+
+  if (!tests?.length) {
     return <div>No tests reported for spec</div>;
   }
 

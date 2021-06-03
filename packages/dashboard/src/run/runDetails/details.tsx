@@ -1,13 +1,11 @@
+import { getNumRetries } from '@sorry-cypress/common';
 import {
   RenderOnInterval,
   SpecStateTag,
   TestFailureBadge,
-  TestSuccessBadge,
   TestRetriesSkippedBadge,
+  TestSuccessBadge,
 } from '@src/components/';
-import {
-  getNumRetries
-} from '@sorry-cypress/common';
 import { getSpecState } from '@src/components/common/executionState';
 import {
   GetRunQuery,
@@ -26,6 +24,7 @@ import {
   Tooltip,
   VFlow,
 } from 'bold-ui';
+import { isNumber } from 'lodash';
 import React from 'react';
 import { generatePath, useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -173,11 +172,13 @@ const getSpecNameCell = (spec: RunDetailSpecFragment) => (
 );
 
 const getDurationCell = (spec: RunDetailSpecFragment) => {
-  if (spec.results?.stats?.wallClockDuration) {
+  if (isNumber(spec.results?.stats?.wallClockDuration)) {
     return (
-      <Tooltip text={`Started at ${spec.results.stats.wallClockStartedAt}`}>
+      <Tooltip text={`Started at ${spec.results?.stats.wallClockStartedAt}`}>
         <Text>
-          {getSecondsDuration(spec.results.stats.wallClockDuration / 1000)}
+          {getSecondsDuration(
+            spec.results?.stats.wallClockDuration ?? 0 / 1000
+          )}
         </Text>
       </Tooltip>
     );

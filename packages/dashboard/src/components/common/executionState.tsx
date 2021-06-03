@@ -1,3 +1,4 @@
+import { InstanceResultStats } from '@sorry-cypress/common/dist/typings';
 import { RunDetailSpecFragment, TestState } from '@src/generated/graphql';
 import { Tag } from 'bold-ui';
 import React from 'react';
@@ -31,42 +32,29 @@ export const getSpecState = (spec: RunDetailSpecFragment): StateType => {
     return 'pending';
   }
 
-  if (!spec.results.tests) {
+  if (!spec.results.tests?.length) {
     return 'notests';
   }
 
-  const nonPassedTestsFound = !!spec.results.tests.find(
-    (t) => t && t.state === TestState.Failed
-  );
-  if (nonPassedTestsFound) {
-    return 'failed';
+  if (!spec.results.stats.failures && !spec.results.stats.skipped) {
+    return 'passed';
   }
-  return 'passed';
+  return 'failed';
 };
 
-interface InstanceForState {
-  results: {
-    tests: Array<{
-      state: TestState;
-    }>;
-  } | null;
-}
-export const getInstanceState = (instance: InstanceForState): StateType => {
-  if (!instance.results) {
+export const getInstanceState = (stats: InstanceResultStats): StateType => {
+  if (!stats) {
     return 'pending';
   }
 
-  if (!instance.results.tests) {
+  if (!stats.tests) {
     return 'notests';
   }
 
-  const nonPassedTestsFound = !!instance.results.tests.find(
-    (t) => t && t.state === 'failed'
-  );
-  if (nonPassedTestsFound) {
-    return 'failed';
+  if (!stats.failures && !stats.skipped) {
+    return 'passed';
   }
-  return 'passed';
+  return 'failed';
 };
 
 export const SpecStateTag = ({ state }: { state: StateType }) => {
@@ -74,8 +62,9 @@ export const SpecStateTag = ({ state }: { state: StateType }) => {
     case 'failed':
       return <Tag type="danger">Failed</Tag>;
     case 'passed':
-    case 'notests':
       return <Tag type="success">Passed</Tag>;
+    case 'notests':
+      return <Tag type="normal">No Tests</Tag>;
     case 'pending':
       return <Tag type="normal">Pending</Tag>;
     case 'running':
