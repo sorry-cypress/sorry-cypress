@@ -21,8 +21,12 @@ const handleHookEvent = (eventType: HookEvent) => async (
 };
 
 export async function init() {
-  console.log('🎧 Initializing listeners for hooks...');
+  const executionDriver = await getExecutionDriver();
+  if (executionDriver.id === 'in-memory') {
+    return;
+  }
 
+  console.log('🎧 Initializing listeners for hooks...');
   for (const event of Object.values(HookEvent)) {
     pubsub.on(event, handleHookEvent(event));
   }
