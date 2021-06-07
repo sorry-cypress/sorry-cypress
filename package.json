@@ -18,20 +18,15 @@
     "killall": "ps -ef | egrep \"webpack|node|nodemon\" | grep currents | awk '{ print $2 }' | xargs kill",
     "release": "./scripts/release-github.sh",
     "release-packages": "wsrun release",
+    "heroku-postbuild": "yarn workspace @sorry-cypress/director build",
     "test": "yarn workspaces run test",
     "lint": "yarn workspaces run lint",
     "dev": "wsrun dev"
-  },
-  "bin": {
-    "sorry-cypress": "bin/sorry-cypress.js"
   },
   "husky": {
     "hooks": {
       "pre-commit": "yarn run lint && pretty-quick --staged"
     }
-  },
-  "dependencies": {
-    "hostile": "1.3.2"
   },
   "devDependencies": {
     "eslint": "^7.10.0",
