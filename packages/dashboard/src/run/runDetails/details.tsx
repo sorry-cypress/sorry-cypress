@@ -3,7 +3,8 @@ import {
   RenderOnInterval,
   SpecStateTag,
   TestFailureBadge,
-  TestRetriesSkippedBadge,
+  TestRetriesBadge,
+  TestSkippedBadge,
   TestSuccessBadge,
 } from '@src/components/';
 import { getSpecState } from '@src/components/common/executionState';
@@ -24,6 +25,7 @@ import {
   Tooltip,
   VFlow,
 } from 'bold-ui';
+import { differenceInSeconds, parseISO } from 'date-fns';
 import { isNumber } from 'lodash';
 import React from 'react';
 import { generatePath, useHistory } from 'react-router';
@@ -122,10 +124,16 @@ export function RunDetails({ run }: { run: NonNullable<GetRunQuery['run']> }) {
                 render: getPassesCell,
               },
               {
-                name: 'retriesSkipped',
+                name: 'retries',
                 header: '',
                 sortable: false,
-                render: getRetriesSkippedCell,
+                render: getRetriesCell,
+              },
+              {
+                name: 'skipped',
+                header: '',
+                sortable: false,
+                render: getSkippedCell,
               },
             ]}
           />
@@ -136,24 +144,20 @@ export function RunDetails({ run }: { run: NonNullable<GetRunQuery['run']> }) {
 }
 
 const getPassesCell = (spec: RunDetailSpecFragment) => {
-  if (!spec.results?.stats?.passes) {
-    return null;
-  }
-  return <TestSuccessBadge value={spec.results?.stats?.passes} />;
+  return <TestSuccessBadge value={spec.results?.stats?.passes ?? 0} />;
 };
 
 const getFailuresCell = (spec: RunDetailSpecFragment) => {
-  if (!spec.results?.stats?.failures) {
-    return null;
-  }
-  return <TestFailureBadge value={spec.results?.stats?.failures} />;
+  return <TestFailureBadge value={spec.results?.stats?.failures ?? 0} />;
 };
 
-const getRetriesSkippedCell = (spec: RunDetailSpecFragment) => {
-  const skipped = spec.results?.stats?.pending ?? 0;
+const getRetriesCell = (spec: RunDetailSpecFragment) => {
   const retries = getNumRetries(spec.results?.tests);
+  return <TestRetriesBadge value={retries} />;
+};
 
-  return <TestRetriesSkippedBadge skipped={skipped} retries={retries} />;
+const getSkippedCell = (spec: RunDetailSpecFragment) => {
+  return <TestSkippedBadge value={spec.results?.stats?.pending ?? 0} />;
 };
 
 const getItemStatusCell = (spec: RunDetailSpecFragment) => (
@@ -177,28 +181,28 @@ const getDurationCell = (spec: RunDetailSpecFragment) => {
       <Tooltip text={`Started at ${spec.results?.stats.wallClockStartedAt}`}>
         <Text>
           {getSecondsDuration(
-            spec.results?.stats.wallClockDuration ?? 0 / 1000
+            (spec.results?.stats.wallClockDuration ?? 0) / 1000
           )}
         </Text>
       </Tooltip>
     );
-  } else if (spec.claimedAt) {
+  }
+  if (spec.claimedAt) {
     return (
       <Tooltip text={`Started at ${spec.claimedAt}`}>
         <Text>
           <RenderOnInterval
             render={() =>
               getSecondsDuration(
-                (Date.now() - new Date(spec.claimedAt!).getTime()) / 1000
+                differenceInSeconds(new Date(), parseISO(spec.claimedAt))
               )
             }
           />
         </Text>
       </Tooltip>
     );
-  } else {
-    return null;
   }
+  return null;
 };
 
 const getAvgDurationCell = (spec: RunDetailSpecFragment) => {
