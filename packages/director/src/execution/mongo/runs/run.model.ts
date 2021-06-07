@@ -64,7 +64,7 @@ export const getRunWithSpecs: ExecutionDriver['getRunWithSpecs'] = async (id) =>
 export const getRunById = (id: string) =>
   Collection.run().findOne<Run>({ runId: id });
 
-export const createRun = async (run: Run) => {
+export const createRun = async (run: Run): Promise<Run> => {
   try {
     const result = await Collection.run().insertOne(
       getSanitizedMongoObject(run)

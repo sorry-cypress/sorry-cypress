@@ -18,7 +18,7 @@
     "killall": "ps -ef | egrep \"webpack|node|nodemon\" | grep currents | awk '{ print $2 }' | xargs kill",
     "release": "./scripts/release-github.sh",
     "release-packages": "wsrun release",
-    "heroku-postbuild": "yarn workspace @sorry-cypress/director build",
+    "build": "wsrun -t build",
     "test": "yarn workspaces run test",
     "lint": "yarn workspaces run lint",
     "dev": "wsrun dev"
