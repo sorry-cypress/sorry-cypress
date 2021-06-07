@@ -1,1 +1,1 @@
-web: yarn workspace @sorry-cypress/director build && yarn workspace @sorry-cypress/director start
+web: yarn workspace @sorry-cypress/director start
