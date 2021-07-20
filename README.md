@@ -21,7 +21,7 @@
 
 ---
 
-<p align="center"><strong>Currens.dev</strong>  - pay less for cypress tests.</p>
+<p align="center"><strong>Currents.dev</strong>  - pay less for cypress tests.</p>
 <p  align="center">Cost-effective alternative cypress dashboard. Pay less for parallelization, test recordings and integrations.</p>
 
 <p align="center">
