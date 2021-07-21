@@ -24,6 +24,7 @@ type Mutation {
     startDate: DateTime!
     endDate: DateTime!
   ): DeleteRunResponse!
+  resetInstance(instanceId: ID!): ResetInstanceResponse!
   deleteProject(projectId: ID!): DeleteProjectResponse!
   createProject(project: CreateProjectInput!): Project!
   updateProject(input: UpdateProjectInput!): Project!
@@ -252,6 +253,12 @@ type RunMeta {
   ciBuildId: String!
   projectId: String!
   commit: Commit
+}
+
+type ResetInstanceResponse {
+  instanceId: ID!
+  message: String!
+  success: Boolean
 }
 
 ### RunFeed - runs representation for the landing page

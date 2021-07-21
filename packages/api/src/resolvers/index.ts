@@ -134,6 +134,13 @@ export const resolvers = {
         { dataSources }
       );
     },
+    resetInstance: async (
+      _: any,
+      { instanceId }: { instanceId: string },
+      { dataSources }: { dataSources: AppDatasources }
+    ) => {
+      return await dataSources.instancesAPI.resetInstanceById(instanceId);
+    },
     deleteRuns: async (
       _: any,
       { runIds }: { runIds: string[] },

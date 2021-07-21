@@ -40,6 +40,56 @@ export class InstancesAPI extends DataSource {
     };
   }
 
+  async resetInstanceById(instanceId: string) {
+    const instance = await Collection.instance().findOne({
+      instanceId: instanceId,
+    });
+
+    const run = await Collection.run().findOne({
+      runId: instance.runId,
+    });
+
+    run.specs = run.specs.map((spec) => {
+      if (spec.instanceId === instanceId) {
+        return {
+          ...spec,
+          claimedAt: null,
+          completedAt: null,
+          machineId: null,
+        };
+      } else {
+        return spec;
+      }
+    });
+
+    await Collection.run().updateOne(
+      {
+        runId: run.runId,
+      },
+      {
+        $set: {
+          specs: run.specs,
+          completion: {
+            completed: false,
+          },
+        },
+      }
+    );
+
+    const result = await Collection.instance().deleteOne({
+      instanceId: instanceId,
+    });
+
+    return {
+      success: result.result.ok === 1,
+      message: `${result.deletedCount} ${plur(
+        'document',
+        result.deletedCount
+      )} modified`,
+      instanceId: result.result.ok === 1 ? instanceId : undefined,
+    };
+  }
+
   async deleteInstancesInDateRange(startDate: Date, endDate: Date) {
     if (startDate > endDate) {
       return {
