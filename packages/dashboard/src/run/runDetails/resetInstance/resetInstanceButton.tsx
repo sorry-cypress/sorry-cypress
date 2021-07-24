@@ -58,7 +58,6 @@ export const ResetInstanceButton = ({
     (e) => {
       e.stopPropagation();
       e.preventDefault();
-      console.log('deleting here');
       startDeleteInstance();
     },
     [startDeleteInstance]
