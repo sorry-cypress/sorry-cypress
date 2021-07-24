@@ -1,0 +1,7 @@
+mutation resetInstance($instanceId: ID!) {
+  resetInstance(instanceId: $instanceId) {
+    success
+    message
+    instanceId
+  }
+}

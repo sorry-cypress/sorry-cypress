@@ -15,6 +15,7 @@ import {
 } from '@src/generated/graphql';
 import { useHideSuccessfulSpecs } from '@src/hooks/';
 import { getSecondsDuration } from '@src/lib/duration';
+import { ResetInstanceButton } from '@src/run/runDetails/resetInstance/resetInstanceButton';
 import {
   Cell,
   DataTable,
@@ -135,6 +136,12 @@ export function RunDetails({ run }: { run: NonNullable<GetRunQuery['run']> }) {
                 sortable: false,
                 render: getSkippedCell,
               },
+              {
+                name: 'actions',
+                header: 'Actions',
+                sortable: false,
+                render: getActionsCell(run),
+              },
             ]}
           />
         </VFlow>
@@ -142,6 +149,18 @@ export function RunDetails({ run }: { run: NonNullable<GetRunQuery['run']> }) {
     </Grid>
   );
 }
+
+const getActionsCell = (run: NonNullable<GetRunQuery['run']>) => {
+  const getAction = (spec: RunDetailSpecFragment) => {
+    return spec.claimedAt ? (
+      <ResetInstanceButton
+        instanceId={spec.instanceId ?? 0}
+        runId={run.runId}
+      />
+    ) : null;
+  };
+  return getAction;
+};
 
 const getPassesCell = (spec: RunDetailSpecFragment) => {
   return <TestSuccessBadge value={spec.results?.stats?.passes ?? 0} />;
