@@ -250,6 +250,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Aeolun",
+      "name": "Bart Riepe",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1116482?v=4",
+      "profile": "http://www.serial-experiments.com",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

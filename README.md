@@ -130,6 +130,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/pbeckham"><img src="https://avatars.githubusercontent.com/u/1321331?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Peter Beckham</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=pbeckham" title="Code">💻</a></td>
     <td align="center"><a href="https://www.linkedin.com/in/mathpaquette/"><img src="https://avatars.githubusercontent.com/u/4358455?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Mathieu Paquette</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=mathpaquette" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/anishkargaonkar"><img src="https://avatars.githubusercontent.com/u/32673168?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Anish Kargaonkar</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=anishkargaonkar" title="Code">💻</a></td>
+    <td align="center"><a href="http://www.serial-experiments.com"><img src="https://avatars.githubusercontent.com/u/1116482?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Bart Riepe</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=Aeolun" title="Code">💻</a></td>
   </tr>
 </table>
 
