@@ -82,7 +82,7 @@ export const ResetInstanceButton = ({
               <Heading level={1}>Delete instance {instanceId}?</Heading>
               <Heading level={5}>
                 This will remove result information for this instance. You will
-                need to run the tests again to re-record data for this instance.
+                need to run the tests with the case ci-build-id again to re-record data for this instance.
               </Heading>
               {deleteError && (
                 <Alert type="danger" style={{ margin: '1rem' }}>
