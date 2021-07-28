@@ -101,6 +101,8 @@ describe('isSlackBranchFilterPassed', () => {
     ['master', ['m??te*']],
     ['master', ['m??*', 'develop']],
     ['Master', ['master']],
+    ['develop', ['!main']],
+    ['main', ['!*dev*']],
   ])(
     'Should return true when "%s" branch matches the %p filter',
     (branch: string, filter: [string]) => {
@@ -120,6 +122,8 @@ describe('isSlackBranchFilterPassed', () => {
     ['master123', ['master']],
     ['master123', ['m*r']],
     ['master123', ['master??']],
+    ['develop!', ['!develop!']],
+    ['develop', ['!*Dev????']],
   ])(
     `Should return false when "%s" branch doesn't match the %p filter`,
     (branch: string, filter: [string]) => {

@@ -103,6 +103,8 @@ const BranchFilter = ({
         helpText='Filter for branches. You can specify branch names which only will trigger a webhook.
           You can use "?" and "*" wildcard characters
           (e.g. "release-20??-*" pattern will match both "release-2021-1" and "release-2022-alpha" branches).
+          You can also use "!" to exclude branches from triggering the webhook.
+          (e.g. "!Release-*-alpha" pattern will exclude "release-2021-1-alpha" and "release-2021-alpha" branches)
           Leaving this control blank activates all the branches.'
         label={<span>Branch Filter</span>}
         htmlFor="slackBranchFilter"
