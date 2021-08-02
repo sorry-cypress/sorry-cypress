@@ -25,7 +25,7 @@
 <p  align="center">Cost-effective alternative cypress dashboard. Pay less for parallelization, test recordings and integrations.</p>
 
 <p align="center">
-  <a href="https://currents.dev">https://currents.dev</a> | <a href="https://currents.dev#pricing">$18/mo</a> | <a href="https://currents.dev#pricing">$55/mo</a> | <a href="https://currents.dev#pricing">$215/mo</a> 
+  <a href="https://currents.dev">https://currents.dev</a>
 </p>
 
 ---
