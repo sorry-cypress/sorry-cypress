@@ -1,5 +1,5 @@
 import { Commit as CommitDef } from '@src/generated/graphql';
-import { getGithubBranchURL, getGithubCommitURL } from '@src/lib/github';
+import {getGithubBranchURL, getGithubCommitURL, handleSshURL} from '@src/lib/github';
 import React from 'react';
 
 type CommitProps = {
@@ -24,7 +24,7 @@ export const Commit: React.FunctionComponent<CommitProps> = ({
             <a
               target="_blank"
               rel="noopener noreferrer"
-              href={commit.remoteOrigin}
+              href={handleSshURL(commit.remoteOrigin)}
             >
               {commit.remoteOrigin}
             </a>
