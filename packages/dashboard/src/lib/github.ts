@@ -1,5 +1,8 @@
 export const getGithubCommitURL = (repo: string, sha: string) =>
-  repo.replace(/.git$/, '') + `/commit/${sha}`;
+    handleSshURL(repo.replace(/.git$/, '') + `/commit/${sha}`);
 
 export const getGithubBranchURL = (repo: string, branch: string) =>
-  repo.replace(/.git$/, '') + `/tree/${branch}`;
+    handleSshURL(repo.replace(/.git$/, '') + `/tree/${branch}`);
+
+export const handleSshURL = (sshUrl: string) =>
+    sshUrl.replace(/git@([\w.]+):(.+)/, 'https://$1/$2');
