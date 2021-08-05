@@ -133,6 +133,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="http://www.serial-experiments.com"><img src="https://avatars.githubusercontent.com/u/1116482?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Bart Riepe</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=Aeolun" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/ImanMahmoudinasab"><img src="https://avatars.githubusercontent.com/u/5295554?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Iman Mahmoudinasab</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=ImanMahmoudinasab" title="Code">💻</a></td>
   </tr>
+  <tr>
+    <td align="center"><a href="http://jovanilic.com"><img src="https://avatars.githubusercontent.com/u/15846154?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jovan Ilić</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=Zaista" title="Code">💻</a></td>
+  </tr>
 </table>
 
 <!-- markdownlint-restore -->
