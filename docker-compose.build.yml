@@ -4,9 +4,6 @@ services:
   mongo:
     image: mongo:4.2
 
-  redis:
-    image: redis:alpine
-
   director:
     build:
       dockerfile: packages/director/Dockerfile
@@ -22,7 +19,6 @@ services:
       AWS_ACCESS_KEY_ID: 'key'
       AWS_SECRET_ACCESS_KEY: 'secret'
       S3_BUCKET: sorry-cypress
-      REDIS_URI: 'redis://redis:6379'
     ports:
       - 1234:1234
     depends_on:
