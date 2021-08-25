@@ -24,7 +24,6 @@ export const GithubHook = ({ hook }: GithubHookPros) => {
   const [showToken, toggleToken] = useSwitch();
   const [updateHook, { loading }] = useUpdateGithubHookMutation();
   async function onSubmit(input: UpdateGithubHookInput) {
-    console.log(input);
     try {
       await updateHook({
         variables: {

@@ -4,13 +4,13 @@ import {
   TestFailureBadge,
   TestRetriesBadge,
   TestSkippedBadge,
-  TestSuccessBadge,
+  TestSuccessBadge
 } from '@src/components/';
 import { getSpecState } from '@src/components/common/executionState';
 import {
   GetRunQuery,
   RunDetailSpecFragment,
-  useGetSpecStatsQuery,
+  useGetSpecStatsQuery
 } from '@src/generated/graphql';
 import { useHideSuccessfulSpecs } from '@src/hooks/';
 import { getSecondsDuration } from '@src/lib/duration';
@@ -23,7 +23,7 @@ import {
   Switch,
   Text,
   Tooltip,
-  VFlow,
+  VFlow
 } from 'bold-ui';
 import { differenceInSeconds, parseISO } from 'date-fns';
 import { isNumber } from 'lodash';
@@ -170,7 +170,6 @@ const getFailuresCell = (spec: RunDetailSpecFragment) => {
 };
 
 const getRetriesCell = (spec: RunDetailSpecFragment) => {
-  console.log(spec.results);
   return <TestRetriesBadge value={spec.results?.retries ?? 0} />;
 };
 

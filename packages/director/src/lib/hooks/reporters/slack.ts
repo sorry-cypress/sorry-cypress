@@ -177,7 +177,7 @@ export function isSlackResultFilterPassed(
     case ResultFilter.ALL:
       return true;
     default:
-      console.log(`Unexpected Slack filter type: ${hook.slackResultFilter}`);
+      console.error(`Unexpected Slack filter type: ${hook.slackResultFilter}`);
       return false;
   }
 
@@ -185,7 +185,6 @@ export function isSlackResultFilterPassed(
 }
 
 export function isSlackBranchFilterPassed(hook: SlackHook, branch?: string) {
-  console.log({ hook, branch });
   if (!hook.slackBranchFilter?.length) return true;
 
   // if slackBranchFilter is defined, not no branch known - skip
