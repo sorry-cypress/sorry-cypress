@@ -1,5 +1,6 @@
 import { Instance, Run } from '@sorry-cypress/common';
 import { Collection, ObjectId } from '@sorry-cypress/mongo';
+import { PAGE_ITEMS_LIMIT } from '@src/config';
 import { OrderingOptions } from '@src/generated/graphql';
 import {
   AggregationFilter,
@@ -16,7 +17,6 @@ type RunWithFullSpecs = Run & {
   _id: string;
 };
 
-const PAGE_LIMIT = 10;
 const mergeRunSpecs = (run: RunWithFullSpecs) => {
   // merge fullspec into spec
   run.specs = run.specs.map((s) => ({
@@ -31,7 +31,7 @@ const getCursor = (runs: WithId<Run>[]) => {
     return 0;
   }
 
-  if (runs.length > PAGE_LIMIT) {
+  if (runs.length > PAGE_ITEMS_LIMIT) {
     return runs[runs.length - 2]._id;
   }
 
@@ -39,9 +39,9 @@ const getCursor = (runs: WithId<Run>[]) => {
 };
 
 const runFeedReducer = (runs: WithId<Run>[]) => ({
-  runs: runs.slice(0, PAGE_LIMIT),
+  runs: runs.slice(0, PAGE_ITEMS_LIMIT),
   cursor: getCursor(runs),
-  hasMore: runs.length > PAGE_LIMIT,
+  hasMore: runs.length > PAGE_ITEMS_LIMIT,
 });
 
 const projectAggregation = {
@@ -52,16 +52,6 @@ const projectAggregation = {
     specs: 1,
     createdAt: 1,
     completion: 1,
-    specsFull: '$specs.instanceId',
-  },
-};
-
-const lookupAggregation = {
-  $lookup: {
-    from: 'instances',
-    localField: 'specsFull',
-    foreignField: 'instanceId',
-    as: 'specsFull',
   },
 };
 
@@ -85,7 +75,7 @@ export class RunsAPI extends DataSource {
         : null,
       {
         // get one extra to know if there's more
-        $limit: PAGE_LIMIT + 1,
+        $limit: PAGE_ITEMS_LIMIT + 1,
       },
     ].filter(negate(isNil));
 
@@ -107,7 +97,6 @@ export class RunsAPI extends DataSource {
       ...filtersToAggregations(filters),
       getSortByAggregation(orderDirection),
       projectAggregation,
-      lookupAggregation,
     ].filter(negate(isNil));
 
     const results = (await Collection.run()
