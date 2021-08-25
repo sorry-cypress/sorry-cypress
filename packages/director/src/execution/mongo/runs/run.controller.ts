@@ -1,3 +1,4 @@
+import { isRunCompleted } from '@sorry-cypress/common';
 import { runTimeoutModel } from '@sorry-cypress/mongo/dist';
 import { INACTIVITY_TIMEOUT_SECONDS } from '@src/config';
 import { getRunCiBuildId } from '@src/lib/ciBuildId';
@@ -18,7 +19,6 @@ import {
   CreateRunWarning,
   ExecutionDriver,
   getCreateProjectValue,
-  isAllRunSpecsCompleted,
   Run,
   Task,
 } from '@src/types';
@@ -170,6 +170,7 @@ export const getNextTask: ExecutionDriver['getNextTask'] = async ({
     await setSpecClaimed(runId, groupId, spec.instanceId, machineId);
     await createInstance({
       runId,
+      projectId: run.meta.projectId,
       instanceId: spec.instanceId,
       groupId,
       spec: spec.spec,
@@ -197,7 +198,7 @@ export const allRunSpecsCompleted = async (runId: string): Promise<boolean> => {
   if (!run) {
     throw new AppError(RUN_NOT_EXIST);
   }
-  return isAllRunSpecsCompleted(run);
+  return isRunCompleted(run.progress);
 };
 
 export const getNonCompletedGroups = (run: Run) => {

@@ -1,4 +1,3 @@
-import { getNumRetries } from '@sorry-cypress/common';
 import {
   RenderOnInterval,
   SpecStateTag,
@@ -171,8 +170,8 @@ const getFailuresCell = (spec: RunDetailSpecFragment) => {
 };
 
 const getRetriesCell = (spec: RunDetailSpecFragment) => {
-  const retries = getNumRetries(spec.results?.tests);
-  return <TestRetriesBadge value={retries} />;
+  console.log(spec.results);
+  return <TestRetriesBadge value={spec.results?.retries ?? 0} />;
 };
 
 const getSkippedCell = (spec: RunDetailSpecFragment) => {
@@ -206,22 +205,24 @@ const getDurationCell = (spec: RunDetailSpecFragment) => {
       </Tooltip>
     );
   }
-  if (spec.claimedAt) {
-    return (
-      <Tooltip text={`Started at ${spec.claimedAt}`}>
-        <Text>
-          <RenderOnInterval
-            render={() =>
-              getSecondsDuration(
-                differenceInSeconds(new Date(), parseISO(spec.claimedAt))
-              )
-            }
-          />
-        </Text>
-      </Tooltip>
-    );
+  if (!spec.claimedAt) {
+    return null;
   }
-  return null;
+
+  return (
+    <Tooltip text={`Started at ${spec.claimedAt}`}>
+      <Text>
+        <RenderOnInterval
+          render={() =>
+            getSecondsDuration(
+              // @ts-ignore
+              differenceInSeconds(new Date(), parseISO(spec.claimedAt))
+            )
+          }
+        />
+      </Text>
+    </Tooltip>
+  );
 };
 
 const getAvgDurationCell = (spec: RunDetailSpecFragment) => {
@@ -252,11 +253,7 @@ const SpecAvg = ({ specName }: { specName: string }) => {
   }
   return (
     <>
-      {getSecondsDuration(
-        data.specStats?.avgWallClockDuration
-          ? data?.specStats?.avgWallClockDuration / 1000
-          : 0
-      )}
+      {getSecondsDuration((data.specStats?.avgWallClockDuration ?? 0) / 1000)}
     </>
   );
 };

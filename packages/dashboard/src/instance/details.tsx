@@ -1,3 +1,4 @@
+import { getTestRetries } from '@sorry-cypress/common';
 import { VisualTestState } from '@src/components/common';
 import { GetInstanceQuery, InstanceTest } from '@src/generated/graphql';
 import { getSecondsDuration } from '@src/lib/duration';
@@ -10,7 +11,8 @@ import { Link } from 'react-router-dom';
 import { getTestDuration, getTestStartedAt } from './util';
 
 function TestStatus(test: InstanceTest) {
-  return <VisualTestState state={test.state} />;
+  const retries = getTestRetries(test.state, test.attempts.length);
+  return <VisualTestState state={test.state} retries={retries} />;
 }
 function TestDuration(test: InstanceTest) {
   return (
@@ -28,6 +30,9 @@ function TestLink(test: InstanceTest) {
   );
 }
 
+function TestRetries(test: InstanceTest) {
+  return getTestRetries(test.state, test.attempts.length);
+}
 function TestAttempts(test: InstanceTest) {
   return test.attempts.length;
 }
@@ -67,6 +72,12 @@ const attemptsColumn = {
   sortable: false,
   render: TestAttempts,
 };
+const retriesColumn = {
+  name: 'retries',
+  header: 'Retries',
+  sortable: false,
+  render: TestRetries,
+};
 const errorColumn = {
   name: 'error',
   header: 'Error',
@@ -74,12 +85,12 @@ const errorColumn = {
   render: TestDisplayError,
 };
 
-const ltV5Columns = [statusColumn, durationColumn, linkColumn];
 const gteV5Columns = [
   statusColumn,
   errorColumn,
   durationColumn,
   attemptsColumn,
+  retriesColumn,
   linkColumn,
 ];
 

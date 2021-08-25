@@ -6,7 +6,6 @@ import {
   InstanceResult,
   Project,
   Run,
-  RunWithSpecs,
   ScreenshotUploadInstruction,
   SetInstanceTestsPayload,
   Task,
@@ -44,7 +43,6 @@ interface SetRunCompletedWithTimeout {
 export interface ExecutionDriver extends Driver {
   maybeSetRunCompleted: (runId: string) => Promise<boolean>;
   allGroupSpecsCompleted: (runId: string, groupId: string) => Promise<boolean>;
-  getRunWithSpecs: (runId: string) => Promise<RunWithSpecs>;
   getProjectById: (projectId: string) => Promise<Project>;
   getRunById: (runId: string) => Promise<Run>;
   getInstanceById: (instanceId: string) => Promise<Instance>;

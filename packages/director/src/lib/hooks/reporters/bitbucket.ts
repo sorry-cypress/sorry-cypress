@@ -2,9 +2,9 @@ import {
   BitBucketHook,
   getBitbucketBuildUrl,
   HookEvent,
-  isResultSuccessful,
-  RunSummary,
-  RunWithSpecs,
+  isRunGroupSuccessful,
+  Run,
+  RunGroupProgress,
 } from '@sorry-cypress/common';
 import { APP_NAME } from '@src/config';
 import { getDashboardRunURL } from '@src/lib/urls';
@@ -12,16 +12,16 @@ import axios from 'axios';
 import md5 from 'md5';
 
 interface BBReporterStatusParams {
-  run: RunWithSpecs;
+  run: Run;
   eventType: HookEvent;
-  runSummary: RunSummary;
   groupId: string;
+  groupProgress: RunGroupProgress;
 }
 export async function reportStatusToBitbucket(
   hook: BitBucketHook,
   eventData: BBReporterStatusParams
 ) {
-  const { eventType, runSummary, groupId, run } = eventData;
+  const { eventType, groupId, run, groupProgress } = eventData;
 
   const fullStatusPostUrl = getBitbucketBuildUrl(hook.url, run.meta.commit.sha);
 
@@ -32,8 +32,10 @@ export async function reportStatusToBitbucket(
     context = `${context}: ${groupId}`;
   }
   const description = `failed:${
-    runSummary.failures + runSummary.skipped
-  } passed:${runSummary.passes} skipped:${runSummary.pending}`;
+    groupProgress.tests.failures + groupProgress.tests.skipped
+  } passed:${groupProgress.tests.passes} skipped:${
+    groupProgress.tests.pending
+  }`;
 
   const data = {
     state: 'INPROGRESS',
@@ -46,7 +48,7 @@ export async function reportStatusToBitbucket(
 
   if (eventType === HookEvent.RUN_FINISH) {
     data.state = 'FAILED';
-    if (isResultSuccessful(runSummary)) {
+    if (isRunGroupSuccessful(groupProgress)) {
       data.state = 'SUCCESSFUL';
     }
   }

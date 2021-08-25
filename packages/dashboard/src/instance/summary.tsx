@@ -22,7 +22,7 @@ export function InstanceSummary({ instance }: InstanceSummaryProps) {
       <Grid>
         <Cell xs={12} lg={6}>
           <HFlow>
-            <SpecStateTag state={getInstanceState(instance.results?.stats)} />
+            <SpecStateTag state={getInstanceState(instance)} />
             <Heading level={2}>{instance.spec}</Heading>
           </HFlow>
           <ul>

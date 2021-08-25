@@ -17,7 +17,6 @@ export const driver: ExecutionDriver = {
   allGroupSpecsCompleted: mongoRunController.allGroupSpecsCompleted,
   getProjectById: mongoProjectModel.getProjectById,
   getRunById: mongoRunModel.getRunById,
-  getRunWithSpecs: mongoRunModel.getRunWithSpecs,
   getInstanceById: mongoInstanceModel.getInstanceById,
   createRun: mongoRunController.createRun,
   getNextTask: mongoRunController.getNextTask,

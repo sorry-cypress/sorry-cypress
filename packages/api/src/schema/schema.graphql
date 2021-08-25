@@ -243,6 +243,7 @@ type RunSpec {
 
 type RunSpecResults {
   error: String
+  retries: Int
   stats: InstanceStats!
 }
 
@@ -268,9 +269,9 @@ type RunGroupProgressTests {
   overall: Int!
   passes: Int!
   failures: Int!
+  skipped: Int!
   pending: Int!
   retries: Int!
-  flaky: Int
 }
 
 type Commit {
@@ -307,6 +308,7 @@ type Instance {
   run: Run!
   spec: String!
   groupId: String!
+  projectId: String!
   instanceId: ID!
   results: InstanceResults
 }

@@ -1,4 +1,10 @@
 import {
+  getRunClaimedSpecsCount,
+  getRunDurationSeconds,
+  getRunOverallSpecsCount,
+  getRunTestsProgress,
+} from '@sorry-cypress/common';
+import {
   CiUrl,
   FormattedDate,
   HeaderLink,
@@ -10,38 +16,15 @@ import {
   TestSuccessBadge,
 } from '@src/components/';
 import { Duration } from '@src/components/common/duration';
-import { Run, RunProgressFragment } from '@src/generated/graphql';
+import { GetRunQuery, RunProgressFragment } from '@src/generated/graphql';
 import { getSecondsDuration } from '@src/lib/duration';
 import { Cell, Grid, HFlow, Icon, Text, Tooltip } from 'bold-ui';
 import { parseISO } from 'date-fns';
 import React from 'react';
 import { Commit } from '../commit';
 import { DeleteRunButton } from '../deleteRun/deleteRunButton';
-import {
-  getRunClaimedSpecsCount,
-  getRunDurationSeconds,
-  getRunOverallSpecsCount,
-  getRunTestsProgress,
-} from '../progress';
 
-export function RunSummary({ run }: { run: Run }) {
-  // const [run, loading, error] = useGetRunSummary(runId);
-  // if (loading) {
-  //   return null;
-  // }
-  // if (!run) {
-  //   return <CenteredContent>No run found</CenteredContent>;
-  // }
-  // if (error) {
-  //   return (
-  //     <CenteredContent>Error loading run {error.toString()}</CenteredContent>
-  //   );
-  // }
-
-  return <RunSummaryComponent run={run} />;
-}
-
-export function RunSummaryComponent({ run }: { run: Run }) {
+export function RunSummaryComponent({ run }: { run: GetRunQuery['run'] }) {
   if (!run) {
     return null;
   }
@@ -52,12 +35,16 @@ export function RunSummaryComponent({ run }: { run: Run }) {
   const completed = !!run.completion?.completed;
   const inactivityTimeoutMs = run.completion?.inactivityTimeoutMs;
 
+  if (!run.progress) {
+    return <div>Legacy run</div>;
+  }
+
   const overallSpecsCount = getRunOverallSpecsCount(run.progress);
   const claimedSpecsCount = getRunClaimedSpecsCount(run.progress);
   const durationSeconds = getRunDurationSeconds(
-    run.createdAt,
-    run.progress,
-    run.completion
+    parseISO(run.createdAt),
+    run.progress?.updatedAt ? parseISO(run.progress?.updatedAt) : null,
+    run.completion?.inactivityTimeoutMs ?? null
   );
 
   return (

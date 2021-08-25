@@ -8,7 +8,7 @@ const handleHookEvent = (eventType: HookEvent) => async (
   payload: HookEventPayload
 ) => {
   const executionDriver = await getExecutionDriver();
-  const run = await executionDriver.getRunWithSpecs(payload.runId);
+  const run = await executionDriver.getRunById(payload.runId);
   const project = await executionDriver.getProjectById(run.meta.projectId);
   console.log(`[hooks] Reporting ${eventType} for ${payload.runId}...`);
 

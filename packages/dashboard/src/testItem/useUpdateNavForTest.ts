@@ -26,8 +26,8 @@ export const useUpdateTestNav = (data: GetInstanceQuery | undefined) => {
     }
     setNav([
       {
-        label: data.instance?.run?.meta?.projectId,
-        link: getProjectPath(data.instance?.run?.meta?.projectId),
+        label: data.instance?.projectId,
+        link: getProjectPath(data.instance?.projectId),
       },
       {
         label: data.instance.run?.meta?.ciBuildId,

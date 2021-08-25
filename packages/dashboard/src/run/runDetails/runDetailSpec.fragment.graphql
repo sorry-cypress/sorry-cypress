@@ -6,6 +6,7 @@ fragment RunDetailSpec on RunSpec {
   groupId
   results {
     error
+    retries
     stats {
       ...AllInstanceStats
     }

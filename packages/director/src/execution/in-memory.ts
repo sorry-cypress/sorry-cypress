@@ -167,13 +167,6 @@ const getNextTask: ExecutionDriver['getNextTask'] = async ({
   };
 };
 
-const getRunWithSpecs: ExecutionDriver['getRunWithSpecs'] = async (runId) => {
-  return {
-    ...runs[runId],
-    specsFull: runs[runId].specs.map((spec) => instances[spec.instanceId]),
-  };
-};
-
 const setInstanceResults = async (
   instanceId: string,
   results: InstanceResult
@@ -226,7 +219,6 @@ export const driver: ExecutionDriver = {
   getRunById: (runId: string) => Promise.resolve(runs[runId]),
   maybeSetRunCompleted: async (_runId: string) => true,
   allGroupSpecsCompleted: async () => true,
-  getRunWithSpecs,
   getInstanceById: (instanceId: string) =>
     Promise.resolve(instances[instanceId]),
   createRun,

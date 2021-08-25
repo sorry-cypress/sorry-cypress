@@ -1,4 +1,4 @@
-import { Instance, InstanceResultStats } from '../instance/types';
+import { InstanceResultStats } from '../instance/types';
 
 export interface CommitData {
   sha: string;
@@ -61,11 +61,12 @@ export interface RunSpec {
   machineId?: string;
   results?: {
     error?: string;
+    retries?: number;
     stats: InstanceResultStats;
   };
 }
 
-type RunCompletion =
+export type RunCompletion =
   | { completed: false }
   | {
       completed: true;
@@ -100,6 +101,7 @@ export interface RunGroupProgress {
     overall: number;
     passes: number;
     failures: number;
+    skipped: number;
     pending: number;
     retries: number;
   };
@@ -111,10 +113,6 @@ export interface Task {
   totalInstances: number;
   projectId: string;
 }
-
-export type RunWithSpecs = Run & {
-  specsFull: Instance[];
-};
 
 export interface RunSummary {
   failures: number;

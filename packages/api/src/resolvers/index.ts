@@ -1,4 +1,4 @@
-import { Project } from '@sorry-cypress/common';
+import { getTestListRetries, Project } from '@sorry-cypress/common';
 import { ProjectsAPI } from '@src/datasources/projects';
 import { RunsAPI } from '@src/datasources/runs';
 import { SpecsAPI } from '@src/datasources/specs';
@@ -51,17 +51,23 @@ export const resolvers = {
 
   RunSpec: {
     results: async (
-      { instanceId }: RunSpec,
+      parent: RunSpec,
       _: any,
       { dataSources }: { dataSources: AppDatasources }
     ) => {
-      const response = await dataSources.instancesAPI.getResultsByInstanceId(
-        instanceId
+      if (parent.results) {
+        return parent.results;
+      }
+      const response = await dataSources.instancesAPI.getInstanceById(
+        parent.instanceId
       );
       if (!response) {
         return null;
       }
-      return response.results;
+      return {
+        ...response.results,
+        retries: getTestListRetries(response.results?.tests),
+      };
     },
   },
   Query: {
@@ -89,7 +95,7 @@ export const resolvers = {
       { cursor, filters }: Parameters<RunsAPI['getRunFeed']>[0],
       { dataSources }: { dataSources: AppDatasources }
     ) => dataSources.runsAPI.getRunFeed({ cursor: cursor || false, filters }),
-    run: (
+    run: async (
       _: any,
       { id }: { id: string },
       { dataSources }: { dataSources: AppDatasources }
@@ -99,11 +105,15 @@ export const resolvers = {
       args: Parameters<SpecsAPI['getSpecStats']>[0],
       { dataSources }: { dataSources: AppDatasources }
     ) => dataSources.specsAPI.getSpecStats(args),
-    instance: (
+    instance: async (
       _: any,
       { id }: { id: string },
       { dataSources }: { dataSources: AppDatasources }
-    ) => dataSources.instancesAPI.getInstanceById(id),
+    ) => {
+      const instance = await dataSources.instancesAPI.getInstanceById(id);
+      const run = await dataSources.runsAPI.getRunById(instance.runId);
+      return { ...instance, projectId: run.meta.projectId, run };
+    },
   },
   Mutation: {
     deleteRun: async (

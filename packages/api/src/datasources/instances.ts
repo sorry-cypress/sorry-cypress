@@ -1,20 +1,10 @@
-import { Instance, Run } from '@sorry-cypress/common';
 import { Collection } from '@sorry-cypress/mongo/dist';
 import { DataSource } from 'apollo-datasource';
 import plur from 'plur';
 
 export class InstancesAPI extends DataSource {
-  async getInstanceById(instanceId: string) {
-    const response = (await Collection.instance()
-      .aggregate([
-        {
-          $match: { instanceId },
-        },
-        lookupAggregation,
-      ])
-      .toArray()) as InstanceWithRuns[];
-
-    return getInstanceReducer(response);
+  getInstanceById(instanceId: string) {
+    return Collection.instance().findOne({ instanceId });
   }
 
   getResultsByInstanceId(instanceId: string) {
@@ -98,9 +88,8 @@ export class InstancesAPI extends DataSource {
         runIds: [],
       };
     }
-    const response = (await Collection.instance()
+    const response = await Collection.instance()
       .aggregate([
-        lookupAggregation,
         {
           $match: {
             'run.createdAt': {
@@ -110,35 +99,9 @@ export class InstancesAPI extends DataSource {
           },
         },
       ])
-      .toArray()) as InstanceWithRuns[];
+      .toArray();
 
-    const runIds = response.map((x) => x.run[0].runId) as string[];
+    const runIds = response.map((x) => x.runId) as string[];
     return await this.deleteInstancesByRunIds(runIds);
   }
 }
-
-type InstanceWithRuns = Instance & {
-  run: Run[];
-};
-type InstanceWithRun = Instance & {
-  run: Run;
-};
-
-const getInstanceReducer = (
-  instanceWithRuns: InstanceWithRuns[]
-): InstanceWithRun => {
-  if (instanceWithRuns.length === 0) {
-    return null;
-  }
-  const result = instanceWithRuns[0];
-  return { ...result, run: result.run[0] };
-};
-
-const lookupAggregation = {
-  $lookup: {
-    from: 'runs',
-    localField: 'runId',
-    foreignField: 'runId',
-    as: 'run',
-  },
-};

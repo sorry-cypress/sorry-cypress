@@ -16,9 +16,11 @@ export const insertInstance = async ({
   spec,
   cypressVersion,
   groupId,
+  projectId,
 }: {
   runId: string;
   instanceId: string;
+  projectId: string;
   spec: string;
   groupId: string;
   cypressVersion: string;
@@ -27,6 +29,7 @@ export const insertInstance = async ({
     await Collection.instance().insertOne({
       spec,
       runId,
+      projectId,
       instanceId,
       cypressVersion,
       groupId,

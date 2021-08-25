@@ -35,7 +35,7 @@ export function RunDetailsView({
 
   return (
     <>
-      <RunSummaryComponent run={data.run} runId={id} />
+      <RunSummaryComponent run={data.run} />
       <RunDetails run={data.run} />
     </>
   );

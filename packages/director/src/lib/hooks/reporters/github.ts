@@ -2,34 +2,38 @@ import {
   getGithubStatusUrl,
   GithubHook,
   HookEvent,
-  isResultSuccessful,
-  RunSummary,
-  RunWithSpecs,
+  isRunGroupSuccessful,
+  Run,
+  RunGroupProgress,
 } from '@sorry-cypress/common';
 import { APP_NAME } from '@src/config';
 import { getDashboardRunURL } from '@src/lib/urls';
 import axios from 'axios';
 
 interface GitHubReporterStatusParams {
-  run: RunWithSpecs;
+  run: Run;
   eventType: HookEvent;
-  runSummary: RunSummary;
   groupId: string;
+  groupProgress: RunGroupProgress;
 }
 export async function reportStatusToGithub(
   hook: GithubHook,
   eventData: GitHubReporterStatusParams
 ) {
-  const { eventType, runSummary, groupId, run } = eventData;
+  const { eventType, groupId, groupProgress, run } = eventData;
 
   const fullStatusPostUrl = getGithubStatusUrl(hook.url, run.meta.commit.sha);
+
   const description = `failed:${
-    runSummary.failures + runSummary.skipped
-  } passed:${runSummary.passes} skipped:${runSummary.pending}`;
+    groupProgress.tests.failures + groupProgress.tests.skipped
+  } passed:${groupProgress.tests.passes} skipped:${
+    groupProgress.tests.pending
+  }`;
 
   // don't append group name if groupId is non-explicit
   // otherwise rerunning would create a new status context in GH
   let context = `${hook.githubContext || APP_NAME}`;
+
   if (run.meta.ciBuildId !== groupId) {
     context = `${context}: ${groupId}`;
   }
@@ -51,7 +55,7 @@ export async function reportStatusToGithub(
 
   if (eventType === HookEvent.RUN_FINISH) {
     data.state = 'failure';
-    if (isResultSuccessful(runSummary)) {
+    if (isRunGroupSuccessful(groupProgress)) {
       data.state = 'success';
     }
   }

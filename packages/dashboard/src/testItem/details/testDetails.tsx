@@ -1,3 +1,4 @@
+import { getTestRetries } from '@sorry-cypress/common';
 import { VisualTestState } from '@src/components/common';
 import { InstanceScreeshot, InstanceTest } from '@src/generated/graphql';
 import { Heading, HFlow } from 'bold-ui';
@@ -14,7 +15,10 @@ export function TestDetails({ test, screenshots }: TestDetailsProps) {
   return (
     <>
       <HFlow>
-        <VisualTestState state={test.state} />
+        <VisualTestState
+          state={test.state}
+          retries={getTestRetries(test.state, test.attempts.length)}
+        />
         <Heading level={1}>{title}</Heading>
       </HFlow>
       <hr />

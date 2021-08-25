@@ -5,8 +5,8 @@ export interface Instance {
   runId: string;
   spec: string;
   cypressVersion: string;
+  projectId: string;
   groupId: string;
-  // 6.7.0+ reports tests before running specs
   _createTestsPayload?: SetInstanceTestsPayload;
   results?: InstanceResult;
 }
@@ -33,7 +33,7 @@ export interface InstanceResultStats {
   wallClockDuration: number;
 }
 
-interface ReporterStats {
+export interface ReporterStats {
   suites: number;
   tests: number;
   passes: number;

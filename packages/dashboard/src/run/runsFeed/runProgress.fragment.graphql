@@ -24,6 +24,6 @@ fragment RunGroupProgressTests on RunGroupProgressTests {
   passes
   failures
   pending
+  skipped
   retries
-  flaky
 }

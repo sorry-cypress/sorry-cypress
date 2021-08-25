@@ -1,4 +1,4 @@
-import { getTestRetries } from '@sorry-cypress/common';
+import { getTestListRetries } from '@sorry-cypress/common';
 import { Collection } from '@sorry-cypress/mongo';
 import {
   AppError,
@@ -7,67 +7,8 @@ import {
   SPEC_COMPLETE_FAILED,
 } from '@src/lib/errors';
 import { getSanitizedMongoObject } from '@src/lib/results';
-import {
-  ExecutionDriver,
-  InstanceResult,
-  Run,
-  RunSpec,
-  RunWithSpecs,
-} from '@src/types';
-import { pick, sum } from 'lodash';
-
-const mergeRunSpecs = (run?: RunWithSpecs) => {
-  // merge fullspec into spec
-  run.specs = run.specs.map((spec: any) =>
-    Object.assign(
-      {},
-      spec,
-      run.specsFull.find((full: any) => full.instanceId === spec.instanceId) ||
-        {}
-    )
-  );
-  return run;
-};
-
-const matchRunAggregation = (runId: string) => ({
-  $match: {
-    runId,
-  },
-});
-
-const projectAggregation = {
-  $project: {
-    _id: 1,
-    runId: 1,
-    meta: 1,
-    specs: 1,
-    createdAt: 1,
-    completion: 1,
-    specsFull: '$specs.instanceId',
-  },
-};
-
-const lookupAggregation = {
-  $lookup: {
-    from: 'instances',
-    localField: 'specsFull',
-    foreignField: 'instanceId',
-    as: 'specsFull',
-  },
-};
-
-export const getRunWithSpecs: ExecutionDriver['getRunWithSpecs'] = async (id) =>
-  mergeRunSpecs(
-    (
-      await Collection.run()
-        .aggregate<RunWithSpecs>([
-          matchRunAggregation(id),
-          projectAggregation,
-          lookupAggregation,
-        ])
-        .toArray()
-    ).pop()
-  );
+import { ExecutionDriver, InstanceResult, Run, RunSpec } from '@src/types';
+import { omit, pick } from 'lodash';
 
 export const getRunById = (id: string) =>
   Collection.run().findOne<Run>({ runId: id });
@@ -75,7 +16,7 @@ export const getRunById = (id: string) =>
 export const createRun = async (run: Run): Promise<Run> => {
   try {
     const result = await Collection.run().insertOne(
-      getSanitizedMongoObject(run)
+      getSanitizedMongoObject(omit(run, 'meta.platform.osCpus'))
     );
     return result.ops[0];
   } catch (error) {
@@ -211,8 +152,9 @@ export const setSpecCompleted = async (
   instanceResult: InstanceResult
 ) => {
   const stats = instanceResult.stats;
-  const hasFailures = stats.failures > 0;
+  const hasFailures = stats.failures > 0 || stats.skipped > 0;
 
+  const retries = getTestListRetries(instanceResult.tests);
   const { matchedCount, modifiedCount } = await Collection.run().updateOne(
     {
       runId,
@@ -235,15 +177,15 @@ export const setSpecCompleted = async (
 
         'progress.groups.$[group].tests.passes': stats.passes,
         'progress.groups.$[group].tests.failures': stats.failures,
+        'progress.groups.$[group].tests.skipped': stats.skipped,
         'progress.groups.$[group].tests.pending': stats.pending,
-        'progress.groups.$[group].tests.retries': sum(
-          instanceResult.tests.map((t) =>
-            getTestRetries(t.state, t.attempts.length)
-          )
-        ),
+        'progress.groups.$[group].tests.retries': retries,
       },
       $set: {
-        'specs.$[spec].results': pick(instanceResult, 'stats', 'error'),
+        'specs.$[spec].results': {
+          ...pick(instanceResult, 'stats', 'error'),
+          retries,
+        },
       },
     },
     {
@@ -294,6 +236,7 @@ export const getNewGroupTemplate = (
     overall: 0,
     passes: 0,
     failures: 0,
+    skipped: 0,
     pending: 0,
     retries: 0,
   },
