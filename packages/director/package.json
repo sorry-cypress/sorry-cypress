@@ -41,6 +41,7 @@
     "lodash": "^4.17.21",
     "md5": "^2.2.1",
     "minio": "^7.0.15",
+    "semver": "^7.3.5",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
@@ -58,6 +59,7 @@
     "@types/minio": "^7.0.5",
     "@types/node": "^14.11.2",
     "@types/redis": "^2.8.28",
+    "@types/semver": "^7.3.8",
     "@types/uuid": "^3.4.5",
     "babel-plugin-module-resolver": "^4.0.0",
     "jest": "^25.5.4",

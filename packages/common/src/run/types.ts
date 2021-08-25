@@ -1,4 +1,4 @@
-import { Instance, InstanceResult } from '../instance/types';
+import { Instance, InstanceResultStats } from '../instance/types';
 
 export interface CommitData {
   sha: string;
@@ -59,7 +59,10 @@ export interface RunSpec {
   claimedAt: string | null;
   completedAt: string | null;
   machineId?: string;
-  results?: InstanceResult;
+  results?: {
+    error?: string;
+    stats: InstanceResultStats;
+  };
 }
 
 type RunCompletion =
@@ -76,6 +79,30 @@ export interface Run {
   specs: RunSpec[];
   completion?: RunCompletion;
   cypressVersion?: string;
+  progress?: RunProgress;
+}
+
+export interface RunProgress {
+  updatedAt: Date | null;
+  groups: RunGroupProgress[];
+}
+
+export interface RunGroupProgress {
+  groupId: string;
+  instances: {
+    overall: number;
+    claimed: number;
+    complete: number;
+    passes: number;
+    failures: number;
+  };
+  tests: {
+    overall: number;
+    passes: number;
+    failures: number;
+    pending: number;
+    retries: number;
+  };
 }
 
 export interface Task {

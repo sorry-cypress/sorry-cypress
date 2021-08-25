@@ -7,7 +7,6 @@ export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = {
   [K in keyof T]: T[K];
 };
-export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type RequireFields<T, K extends keyof T> = {
   [X in Exclude<keyof T, K>]?: T[X];
 } &
@@ -342,6 +341,7 @@ export type Run = {
   meta: RunMeta;
   specs: Array<RunSpec>;
   completion?: Maybe<RunCompletion>;
+  progress?: Maybe<RunProgress>;
 };
 
 export type RunCompletion = {
@@ -358,7 +358,45 @@ export type RunSpec = {
   completedAt?: Maybe<Scalars['String']>;
   machineId?: Maybe<Scalars['String']>;
   groupId?: Maybe<Scalars['String']>;
-  results?: Maybe<InstanceResults>;
+  results?: Maybe<RunSpecResults>;
+};
+
+export type RunSpecResults = {
+  __typename?: 'RunSpecResults';
+  error?: Maybe<Scalars['String']>;
+  stats: InstanceStats;
+};
+
+export type RunProgress = {
+  __typename?: 'RunProgress';
+  updatedAt?: Maybe<Scalars['DateTime']>;
+  groups: Array<RunGroupProgress>;
+};
+
+export type RunGroupProgress = {
+  __typename?: 'RunGroupProgress';
+  groupId: Scalars['String'];
+  instances: RunGroupProgressInstances;
+  tests: RunGroupProgressTests;
+};
+
+export type RunGroupProgressInstances = {
+  __typename?: 'RunGroupProgressInstances';
+  overall: Scalars['Int'];
+  claimed: Scalars['Int'];
+  complete: Scalars['Int'];
+  passes: Scalars['Int'];
+  failures: Scalars['Int'];
+};
+
+export type RunGroupProgressTests = {
+  __typename?: 'RunGroupProgressTests';
+  overall: Scalars['Int'];
+  passes: Scalars['Int'];
+  failures: Scalars['Int'];
+  pending: Scalars['Int'];
+  retries: Scalars['Int'];
+  flaky?: Maybe<Scalars['Int']>;
 };
 
 export type Commit = {
@@ -405,7 +443,7 @@ export type Instance = {
 export type InstanceResults = {
   __typename?: 'InstanceResults';
   stats: InstanceStats;
-  tests?: Maybe<Array<InstanceTestUnion>>;
+  tests?: Maybe<Array<InstanceTest>>;
   error?: Maybe<Scalars['String']>;
   stdout?: Maybe<Scalars['String']>;
   screenshots: Array<InstanceScreeshot>;
@@ -456,8 +494,6 @@ export type ReporterStats = {
   duration?: Maybe<Scalars['Int']>;
 };
 
-export type InstanceTestUnion = InstanceTest | InstanceTestV5;
-
 export enum TestState {
   Failed = 'failed',
   Passed = 'passed',
@@ -467,18 +503,6 @@ export enum TestState {
 
 export type InstanceTest = {
   __typename?: 'InstanceTest';
-  testId: Scalars['String'];
-  title: Array<Scalars['String']>;
-  state: TestState;
-  body?: Maybe<Scalars['String']>;
-  stack?: Maybe<Scalars['String']>;
-  error?: Maybe<Scalars['String']>;
-  wallClockStartedAt?: Maybe<Scalars['String']>;
-  wallClockDuration?: Maybe<Scalars['Int']>;
-};
-
-export type InstanceTestV5 = {
-  __typename?: 'InstanceTestV5';
   testId: Scalars['String'];
   title: Array<Scalars['String']>;
   state: TestState;
@@ -665,26 +689,23 @@ export type ResolversTypes = {
   Run: ResolverTypeWrapper<Run>;
   RunCompletion: ResolverTypeWrapper<RunCompletion>;
   RunSpec: ResolverTypeWrapper<RunSpec>;
+  RunSpecResults: ResolverTypeWrapper<RunSpecResults>;
+  RunProgress: ResolverTypeWrapper<RunProgress>;
+  RunGroupProgress: ResolverTypeWrapper<RunGroupProgress>;
+  RunGroupProgressInstances: ResolverTypeWrapper<RunGroupProgressInstances>;
+  RunGroupProgressTests: ResolverTypeWrapper<RunGroupProgressTests>;
   Commit: ResolverTypeWrapper<Commit>;
   RunMeta: ResolverTypeWrapper<RunMeta>;
   ResetInstanceResponse: ResolverTypeWrapper<ResetInstanceResponse>;
   RunFeed: ResolverTypeWrapper<RunFeed>;
   Instance: ResolverTypeWrapper<Instance>;
-  InstanceResults: ResolverTypeWrapper<
-    Omit<InstanceResults, 'tests'> & {
-      tests?: Maybe<Array<ResolversTypes['InstanceTestUnion']>>;
-    }
-  >;
+  InstanceResults: ResolverTypeWrapper<InstanceResults>;
   InstanceStats: ResolverTypeWrapper<InstanceStats>;
   CypressConfig: ResolverTypeWrapper<CypressConfig>;
   InstanceScreeshot: ResolverTypeWrapper<InstanceScreeshot>;
   ReporterStats: ResolverTypeWrapper<ReporterStats>;
-  InstanceTestUnion:
-    | ResolversTypes['InstanceTest']
-    | ResolversTypes['InstanceTestV5'];
   TestState: TestState;
   InstanceTest: ResolverTypeWrapper<InstanceTest>;
-  InstanceTestV5: ResolverTypeWrapper<InstanceTestV5>;
   TestError: ResolverTypeWrapper<TestError>;
   TestAttempt: ResolverTypeWrapper<TestAttempt>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
@@ -731,23 +752,22 @@ export type ResolversParentTypes = {
   Run: Run;
   RunCompletion: RunCompletion;
   RunSpec: RunSpec;
+  RunSpecResults: RunSpecResults;
+  RunProgress: RunProgress;
+  RunGroupProgress: RunGroupProgress;
+  RunGroupProgressInstances: RunGroupProgressInstances;
+  RunGroupProgressTests: RunGroupProgressTests;
   Commit: Commit;
   RunMeta: RunMeta;
   ResetInstanceResponse: ResetInstanceResponse;
   RunFeed: RunFeed;
   Instance: Instance;
-  InstanceResults: Omit<InstanceResults, 'tests'> & {
-    tests?: Maybe<Array<ResolversParentTypes['InstanceTestUnion']>>;
-  };
+  InstanceResults: InstanceResults;
   InstanceStats: InstanceStats;
   CypressConfig: CypressConfig;
   InstanceScreeshot: InstanceScreeshot;
   ReporterStats: ReporterStats;
-  InstanceTestUnion:
-    | ResolversParentTypes['InstanceTest']
-    | ResolversParentTypes['InstanceTestV5'];
   InstanceTest: InstanceTest;
-  InstanceTestV5: InstanceTestV5;
   TestError: TestError;
   TestAttempt: TestAttempt;
   DateTime: Scalars['DateTime'];
@@ -1160,6 +1180,11 @@ export type RunResolvers<
     ParentType,
     ContextType
   >;
+  progress?: Resolver<
+    Maybe<ResolversTypes['RunProgress']>,
+    ParentType,
+    ContextType
+  >;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
@@ -1199,10 +1224,79 @@ export type RunSpecResolvers<
   >;
   groupId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   results?: Resolver<
-    Maybe<ResolversTypes['InstanceResults']>,
+    Maybe<ResolversTypes['RunSpecResults']>,
     ParentType,
     ContextType
   >;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type RunSpecResultsResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['RunSpecResults'] = ResolversParentTypes['RunSpecResults']
+> = {
+  error?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  stats?: Resolver<ResolversTypes['InstanceStats'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type RunProgressResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['RunProgress'] = ResolversParentTypes['RunProgress']
+> = {
+  updatedAt?: Resolver<
+    Maybe<ResolversTypes['DateTime']>,
+    ParentType,
+    ContextType
+  >;
+  groups?: Resolver<
+    Array<ResolversTypes['RunGroupProgress']>,
+    ParentType,
+    ContextType
+  >;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type RunGroupProgressResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['RunGroupProgress'] = ResolversParentTypes['RunGroupProgress']
+> = {
+  groupId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  instances?: Resolver<
+    ResolversTypes['RunGroupProgressInstances'],
+    ParentType,
+    ContextType
+  >;
+  tests?: Resolver<
+    ResolversTypes['RunGroupProgressTests'],
+    ParentType,
+    ContextType
+  >;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type RunGroupProgressInstancesResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['RunGroupProgressInstances'] = ResolversParentTypes['RunGroupProgressInstances']
+> = {
+  overall?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  claimed?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  complete?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  passes?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  failures?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type RunGroupProgressTestsResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['RunGroupProgressTests'] = ResolversParentTypes['RunGroupProgressTests']
+> = {
+  overall?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  passes?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  failures?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  pending?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  retries?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  flaky?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
@@ -1284,7 +1378,7 @@ export type InstanceResultsResolvers<
 > = {
   stats?: Resolver<ResolversTypes['InstanceStats'], ParentType, ContextType>;
   tests?: Resolver<
-    Maybe<Array<ResolversTypes['InstanceTestUnion']>>,
+    Maybe<Array<ResolversTypes['InstanceTest']>>,
     ParentType,
     ContextType
   >;
@@ -1379,43 +1473,9 @@ export type ReporterStatsResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
-export type InstanceTestUnionResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['InstanceTestUnion'] = ResolversParentTypes['InstanceTestUnion']
-> = {
-  __resolveType: TypeResolveFn<
-    'InstanceTest' | 'InstanceTestV5',
-    ParentType,
-    ContextType
-  >;
-};
-
 export type InstanceTestResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['InstanceTest'] = ResolversParentTypes['InstanceTest']
-> = {
-  testId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  title?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
-  state?: Resolver<ResolversTypes['TestState'], ParentType, ContextType>;
-  body?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  stack?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  error?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  wallClockStartedAt?: Resolver<
-    Maybe<ResolversTypes['String']>,
-    ParentType,
-    ContextType
-  >;
-  wallClockDuration?: Resolver<
-    Maybe<ResolversTypes['Int']>,
-    ParentType,
-    ContextType
-  >;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
-};
-
-export type InstanceTestV5Resolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['InstanceTestV5'] = ResolversParentTypes['InstanceTestV5']
 > = {
   testId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   title?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
@@ -1489,6 +1549,11 @@ export type Resolvers<ContextType = any> = {
   Run?: RunResolvers<ContextType>;
   RunCompletion?: RunCompletionResolvers<ContextType>;
   RunSpec?: RunSpecResolvers<ContextType>;
+  RunSpecResults?: RunSpecResultsResolvers<ContextType>;
+  RunProgress?: RunProgressResolvers<ContextType>;
+  RunGroupProgress?: RunGroupProgressResolvers<ContextType>;
+  RunGroupProgressInstances?: RunGroupProgressInstancesResolvers<ContextType>;
+  RunGroupProgressTests?: RunGroupProgressTestsResolvers<ContextType>;
   Commit?: CommitResolvers<ContextType>;
   RunMeta?: RunMetaResolvers<ContextType>;
   ResetInstanceResponse?: ResetInstanceResponseResolvers<ContextType>;
@@ -1499,9 +1564,7 @@ export type Resolvers<ContextType = any> = {
   CypressConfig?: CypressConfigResolvers<ContextType>;
   InstanceScreeshot?: InstanceScreeshotResolvers<ContextType>;
   ReporterStats?: ReporterStatsResolvers<ContextType>;
-  InstanceTestUnion?: InstanceTestUnionResolvers<ContextType>;
   InstanceTest?: InstanceTestResolvers<ContextType>;
-  InstanceTestV5?: InstanceTestV5Resolvers<ContextType>;
   TestError?: TestErrorResolvers<ContextType>;
   TestAttempt?: TestAttemptResolvers<ContextType>;
   DateTime?: GraphQLScalarType;

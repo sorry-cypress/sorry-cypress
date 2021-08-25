@@ -1,21 +1,27 @@
 import { RenderOnInterval } from '@src/components/';
+import { RunCompletion } from '@src/generated/graphql';
 import { getSecondsDuration } from '@src/lib/duration';
 import { Text } from 'bold-ui';
 import { differenceInSeconds, parseISO } from 'date-fns';
+import { differenceInHours } from 'date-fns/esm';
 import React from 'react';
 
+export const IDLE_TIMEOUT_HOURS = 2;
+export function isIdle(isoDate: string) {
+  return differenceInHours(new Date(), parseISO(isoDate)) > IDLE_TIMEOUT_HOURS;
+}
+
 export function Duration({
-  completed,
   createdAtISO,
+  completion,
+
   wallClockDurationSeconds,
-  hasCompletion,
 }: {
-  hasCompletion: boolean;
-  completed: boolean;
+  completion?: RunCompletion;
   createdAtISO: string;
   wallClockDurationSeconds: number;
 }) {
-  if (completed || !hasCompletion) {
+  if (completion?.completed || isIdle(createdAtISO)) {
     return <Text>{getSecondsDuration(wallClockDurationSeconds)}</Text>;
   }
 

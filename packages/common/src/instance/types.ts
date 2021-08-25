@@ -1,4 +1,4 @@
-import { Test, TestV670 } from '../tests';
+import { Test } from '../tests';
 
 export interface Instance {
   instanceId: string;
@@ -74,7 +74,7 @@ export interface ScreenshotUploadInstruction extends AssetUploadInstruction {
 /// Requests payload cypress v6.7.0+
 export interface SetInstanceTestsPayload {
   config: CypressConfig;
-  tests: Pick<TestV670, 'clientId' | 'body' | 'title' | 'config' | 'hookIds'>[];
+  tests: Pick<Test, 'clientId' | 'body' | 'title' | 'config' | 'hookIds'>[];
   hooks: string[];
 }
 
@@ -82,5 +82,5 @@ export type UpdateInstanceResultsPayload = Pick<
   InstanceResult,
   'stats' | 'exception' | 'video' | 'screenshots' | 'reporterStats'
 > & {
-  tests: Pick<TestV670, 'clientId' | 'state' | 'displayError' | 'attempts'>[];
+  tests: Pick<Test, 'clientId' | 'state' | 'displayError' | 'attempts'>[];
 };

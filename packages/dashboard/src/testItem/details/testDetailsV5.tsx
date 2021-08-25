@@ -1,6 +1,6 @@
 import {
   InstanceScreeshot,
-  InstanceTestV5,
+  InstanceTest,
   TestAttempt,
 } from '@src/generated/graphql';
 import { useSwitch } from '@src/hooks/useSwitch';
@@ -68,7 +68,7 @@ export const TestDetailsV5 = ({
   test,
   screenshots,
 }: {
-  test: InstanceTestV5;
+  test: InstanceTest;
   screenshots: Partial<InstanceScreeshot>[];
 }) => {
   const { css } = useCss();

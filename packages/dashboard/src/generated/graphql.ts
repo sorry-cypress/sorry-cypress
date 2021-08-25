@@ -338,6 +338,7 @@ export type Run = {
   meta: RunMeta;
   specs: Array<RunSpec>;
   completion: Maybe<RunCompletion>;
+  progress: Maybe<RunProgress>;
 };
 
 export type RunCompletion = {
@@ -354,7 +355,45 @@ export type RunSpec = {
   completedAt: Maybe<Scalars['String']>;
   machineId: Maybe<Scalars['String']>;
   groupId: Maybe<Scalars['String']>;
-  results: Maybe<InstanceResults>;
+  results: Maybe<RunSpecResults>;
+};
+
+export type RunSpecResults = {
+  __typename?: 'RunSpecResults';
+  error: Maybe<Scalars['String']>;
+  stats: InstanceStats;
+};
+
+export type RunProgress = {
+  __typename?: 'RunProgress';
+  updatedAt: Maybe<Scalars['DateTime']>;
+  groups: Array<RunGroupProgress>;
+};
+
+export type RunGroupProgress = {
+  __typename?: 'RunGroupProgress';
+  groupId: Scalars['String'];
+  instances: RunGroupProgressInstances;
+  tests: RunGroupProgressTests;
+};
+
+export type RunGroupProgressInstances = {
+  __typename?: 'RunGroupProgressInstances';
+  overall: Scalars['Int'];
+  claimed: Scalars['Int'];
+  complete: Scalars['Int'];
+  passes: Scalars['Int'];
+  failures: Scalars['Int'];
+};
+
+export type RunGroupProgressTests = {
+  __typename?: 'RunGroupProgressTests';
+  overall: Scalars['Int'];
+  passes: Scalars['Int'];
+  failures: Scalars['Int'];
+  pending: Scalars['Int'];
+  retries: Scalars['Int'];
+  flaky: Maybe<Scalars['Int']>;
 };
 
 export type Commit = {
@@ -401,7 +440,7 @@ export type Instance = {
 export type InstanceResults = {
   __typename?: 'InstanceResults';
   stats: InstanceStats;
-  tests: Maybe<Array<InstanceTestUnion>>;
+  tests: Maybe<Array<InstanceTest>>;
   error: Maybe<Scalars['String']>;
   stdout: Maybe<Scalars['String']>;
   screenshots: Array<InstanceScreeshot>;
@@ -452,8 +491,6 @@ export type ReporterStats = {
   duration: Maybe<Scalars['Int']>;
 };
 
-export type InstanceTestUnion = InstanceTest | InstanceTestV5;
-
 export enum TestState {
   Failed = 'failed',
   Passed = 'passed',
@@ -463,18 +500,6 @@ export enum TestState {
 
 export type InstanceTest = {
   __typename?: 'InstanceTest';
-  testId: Scalars['String'];
-  title: Array<Scalars['String']>;
-  state: TestState;
-  body: Maybe<Scalars['String']>;
-  stack: Maybe<Scalars['String']>;
-  error: Maybe<Scalars['String']>;
-  wallClockStartedAt: Maybe<Scalars['String']>;
-  wallClockDuration: Maybe<Scalars['Int']>;
-};
-
-export type InstanceTestV5 = {
-  __typename?: 'InstanceTestV5';
   testId: Scalars['String'];
   title: Array<Scalars['String']>;
   state: TestState;
@@ -531,37 +556,25 @@ export type GetInstanceQuery = {
       videoUrl: Maybe<string>;
       stats: { __typename?: 'InstanceStats' } & AllInstanceStatsFragment;
       tests: Maybe<
-        Array<
-          | {
-              __typename?: 'InstanceTest';
-              testId: string;
-              title: Array<string>;
-              state: TestState;
-              wallClockDuration: Maybe<number>;
-              wallClockStartedAt: Maybe<string>;
-              error: Maybe<string>;
-              stack: Maybe<string>;
-            }
-          | {
-              __typename?: 'InstanceTestV5';
-              testId: string;
-              title: Array<string>;
-              state: TestState;
-              displayError: Maybe<string>;
-              attempts: Array<{
-                __typename?: 'TestAttempt';
-                state: Maybe<string>;
-                wallClockDuration: Maybe<number>;
-                wallClockStartedAt: Maybe<string>;
-                error: Maybe<{
-                  __typename?: 'TestError';
-                  name: string;
-                  message: string;
-                  stack: string;
-                }>;
-              }>;
-            }
-        >
+        Array<{
+          __typename?: 'InstanceTest';
+          testId: string;
+          title: Array<string>;
+          state: TestState;
+          displayError: Maybe<string>;
+          attempts: Array<{
+            __typename?: 'TestAttempt';
+            state: Maybe<string>;
+            wallClockDuration: Maybe<number>;
+            wallClockStartedAt: Maybe<string>;
+            error: Maybe<{
+              __typename?: 'TestError';
+              name: string;
+              message: string;
+              stack: string;
+            }>;
+          }>;
+        }>
       >;
       screenshots: Array<{
         __typename?: 'InstanceScreeshot';
@@ -802,20 +815,6 @@ export type GetSpecStatsQuery = {
   }>;
 };
 
-export type ResetInstanceMutationVariables = Exact<{
-  instanceId: Scalars['ID'];
-}>;
-
-export type ResetInstanceMutation = {
-  __typename?: 'Mutation';
-  resetInstance: {
-    __typename?: 'ResetInstanceResponse';
-    success: Maybe<boolean>;
-    message: string;
-    instanceId: string;
-  };
-};
-
 export type GetRunQueryVariables = Exact<{
   runId: Scalars['ID'];
 }>;
@@ -831,7 +830,22 @@ export type GetRunQuery = {
     >;
     meta: { __typename?: 'RunMeta' } & RunSummaryMetaFragment;
     specs: Array<{ __typename?: 'RunSpec' } & RunDetailSpecFragment>;
+    progress: Maybe<{ __typename?: 'RunProgress' } & RunProgressFragment>;
   }>;
+};
+
+export type ResetInstanceMutationVariables = Exact<{
+  instanceId: Scalars['ID'];
+}>;
+
+export type ResetInstanceMutation = {
+  __typename?: 'Mutation';
+  resetInstance: {
+    __typename?: 'ResetInstanceResponse';
+    success: Maybe<boolean>;
+    message: string;
+    instanceId: string;
+  };
 };
 
 export type RunDetailSpecFragment = {
@@ -842,40 +856,9 @@ export type RunDetailSpecFragment = {
   machineId: Maybe<string>;
   groupId: Maybe<string>;
   results: Maybe<{
-    __typename?: 'InstanceResults';
+    __typename?: 'RunSpecResults';
     error: Maybe<string>;
-    tests: Maybe<
-      Array<
-        | { __typename?: 'InstanceTest'; state: TestState }
-        | {
-            __typename?: 'InstanceTestV5';
-            state: TestState;
-            attempts: Array<{
-              __typename?: 'TestAttempt';
-              state: Maybe<string>;
-            }>;
-          }
-      >
-    >;
     stats: { __typename?: 'InstanceStats' } & AllInstanceStatsFragment;
-  }>;
-};
-
-export type GetRunSummaryQueryVariables = Exact<{
-  runId: Scalars['ID'];
-}>;
-
-export type GetRunSummaryQuery = {
-  __typename?: 'Query';
-  run: Maybe<{
-    __typename?: 'Run';
-    runId: string;
-    createdAt: string;
-    meta: { __typename?: 'RunMeta' } & RunSummaryMetaFragment;
-    completion: Maybe<
-      { __typename?: 'RunCompletion' } & RunSummaryCompletionFragment
-    >;
-    specs: Array<{ __typename?: 'RunSpec' } & RunSummarySpecFragment>;
   }>;
 };
 
@@ -917,7 +900,7 @@ export type RunSummarySpecFragment = {
   __typename?: 'RunSpec';
   claimedAt: Maybe<string>;
   results: Maybe<{
-    __typename?: 'InstanceResults';
+    __typename?: 'RunSpecResults';
     stats: { __typename?: 'InstanceStats' } & AllInstanceStatsFragment;
   }>;
 };
@@ -933,8 +916,51 @@ export type GetRunsFeedQuery = {
     __typename?: 'RunFeed';
     cursor: string;
     hasMore: boolean;
-    runs: Array<{ __typename?: 'Run'; runId: string; createdAt: string }>;
+    runs: Array<{
+      __typename?: 'Run';
+      runId: string;
+      createdAt: string;
+      completion: Maybe<
+        { __typename?: 'RunCompletion' } & RunSummaryCompletionFragment
+      >;
+      meta: { __typename?: 'RunMeta' } & RunSummaryMetaFragment;
+      progress: Maybe<{ __typename?: 'RunProgress' } & RunProgressFragment>;
+    }>;
   };
+};
+
+export type RunProgressFragment = {
+  __typename?: 'RunProgress';
+  updatedAt: Maybe<string>;
+  groups: Array<{
+    __typename?: 'RunGroupProgress';
+    groupId: string;
+    instances: {
+      __typename?: 'RunGroupProgressInstances';
+    } & RunGroupProgressInstancesFragment;
+    tests: {
+      __typename?: 'RunGroupProgressTests';
+    } & RunGroupProgressTestsFragment;
+  }>;
+};
+
+export type RunGroupProgressInstancesFragment = {
+  __typename?: 'RunGroupProgressInstances';
+  overall: number;
+  claimed: number;
+  complete: number;
+  failures: number;
+  passes: number;
+};
+
+export type RunGroupProgressTestsFragment = {
+  __typename?: 'RunGroupProgressTests';
+  overall: number;
+  passes: number;
+  failures: number;
+  pending: number;
+  retries: number;
+  flaky: Maybe<number>;
 };
 
 export const AllInstanceStatsFragmentDoc = gql`
@@ -960,17 +986,6 @@ export const RunDetailSpecFragmentDoc = gql`
     groupId
     results {
       error
-      tests {
-        ... on InstanceTest {
-          state
-        }
-        ... on InstanceTestV5 {
-          state
-          attempts {
-            state
-          }
-        }
-      }
       stats {
         ...AllInstanceStats
       }
@@ -1009,6 +1024,41 @@ export const RunSummarySpecFragmentDoc = gql`
   }
   ${AllInstanceStatsFragmentDoc}
 `;
+export const RunGroupProgressInstancesFragmentDoc = gql`
+  fragment RunGroupProgressInstances on RunGroupProgressInstances {
+    overall
+    claimed
+    complete
+    failures
+    passes
+  }
+`;
+export const RunGroupProgressTestsFragmentDoc = gql`
+  fragment RunGroupProgressTests on RunGroupProgressTests {
+    overall
+    passes
+    failures
+    pending
+    retries
+    flaky
+  }
+`;
+export const RunProgressFragmentDoc = gql`
+  fragment RunProgress on RunProgress {
+    updatedAt
+    groups {
+      groupId
+      instances {
+        ...RunGroupProgressInstances
+      }
+      tests {
+        ...RunGroupProgressTests
+      }
+    }
+  }
+  ${RunGroupProgressInstancesFragmentDoc}
+  ${RunGroupProgressTestsFragmentDoc}
+`;
 export const GetInstanceDocument = gql`
   query getInstance($instanceId: ID!) {
     instance(id: $instanceId) {
@@ -1029,15 +1079,6 @@ export const GetInstanceDocument = gql`
         }
         tests {
           ... on InstanceTest {
-            testId
-            title
-            state
-            wallClockDuration
-            wallClockStartedAt
-            error
-            stack
-          }
-          ... on InstanceTestV5 {
             testId
             title
             state
@@ -1974,6 +2015,69 @@ export type GetSpecStatsQueryResult = Apollo.QueryResult<
   GetSpecStatsQuery,
   GetSpecStatsQueryVariables
 >;
+export const GetRunDocument = gql`
+  query getRun($runId: ID!) {
+    run(id: $runId) {
+      runId
+      createdAt
+      completion {
+        ...RunSummaryCompletion
+      }
+      meta {
+        ...RunSummaryMeta
+      }
+      specs {
+        ...RunDetailSpec
+      }
+      progress {
+        ...RunProgress
+      }
+    }
+  }
+  ${RunSummaryCompletionFragmentDoc}
+  ${RunSummaryMetaFragmentDoc}
+  ${RunDetailSpecFragmentDoc}
+  ${RunProgressFragmentDoc}
+`;
+
+/**
+ * __useGetRunQuery__
+ *
+ * To run a query within a React component, call `useGetRunQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRunQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetRunQuery({
+ *   variables: {
+ *      runId: // value for 'runId'
+ *   },
+ * });
+ */
+export function useGetRunQuery(
+  baseOptions: Apollo.QueryHookOptions<GetRunQuery, GetRunQueryVariables>
+) {
+  return Apollo.useQuery<GetRunQuery, GetRunQueryVariables>(
+    GetRunDocument,
+    baseOptions
+  );
+}
+export function useGetRunLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetRunQuery, GetRunQueryVariables>
+) {
+  return Apollo.useLazyQuery<GetRunQuery, GetRunQueryVariables>(
+    GetRunDocument,
+    baseOptions
+  );
+}
+export type GetRunQueryHookResult = ReturnType<typeof useGetRunQuery>;
+export type GetRunLazyQueryHookResult = ReturnType<typeof useGetRunLazyQuery>;
+export type GetRunQueryResult = Apollo.QueryResult<
+  GetRunQuery,
+  GetRunQueryVariables
+>;
 export const ResetInstanceDocument = gql`
   mutation resetInstance($instanceId: ID!) {
     resetInstance(instanceId: $instanceId) {
@@ -2026,134 +2130,6 @@ export type ResetInstanceMutationOptions = Apollo.BaseMutationOptions<
   ResetInstanceMutation,
   ResetInstanceMutationVariables
 >;
-export const GetRunDocument = gql`
-  query getRun($runId: ID!) {
-    run(id: $runId) {
-      runId
-      createdAt
-      completion {
-        ...RunSummaryCompletion
-      }
-      meta {
-        ...RunSummaryMeta
-      }
-      specs {
-        ...RunDetailSpec
-      }
-    }
-  }
-  ${RunSummaryCompletionFragmentDoc}
-  ${RunSummaryMetaFragmentDoc}
-  ${RunDetailSpecFragmentDoc}
-`;
-
-/**
- * __useGetRunQuery__
- *
- * To run a query within a React component, call `useGetRunQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetRunQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetRunQuery({
- *   variables: {
- *      runId: // value for 'runId'
- *   },
- * });
- */
-export function useGetRunQuery(
-  baseOptions: Apollo.QueryHookOptions<GetRunQuery, GetRunQueryVariables>
-) {
-  return Apollo.useQuery<GetRunQuery, GetRunQueryVariables>(
-    GetRunDocument,
-    baseOptions
-  );
-}
-export function useGetRunLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<GetRunQuery, GetRunQueryVariables>
-) {
-  return Apollo.useLazyQuery<GetRunQuery, GetRunQueryVariables>(
-    GetRunDocument,
-    baseOptions
-  );
-}
-export type GetRunQueryHookResult = ReturnType<typeof useGetRunQuery>;
-export type GetRunLazyQueryHookResult = ReturnType<typeof useGetRunLazyQuery>;
-export type GetRunQueryResult = Apollo.QueryResult<
-  GetRunQuery,
-  GetRunQueryVariables
->;
-export const GetRunSummaryDocument = gql`
-  query getRunSummary($runId: ID!) {
-    run(id: $runId) {
-      runId
-      createdAt
-      meta {
-        ...RunSummaryMeta
-      }
-      completion {
-        ...RunSummaryCompletion
-      }
-      specs {
-        ...RunSummarySpec
-      }
-    }
-  }
-  ${RunSummaryMetaFragmentDoc}
-  ${RunSummaryCompletionFragmentDoc}
-  ${RunSummarySpecFragmentDoc}
-`;
-
-/**
- * __useGetRunSummaryQuery__
- *
- * To run a query within a React component, call `useGetRunSummaryQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetRunSummaryQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetRunSummaryQuery({
- *   variables: {
- *      runId: // value for 'runId'
- *   },
- * });
- */
-export function useGetRunSummaryQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    GetRunSummaryQuery,
-    GetRunSummaryQueryVariables
-  >
-) {
-  return Apollo.useQuery<GetRunSummaryQuery, GetRunSummaryQueryVariables>(
-    GetRunSummaryDocument,
-    baseOptions
-  );
-}
-export function useGetRunSummaryLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    GetRunSummaryQuery,
-    GetRunSummaryQueryVariables
-  >
-) {
-  return Apollo.useLazyQuery<GetRunSummaryQuery, GetRunSummaryQueryVariables>(
-    GetRunSummaryDocument,
-    baseOptions
-  );
-}
-export type GetRunSummaryQueryHookResult = ReturnType<
-  typeof useGetRunSummaryQuery
->;
-export type GetRunSummaryLazyQueryHookResult = ReturnType<
-  typeof useGetRunSummaryLazyQuery
->;
-export type GetRunSummaryQueryResult = Apollo.QueryResult<
-  GetRunSummaryQuery,
-  GetRunSummaryQueryVariables
->;
 export const GetRunsFeedDocument = gql`
   query getRunsFeed($cursor: String, $filters: [Filters]) {
     runFeed(cursor: $cursor, filters: $filters) {
@@ -2162,9 +2138,21 @@ export const GetRunsFeedDocument = gql`
       runs {
         runId
         createdAt
+        completion {
+          ...RunSummaryCompletion
+        }
+        meta {
+          ...RunSummaryMeta
+        }
+        progress {
+          ...RunProgress
+        }
       }
     }
   }
+  ${RunSummaryCompletionFragmentDoc}
+  ${RunSummaryMetaFragmentDoc}
+  ${RunProgressFragmentDoc}
 `;
 
 /**
@@ -2221,8 +2209,6 @@ export interface PossibleTypesResultData {
   };
 }
 const result: PossibleTypesResultData = {
-  possibleTypes: {
-    InstanceTestUnion: ['InstanceTest', 'InstanceTestV5'],
-  },
+  possibleTypes: {},
 };
 export default result;

@@ -1,7 +1,7 @@
 import { differenceInSeconds, parseISO } from 'date-fns';
 import { compact, orderBy, sum } from 'lodash';
 import { InstanceResult, InstanceResultStats } from '../instance';
-import { Test, TestV5 } from '../tests';
+import { Test } from '../tests';
 import { Run, RunSummary } from './types';
 
 export function getRunDurationSeconds(specs: InstanceResultStats[]): number {
@@ -23,11 +23,14 @@ export function getRunDurationSeconds(specs: InstanceResultStats[]): number {
   );
 }
 
+export function getTestRetries(state: Test['state'], attemptsCount: number) {
+  return state === 'passed' ? attemptsCount - 1 : 0;
+}
+
 export function getNumRetries(tests: Test[]) {
-  // Only InstanceTestV5 tests have an `attempts` property
   const passes = (tests || []).filter(
     (test) => test?.state === 'passed' && 'attempts' in test
-  ) as TestV5[];
+  );
   // # of retries = # attempts for successful tests - # successful tests
   return sum(passes.map((test) => test.attempts.length)) - passes.length;
 }

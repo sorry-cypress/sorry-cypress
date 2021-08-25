@@ -223,6 +223,7 @@ type Run {
   meta: RunMeta!
   specs: [RunSpec!]!
   completion: RunCompletion
+  progress: RunProgress
 }
 
 type RunCompletion {
@@ -237,7 +238,39 @@ type RunSpec {
   completedAt: String
   machineId: String
   groupId: String
-  results: InstanceResults
+  results: RunSpecResults
+}
+
+type RunSpecResults {
+  error: String
+  stats: InstanceStats!
+}
+
+type RunProgress {
+  updatedAt: DateTime
+  groups: [RunGroupProgress!]!
+}
+
+type RunGroupProgress {
+  groupId: String!
+  instances: RunGroupProgressInstances!
+  tests: RunGroupProgressTests!
+}
+
+type RunGroupProgressInstances {
+  overall: Int!
+  claimed: Int!
+  complete: Int!
+  passes: Int!
+  failures: Int!
+}
+type RunGroupProgressTests {
+  overall: Int!
+  passes: Int!
+  failures: Int!
+  pending: Int!
+  retries: Int!
+  flaky: Int
 }
 
 type Commit {
@@ -281,7 +314,7 @@ type Instance {
 # Execution results of a single instance
 type InstanceResults {
   stats: InstanceStats!
-  tests: [InstanceTestUnion!]
+  tests: [InstanceTest!]
   error: String
   stdout: String
   screenshots: [InstanceScreeshot!]!
@@ -330,7 +363,6 @@ type ReporterStats {
 }
 
 ### InstanceTest - specific test within a suite / instance
-union InstanceTestUnion = InstanceTest | InstanceTestV5
 enum TestState {
   failed
   passed
@@ -338,21 +370,7 @@ enum TestState {
   skipped
 }
 
-# InstanceTest is a test within an instance (test within a spec)
 type InstanceTest {
-  testId: String!
-  title: [String!]!
-  state: TestState!
-  body: String
-  stack: String
-  error: String
-  # timings: InstanceTestTimings
-  wallClockStartedAt: String
-  wallClockDuration: Int
-}
-
-# v5+
-type InstanceTestV5 {
   testId: String!
   title: [String!]!
   state: TestState!

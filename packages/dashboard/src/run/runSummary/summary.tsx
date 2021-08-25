@@ -1,9 +1,4 @@
 import {
-  getRunSummary,
-  RunSummary as RunSummaryType,
-} from '@sorry-cypress/common';
-import {
-  CenteredContent,
   CiUrl,
   FormattedDate,
   HeaderLink,
@@ -15,56 +10,55 @@ import {
   TestSuccessBadge,
 } from '@src/components/';
 import { Duration } from '@src/components/common/duration';
-import { GetRunQuery, GetRunSummaryQuery } from '@src/generated/graphql';
+import { Run, RunProgressFragment } from '@src/generated/graphql';
 import { getSecondsDuration } from '@src/lib/duration';
 import { Cell, Grid, HFlow, Icon, Text, Tooltip } from 'bold-ui';
 import { parseISO } from 'date-fns';
-import { compact } from 'lodash';
 import React from 'react';
 import { Commit } from '../commit';
 import { DeleteRunButton } from '../deleteRun/deleteRunButton';
-import { useGetRunSummary } from './useGetRunSummary';
+import {
+  getRunClaimedSpecsCount,
+  getRunDurationSeconds,
+  getRunOverallSpecsCount,
+  getRunTestsProgress,
+} from '../progress';
 
-type RunSummaryProps = {
-  runId: string;
-};
+export function RunSummary({ run }: { run: Run }) {
+  // const [run, loading, error] = useGetRunSummary(runId);
+  // if (loading) {
+  //   return null;
+  // }
+  // if (!run) {
+  //   return <CenteredContent>No run found</CenteredContent>;
+  // }
+  // if (error) {
+  //   return (
+  //     <CenteredContent>Error loading run {error.toString()}</CenteredContent>
+  //   );
+  // }
 
-export function RunSummary({ runId }: RunSummaryProps) {
-  const [run, loading, error] = useGetRunSummary(runId);
-  if (loading) {
-    return null;
-  }
-  if (!run) {
-    return <CenteredContent>No run found</CenteredContent>;
-  }
-  if (error) {
-    return (
-      <CenteredContent>Error loading run {error.toString()}</CenteredContent>
-    );
-  }
-
-  return <RunSummaryComponent run={run} runId={runId} />;
+  return <RunSummaryComponent run={run} />;
 }
 
-export function RunSummaryComponent({
-  run,
-  runId,
-}: {
-  run: GetRunQuery['run'] | GetRunSummaryQuery['run'];
-  runId: string;
-}) {
+export function RunSummaryComponent({ run }: { run: Run }) {
   if (!run) {
     return null;
   }
+  const runId = run.runId;
   const runMeta = run.meta;
-  const runSpecs = run.specs;
   const runCreatedAt = run.createdAt;
-
-  const runSummary = getRunSummary(compact(runSpecs.map((s) => s.results)));
-
   const hasCompletion = !!run.completion;
   const completed = !!run.completion?.completed;
   const inactivityTimeoutMs = run.completion?.inactivityTimeoutMs;
+
+  const overallSpecsCount = getRunOverallSpecsCount(run.progress);
+  const claimedSpecsCount = getRunClaimedSpecsCount(run.progress);
+  const durationSeconds = getRunDurationSeconds(
+    run.createdAt,
+    run.progress,
+    run.completion
+  );
 
   return (
     <Paper>
@@ -96,17 +90,15 @@ export function RunSummaryComponent({
             <li>
               <Text>Duration: </Text>
               <Duration
-                hasCompletion={hasCompletion}
-                completed={completed}
+                completion={run.completion ?? undefined}
                 createdAtISO={runCreatedAt}
-                wallClockDurationSeconds={runSummary.wallClockDurationSeconds}
+                wallClockDurationSeconds={durationSeconds}
               />
             </li>
             <li>
               <Text>Spec Files: </Text>
               <Text>
-                claimed {runSpecs.filter((s) => s.claimedAt).length} out of{' '}
-                {runSpecs.length}
+                {claimedSpecsCount} / {overallSpecsCount}
               </Text>
             </li>
           </ul>
@@ -120,18 +112,23 @@ export function RunSummaryComponent({
         </Cell>
       </Grid>
 
-      <RunSummaryTestResults runSummary={runSummary} />
+      {run.progress && <RunSummaryTestResults runProgress={run.progress} />}
     </Paper>
   );
 }
-function RunSummaryTestResults({ runSummary }: { runSummary: RunSummaryType }) {
+function RunSummaryTestResults({
+  runProgress,
+}: {
+  runProgress: RunProgressFragment;
+}) {
+  const testsProgress = getRunTestsProgress(runProgress);
   return (
     <HFlow>
-      <TestOverallBadge value={runSummary.tests} />
-      <TestSuccessBadge value={runSummary.passes} />
-      <TestFailureBadge value={runSummary.failures} />
-      <TestSkippedBadge value={runSummary.pending} />
-      <TestRetriesBadge value={runSummary.retries} />
+      <TestOverallBadge value={testsProgress.overall} />
+      <TestSuccessBadge value={testsProgress.passes} />
+      <TestFailureBadge value={testsProgress.failures} />
+      <TestSkippedBadge value={testsProgress.pending} />
+      <TestRetriesBadge value={testsProgress.retries} />
     </HFlow>
   );
 }

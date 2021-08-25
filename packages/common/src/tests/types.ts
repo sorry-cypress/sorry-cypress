@@ -1,29 +1,6 @@
 type TestState = 'passed' | 'failed' | 'pending' | undefined;
 
-export type Test = TestV670 | TestV5 | LegacyTest;
-
-export interface LegacyTest {
-  testId: string;
-  title: string;
-  state: TestState;
-  body: string;
-  stack: string;
-  error: string;
-  timings: TestTimings;
-  wallClockStartedAt: string;
-  wallClockDuration: number;
-}
-
-export interface TestV5 {
-  testId: string;
-  title: string[];
-  state: TestState;
-  body: string;
-  displayError: string | null;
-  attempts: TestAttempt[];
-}
-
-export interface TestV670 {
+export interface Test {
   clientId: string;
   state: TestState;
   displayError: string | null;

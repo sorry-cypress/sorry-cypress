@@ -34,8 +34,9 @@ import {
 import { createInstance } from '../instances/instance.controller';
 import { createProject, getProjectById } from './../projects/project.model';
 import {
-  addSpecsToRun,
+  addNewGroupToRun,
   createRun as storageCreateRun,
+  getNewGroupTemplate,
   getRunById,
   setRunCompleted,
   setSpecClaimed,
@@ -73,6 +74,7 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
         getCreateProjectValue(params.projectId, INACTIVITY_TIMEOUT_SECONDS)
       );
     }
+    const specs = params.specs.map(enhaceSpecForThisRun);
 
     await storageCreateRun({
       runId,
@@ -88,7 +90,11 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
         platform: params.platform,
         ci: params.ci,
       },
-      specs: params.specs.map(enhaceSpecForThisRun),
+      progress: {
+        updatedAt: new Date(),
+        groups: [getNewGroupTemplate(groupId, specs.length)],
+      },
+      specs,
     });
     const timeoutSeconds =
       project.inactivityTimeoutSeconds ?? INACTIVITY_TIMEOUT_SECONDS;
@@ -102,6 +108,7 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
   } catch (error) {
     if (error.code && error.code === RUN_EXISTS) {
       response.isNewRun = false;
+
       // serverless: prone to race condition on serverless
       const run = await getRunById(runId);
       const newSpecs = getNewSpecsInGroup({
@@ -125,7 +132,11 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
         return response;
       }
 
-      await addSpecsToRun(runId, newSpecs.map(enhaceSpecForThisRun));
+      await addNewGroupToRun(
+        runId,
+        groupId,
+        newSpecs.map(enhaceSpecForThisRun)
+      );
 
       return response;
     }
@@ -156,7 +167,7 @@ export const getNextTask: ExecutionDriver['getNextTask'] = async ({
 
   const spec = getFirstUnclaimedSpec(run, groupId);
   try {
-    await setSpecClaimed(runId, spec.instanceId, machineId);
+    await setSpecClaimed(runId, groupId, spec.instanceId, machineId);
     await createInstance({
       runId,
       instanceId: spec.instanceId,

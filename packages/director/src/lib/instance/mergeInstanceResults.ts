@@ -1,7 +1,6 @@
 import {
   InstanceResult,
   SetInstanceTestsPayload,
-  TestV670,
   UpdateInstanceResultsPayload,
 } from '@src/types';
 
@@ -13,9 +12,7 @@ export const mergeInstanceResults = (
   const { config, tests } = createTestsPayload;
 
   const mergedTests = updateInstanceResults.tests.map((t) => {
-    const existingTest = (tests as TestV670[]).find(
-      (i) => i.clientId === t.clientId
-    );
+    const existingTest = tests.find((i) => i.clientId === t.clientId);
     return { ...existingTest, ...t, testId: t.clientId };
   });
 

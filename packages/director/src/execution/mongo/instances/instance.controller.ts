@@ -5,8 +5,9 @@ import {
   SCREENSHOT_URL_UPDATE_FAILED,
 } from '@src/lib/errors';
 import { mergeInstanceResults } from '@src/lib/instance';
-import { ExecutionDriver } from '@src/types';
+import { ExecutionDriver, SetInstanceTestsPayload } from '@src/types';
 import { updateRunSpecCompleted } from '../runs/run.controller';
+import { incProgressOverallTests } from '../runs/run.model';
 import {
   getInstanceById,
   insertInstance,
@@ -38,7 +39,23 @@ export const setVideoUrl: ExecutionDriver['setVideoUrl'] = async ({
 }) => modelsetvideoUrl(instanceId, videoUrl);
 
 // save test creation to a temp field
-export const setInstanceTests = modelSetInstanceTests;
+// increment progress
+export const setInstanceTests = async (
+  instanceId: string,
+  payload: SetInstanceTestsPayload
+) => {
+  const instance = await getInstanceById(instanceId);
+  if (!instance) {
+    throw new Error('No instance found');
+  }
+  await modelSetInstanceTests(instanceId, payload);
+  await incProgressOverallTests(
+    instance.runId,
+    instance.groupId,
+    payload.tests.length
+  );
+};
+
 // merge and save the results
 export const updateInstanceResults: ExecutionDriver['updateInstanceResults'] = async (
   instanceId,
@@ -58,7 +75,12 @@ export const updateInstanceResults: ExecutionDriver['updateInstanceResults'] = a
 
   await Promise.all([
     modelSetInstanceResults(instanceId, instanceResult),
-    updateRunSpecCompleted(instance.runId, instanceId),
+    updateRunSpecCompleted(
+      instance.runId,
+      instance.groupId,
+      instanceId,
+      instanceResult
+    ),
   ]);
 
   return { ...instance, results: instanceResult };

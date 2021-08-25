@@ -10,8 +10,6 @@ import {
   CreateProjectInput,
   CreateSlackHookInput,
   DeleteHookInput,
-  InstanceTestUnion,
-  InstanceTestV5,
   OrderingOptions,
   RunSpec,
   UpdateBitbucketHookInput,
@@ -29,12 +27,6 @@ const getDatasourceWithInput = <T>(path: string) => (
   { input }: { input: T },
   { dataSources }: { dataSources: AppDatasources }
 ) => get(dataSources, path)(input);
-
-function isInstanceV5(
-  candidate: InstanceTestUnion
-): candidate is InstanceTestV5 {
-  return !!(candidate as InstanceTestV5).attempts;
-}
 
 function getStringLiteral(name: string) {
   return new GraphQLScalarType({
@@ -57,15 +49,6 @@ export const resolvers = {
   GithubHookType: getStringLiteral('GithubHookType'),
   BitbucketHookType: getStringLiteral('BitbucketHookType'),
 
-  InstanceTestUnion: {
-    __resolveType(obj: InstanceTestUnion) {
-      if (isInstanceV5(obj)) {
-        return 'InstanceTestV5';
-      }
-
-      return 'InstanceTest';
-    },
-  },
   RunSpec: {
     results: async (
       { instanceId }: RunSpec,

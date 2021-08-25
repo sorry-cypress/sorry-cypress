@@ -20,15 +20,6 @@ query getInstance($instanceId: ID!) {
           testId
           title
           state
-          wallClockDuration
-          wallClockStartedAt
-          error
-          stack
-        }
-        ... on InstanceTestV5 {
-          testId
-          title
-          state
           displayError
           attempts {
             state

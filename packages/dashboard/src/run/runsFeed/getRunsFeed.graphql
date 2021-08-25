@@ -5,6 +5,15 @@ query getRunsFeed($cursor: String, $filters: [Filters]) {
     runs {
       runId
       createdAt
+      completion {
+        ...RunSummaryCompletion
+      }
+      meta {
+        ...RunSummaryMeta
+      }
+      progress {
+        ...RunProgress
+      }
     }
   }
 }

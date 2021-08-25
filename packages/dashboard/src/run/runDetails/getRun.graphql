@@ -11,5 +11,8 @@ query getRun($runId: ID!) {
     specs {
       ...RunDetailSpec
     }
+    progress {
+      ...RunProgress
+    }
   }
 }
