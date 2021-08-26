@@ -202,6 +202,9 @@ export const allRunSpecsCompleted = async (runId: string): Promise<boolean> => {
   if (!run) {
     throw new AppError(RUN_NOT_EXIST);
   }
+  if (!run.progress) {
+    return false;
+  }
   return isRunCompleted(run.progress);
 };
 

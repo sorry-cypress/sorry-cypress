@@ -21,7 +21,7 @@
     "build:js:watch": "yarn run build:js --watch",
     "lint": "eslint ./ --ext ts,tsx",
     "release": "echo \"skipping release\"",
-    "test": "jest"
+    "test": "jest --passWithNoTests"
   },
   "devDependencies": {
     "@types/jest": "^26.0.20",
