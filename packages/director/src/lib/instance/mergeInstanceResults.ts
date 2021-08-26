@@ -2,7 +2,7 @@ import {
   InstanceResult,
   SetInstanceTestsPayload,
   UpdateInstanceResultsPayload,
-} from '@src/types';
+} from '@sorry-cypress/common';
 
 // fetch tokens from stored _createTestsPayload and "updateTestResults"
 export const mergeInstanceResults = (
@@ -13,7 +13,15 @@ export const mergeInstanceResults = (
 
   const mergedTests = updateInstanceResults.tests.map((t) => {
     const existingTest = tests.find((i) => i.clientId === t.clientId);
-    return { ...existingTest, ...t, testId: t.clientId };
+    return {
+      ...existingTest,
+      ...t,
+      testId: t.clientId,
+      title: existingTest?.title ?? [],
+      config: existingTest?.config ?? null,
+      hookIds: existingTest?.hookIds ?? [],
+      body: existingTest?.body ?? '',
+    };
   });
 
   const instanceResult: InstanceResult = {

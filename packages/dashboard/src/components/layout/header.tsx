@@ -1,6 +1,6 @@
 import { useReactiveVar } from '@apollo/client';
-import { useAutoRefresh } from '@src/hooks/useAutoRefresh';
-import { navStructure } from '@src/lib/navigation';
+import { useAutoRefresh } from '@sorry-cypress/dashboard/hooks/useAutoRefresh';
+import { navStructure } from '@sorry-cypress/dashboard/lib/navigation';
 import { Breadcrumbs, Icon, Switch, Tooltip, useCss } from 'bold-ui';
 import { truncate } from 'lodash';
 import React from 'react';

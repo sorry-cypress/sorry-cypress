@@ -6,8 +6,8 @@ import {
   Run,
   RunGroupProgress,
 } from '@sorry-cypress/common';
-import { APP_NAME } from '@src/config';
-import { getDashboardRunURL } from '@src/lib/urls';
+import { APP_NAME } from '@sorry-cypress/director/config';
+import { getDashboardRunURL } from '@sorry-cypress/director/lib/urls';
 import axios from 'axios';
 
 interface GitHubReporterStatusParams {
@@ -20,9 +20,12 @@ export async function reportStatusToGithub(
   hook: GithubHook,
   eventData: GitHubReporterStatusParams
 ) {
-  const { eventType, groupId, groupProgress, run } = eventData;
+  if (!hook.githubToken) {
+    console.warn('[github-reporter] No github token defined, ignoring hook...');
+    return;
+  }
 
-  const fullStatusPostUrl = getGithubStatusUrl(hook.url, run.meta.commit.sha);
+  const { eventType, groupId, groupProgress, run } = eventData;
 
   const description = `failed:${
     groupProgress.tests.failures + groupProgress.tests.skipped
@@ -68,8 +71,9 @@ export async function reportStatusToGithub(
     return;
   }
 
-  console.log('[github-reporter] ', { eventType, data });
+  const fullStatusPostUrl = getGithubStatusUrl(hook.url, run.meta.commit.sha);
 
+  console.log('[github-reporter] ', { fullStatusPostUrl, eventType, data });
   try {
     axios({
       method: 'post',

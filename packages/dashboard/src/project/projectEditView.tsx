@@ -1,12 +1,12 @@
-import { InputFieldLabel } from '@src/components';
+import { InputFieldLabel } from '@sorry-cypress/dashboard/components';
 import {
   CreateProjectInput,
   UpdateProjectInput,
   useCreateProjectMutation,
   useGetProjectQuery,
-  useUpdateProjectMutation
-} from '@src/generated/graphql';
-import { setNav } from '@src/lib/navigation';
+  useUpdateProjectMutation,
+} from '@sorry-cypress/dashboard/generated/graphql';
+import { setNav } from '@sorry-cypress/dashboard/lib/navigation';
 import { Alert, Button, Cell, Grid, Text, TextField } from 'bold-ui';
 import React, { useLayoutEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';

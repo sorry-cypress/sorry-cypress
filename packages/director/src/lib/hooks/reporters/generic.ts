@@ -4,7 +4,7 @@ import {
   Run,
   RunGroupProgress,
 } from '@sorry-cypress/common';
-import { getDashboardRunURL } from '@src/lib/urls';
+import { getDashboardRunURL } from '@sorry-cypress/director/lib/urls';
 import axios from 'axios';
 
 interface GenericHookReporterStatusParams {

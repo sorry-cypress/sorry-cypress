@@ -30,7 +30,7 @@ export interface CreateRunParameters {
   ci: RunCI;
   platform: PlatformData;
   group?: string;
-  cypressVersion: string;
+  cypressVersion?: string;
 }
 
 export type CreateRunWarning = Record<string, string> & {
@@ -80,7 +80,7 @@ export interface Run {
   specs: RunSpec[];
   completion?: RunCompletion;
   cypressVersion?: string;
-  progress?: RunProgress;
+  progress: RunProgress;
 }
 
 export interface RunProgress {

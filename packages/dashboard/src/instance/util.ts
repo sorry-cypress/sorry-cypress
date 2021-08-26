@@ -1,4 +1,4 @@
-import { InstanceTest } from '@src/generated/graphql';
+import { InstanceTest } from '@sorry-cypress/dashboard/generated/graphql';
 import { orderBy, sum } from 'lodash';
 
 export const getTestDuration = (test: InstanceTest) => {

@@ -1,8 +1,7 @@
-import { getTestListRetries, Project } from '@sorry-cypress/common';
-import { ProjectsAPI } from '@src/datasources/projects';
-import { RunsAPI } from '@src/datasources/runs';
-import { SpecsAPI } from '@src/datasources/specs';
-import { AppDatasources } from '@src/datasources/types';
+import { ProjectsAPI } from '@sorry-cypress/api/datasources/projects';
+import { RunsAPI } from '@sorry-cypress/api/datasources/runs';
+import { SpecsAPI } from '@sorry-cypress/api/datasources/specs';
+import { AppDatasources } from '@sorry-cypress/api/datasources/types';
 import {
   CreateBitbucketHookInput,
   CreateGenericHookInput,
@@ -17,7 +16,8 @@ import {
   UpdateGithubHookInput,
   UpdateProjectInput,
   UpdateSlackHookInput,
-} from '@src/generated/graphql';
+} from '@sorry-cypress/api/generated/graphql';
+import { getTestListRetries, Project } from '@sorry-cypress/common';
 import { GraphQLScalarType } from 'graphql';
 import { GraphQLDateTime } from 'graphql-iso-date';
 import { get, identity } from 'lodash';
@@ -61,12 +61,12 @@ export const resolvers = {
       const response = await dataSources.instancesAPI.getInstanceById(
         parent.instanceId
       );
-      if (!response) {
+      if (!response?.results) {
         return null;
       }
       return {
         ...response.results,
-        retries: getTestListRetries(response.results?.tests),
+        retries: getTestListRetries(response.results?.tests ?? []),
       };
     },
   },
@@ -111,7 +111,13 @@ export const resolvers = {
       { dataSources }: { dataSources: AppDatasources }
     ) => {
       const instance = await dataSources.instancesAPI.getInstanceById(id);
+      if (!instance) {
+        return null;
+      }
       const run = await dataSources.runsAPI.getRunById(instance.runId);
+      if (!run) {
+        return null;
+      }
       return { ...instance, projectId: run.meta.projectId, run };
     },
   },

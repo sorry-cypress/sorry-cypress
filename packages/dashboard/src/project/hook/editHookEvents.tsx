@@ -1,5 +1,5 @@
 import { HookEvent, HookWithCustomEvents } from '@sorry-cypress/common';
-import { InputFieldLabel } from '@src/components';
+import { InputFieldLabel } from '@sorry-cypress/dashboard/components';
 import { Cell, Select } from 'bold-ui';
 import { isEqual } from 'lodash';
 import React from 'react';

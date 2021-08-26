@@ -1,6 +1,5 @@
-import { Collection } from '@sorry-cypress/mongo/dist';
+import { Collection } from '@sorry-cypress/mongo';
 import { DataSource } from 'apollo-datasource';
-import plur from 'plur';
 
 export class InstancesAPI extends DataSource {
   getInstanceById(instanceId: string) {
@@ -22,10 +21,7 @@ export class InstancesAPI extends DataSource {
     });
     return {
       success: result.result.ok === 1,
-      message: `${result.deletedCount} ${plur(
-        'document',
-        result.deletedCount
-      )} deleted`,
+      message: `Deleted ${result?.deletedCount ?? 0} item(s)`,
       runIds: result.result.ok === 1 ? runIds : [],
     };
   }
@@ -35,9 +31,22 @@ export class InstancesAPI extends DataSource {
       instanceId: instanceId,
     });
 
+    if (!instance) {
+      return {
+        success: false,
+        message: `Instance not found`,
+      };
+    }
     const run = await Collection.run().findOne({
       runId: instance.runId,
     });
+
+    if (!run) {
+      return {
+        success: false,
+        message: `Run not found`,
+      };
+    }
 
     run.specs = run.specs.map((spec) => {
       if (spec.instanceId === instanceId) {
@@ -45,7 +54,7 @@ export class InstancesAPI extends DataSource {
           ...spec,
           claimedAt: null,
           completedAt: null,
-          machineId: null,
+          machineId: undefined,
         };
       } else {
         return spec;
@@ -72,10 +81,7 @@ export class InstancesAPI extends DataSource {
 
     return {
       success: result.result.ok === 1,
-      message: `${result.deletedCount} ${plur(
-        'document',
-        result.deletedCount
-      )} modified`,
+      message: `Modifies ${result?.deletedCount ?? 0} item(s)`,
       instanceId: result.result.ok === 1 ? instanceId : undefined,
     };
   }

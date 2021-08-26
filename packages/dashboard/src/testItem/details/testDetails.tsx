@@ -1,6 +1,9 @@
 import { getTestRetries } from '@sorry-cypress/common';
-import { VisualTestState } from '@src/components/common';
-import { InstanceScreeshot, InstanceTest } from '@src/generated/graphql';
+import { VisualTestState } from '@sorry-cypress/dashboard/components/common';
+import {
+  InstanceScreeshot,
+  InstanceTest,
+} from '@sorry-cypress/dashboard/generated/graphql';
 import { Heading, HFlow } from 'bold-ui';
 import React from 'react';
 import { TestDetailsV5 } from './testDetailsV5';

@@ -1,8 +1,11 @@
 import { getTestRetries } from '@sorry-cypress/common';
-import { VisualTestState } from '@src/components/common';
-import { GetInstanceQuery, InstanceTest } from '@src/generated/graphql';
-import { getSecondsDuration } from '@src/lib/duration';
-import { TestError } from '@src/testItem/details/common';
+import { VisualTestState } from '@sorry-cypress/dashboard/components/common';
+import {
+  GetInstanceQuery,
+  InstanceTest,
+} from '@sorry-cypress/dashboard/generated/graphql';
+import { getSecondsDuration } from '@sorry-cypress/dashboard/lib/duration';
+import { TestError } from '@sorry-cypress/dashboard/testItem/details/common';
 import { DataTable, Text, Tooltip } from 'bold-ui';
 import { truncate } from 'lodash';
 import React from 'react';

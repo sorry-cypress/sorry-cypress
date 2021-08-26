@@ -1,7 +1,8 @@
-import { getExecutionDriver } from '@src/drivers';
-import { isKeyAllowed } from '@src/lib/allowedKeys';
-import { CreateRunParameters } from '@src/types';
+import { CreateRunParameters } from '@sorry-cypress/common';
+import { getExecutionDriver } from '@sorry-cypress/director/drivers';
+import { isKeyAllowed } from '@sorry-cypress/director/lib/allowedKeys';
 import { RequestHandler } from 'express';
+
 export const blockKeys: RequestHandler = (req, res, next) => {
   const { recordKey } = req.body;
 
@@ -21,7 +22,7 @@ export const handleCreateRun: RequestHandler<
   CreateRunParameters
 > = async (req, res) => {
   const { group, ciBuildId, ci } = req.body;
-  const cypressVersion = req.headers['x-cypress-version'].toString();
+  const cypressVersion = req.headers['x-cypress-version']?.toString();
 
   const executionDriver = await getExecutionDriver();
 

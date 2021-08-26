@@ -2,8 +2,8 @@ import {
   InstanceScreeshot,
   InstanceTest,
   TestAttempt,
-} from '@src/generated/graphql';
-import { useSwitch } from '@src/hooks/useSwitch';
+} from '@sorry-cypress/dashboard/generated/graphql';
+import { useSwitch } from '@sorry-cypress/dashboard/hooks/useSwitch';
 import {
   Alert,
   Button,

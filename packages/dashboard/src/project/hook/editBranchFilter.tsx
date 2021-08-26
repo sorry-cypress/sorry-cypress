@@ -1,5 +1,5 @@
 import { SlackHook } from '@sorry-cypress/common';
-import { InputFieldLabel } from '@src/components';
+import { InputFieldLabel } from '@sorry-cypress/dashboard/components';
 import { Cell, Tag, TextField } from 'bold-ui';
 import React, { ChangeEvent, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';

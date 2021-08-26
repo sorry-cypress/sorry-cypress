@@ -1,6 +1,6 @@
-import { RenderOnInterval } from '@src/components/';
-import { RunCompletion } from '@src/generated/graphql';
-import { getSecondsDuration } from '@src/lib/duration';
+import { RenderOnInterval } from '@sorry-cypress/dashboard/components/';
+import { RunCompletion } from '@sorry-cypress/dashboard/generated/graphql';
+import { getSecondsDuration } from '@sorry-cypress/dashboard/lib/duration';
 import { Text } from 'bold-ui';
 import { differenceInSeconds, parseISO } from 'date-fns';
 import { differenceInHours } from 'date-fns/esm';

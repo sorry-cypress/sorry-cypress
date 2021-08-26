@@ -6,7 +6,7 @@ import {
   RunGroupProgress,
   SlackHook,
 } from '@sorry-cypress/common';
-import { getDashboardRunURL } from '@src/lib/urls';
+import { getDashboardRunURL } from '@sorry-cypress/director/lib/urls';
 import axios from 'axios';
 import { truncate } from 'lodash';
 
@@ -146,7 +146,7 @@ export function shouldReportSlackHook(
   event: HookEvent,
   hook: SlackHook,
   groupProgress: RunGroupProgress,
-  branch: string
+  branch?: string
 ) {
   return (
     isSlackEventFilterPassed(event, hook) &&

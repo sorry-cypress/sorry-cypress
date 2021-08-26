@@ -1,4 +1,4 @@
-import { AssetUploadInstruction } from '@src/types';
+import { AssetUploadInstruction } from '@sorry-cypress/common';
 import * as Minio from 'minio';
 import {
   MINIO_ACCESS_KEY,

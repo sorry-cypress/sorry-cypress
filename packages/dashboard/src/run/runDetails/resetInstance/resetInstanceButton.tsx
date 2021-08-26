@@ -1,8 +1,8 @@
 import {
   GetRunDocument,
   useResetInstanceMutation,
-} from '@src/generated/graphql';
-import { useAsync } from '@src/hooks/';
+} from '@sorry-cypress/dashboard/generated/graphql';
+import { useAsync } from '@sorry-cypress/dashboard/hooks/';
 import {
   Alert,
   Button,
@@ -118,7 +118,7 @@ export const ResetInstanceButton = ({
         kind="normal"
         size="small"
         skin="ghost"
-        onClick={(e) => {
+        onClick={(e: any) => {
           e.stopPropagation();
           setShowModal(true);
         }}

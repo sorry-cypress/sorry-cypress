@@ -1,4 +1,4 @@
-import { ArrayItemType } from '@src/ts';
+import { ArrayItemType } from '@sorry-cypress/common';
 import { differenceInSeconds } from 'date-fns';
 import { property, sum } from 'lodash';
 import { RunGroupProgress } from './types';

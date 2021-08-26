@@ -1,6 +1,6 @@
-import React from 'react';
-import { environment } from '@src/state/environment';
+import { environment } from '@sorry-cypress/dashboard/state/environment';
 import { Icon, Tooltip } from 'bold-ui';
+import React from 'react';
 
 type CiLinkProps = {
   ciBuildId: string | null | undefined;

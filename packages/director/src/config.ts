@@ -19,7 +19,7 @@ export const MONGODB_PASSWORD = process.env.MONGODB_PASSWORD || undefined;
 export const MONGODB_AUTH_MECHANISM =
   process.env.MONGODB_AUTH_MECHANISM || undefined;
 
-export const ALLOWED_KEYS: string[] = process.env.ALLOWED_KEYS
+export const ALLOWED_KEYS: string[] | null = process.env.ALLOWED_KEYS
   ? process.env.ALLOWED_KEYS.split(',')
   : null;
 

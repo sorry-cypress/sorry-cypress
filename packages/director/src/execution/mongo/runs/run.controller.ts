@@ -1,27 +1,27 @@
-import { isRunCompleted } from '@sorry-cypress/common';
-import { runTimeoutModel } from '@sorry-cypress/mongo/dist';
-import { INACTIVITY_TIMEOUT_SECONDS } from '@src/config';
-import { getRunCiBuildId } from '@src/lib/ciBuildId';
+import {
+  CreateRunResponse,
+  CreateRunWarning,
+  getCreateProjectValue,
+  isRunCompleted,
+  Run,
+  Task,
+} from '@sorry-cypress/common';
+import { INACTIVITY_TIMEOUT_SECONDS } from '@sorry-cypress/director/config';
+import { getRunCiBuildId } from '@sorry-cypress/director/lib/ciBuildId';
 import {
   AppError,
   CLAIM_FAILED,
   RUN_EXISTS,
   RUN_NOT_EXIST,
-} from '@src/lib/errors';
+} from '@sorry-cypress/director/lib/errors';
 import {
   generateGroupId,
   generateRunIdHash,
   generateUUID,
-} from '@src/lib/hash';
-import { getDashboardRunURL } from '@src/lib/urls';
-import {
-  CreateRunResponse,
-  CreateRunWarning,
-  ExecutionDriver,
-  getCreateProjectValue,
-  Run,
-  Task,
-} from '@src/types';
+} from '@sorry-cypress/director/lib/hash';
+import { getDashboardRunURL } from '@sorry-cypress/director/lib/urls';
+import { ExecutionDriver } from '@sorry-cypress/director/types';
+import { runTimeoutModel } from '@sorry-cypress/mongo/dist';
 import { addSeconds } from 'date-fns';
 import { curry, property, uniq } from 'lodash';
 import {
@@ -97,11 +97,11 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
       specs,
     });
     const timeoutSeconds =
-      project.inactivityTimeoutSeconds ?? INACTIVITY_TIMEOUT_SECONDS;
+      project?.inactivityTimeoutSeconds ?? INACTIVITY_TIMEOUT_SECONDS;
     await runTimeoutModel.createRunTimeout({
       runId,
       timeoutSeconds,
-      timeoutAfter: addSeconds(new Date(), project.inactivityTimeoutSeconds),
+      timeoutAfter: addSeconds(new Date(), timeoutSeconds),
     });
 
     return response;
@@ -111,6 +111,9 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
 
       // serverless: prone to race condition on serverless
       const run = await getRunById(runId);
+      if (!run) {
+        throw new Error('No run found');
+      }
       const newSpecs = getNewSpecsInGroup({
         run,
         groupId,
@@ -124,7 +127,7 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
       // if the same group has different specs - no-no-no!
       const existingGroupSpecs = getSpecsForGroup(run, groupId);
       if (newSpecs.length && existingGroupSpecs.length) {
-        response.warnings.push({
+        response.warnings?.push({
           message: `Group ${groupId} has different specs for the same run.`,
           originalSpecs: existingGroupSpecs.map((spec) => spec.spec).join(', '),
           newSpecs: newSpecs.join(','),
@@ -156,7 +159,9 @@ export const getNextTask: ExecutionDriver['getNextTask'] = async ({
   }
 
   // all specs claimed
-  if (!getFirstUnclaimedSpec(run, groupId)) {
+  const spec = getFirstUnclaimedSpec(run, groupId);
+
+  if (!spec) {
     return {
       instance: null,
       claimedInstances: getClaimedSpecs(run, runId).length,
@@ -165,7 +170,6 @@ export const getNextTask: ExecutionDriver['getNextTask'] = async ({
     };
   }
 
-  const spec = getFirstUnclaimedSpec(run, groupId);
   try {
     await setSpecClaimed(runId, groupId, spec.instanceId, machineId);
     await createInstance({

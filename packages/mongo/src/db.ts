@@ -27,6 +27,16 @@ export const initMongoNoIndexes = async () => {
   };
 
   if (MONGODB_AUTH_MECHANISM != undefined) {
+    if (!MONGODB_USER) {
+      throw new Error(
+        'MONGODB_USER is required when MONGODB_AUTH_MECHANISM is set'
+      );
+    }
+    if (!MONGODB_PASSWORD) {
+      throw new Error(
+        'MONGODB_PASSWORD is required when MONGODB_AUTH_MECHANISM is set'
+      );
+    }
     options.authMechanism = MONGODB_AUTH_MECHANISM;
     options.auth = { user: MONGODB_USER, password: MONGODB_PASSWORD };
   }

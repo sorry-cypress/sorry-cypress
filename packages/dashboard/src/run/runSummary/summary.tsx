@@ -1,4 +1,5 @@
 import {
+  ArrayItemType,
   getRunClaimedSpecsCount,
   getRunDurationSeconds,
   getRunOverallSpecsCount,
@@ -14,17 +15,25 @@ import {
   TestRetriesBadge,
   TestSkippedBadge,
   TestSuccessBadge,
-} from '@src/components/';
-import { Duration } from '@src/components/common/duration';
-import { GetRunQuery, RunProgressFragment } from '@src/generated/graphql';
-import { getSecondsDuration } from '@src/lib/duration';
+} from '@sorry-cypress/dashboard/components/';
+import { Duration } from '@sorry-cypress/dashboard/components/common/duration';
+import {
+  GetRunQuery,
+  GetRunsFeedQuery,
+  RunProgressFragment,
+} from '@sorry-cypress/dashboard/generated/graphql';
+import { getSecondsDuration } from '@sorry-cypress/dashboard/lib/duration';
 import { Cell, Grid, HFlow, Icon, Text, Tooltip } from 'bold-ui';
 import { parseISO } from 'date-fns';
 import React from 'react';
 import { Commit } from '../commit';
 import { DeleteRunButton } from '../deleteRun/deleteRunButton';
 
-export function RunSummaryComponent({ run }: { run: GetRunQuery['run'] }) {
+export function RunSummaryComponent({
+  run,
+}: {
+  run: GetRunQuery['run'] | ArrayItemType<GetRunsFeedQuery['runFeed']['runs']>;
+}) {
   if (!run) {
     return null;
   }

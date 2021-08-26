@@ -89,7 +89,7 @@ const runSingleReporter = async ({
       run,
       groupId,
       groupProgress,
-      spec,
+      spec: spec ?? '',
     });
   }
   if (isBitbucketHook(hook)) {

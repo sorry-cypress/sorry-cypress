@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./packages",
+    "module": "commonjs",
+    "target": "es2019",
+    "types": ["jest"],
+    "noEmit": true,
+    "esModuleInterop": true,
+    "strictNullChecks": true,
+    "resolveJsonModule": true,
+    "paths": {
+      "@sorry-cypress/common/*": ["common/src/*"],
+      "@sorry-cypress/common": ["common/src"],
+      "@sorry-cypress/mongo/*": ["mongo/src/*"],
+      "@sorry-cypress/mongo": ["mongo/src"],
+      "@sorry-cypress/director/*": ["director/src/*"],
+      "@sorry-cypress/api/*": ["api/src/*"],
+      "@sorry-cypress/dashboard/*": ["dashboard/src/*"]
+    }
+  },
+  "exclude": ["node_modules", "dist"]
+}

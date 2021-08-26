@@ -1,13 +1,18 @@
-import { getTestListRetries } from '@sorry-cypress/common';
-import { Collection } from '@sorry-cypress/mongo';
+import {
+  getTestListRetries,
+  InstanceResult,
+  Run,
+  RunSpec,
+} from '@sorry-cypress/common';
 import {
   AppError,
   CLAIM_FAILED,
   RUN_EXISTS,
   SPEC_COMPLETE_FAILED,
-} from '@src/lib/errors';
-import { getSanitizedMongoObject } from '@src/lib/results';
-import { ExecutionDriver, InstanceResult, Run, RunSpec } from '@src/types';
+} from '@sorry-cypress/director/lib/errors';
+import { getSanitizedMongoObject } from '@sorry-cypress/director/lib/results';
+import { ExecutionDriver } from '@sorry-cypress/director/types';
+import { Collection } from '@sorry-cypress/mongo';
 import { omit, pick } from 'lodash';
 
 export const getRunById = (id: string) =>

@@ -6,8 +6,8 @@ import {
   Run,
   RunGroupProgress,
 } from '@sorry-cypress/common';
-import { APP_NAME } from '@src/config';
-import { getDashboardRunURL } from '@src/lib/urls';
+import { APP_NAME } from '@sorry-cypress/director/config';
+import { getDashboardRunURL } from '@sorry-cypress/director/lib/urls';
 import axios from 'axios';
 import md5 from 'md5';
 
@@ -21,9 +21,17 @@ export async function reportStatusToBitbucket(
   hook: BitBucketHook,
   eventData: BBReporterStatusParams
 ) {
-  const { eventType, groupId, run, groupProgress } = eventData;
+  if (!hook.bitbucketUsername) {
+    console.warn('[bitbucket-reporter] No bitbucketUsername, ignoring hook...');
+    return;
+  }
 
-  const fullStatusPostUrl = getBitbucketBuildUrl(hook.url, run.meta.commit.sha);
+  if (!hook.bitbucketToken) {
+    console.warn('[bitbucket-reporter] No bitbucketToken, ignoring hook...');
+    return;
+  }
+
+  const { eventType, groupId, run, groupProgress } = eventData;
 
   // don't append group name if groupId is non-explicit
   // otherwise rerunning would create a new status context in GH
@@ -62,7 +70,9 @@ export async function reportStatusToBitbucket(
     return;
   }
 
+  const fullStatusPostUrl = getBitbucketBuildUrl(hook.url, run.meta.commit.sha);
   console.log(`[bitbucket-reporter] Posting hook`, {
+    fullStatusPostUrl,
     eventType,
     data,
   });

@@ -1,11 +1,14 @@
-import { GetInstanceQuery, useGetInstanceQuery } from '@src/generated/graphql';
-import { useAutoRefreshRate } from '@src/hooks/useAutoRefresh';
+import {
+  GetInstanceQuery,
+  useGetInstanceQuery,
+} from '@sorry-cypress/dashboard/generated/graphql';
+import { useAutoRefreshRate } from '@sorry-cypress/dashboard/hooks/useAutoRefresh';
 import {
   getInstancePath,
   getProjectPath,
   getRunPath,
   setNav,
-} from '@src/lib/navigation';
+} from '@sorry-cypress/dashboard/lib/navigation';
 import React, { useLayoutEffect } from 'react';
 import { InstanceDetails } from './details';
 import { InstanceSummary } from './summary';

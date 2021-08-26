@@ -1,5 +1,5 @@
+import { emitRunTimedout } from '@sorry-cypress/director/lib/hooks/events';
 import { runTimeoutModel } from '@sorry-cypress/mongo';
-import { emitRunTimedout } from '@src/lib/hooks/events';
 import {
   allRunSpecsCompleted,
   getNonCompletedGroups,
@@ -28,6 +28,12 @@ export const checkRunCompletionOnTimeout = async (
   }
 
   const run = await getRunById(runId);
+  if (!run) {
+    console.warn('[run-completion] No run found for checking completion', {
+      runId,
+    });
+    return;
+  }
 
   console.log(
     `[run-completion] Run ${runId} timed out after ${timeoutSeconds} seconds. Created: ${

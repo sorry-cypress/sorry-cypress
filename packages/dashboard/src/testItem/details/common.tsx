@@ -1,5 +1,5 @@
-import { Paper } from '@src/components';
-import { InstanceScreeshot } from '@src/generated/graphql';
+import { Paper } from '@sorry-cypress/dashboard/components';
+import { InstanceScreeshot } from '@sorry-cypress/dashboard/generated/graphql';
 import { Alert, useCss } from 'bold-ui';
 import React from 'react';
 

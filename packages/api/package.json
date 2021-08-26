@@ -18,8 +18,8 @@
     "generate": "graphql-codegen",
     "generate:watch": "graphql-codegen --watch",
     "build": "npm run generate && npm run build:types && npm run build:js",
-    "build:types": "tsc --emitDeclarationOnly",
-    "types:watch": "tsc --noEmit --watch --preserveWatchOutput",
+    "build:types": "tsc",
+    "types:watch": "tsc --watch --preserveWatchOutput",
     "build:js": "babel src --out-dir dist --extensions \".ts\" --source-maps inline --copy-files",
     "start": "node ./dist/",
     "clean": "rimraf ./dist",
@@ -72,7 +72,7 @@
       "[/\\\\](node_modules)[/\\\\].+\\.(js|mjs|ts)$"
     ],
     "moduleNameMapper": {
-      "^@src/(.*)": "<rootDir>/$1"
+      "^@sorry-cypress/api/(.*)": "<rootDir>/$1"
     },
     "moduleFileExtensions": [
       "ts",

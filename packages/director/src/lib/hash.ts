@@ -1,4 +1,4 @@
-import { PlatformData } from '@src/types';
+import { PlatformData } from '@sorry-cypress/common';
 import md5 from 'md5';
 import uuid from 'uuid/v4';
 

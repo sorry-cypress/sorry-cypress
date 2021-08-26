@@ -43,9 +43,9 @@ interface SetRunCompletedWithTimeout {
 export interface ExecutionDriver extends Driver {
   maybeSetRunCompleted: (runId: string) => Promise<boolean>;
   allGroupSpecsCompleted: (runId: string, groupId: string) => Promise<boolean>;
-  getProjectById: (projectId: string) => Promise<Project>;
-  getRunById: (runId: string) => Promise<Run>;
-  getInstanceById: (instanceId: string) => Promise<Instance>;
+  getProjectById: (projectId: string) => Promise<Project | null>;
+  getRunById: (runId: string) => Promise<Run | null>;
+  getInstanceById: (instanceId: string) => Promise<Instance | null>;
   createRun: (params: CreateRunParameters) => Promise<CreateRunResponse>;
   getNextTask: (params: GetNextTaskParams) => Promise<Task>;
   setRunCompleted: (runId: string) => Promise<void>;

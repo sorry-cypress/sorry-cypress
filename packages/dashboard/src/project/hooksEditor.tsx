@@ -4,7 +4,7 @@ import {
   useCreateGenericHookMutation,
   useCreateGithubHookMutation,
   useCreateSlackHookMutation,
-} from '@src/generated/graphql';
+} from '@sorry-cypress/dashboard/generated/graphql';
 import {
   Alert,
   Button,
@@ -77,6 +77,7 @@ export const HooksEditor = () => {
         variables: {
           input: {
             projectId,
+            slackResultFilter: null,
           },
         },
       });
@@ -88,6 +89,7 @@ export const HooksEditor = () => {
       dispatch({
         type: 'ADD_NEW_HOOK',
         payload: {
+          // @ts-ignore 😤
           hook: result.data[field],
         },
       });

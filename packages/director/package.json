@@ -16,7 +16,7 @@
     "dev": "run-p dev:nodemon types:watch",
     "dev:nodemon": "nodemon",
     "build": "npm run build:types && npm run build:js",
-    "build:types": "tsc --emitDeclarationOnly --declarationMap",
+    "build:types": "tsc",
     "types:watch": "yarn build:types --watch --preserveWatchOutput",
     "build:js": "babel src --out-dir dist --extensions \".ts\" --source-maps inline",
     "test": "jest",

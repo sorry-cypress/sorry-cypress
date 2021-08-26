@@ -19,75 +19,59 @@ export type Scalars = {
   DateTime: string;
 };
 
-export type Query = {
-  __typename?: 'Query';
-  projects: Array<Project>;
-  project: Maybe<Project>;
-  runs: Array<Maybe<Run>>;
-  runFeed: RunFeed;
-  run: Maybe<Run>;
-  instance: Maybe<Instance>;
-  specStats: Maybe<SpecStats>;
-};
-
-
-export type QueryProjectsArgs = {
-  orderDirection?: Maybe<OrderingOptions>;
-  filters?: Maybe<Array<Maybe<Filters>>>;
-};
-
-
-export type QueryProjectArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type QueryRunsArgs = {
-  orderDirection?: Maybe<OrderingOptions>;
-  cursor?: Maybe<Scalars['String']>;
-  filters?: Maybe<Array<Maybe<Filters>>>;
-};
-
-
-export type QueryRunFeedArgs = {
-  cursor: Maybe<Scalars['String']>;
-  filters?: Maybe<Array<Maybe<Filters>>>;
-};
-
-
-export type QueryRunArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type QueryInstanceArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type QuerySpecStatsArgs = {
-  spec: Scalars['String'];
-  filters?: Maybe<Array<Maybe<Filters>>>;
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
+  createBitbucketHook: BitbucketHook;
+  createGenericHook: GenericHook;
+  createGithubHook: GithubHook;
+  createProject: Project;
+  createSlackHook: SlackHook;
+  deleteHook: DeleteHookResponse;
+  deleteProject: DeleteProjectResponse;
   deleteRun: DeleteRunResponse;
   deleteRuns: DeleteRunResponse;
   deleteRunsInDateRange: DeleteRunResponse;
   resetInstance: ResetInstanceResponse;
-  deleteProject: DeleteProjectResponse;
-  createProject: Project;
-  updateProject: Project;
-  createGenericHook: GenericHook;
-  updateGenericHook: GenericHook;
-  createBitbucketHook: BitbucketHook;
   updateBitbucketHook: BitbucketHook;
-  createGithubHook: GithubHook;
+  updateGenericHook: GenericHook;
   updateGithubHook: GithubHook;
-  createSlackHook: SlackHook;
+  updateProject: Project;
   updateSlackHook: SlackHook;
-  deleteHook: DeleteHookResponse;
+};
+
+
+export type MutationCreateBitbucketHookArgs = {
+  input: CreateBitbucketHookInput;
+};
+
+
+export type MutationCreateGenericHookArgs = {
+  input: CreateGenericHookInput;
+};
+
+
+export type MutationCreateGithubHookArgs = {
+  input: CreateGithubHookInput;
+};
+
+
+export type MutationCreateProjectArgs = {
+  project: CreateProjectInput;
+};
+
+
+export type MutationCreateSlackHookArgs = {
+  input: CreateSlackHookInput;
+};
+
+
+export type MutationDeleteHookArgs = {
+  input: DeleteHookInput;
+};
+
+
+export type MutationDeleteProjectArgs = {
+  projectId: Scalars['ID'];
 };
 
 
@@ -112,23 +96,8 @@ export type MutationResetInstanceArgs = {
 };
 
 
-export type MutationDeleteProjectArgs = {
-  projectId: Scalars['ID'];
-};
-
-
-export type MutationCreateProjectArgs = {
-  project: CreateProjectInput;
-};
-
-
-export type MutationUpdateProjectArgs = {
-  input: UpdateProjectInput;
-};
-
-
-export type MutationCreateGenericHookArgs = {
-  input: CreateGenericHookInput;
+export type MutationUpdateBitbucketHookArgs = {
+  input: UpdateBitbucketHookInput;
 };
 
 
@@ -137,28 +106,13 @@ export type MutationUpdateGenericHookArgs = {
 };
 
 
-export type MutationCreateBitbucketHookArgs = {
-  input: CreateBitbucketHookInput;
-};
-
-
-export type MutationUpdateBitbucketHookArgs = {
-  input: UpdateBitbucketHookInput;
-};
-
-
-export type MutationCreateGithubHookArgs = {
-  input: CreateGithubHookInput;
-};
-
-
 export type MutationUpdateGithubHookArgs = {
   input: UpdateGithubHookInput;
 };
 
 
-export type MutationCreateSlackHookArgs = {
-  input: CreateSlackHookInput;
+export type MutationUpdateProjectArgs = {
+  input: UpdateProjectInput;
 };
 
 
@@ -166,38 +120,14 @@ export type MutationUpdateSlackHookArgs = {
   input: UpdateSlackHookInput;
 };
 
-
-export type MutationDeleteHookArgs = {
-  input: DeleteHookInput;
-};
-
-export type DeleteRunResponse = {
-  __typename?: 'DeleteRunResponse';
-  success: Scalars['Boolean'];
-  message: Scalars['String'];
-  runIds: Array<Maybe<Scalars['ID']>>;
-};
-
-export type SpecStats = {
-  __typename?: 'SpecStats';
-  spec: Scalars['String'];
-  avgWallClockDuration: Scalars['Int'];
-  count: Scalars['Int'];
-};
-
-
-
-
-
-
 export type DeleteHookInput = {
-  projectId: Scalars['ID'];
+  projectId: Scalars['String'];
   hookId: Scalars['ID'];
 };
 
 export type DeleteHookResponse = {
   __typename?: 'DeleteHookResponse';
-  projectId: Scalars['ID'];
+  projectId: Scalars['String'];
   hookId: Scalars['ID'];
 };
 
@@ -310,13 +240,6 @@ export type Hook = {
   slackBranchFilter: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
-export type Project = {
-  __typename?: 'Project';
-  projectId: Scalars['ID'];
-  hooks: Array<Hook>;
-  inactivityTimeoutSeconds: Maybe<Scalars['Int']>;
-};
-
 export type HookInput = {
   hookId: Maybe<Scalars['String']>;
   url: Scalars['String'];
@@ -330,6 +253,83 @@ export type HookInput = {
   bitbucketBuildName: Maybe<Scalars['String']>;
   slackResultFilter: Maybe<Scalars['String']>;
   slackBranchFilter: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+
+
+
+
+export type Query = {
+  __typename?: 'Query';
+  projects: Array<Project>;
+  project: Maybe<Project>;
+  runs: Array<Maybe<Run>>;
+  runFeed: RunFeed;
+  run: Maybe<Run>;
+  instance: Maybe<Instance>;
+  specStats: Maybe<SpecStats>;
+};
+
+
+export type QueryProjectsArgs = {
+  orderDirection?: Maybe<OrderingOptions>;
+  filters?: Maybe<Array<Maybe<Filters>>>;
+};
+
+
+export type QueryProjectArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryRunsArgs = {
+  orderDirection?: Maybe<OrderingOptions>;
+  cursor?: Maybe<Scalars['String']>;
+  filters?: Maybe<Array<Maybe<Filters>>>;
+};
+
+
+export type QueryRunFeedArgs = {
+  cursor: Maybe<Scalars['String']>;
+  filters?: Maybe<Array<Maybe<Filters>>>;
+};
+
+
+export type QueryRunArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryInstanceArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QuerySpecStatsArgs = {
+  spec: Scalars['String'];
+  filters?: Maybe<Array<Maybe<Filters>>>;
+};
+
+export type DeleteRunResponse = {
+  __typename?: 'DeleteRunResponse';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  runIds: Array<Maybe<Scalars['ID']>>;
+};
+
+export type SpecStats = {
+  __typename?: 'SpecStats';
+  spec: Scalars['String'];
+  avgWallClockDuration: Scalars['Int'];
+  count: Scalars['Int'];
+};
+
+export type Project = {
+  __typename?: 'Project';
+  projectId: Scalars['ID'];
+  hooks: Array<Hook>;
+  inactivityTimeoutSeconds: Maybe<Scalars['Int']>;
 };
 
 export type CreateProjectInput = {
@@ -594,7 +594,7 @@ export type GetProjectQuery = { __typename?: 'Query', project: Maybe<{ __typenam
 
 export type GetProjectsQueryVariables = Exact<{
   orderDirection: Maybe<OrderingOptions>;
-  filters: Maybe<Array<Maybe<Filters>> | Maybe<Filters>>;
+  filters: Array<Filters> | Filters;
 }>;
 
 
@@ -728,7 +728,7 @@ export type RunSummarySpecFragment = { __typename?: 'RunSpec', claimedAt: Maybe<
 
 export type GetRunsFeedQueryVariables = Exact<{
   cursor: Maybe<Scalars['String']>;
-  filters: Maybe<Array<Maybe<Filters>> | Maybe<Filters>>;
+  filters: Array<Filters> | Filters;
 }>;
 
 
@@ -1044,7 +1044,7 @@ export type GetProjectQueryHookResult = ReturnType<typeof useGetProjectQuery>;
 export type GetProjectLazyQueryHookResult = ReturnType<typeof useGetProjectLazyQuery>;
 export type GetProjectQueryResult = Apollo.QueryResult<GetProjectQuery, GetProjectQueryVariables>;
 export const GetProjectsDocument = gql`
-    query getProjects($orderDirection: OrderingOptions, $filters: [Filters]) {
+    query getProjects($orderDirection: OrderingOptions, $filters: [Filters!]!) {
   projects(orderDirection: $orderDirection, filters: $filters) {
     projectId
   }
@@ -1068,7 +1068,7 @@ export const GetProjectsDocument = gql`
  *   },
  * });
  */
-export function useGetProjectsQuery(baseOptions?: Apollo.QueryHookOptions<GetProjectsQuery, GetProjectsQueryVariables>) {
+export function useGetProjectsQuery(baseOptions: Apollo.QueryHookOptions<GetProjectsQuery, GetProjectsQueryVariables>) {
         return Apollo.useQuery<GetProjectsQuery, GetProjectsQueryVariables>(GetProjectsDocument, baseOptions);
       }
 export function useGetProjectsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProjectsQuery, GetProjectsQueryVariables>) {
@@ -1571,7 +1571,7 @@ export type ResetInstanceMutationHookResult = ReturnType<typeof useResetInstance
 export type ResetInstanceMutationResult = Apollo.MutationResult<ResetInstanceMutation>;
 export type ResetInstanceMutationOptions = Apollo.BaseMutationOptions<ResetInstanceMutation, ResetInstanceMutationVariables>;
 export const GetRunsFeedDocument = gql`
-    query getRunsFeed($cursor: String, $filters: [Filters]) {
+    query getRunsFeed($cursor: String, $filters: [Filters!]!) {
   runFeed(cursor: $cursor, filters: $filters) {
     cursor
     hasMore
@@ -1611,7 +1611,7 @@ ${RunProgressFragmentDoc}`;
  *   },
  * });
  */
-export function useGetRunsFeedQuery(baseOptions?: Apollo.QueryHookOptions<GetRunsFeedQuery, GetRunsFeedQueryVariables>) {
+export function useGetRunsFeedQuery(baseOptions: Apollo.QueryHookOptions<GetRunsFeedQuery, GetRunsFeedQueryVariables>) {
         return Apollo.useQuery<GetRunsFeedQuery, GetRunsFeedQueryVariables>(GetRunsFeedDocument, baseOptions);
       }
 export function useGetRunsFeedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRunsFeedQuery, GetRunsFeedQueryVariables>) {

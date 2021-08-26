@@ -1,6 +1,6 @@
 import { getTestRetries } from '@sorry-cypress/common';
-import { VisualTestState } from '@src/components/common';
-import { InstanceTest } from '@src/generated/graphql';
+import { VisualTestState } from '@sorry-cypress/dashboard/components/common';
+import { InstanceTest } from '@sorry-cypress/dashboard/generated/graphql';
 import React from 'react';
 import { Link } from 'react-router-dom';
 

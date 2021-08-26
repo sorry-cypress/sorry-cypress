@@ -84,3 +84,8 @@ export type UpdateInstanceResultsPayload = Pick<
 > & {
   tests: Pick<Test, 'clientId' | 'state' | 'displayError' | 'attempts'>[];
 };
+
+export interface UpdateInstanceResponse {
+  videoUploadUrl?: string;
+  screenshotUploadUrls: ScreenshotUploadInstruction[];
+}

@@ -1,12 +1,12 @@
-import { Instance, Run } from '@sorry-cypress/common';
-import { Collection, ObjectId } from '@sorry-cypress/mongo';
-import { PAGE_ITEMS_LIMIT } from '@src/config';
-import { OrderingOptions } from '@src/generated/graphql';
+import { PAGE_ITEMS_LIMIT } from '@sorry-cypress/api/config';
+import { OrderingOptions } from '@sorry-cypress/api/generated/graphql';
 import {
   AggregationFilter,
   filtersToAggregations,
   getSortByAggregation,
-} from '@src/lib/query';
+} from '@sorry-cypress/api/lib/query';
+import { Instance, Run } from '@sorry-cypress/common';
+import { Collection, ObjectId } from '@sorry-cypress/mongo';
 import { DataSource } from 'apollo-datasource';
 import { isNil, negate } from 'lodash';
 import { WithId } from 'mongodb';
@@ -63,21 +63,22 @@ export class RunsAPI extends DataSource {
     filters: AggregationFilter[];
     cursor: string | false;
   }) {
-    const aggregationPipeline = [
+    const aggregationPipeline: any[] = [
       ...filtersToAggregations(filters),
       getSortByAggregation(),
-      cursor
-        ? {
-            $match: {
-              _id: { $lt: new ObjectId(cursor) },
-            },
-          }
-        : null,
       {
         // get one extra to know if there's more
         $limit: PAGE_ITEMS_LIMIT + 1,
       },
-    ].filter(negate(isNil));
+    ];
+
+    if (cursor) {
+      aggregationPipeline.unshift({
+        $match: {
+          _id: { $lt: new ObjectId(cursor) },
+        },
+      });
+    }
 
     const results = await (
       await Collection.run().aggregate<WithId<Run>>(aggregationPipeline)
@@ -118,9 +119,7 @@ export class RunsAPI extends DataSource {
     });
     return {
       success: result.result.ok === 1,
-      message: `${result.deletedCount} document${
-        result.deletedCount > 1 ? 's' : ''
-      } deleted`,
+      message: `Deleted ${result.deletedCount ?? 0} item(s)`,
       runIds: result.result.ok === 1 ? runIds : [],
     };
   }

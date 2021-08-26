@@ -1,7 +1,14 @@
-import { useGetRunQuery } from '@src/generated/graphql';
-import { useAutoRefreshRate } from '@src/hooks/useAutoRefresh';
-import { getProjectPath, getRunPath, setNav } from '@src/lib/navigation';
-import { RunSummaryComponent } from '@src/run/runSummary/summary';
+import {
+  GetRunQuery,
+  useGetRunQuery,
+} from '@sorry-cypress/dashboard/generated/graphql';
+import { useAutoRefreshRate } from '@sorry-cypress/dashboard/hooks/useAutoRefresh';
+import {
+  getProjectPath,
+  getRunPath,
+  setNav,
+} from '@sorry-cypress/dashboard/lib/navigation';
+import { RunSummaryComponent } from '@sorry-cypress/dashboard/run/runSummary/summary';
 import React, { useLayoutEffect } from 'react';
 import { RunDetails } from './details';
 
@@ -30,7 +37,7 @@ export function RunDetailsView({
   if (error) return <p>{error.toString()}</p>;
   if (!data) return <p>No data</p>;
   if (!data.run) {
-    return 'Non-existing run';
+    return <p>Non-existing run</p>;
   }
 
   return (
@@ -41,7 +48,7 @@ export function RunDetailsView({
   );
 }
 
-const updateNav = (data) =>
+const updateNav = (data?: GetRunQuery) =>
   useLayoutEffect(() => {
     if (!data?.run) {
       setNav([]);

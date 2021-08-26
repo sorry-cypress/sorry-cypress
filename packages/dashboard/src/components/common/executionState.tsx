@@ -3,7 +3,7 @@ import {
   GetInstanceQuery,
   RunDetailSpecFragment,
   TestState,
-} from '@src/generated/graphql';
+} from '@sorry-cypress/dashboard/generated/graphql';
 import { Tag } from 'bold-ui';
 import React from 'react';
 

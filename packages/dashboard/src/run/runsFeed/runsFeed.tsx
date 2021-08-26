@@ -1,4 +1,4 @@
-import { CenteredContent } from '@src/components';
+import { CenteredContent } from '@sorry-cypress/dashboard/components';
 import { Button } from 'bold-ui';
 import React from 'react';
 import { RunSummaryComponent } from '../runSummary/summary';

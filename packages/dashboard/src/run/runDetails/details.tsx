@@ -4,17 +4,17 @@ import {
   TestFailureBadge,
   TestRetriesBadge,
   TestSkippedBadge,
-  TestSuccessBadge
-} from '@src/components/';
-import { getSpecState } from '@src/components/common/executionState';
+  TestSuccessBadge,
+} from '@sorry-cypress/dashboard/components/';
+import { getSpecState } from '@sorry-cypress/dashboard/components/common/executionState';
 import {
   GetRunQuery,
   RunDetailSpecFragment,
-  useGetSpecStatsQuery
-} from '@src/generated/graphql';
-import { useHideSuccessfulSpecs } from '@src/hooks/';
-import { getSecondsDuration } from '@src/lib/duration';
-import { ResetInstanceButton } from '@src/run/runDetails/resetInstance/resetInstanceButton';
+  useGetSpecStatsQuery,
+} from '@sorry-cypress/dashboard/generated/graphql';
+import { useHideSuccessfulSpecs } from '@sorry-cypress/dashboard/hooks/';
+import { getSecondsDuration } from '@sorry-cypress/dashboard/lib/duration';
+import { ResetInstanceButton } from '@sorry-cypress/dashboard/run/runDetails/resetInstance/resetInstanceButton';
 import {
   Cell,
   DataTable,
@@ -23,7 +23,7 @@ import {
   Switch,
   Text,
   Tooltip,
-  VFlow
+  VFlow,
 } from 'bold-ui';
 import { differenceInSeconds, parseISO } from 'date-fns';
 import { isNumber } from 'lodash';

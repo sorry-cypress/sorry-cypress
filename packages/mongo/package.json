@@ -11,7 +11,7 @@
   "scripts": {
     "dev": "run-p js:watch types:watch",
     "build": "npm run build:types && npm run build:js",
-    "build:types": "tsc --emitDeclarationOnly --declarationMap",
+    "build:types": "tsc",
     "types:watch": "yarn run build:types --watch --preserveWatchOutput",
     "js:watch": "yarn build:js --watch",
     "build:js": "node ./build.js",
@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@sorry-cypress/common": "1.0.0",
-    "date-fns": "^2.21.1",
+    "date-fns": "^2.21.3",
     "mongodb": "^3.6.5"
   }
 }

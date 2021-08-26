@@ -6,8 +6,8 @@ import {
   isGithubHook,
   isSlackHook,
 } from '@sorry-cypress/common';
-import { useDeleteHookMutation } from '@src/generated/graphql';
-import { useSwitch } from '@src/hooks/useSwitch';
+import { useDeleteHookMutation } from '@sorry-cypress/dashboard/generated/graphql';
+import { useSwitch } from '@sorry-cypress/dashboard/hooks/useSwitch';
 import { Button, Cell, Grid, HFlow, Icon, Text } from 'bold-ui';
 import React from 'react';
 import { useRouteMatch } from 'react-router';
@@ -79,9 +79,7 @@ export const HookEdit = ({
         <Toggler
           toggleExpanded={toggleExpanded}
           isExpanded={isExpanded}
-          title={`${enumToString(hook.hookType)}: ${
-            hook.url || 'New Hook'
-          }`}
+          title={`${enumToString(hook.hookType)}: ${hook.url || 'New Hook'}`}
         />
         <Button
           kind="danger"
@@ -93,35 +91,19 @@ export const HookEdit = ({
           Remove
         </Button>
       </HFlow>
-      {isExpanded && (
-        <HookDetails hook={hook} disabled={disabled} dispatch={dispatch} />
-      )}
+      {isExpanded && <HookDetails hook={hook} />}
     </>
   );
 };
 
-const HookDetails = ({
-  dispatch,
-  hook,
-  disabled,
-}: {
-  hook: Hook;
-  dispatch: React.Dispatch<HookFormAction>;
-  disabled: boolean;
-}) => {
+const HookDetails = ({ hook }: { hook: Hook }) => {
   return (
     <Grid style={{ padding: '1rem' }}>
       <Cell xs={12}>
-        {isGithubHook(hook) && (
-          <GithubHook hook={hook} dispatch={dispatch} disabled={disabled} />
-        )}
-        {isGenericHook(hook) && <GenericHook dispatch={dispatch} hook={hook} />}
-        {isSlackHook(hook) && (
-          <SlackHook dispatch={dispatch} disabled={disabled} hook={hook} />
-        )}
-        {isBitbucketHook(hook) && (
-          <BitbucketHook dispatch={dispatch} disabled={disabled} hook={hook} />
-        )}
+        {isGithubHook(hook) && <GithubHook hook={hook} />}
+        {isGenericHook(hook) && <GenericHook hook={hook} />}
+        {isSlackHook(hook) && <SlackHook hook={hook} />}
+        {isBitbucketHook(hook) && <BitbucketHook hook={hook} />}
       </Cell>
       <Cell xs={12}>
         <HFlow justifyContent="space-between"></HFlow>

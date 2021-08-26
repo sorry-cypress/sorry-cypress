@@ -1,5 +1,9 @@
-import { Commit as CommitDef } from '@src/generated/graphql';
-import {getGithubBranchURL, getGithubCommitURL, handleSshURL} from '@src/lib/github';
+import { Commit as CommitDef } from '@sorry-cypress/dashboard/generated/graphql';
+import {
+  getGithubBranchURL,
+  getGithubCommitURL,
+  handleSshURL,
+} from '@sorry-cypress/dashboard/lib/github';
 import React from 'react';
 
 type CommitProps = {

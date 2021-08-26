@@ -1,4 +1,4 @@
-import { init as initHooks } from '@src/lib/hooks/init';
+import { init as initHooks } from '@sorry-cypress/director/lib/hooks/init';
 import { app } from './app';
 import { PORT } from './config';
 import { getExecutionDriver, getScreenshotsDriver } from './drivers';
