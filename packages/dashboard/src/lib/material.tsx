@@ -3,7 +3,6 @@ import React, { PropsWithChildren } from 'react';
 
 const themeOptions: ThemeOptions = {
   palette: {
-    type: 'light',
     primary: {
       main: '#093c52',
       contrastText: '#ebecf1',
@@ -23,11 +22,6 @@ const themeOptions: ThemeOptions = {
     fontWeightMedium: 500,
     fontFamily: 'IBM Plex Sans',
     fontWeightRegular: 400,
-  },
-  props: {
-    MuiButtonBase: {
-      disableRipple: true,
-    },
   },
   spacing: 8,
   shape: {
