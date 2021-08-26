@@ -149,6 +149,11 @@ export const resolvers = {
         runIds
       );
       if (instancesDeleteResponse.success) {
+        await Promise.all(
+          runIds.map((runId) =>
+            dataSources.runTimeoutAPI.deleteRunTimeouts(runId)
+          )
+        );
         return dataSources.runsAPI.deleteRunsByIds(runIds);
       } else {
         return instancesDeleteResponse;

@@ -4,6 +4,7 @@ import { PORT } from './config';
 import { InstancesAPI } from './datasources/instances';
 import { ProjectsAPI } from './datasources/projects';
 import { RunsAPI } from './datasources/runs';
+import { RunTimeoutAPI } from './datasources/runTimeout';
 import { SpecsAPI } from './datasources/specs';
 import { resolvers } from './resolvers';
 import { typeDefs } from './schema/schema';
@@ -15,6 +16,7 @@ async function start() {
     instancesAPI: new InstancesAPI(),
     projectsAPI: new ProjectsAPI(),
     specsAPI: new SpecsAPI(),
+    runTimeoutAPI: new RunTimeoutAPI(),
   };
 
   const server = new ApolloServer({
