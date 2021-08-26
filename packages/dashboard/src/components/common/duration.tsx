@@ -1,6 +1,6 @@
 import { RenderOnInterval } from '@sorry-cypress/dashboard/components/';
 import { RunCompletion } from '@sorry-cypress/dashboard/generated/graphql';
-import { getSecondsDuration } from '@sorry-cypress/dashboard/lib/duration';
+import { getDurationSeconds } from '@sorry-cypress/dashboard/lib/duration';
 import { Text } from 'bold-ui';
 import { differenceInSeconds, parseISO } from 'date-fns';
 import { differenceInHours } from 'date-fns/esm';
@@ -22,14 +22,14 @@ export function Duration({
   wallClockDurationSeconds: number;
 }) {
   if (completion?.completed || isIdle(createdAtISO)) {
-    return <Text>{getSecondsDuration(wallClockDurationSeconds)}</Text>;
+    return <Text>{getDurationSeconds(wallClockDurationSeconds)}</Text>;
   }
 
   return (
     <Text>
       <RenderOnInterval
         render={() =>
-          getSecondsDuration(
+          getDurationSeconds(
             differenceInSeconds(Date.now(), parseISO(createdAtISO))
           )
         }

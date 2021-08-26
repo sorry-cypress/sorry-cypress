@@ -4,7 +4,7 @@ import {
   GetInstanceQuery,
   InstanceTest,
 } from '@sorry-cypress/dashboard/generated/graphql';
-import { getSecondsDuration } from '@sorry-cypress/dashboard/lib/duration';
+import { getDurationMs } from '@sorry-cypress/dashboard/lib/duration';
 import { TestError } from '@sorry-cypress/dashboard/testItem/details/common';
 import { DataTable, Text, Tooltip } from 'bold-ui';
 import { truncate } from 'lodash';
@@ -20,7 +20,7 @@ function TestStatus(test: InstanceTest) {
 function TestDuration(test: InstanceTest) {
   return (
     <Tooltip text={`Started at ${getTestStartedAt(test)}`}>
-      <Text>{getSecondsDuration(getTestDuration(test) / 1000)}</Text>
+      <Text>{getDurationMs(getTestDuration(test))}</Text>
     </Tooltip>
   );
 }

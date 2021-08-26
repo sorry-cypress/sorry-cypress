@@ -22,7 +22,7 @@ import {
   GetRunsFeedQuery,
   RunProgressFragment,
 } from '@sorry-cypress/dashboard/generated/graphql';
-import { getSecondsDuration } from '@sorry-cypress/dashboard/lib/duration';
+import { getDurationMs } from '@sorry-cypress/dashboard/lib/duration';
 import { Cell, Grid, HFlow, Icon, Text, Tooltip } from 'bold-ui';
 import { parseISO } from 'date-fns';
 import React from 'react';
@@ -45,7 +45,7 @@ export function RunSummaryComponent({
   const inactivityTimeoutMs = run.completion?.inactivityTimeoutMs;
 
   if (!run.progress) {
-    return <div>Legacy run</div>;
+    return <Pre_2_0_0_Run run={run} />;
   }
 
   const overallSpecsCount = getRunOverallSpecsCount(run.progress);
@@ -152,11 +152,48 @@ function RunStatus({
 function Timedout({ inactivityTimeoutMs }: { inactivityTimeoutMs: number }) {
   return (
     <Tooltip
-      text={`Timed out after ${getSecondsDuration(
-        inactivityTimeoutMs / 1000
+      text={`Timed out after ${getDurationMs(
+        inactivityTimeoutMs
       )}. Set the timeout value in project settings.`}
     >
       <Icon icon="clockOutline" fill="danger" stroke="danger" size={0.9} />
     </Tooltip>
   );
 }
+
+const Pre_2_0_0_Run = ({
+  run,
+}: {
+  run: GetRunQuery['run'] | ArrayItemType<GetRunsFeedQuery['runFeed']['runs']>;
+}) => {
+  if (!run) {
+    return null;
+  }
+  const runId = run.runId;
+  const runMeta = run.meta;
+
+  return (
+    <Paper>
+      <HFlow alignItems="center" justifyContent="space-between">
+        <div style={{ flex: 1 }}>
+          <HFlow alignItems="center">
+            <Tooltip text="This is a legacy run created prior to Sorry Cypress 2.0. Some information may be missing.">
+              <Icon icon="archiveFilled" size={1} />
+            </Tooltip>
+            <HeaderLink to={`/run/${runId}`}>{runMeta.ciBuildId}</HeaderLink>
+          </HFlow>
+        </div>
+        <DeleteRunButton runId={runId} ciBuildId={runMeta.ciBuildId} />
+      </HFlow>
+      <Grid>
+        <Cell xs={12} md={6}>
+          <Commit commit={runMeta?.commit} />
+          <CiUrl
+            ciBuildId={runMeta?.ciBuildId}
+            projectId={runMeta?.projectId}
+          />
+        </Cell>
+      </Grid>
+    </Paper>
+  );
+};

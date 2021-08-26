@@ -13,7 +13,10 @@ import {
   useGetSpecStatsQuery,
 } from '@sorry-cypress/dashboard/generated/graphql';
 import { useHideSuccessfulSpecs } from '@sorry-cypress/dashboard/hooks/';
-import { getSecondsDuration } from '@sorry-cypress/dashboard/lib/duration';
+import {
+  getDurationMs,
+  getDurationSeconds,
+} from '@sorry-cypress/dashboard/lib/duration';
 import { ResetInstanceButton } from '@sorry-cypress/dashboard/run/runDetails/resetInstance/resetInstanceButton';
 import {
   Cell,
@@ -196,11 +199,7 @@ const getDurationCell = (spec: RunDetailSpecFragment) => {
   if (isNumber(spec.results?.stats?.wallClockDuration)) {
     return (
       <Tooltip text={`Started at ${spec.results?.stats.wallClockStartedAt}`}>
-        <Text>
-          {getSecondsDuration(
-            (spec.results?.stats.wallClockDuration ?? 0) / 1000
-          )}
-        </Text>
+        <Text>{getDurationMs(spec.results?.stats.wallClockDuration ?? 0)}</Text>
       </Tooltip>
     );
   }
@@ -213,7 +212,7 @@ const getDurationCell = (spec: RunDetailSpecFragment) => {
       <Text>
         <RenderOnInterval
           render={() =>
-            getSecondsDuration(
+            getDurationSeconds(
               // @ts-ignore
               differenceInSeconds(new Date(), parseISO(spec.claimedAt))
             )
@@ -250,9 +249,5 @@ const SpecAvg = ({ specName }: { specName: string }) => {
   if (!data) {
     return null;
   }
-  return (
-    <>
-      {getSecondsDuration((data.specStats?.avgWallClockDuration ?? 0) / 1000)}
-    </>
-  );
+  return <>{getDurationMs(data.specStats?.avgWallClockDuration ?? 0)}</>;
 };
