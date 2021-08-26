@@ -70,9 +70,11 @@ const ProjectsList = ({ search }: ProjectsListProps) => {
   return (
     <>
       {projects.map((project) => (
-        <div key={project.projectId}>
-          <ProjectListItem project={project} reloadProjects={refetch} />
-        </div>
+        <ProjectListItem
+          key={project.projectId}
+          project={project}
+          reloadProjects={refetch}
+        />
       ))}
     </>
   );
