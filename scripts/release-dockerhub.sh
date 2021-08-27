@@ -63,7 +63,7 @@ function dockerPush() {
 }
 
 # ./scripts/release-dockerhub.sh -t cypress-v5
-while getopts t:p: flag
+while getopts t:s: flag
 do
     case "${flag}" in
         t) explicitTag=${OPTARG};;
