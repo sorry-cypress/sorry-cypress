@@ -1,4 +1,4 @@
-name: Update Dockerhub Images
+name: Update Director Dockerhub Image
 
 on:
   push:
