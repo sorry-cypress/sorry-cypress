@@ -83,13 +83,13 @@ fi
 echo 🚀 Releasing tags: $TAGS
 echo ========================
 
-dockerBuild "packages/director" "agoldis/sorry-cypress-director"
-dockerBuild "packages/api" "agoldis/sorry-cypress-api"
+# dockerBuild "packages/director" "agoldis/sorry-cypress-director"
+# dockerBuild "packages/api" "agoldis/sorry-cypress-api"
 dockerBuild "packages/dashboard" "agoldis/sorry-cypress-dashboard"
 
-dockerPush "agoldis/sorry-cypress-director"
-dockerPush "agoldis/sorry-cypress-api"
-dockerPush "agoldis/sorry-cypress-dashboard"
+# dockerPush "agoldis/sorry-cypress-director"
+# dockerPush "agoldis/sorry-cypress-api"
+# dockerPush "agoldis/sorry-cypress-dashboard"
 
 echo ========================
 echo 🎉 Released to Dockerhub: $TAGS
