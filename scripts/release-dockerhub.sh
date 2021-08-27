@@ -63,13 +63,18 @@ function dockerPush() {
 }
 
 # ./scripts/release-dockerhub.sh -t cypress-v5
-while getopts t: flag
+while getopts t:p: flag
 do
     case "${flag}" in
         t) explicitTag=${OPTARG};;
+        s) service=${OPTARG};;
     esac
 done
 
+if [ -z "${service}" ]; then
+  echo "Missing service: -s api|dashboard|director";
+  exit 1;
+fi
 
 if [ -z "${BRANCH}" ]
 then
@@ -83,11 +88,11 @@ fi
 echo 🚀 Releasing tags: $TAGS
 echo ========================
 
-# dockerBuild "packages/director" "agoldis/sorry-cypress-director"
+dockerBuild "packages/${service}" "agoldis/sorry-cypress-${service}"
 # dockerBuild "packages/api" "agoldis/sorry-cypress-api"
-dockerBuild "packages/dashboard" "agoldis/sorry-cypress-dashboard"
+# dockerBuild "packages/dashboard" "agoldis/sorry-cypress-dashboard"
 
-# dockerPush "agoldis/sorry-cypress-director"
+dockerPush "agoldis/sorry-cypress-${service}"
 # dockerPush "agoldis/sorry-cypress-api"
 # dockerPush "agoldis/sorry-cypress-dashboard"
 
