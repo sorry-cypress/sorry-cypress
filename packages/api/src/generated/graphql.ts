@@ -136,8 +136,8 @@ export type SlackHook = {
   url: Scalars['String'];
   hookType: Scalars['SlackHookType'];
   hookEvents: Array<Scalars['String']>;
-  slackResultFilter: Scalars['SlackResultFilter'];
-  slackBranchFilter?: Maybe<Array<Maybe<Scalars['String']>>>;
+  slackResultFilter?: Maybe<Scalars['SlackResultFilter']>;
+  slackBranchFilter?: Maybe<Array<Scalars['String']>>;
 };
 
 export type CreateSlackHookInput = {
@@ -150,8 +150,8 @@ export type UpdateSlackHookInput = {
   hookId: Scalars['ID'];
   url: Scalars['String'];
   hookEvents: Array<Scalars['String']>;
-  slackResultFilter: Scalars['SlackResultFilter'];
-  slackBranchFilter?: Maybe<Array<Maybe<Scalars['String']>>>;
+  slackResultFilter?: Maybe<Scalars['SlackResultFilter']>;
+  slackBranchFilter?: Maybe<Array<Scalars['String']>>;
 };
 
 export type GithubHook = {
@@ -790,8 +790,8 @@ export type SlackHookResolvers<ContextType = any, ParentType extends ResolversPa
   url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   hookType?: Resolver<ResolversTypes['SlackHookType'], ParentType, ContextType>;
   hookEvents?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
-  slackResultFilter?: Resolver<ResolversTypes['SlackResultFilter'], ParentType, ContextType>;
-  slackBranchFilter?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
+  slackResultFilter?: Resolver<Maybe<ResolversTypes['SlackResultFilter']>, ParentType, ContextType>;
+  slackBranchFilter?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 

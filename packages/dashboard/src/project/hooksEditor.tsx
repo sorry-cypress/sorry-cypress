@@ -25,6 +25,7 @@ import { HookEdit } from './hook/hookEdit';
 import { useHooksFormReducer } from './hook/hookFormReducer';
 import { useCurrentProjectId } from './hook/useCurrentProjectId';
 
+// This needs serious refactoring - it's a mess 😃
 export const HooksEditor = () => {
   const [operationError, setOperationError] = useState<string | null>(null);
   const [formState, dispatch] = useHooksFormReducer();
@@ -40,6 +41,9 @@ export const HooksEditor = () => {
   const [createSlackHook] = useCreateSlackHookMutation();
 
   async function createNewHook() {
+    const input = {
+      projectId,
+    };
     let fn:
       | typeof createGenericHook
       | typeof createBitbucketHook
@@ -51,6 +55,8 @@ export const HooksEditor = () => {
       case HookType.SLACK_HOOK:
         fn = createSlackHook;
         field = 'createSlackHook';
+        // @ts-ignore
+        input.slackResultFilter = null;
 
         break;
       case HookType.GITHUB_STATUS_HOOK:
@@ -69,16 +75,13 @@ export const HooksEditor = () => {
 
       default:
         throw new Error('Unknown hook type');
-        break;
     }
 
     try {
       const result = await fn({
         variables: {
-          input: {
-            projectId,
-            slackResultFilter: null,
-          },
+          // @ts-ignore
+          input,
         },
       });
       if (result.errors) {

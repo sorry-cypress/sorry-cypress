@@ -25,8 +25,8 @@ type SlackHook {
   url: String!
   hookType: SlackHookType!
   hookEvents: [String!]!
-  slackResultFilter: SlackResultFilter!
-  slackBranchFilter: [String]
+  slackResultFilter: SlackResultFilter
+  slackBranchFilter: [String!]
 }
 
 input CreateSlackHookInput {
@@ -39,8 +39,8 @@ input UpdateSlackHookInput {
   hookId: ID!
   url: String!
   hookEvents: [String!]!
-  slackResultFilter: SlackResultFilter!
-  slackBranchFilter: [String]
+  slackResultFilter: SlackResultFilter
+  slackBranchFilter: [String!]
 }
 
 type GithubHook {

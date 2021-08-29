@@ -138,8 +138,8 @@ export type SlackHook = {
   url: Scalars['String'];
   hookType: Scalars['SlackHookType'];
   hookEvents: Array<Scalars['String']>;
-  slackResultFilter: Scalars['SlackResultFilter'];
-  slackBranchFilter: Maybe<Array<Maybe<Scalars['String']>>>;
+  slackResultFilter: Maybe<Scalars['SlackResultFilter']>;
+  slackBranchFilter: Maybe<Array<Scalars['String']>>;
 };
 
 export type CreateSlackHookInput = {
@@ -152,8 +152,8 @@ export type UpdateSlackHookInput = {
   hookId: Scalars['ID'];
   url: Scalars['String'];
   hookEvents: Array<Scalars['String']>;
-  slackResultFilter: Scalars['SlackResultFilter'];
-  slackBranchFilter: Maybe<Array<Maybe<Scalars['String']>>>;
+  slackResultFilter: Maybe<Scalars['SlackResultFilter']>;
+  slackBranchFilter: Maybe<Array<Scalars['String']>>;
 };
 
 export type GithubHook = {
@@ -626,7 +626,7 @@ export type CreateSlackHookMutationVariables = Exact<{
 }>;
 
 
-export type CreateSlackHookMutation = { __typename?: 'Mutation', createSlackHook: { __typename?: 'SlackHook', hookId: string, hookType: any, url: string, hookEvents: Array<string>, slackResultFilter: any, slackBranchFilter: Maybe<Array<Maybe<string>>> } };
+export type CreateSlackHookMutation = { __typename?: 'Mutation', createSlackHook: { __typename?: 'SlackHook', hookId: string, hookType: any, url: string, hookEvents: Array<string>, slackResultFilter: Maybe<any>, slackBranchFilter: Maybe<Array<string>> } };
 
 export type DeleteHookMutationVariables = Exact<{
   input: DeleteHookInput;
