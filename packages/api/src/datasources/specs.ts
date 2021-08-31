@@ -3,7 +3,7 @@ import {
   AggregationFilter,
   filtersToAggregations,
 } from '@sorry-cypress/api/lib/query';
-import { Collection } from '@sorry-cypress/mongo/dist';
+import { Collection } from '@sorry-cypress/mongo';
 import { DataSource } from 'apollo-datasource';
 
 interface SpecsAggregationResult {

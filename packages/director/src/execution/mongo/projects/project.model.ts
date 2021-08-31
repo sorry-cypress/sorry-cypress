@@ -3,7 +3,7 @@ import {
   AppError,
   PROJECT_CREATE_FAILED,
 } from '@sorry-cypress/director/lib/errors';
-import { Collection } from '@sorry-cypress/mongo/dist';
+import { Collection } from '@sorry-cypress/mongo';
 
 export const getProjectById = (id: string) =>
   Collection.project().findOne({ projectId: id });

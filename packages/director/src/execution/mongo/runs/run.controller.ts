@@ -21,7 +21,7 @@ import {
 } from '@sorry-cypress/director/lib/hash';
 import { getDashboardRunURL } from '@sorry-cypress/director/lib/urls';
 import { ExecutionDriver } from '@sorry-cypress/director/types';
-import { runTimeoutModel } from '@sorry-cypress/mongo/dist';
+import { runTimeoutModel } from '@sorry-cypress/mongo';
 import { addSeconds } from 'date-fns';
 import { curry, property, uniq } from 'lodash';
 import {

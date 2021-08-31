@@ -1,4 +1,4 @@
-import { initMongoNoIndexes } from '@sorry-cypress/mongo/dist';
+import { initMongoNoIndexes } from '@sorry-cypress/mongo';
 import { ApolloServer } from 'apollo-server';
 import { PORT } from './config';
 import { InstancesAPI } from './datasources/instances';
