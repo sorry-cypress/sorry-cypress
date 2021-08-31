@@ -14,8 +14,15 @@ let db: mongodb.Db;
 let client: MongoClient;
 
 export const initMongo = async () => {
-  await initMongoNoIndexes();
-  await createIndexes();
+  try {
+    // 👹 Wait for mongoDB to initialize, didn't want to mess with ECS health checks
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+    await initMongoNoIndexes();
+    await createIndexes();
+  } catch (e) {
+    console.error(e);
+    process.exit(1);
+  }
 };
 
 export const initMongoNoIndexes = async () => {
