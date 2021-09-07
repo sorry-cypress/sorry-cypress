@@ -2,7 +2,6 @@ import { SetInstanceTestsPayload } from '@sorry-cypress/common';
 import {
   AppError,
   INSTANCE_NOT_EXIST,
-  INSTANCE_NO_CREATE_TEST_DTO,
   SCREENSHOT_URL_UPDATE_FAILED,
 } from '@sorry-cypress/director/lib/errors';
 import { mergeInstanceResults } from '@sorry-cypress/director/lib/instance';
@@ -66,9 +65,7 @@ export const updateInstanceResults: ExecutionDriver['updateInstanceResults'] = a
   if (!instance) {
     throw new AppError(INSTANCE_NOT_EXIST);
   }
-  if (!instance._createTestsPayload) {
-    throw new AppError(INSTANCE_NO_CREATE_TEST_DTO);
-  }
+
   const instanceResult = mergeInstanceResults(
     instance._createTestsPayload,
     update

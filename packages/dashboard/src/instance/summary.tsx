@@ -1,3 +1,4 @@
+import { getTestListRetries } from '@sorry-cypress/common';
 import { Paper } from '@sorry-cypress/dashboard/components';
 import {
   getInstanceState,
@@ -25,7 +26,13 @@ export function InstanceSummary({ instance }: InstanceSummaryProps) {
       <Grid>
         <Cell xs={12} lg={6}>
           <HFlow>
-            <SpecStateTag state={getInstanceState(instance)} />
+            <SpecStateTag
+              state={getInstanceState({
+                claimedAt: null,
+                stats: instance.results.stats,
+                retries: getTestListRetries(instance.results.tests ?? []),
+              })}
+            />
             <Heading level={2}>{instance.spec}</Heading>
           </HFlow>
           <ul>

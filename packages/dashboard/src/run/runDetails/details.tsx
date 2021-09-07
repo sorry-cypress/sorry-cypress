@@ -6,7 +6,7 @@ import {
   TestSkippedBadge,
   TestSuccessBadge,
 } from '@sorry-cypress/dashboard/components/';
-import { getSpecState } from '@sorry-cypress/dashboard/components/common/executionState';
+import { getInstanceState } from '@sorry-cypress/dashboard/components/common/executionState';
 import {
   GetRunQuery,
   RunDetailSpecFragment,
@@ -39,7 +39,7 @@ export function RunDetails({ run }: { run: NonNullable<GetRunQuery['run']> }) {
   const { specs } = run;
   const history = useHistory();
 
-  const [isPassedHidden, setHidePassedSpecs] = useHideSuccessfulSpecs();
+  const [hidePassedSpecs, setHidePassedSpecs] = useHideSuccessfulSpecs();
 
   if (!specs) {
     return null;
@@ -51,9 +51,17 @@ export function RunDetails({ run }: { run: NonNullable<GetRunQuery['run']> }) {
 
   const rows = run.specs
     .filter((spec) => !!spec)
-    .filter((spec) =>
-      isPassedHidden ? getSpecState(spec) !== 'passed' : true
-    );
+    .filter((spec) => {
+      if (!hidePassedSpecs) {
+        return true;
+      }
+      const state = getInstanceState({
+        claimedAt: spec.claimedAt,
+        stats: spec.results?.stats,
+        retries: spec.results?.retries ?? 0,
+      });
+      return ['failed'].includes(state);
+    });
 
   return (
     <Grid>
@@ -62,8 +70,8 @@ export function RunDetails({ run }: { run: NonNullable<GetRunQuery['run']> }) {
           <strong>Spec Files</strong>
           <Switch
             label="Hide successful specs"
-            checked={isPassedHidden}
-            onChange={() => setHidePassedSpecs(!isPassedHidden)}
+            checked={hidePassedSpecs}
+            onChange={() => setHidePassedSpecs((i) => !i)}
           />
         </HFlow>
       </Cell>
@@ -181,7 +189,13 @@ const getSkippedCell = (spec: RunDetailSpecFragment) => {
 };
 
 const getItemStatusCell = (spec: RunDetailSpecFragment) => (
-  <SpecStateTag state={getSpecState(spec)} />
+  <SpecStateTag
+    state={getInstanceState({
+      claimedAt: spec.claimedAt,
+      stats: spec.results?.stats,
+      retries: spec.results?.retries ?? 0,
+    })}
+  />
 );
 
 const getMachineCell = (spec: RunDetailSpecFragment) => {

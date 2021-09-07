@@ -50,6 +50,7 @@ export interface CypressConfig {
   [key: string]: any;
 }
 
+// as saved to DB
 export interface InstanceResult {
   stats: InstanceResultStats;
   tests: Test[];

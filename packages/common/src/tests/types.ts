@@ -1,14 +1,29 @@
-type TestState = 'passed' | 'failed' | 'pending' | undefined;
+// type TestState = 'passed' | 'failed' | 'pending' | 'skipped' | undefined;
 
+export enum TestState {
+  Failed = 'failed',
+  Passed = 'passed',
+  Pending = 'pending',
+  Skipped = 'skipped',
+}
+
+export interface TestHook {
+  clientId: string;
+  type: 'before each';
+  title: string[];
+  body: string;
+}
 export interface Test {
   clientId: string;
+  testId: string;
   state: TestState;
   displayError: string | null;
   title: string[];
-  config: null | TestConfig;
+  config?: null | TestConfig;
   hookIds: string[];
   body: string;
   attempts: TestAttempt[];
+  hooks: TestHook[] | null;
 }
 
 interface TestConfig {

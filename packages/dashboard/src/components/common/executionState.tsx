@@ -1,11 +1,7 @@
-import { getTestListRetries } from '@sorry-cypress/common';
-import {
-  GetInstanceQuery,
-  RunDetailSpecFragment,
-  TestState,
-} from '@sorry-cypress/dashboard/generated/graphql';
+import { TestState } from '@sorry-cypress/dashboard/generated/graphql';
 import { Tag } from 'bold-ui';
 import React from 'react';
+import { isIdle } from './duration';
 
 type TestStateProps = {
   state?: TestState | 'unknown';
@@ -30,58 +26,56 @@ export const VisualTestState = ({ state, retries = 0 }: TestStateProps) => {
   }
 };
 
-export type StateType =
+export type InstanceState =
   | 'passed'
   | 'failed'
   | 'pending'
   | 'running'
   | 'notests'
-  | 'flaky';
-export const getSpecState = (spec: RunDetailSpecFragment): StateType => {
-  if (spec.claimedAt && !spec.results) {
+  | 'flaky'
+  | 'idle';
+
+export const getInstanceState = ({
+  claimedAt,
+  retries,
+  stats,
+}: {
+  claimedAt: string | null;
+  retries: number;
+  stats?: {
+    failures: number;
+    tests: number;
+    skipped: number;
+  };
+}): InstanceState => {
+  if (claimedAt && !stats && isIdle(claimedAt)) {
+    return 'idle';
+  }
+
+  if (claimedAt && !stats) {
     return 'running';
   }
 
-  if (!spec.results) {
+  if (!stats) {
     return 'pending';
   }
+  // Keep before "no tests"
+  if (stats.failures > 0 || stats.skipped > 0) {
+    return 'failed';
+  }
 
-  if (!spec.results.stats?.tests) {
+  if (!stats.tests) {
     return 'notests';
   }
 
-  if (spec.results.retries ?? 0 > 0) {
-    return 'flaky';
-  }
-  if (!spec.results.stats.failures && !spec.results.stats.skipped) {
-    return 'passed';
-  }
-
-  return 'failed';
-};
-
-export const getInstanceState = (
-  instance: GetInstanceQuery['instance']
-): StateType => {
-  if (!instance?.results?.stats) {
-    return 'pending';
-  }
-
-  if (!instance.results.tests) {
-    return 'notests';
-  }
-
-  if (getTestListRetries(instance.results.tests) > 0) {
+  if (retries > 0) {
     return 'flaky';
   }
 
-  if (!instance.results.stats.failures && !instance.results.stats.skipped) {
-    return 'passed';
-  }
-  return 'failed';
+  return 'passed';
 };
 
-export const SpecStateTag = ({ state }: { state: StateType }) => {
+export const SpecStateTag = ({ state }: { state: InstanceState }) => {
   switch (state) {
     case 'failed':
       return <Tag type="danger">Failed</Tag>;
