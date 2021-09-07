@@ -85,29 +85,4 @@ export class InstancesAPI extends DataSource {
       instanceId: result.result.ok === 1 ? instanceId : undefined,
     };
   }
-
-  async deleteInstancesInDateRange(startDate: Date, endDate: Date) {
-    if (startDate > endDate) {
-      return {
-        success: false,
-        message: `startDate: ${startDate.toISOString()} should be less than endDate: ${endDate.toISOString()}`,
-        runIds: [],
-      };
-    }
-    const response = await Collection.instance()
-      .aggregate([
-        {
-          $match: {
-            'run.createdAt': {
-              $lte: endDate.toISOString(),
-              $gte: startDate.toISOString(),
-            },
-          },
-        },
-      ])
-      .toArray();
-
-    const runIds = response.map((x) => x.runId) as string[];
-    return await this.deleteInstancesByRunIds(runIds);
-  }
 }
