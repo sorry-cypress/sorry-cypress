@@ -1,7 +1,8 @@
 import { ApolloProvider } from '@apollo/client';
+import { RunRedirect } from '@src/run/runsRedirect';
 import { ThemeProvider } from 'bold-ui';
 import React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Content, Footer, Header, Layout } from './components';
 import { InstanceDetailsView } from './instance/instanceDetailsView';
 import { client } from './lib/apolloClient';
@@ -61,7 +62,13 @@ export const Root = () => {
               <Content>
                 <Route path="/" exact component={ProjectsView} />
 
-                <Route path="/:projectId+/runs" component={RunsView} />
+                <Switch>
+                  <Route
+                    path="/:projectId+/runs/:buildId"
+                    component={RunRedirect}
+                  />
+                  <Route path="/:projectId+/runs" component={RunsView} />
+                </Switch>
                 <Route path="/:projectId+/edit" component={ProjectEditView} />
                 <Route path="/run/:id" component={RunDetailsView} />
                 <Route
