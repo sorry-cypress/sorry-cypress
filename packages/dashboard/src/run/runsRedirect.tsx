@@ -1,6 +1,6 @@
-import { useGetRunsFeed } from '@src/run/runsFeed/useGetRunFeed';
 import React from 'react';
 import { Redirect } from 'react-router';
+import { useGetRunsFeed } from './runsFeed/useGetRunFeed';
 
 type RunRedirectProps = {
   match: {
@@ -16,7 +16,7 @@ export function RunRedirect({
     params: { projectId, buildId },
   },
 }: RunRedirectProps) {
-  const [runsFeed, loadMore, loading, error] = useGetRunsFeed({
+  const [runsFeed, , loading] = useGetRunsFeed({
     projectId,
     search: buildId,
   });

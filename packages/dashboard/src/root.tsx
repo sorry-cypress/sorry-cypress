@@ -1,5 +1,4 @@
 import { ApolloProvider } from '@apollo/client';
-import { RunRedirect } from '@src/run/runsRedirect';
 import { ThemeProvider } from 'bold-ui';
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
@@ -9,6 +8,7 @@ import { client } from './lib/apolloClient';
 import { ProjectEditView } from './project/projectEditView';
 import { ProjectsView } from './project/projectsView';
 import { RunDetailsView } from './run/runDetails/runDetailsView';
+import { RunRedirect } from './run/runsRedirect';
 import { RunsView } from './run/runsView';
 import { TestDetailsView } from './testItem/testDetailsView';
 import { theme } from './theme';
