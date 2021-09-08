@@ -1,37 +1,29 @@
-type TestState = 'passed' | 'failed' | 'pending' | undefined;
+// type TestState = 'passed' | 'failed' | 'pending' | 'skipped' | undefined;
 
-export type Test = TestV670 | TestV5 | LegacyTest;
-
-export interface LegacyTest {
-  testId: string;
-  title: string;
-  state: TestState;
-  body: string;
-  stack: string;
-  error: string;
-  timings: TestTimings;
-  wallClockStartedAt: string;
-  wallClockDuration: number;
+export enum TestState {
+  Failed = 'failed',
+  Passed = 'passed',
+  Pending = 'pending',
+  Skipped = 'skipped',
 }
 
-export interface TestV5 {
-  testId: string;
-  title: string[];
-  state: TestState;
-  body: string;
-  displayError: string | null;
-  attempts: TestAttempt[];
-}
-
-export interface TestV670 {
+export interface TestHook {
   clientId: string;
+  type: 'before each';
+  title: string[];
+  body: string;
+}
+export interface Test {
+  clientId: string;
+  testId: string;
   state: TestState;
   displayError: string | null;
   title: string[];
-  config: null | TestConfig;
+  config?: null | TestConfig;
   hookIds: string[];
   body: string;
   attempts: TestAttempt[];
+  hooks: TestHook[] | null;
 }
 
 interface TestConfig {

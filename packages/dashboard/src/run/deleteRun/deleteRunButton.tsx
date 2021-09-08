@@ -1,8 +1,8 @@
 import {
   GetRunsFeedDocument,
   useDeleteRunMutation,
-} from '@src/generated/graphql';
-import { useAsync } from '@src/hooks/';
+} from '@sorry-cypress/dashboard/generated/graphql';
+import { useAsync } from '@sorry-cypress/dashboard/hooks/';
 import {
   Alert,
   Button,

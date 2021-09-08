@@ -1,0 +1,145 @@
+type Mutation {
+  createGenericHook(input: CreateGenericHookInput!): GenericHook!
+  updateGenericHook(input: UpdateGenericHookInput!): GenericHook!
+  createBitbucketHook(input: CreateBitbucketHookInput!): BitbucketHook!
+  updateBitbucketHook(input: UpdateBitbucketHookInput!): BitbucketHook!
+  createGithubHook(input: CreateGithubHookInput!): GithubHook!
+  updateGithubHook(input: UpdateGithubHookInput!): GithubHook!
+  createSlackHook(input: CreateSlackHookInput!): SlackHook!
+  updateSlackHook(input: UpdateSlackHookInput!): SlackHook!
+  deleteHook(input: DeleteHookInput!): DeleteHookResponse!
+}
+
+input DeleteHookInput {
+  projectId: String!
+  hookId: ID!
+}
+type DeleteHookResponse {
+  projectId: String!
+  hookId: ID!
+}
+
+type SlackHook {
+  projectId: ID!
+  hookId: ID!
+  url: String!
+  hookType: SlackHookType!
+  hookEvents: [String!]!
+  slackResultFilter: SlackResultFilter
+  slackBranchFilter: [String!]
+}
+
+input CreateSlackHookInput {
+  projectId: ID!
+  slackResultFilter: SlackResultFilter = "ALL"
+}
+
+input UpdateSlackHookInput {
+  projectId: ID!
+  hookId: ID!
+  url: String!
+  hookEvents: [String!]!
+  slackResultFilter: SlackResultFilter
+  slackBranchFilter: [String!]
+}
+
+type GithubHook {
+  projectId: ID!
+  hookId: ID!
+  url: String!
+  hookType: GithubHookType!
+  githubToken: String
+  githubContext: String
+}
+
+input CreateGithubHookInput {
+  projectId: ID!
+}
+
+input UpdateGithubHookInput {
+  projectId: ID!
+  hookId: ID!
+  url: String!
+  githubToken: String
+  githubContext: String
+}
+
+type BitbucketHook {
+  projectId: ID!
+  hookId: ID!
+  url: String!
+  hookType: BitbucketHookType!
+  bitbucketUsername: String
+  bitbucketToken: String
+  bitbucketBuildName: String
+}
+
+input CreateBitbucketHookInput {
+  projectId: ID!
+}
+
+input UpdateBitbucketHookInput {
+  projectId: ID!
+  hookId: ID!
+  url: String
+  bitbucketUsername: String!
+  bitbucketToken: String
+  bitbucketBuildName: String
+}
+
+type GenericHook {
+  projectId: ID!
+  hookId: ID!
+  url: String!
+  headers: String
+  hookType: GenericHookType!
+  hookEvents: [String!]!
+}
+
+input CreateGenericHookInput {
+  projectId: ID!
+}
+
+input UpdateGenericHookInput {
+  projectId: ID!
+  hookId: ID!
+  url: String!
+  headers: String
+  hookEvents: [String!]!
+}
+
+type Hook {
+  hookId: String
+  url: String
+  headers: String
+  hookEvents: [String]
+  hookType: String
+  githubToken: String
+  githubContext: String
+  bitbucketUsername: String
+  bitbucketToken: String
+  bitbucketBuildName: String
+  slackResultFilter: String
+  slackBranchFilter: [String]
+}
+
+input HookInput {
+  hookId: String
+  url: String!
+  headers: String
+  hookEvents: [String]
+  hookType: String
+  githubToken: String
+  githubContext: String
+  bitbucketUsername: String
+  bitbucketToken: String
+  bitbucketBuildName: String
+  slackResultFilter: String
+  slackBranchFilter: [String]
+}
+
+scalar GenericHookType
+scalar SlackHookType
+scalar SlackResultFilter
+scalar GithubHookType
+scalar BitbucketHookType

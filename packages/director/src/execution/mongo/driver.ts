@@ -1,5 +1,5 @@
+import { ExecutionDriver } from '@sorry-cypress/director/types';
 import { initMongo } from '@sorry-cypress/mongo';
-import { ExecutionDriver } from '@src/types';
 import * as mongoInstanceController from './instances/instance.controller';
 import * as mongoInstanceModel from './instances/instance.model';
 import * as mongoProjectModel from './projects/project.model';
@@ -17,7 +17,6 @@ export const driver: ExecutionDriver = {
   allGroupSpecsCompleted: mongoRunController.allGroupSpecsCompleted,
   getProjectById: mongoProjectModel.getProjectById,
   getRunById: mongoRunModel.getRunById,
-  getRunWithSpecs: mongoRunModel.getRunWithSpecs,
   getInstanceById: mongoInstanceModel.getInstanceById,
   createRun: mongoRunController.createRun,
   getNextTask: mongoRunController.getNextTask,

@@ -1,0 +1,29 @@
+fragment RunProgress on RunProgress {
+  updatedAt
+  groups {
+    groupId
+    instances {
+      ...RunGroupProgressInstances
+    }
+    tests {
+      ...RunGroupProgressTests
+    }
+  }
+}
+
+fragment RunGroupProgressInstances on RunGroupProgressInstances {
+  overall
+  claimed
+  complete
+  failures
+  passes
+}
+
+fragment RunGroupProgressTests on RunGroupProgressTests {
+  overall
+  passes
+  failures
+  pending
+  skipped
+  retries
+}

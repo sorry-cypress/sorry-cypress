@@ -1,27 +1,27 @@
-import { runTimeoutModel } from '@sorry-cypress/mongo/dist';
-import { INACTIVITY_TIMEOUT_SECONDS } from '@src/config';
-import { getRunCiBuildId } from '@src/lib/ciBuildId';
+import {
+  CreateRunResponse,
+  CreateRunWarning,
+  getCreateProjectValue,
+  isRunCompleted,
+  Run,
+  Task,
+} from '@sorry-cypress/common';
+import { INACTIVITY_TIMEOUT_SECONDS } from '@sorry-cypress/director/config';
+import { getRunCiBuildId } from '@sorry-cypress/director/lib/ciBuildId';
 import {
   AppError,
   CLAIM_FAILED,
   RUN_EXISTS,
   RUN_NOT_EXIST,
-} from '@src/lib/errors';
+} from '@sorry-cypress/director/lib/errors';
 import {
   generateGroupId,
   generateRunIdHash,
   generateUUID,
-} from '@src/lib/hash';
-import { getDashboardRunURL } from '@src/lib/urls';
-import {
-  CreateRunResponse,
-  CreateRunWarning,
-  ExecutionDriver,
-  getCreateProjectValue,
-  isAllRunSpecsCompleted,
-  Run,
-  Task,
-} from '@src/types';
+} from '@sorry-cypress/director/lib/hash';
+import { getDashboardRunURL } from '@sorry-cypress/director/lib/urls';
+import { ExecutionDriver } from '@sorry-cypress/director/types';
+import { runTimeoutModel } from '@sorry-cypress/mongo';
 import { addSeconds } from 'date-fns';
 import { curry, property, uniq } from 'lodash';
 import {
@@ -34,8 +34,9 @@ import {
 import { createInstance } from '../instances/instance.controller';
 import { createProject, getProjectById } from './../projects/project.model';
 import {
-  addSpecsToRun,
+  addNewGroupToRun,
   createRun as storageCreateRun,
+  getNewGroupTemplate,
   getRunById,
   setRunCompleted,
   setSpecClaimed,
@@ -73,6 +74,7 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
         getCreateProjectValue(params.projectId, INACTIVITY_TIMEOUT_SECONDS)
       );
     }
+    const specs = params.specs.map(enhaceSpecForThisRun);
 
     await storageCreateRun({
       runId,
@@ -88,22 +90,30 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
         platform: params.platform,
         ci: params.ci,
       },
-      specs: params.specs.map(enhaceSpecForThisRun),
+      progress: {
+        updatedAt: new Date(),
+        groups: [getNewGroupTemplate(groupId, specs.length)],
+      },
+      specs,
     });
     const timeoutSeconds =
-      project.inactivityTimeoutSeconds ?? INACTIVITY_TIMEOUT_SECONDS;
+      project?.inactivityTimeoutSeconds ?? INACTIVITY_TIMEOUT_SECONDS;
     await runTimeoutModel.createRunTimeout({
       runId,
       timeoutSeconds,
-      timeoutAfter: addSeconds(new Date(), project.inactivityTimeoutSeconds),
+      timeoutAfter: addSeconds(new Date(), timeoutSeconds),
     });
 
     return response;
   } catch (error) {
     if (error.code && error.code === RUN_EXISTS) {
       response.isNewRun = false;
+
       // serverless: prone to race condition on serverless
       const run = await getRunById(runId);
+      if (!run) {
+        throw new Error('No run found');
+      }
       const newSpecs = getNewSpecsInGroup({
         run,
         groupId,
@@ -117,7 +127,7 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
       // if the same group has different specs - no-no-no!
       const existingGroupSpecs = getSpecsForGroup(run, groupId);
       if (newSpecs.length && existingGroupSpecs.length) {
-        response.warnings.push({
+        response.warnings?.push({
           message: `Group ${groupId} has different specs for the same run.`,
           originalSpecs: existingGroupSpecs.map((spec) => spec.spec).join(', '),
           newSpecs: newSpecs.join(','),
@@ -125,7 +135,11 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
         return response;
       }
 
-      await addSpecsToRun(runId, newSpecs.map(enhaceSpecForThisRun));
+      await addNewGroupToRun(
+        runId,
+        groupId,
+        newSpecs.map(enhaceSpecForThisRun)
+      );
 
       return response;
     }
@@ -145,7 +159,9 @@ export const getNextTask: ExecutionDriver['getNextTask'] = async ({
   }
 
   // all specs claimed
-  if (!getFirstUnclaimedSpec(run, groupId)) {
+  const spec = getFirstUnclaimedSpec(run, groupId);
+
+  if (!spec) {
     return {
       instance: null,
       claimedInstances: getClaimedSpecs(run, runId).length,
@@ -154,11 +170,11 @@ export const getNextTask: ExecutionDriver['getNextTask'] = async ({
     };
   }
 
-  const spec = getFirstUnclaimedSpec(run, groupId);
   try {
-    await setSpecClaimed(runId, spec.instanceId, machineId);
+    await setSpecClaimed(runId, groupId, spec.instanceId, machineId);
     await createInstance({
       runId,
+      projectId: run.meta.projectId,
       instanceId: spec.instanceId,
       groupId,
       spec: spec.spec,
@@ -186,7 +202,10 @@ export const allRunSpecsCompleted = async (runId: string): Promise<boolean> => {
   if (!run) {
     throw new AppError(RUN_NOT_EXIST);
   }
-  return isAllRunSpecsCompleted(run);
+  if (!run.progress) {
+    return false;
+  }
+  return isRunCompleted(run.progress);
 };
 
 export const getNonCompletedGroups = (run: Run) => {

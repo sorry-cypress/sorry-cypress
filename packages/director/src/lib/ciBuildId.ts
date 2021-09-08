@@ -1,4 +1,4 @@
-import { CreateRunParameters } from '@src/types';
+import { CreateRunParameters } from '@sorry-cypress/common';
 import { camelCase, isEmpty } from 'lodash';
 
 // https://github.com/cypress-io/cypress/blob/develop/packages/server/lib/util/ci_provider.js#L133:L133

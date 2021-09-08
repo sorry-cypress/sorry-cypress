@@ -2,28 +2,36 @@ import {
   BitBucketHook,
   getBitbucketBuildUrl,
   HookEvent,
-  isResultSuccessful,
-  RunSummary,
-  RunWithSpecs,
+  isRunGroupSuccessful,
+  Run,
+  RunGroupProgress,
 } from '@sorry-cypress/common';
-import { APP_NAME } from '@src/config';
-import { getDashboardRunURL } from '@src/lib/urls';
+import { APP_NAME } from '@sorry-cypress/director/config';
+import { getDashboardRunURL } from '@sorry-cypress/director/lib/urls';
 import axios from 'axios';
 import md5 from 'md5';
 
 interface BBReporterStatusParams {
-  run: RunWithSpecs;
+  run: Run;
   eventType: HookEvent;
-  runSummary: RunSummary;
   groupId: string;
+  groupProgress: RunGroupProgress;
 }
 export async function reportStatusToBitbucket(
   hook: BitBucketHook,
   eventData: BBReporterStatusParams
 ) {
-  const { eventType, runSummary, groupId, run } = eventData;
+  if (!hook.bitbucketUsername) {
+    console.warn('[bitbucket-reporter] No bitbucketUsername, ignoring hook...');
+    return;
+  }
 
-  const fullStatusPostUrl = getBitbucketBuildUrl(hook.url, run.meta.commit.sha);
+  if (!hook.bitbucketToken) {
+    console.warn('[bitbucket-reporter] No bitbucketToken, ignoring hook...');
+    return;
+  }
+
+  const { eventType, groupId, run, groupProgress } = eventData;
 
   // don't append group name if groupId is non-explicit
   // otherwise rerunning would create a new status context in GH
@@ -32,8 +40,10 @@ export async function reportStatusToBitbucket(
     context = `${context}: ${groupId}`;
   }
   const description = `failed:${
-    runSummary.failures + runSummary.skipped
-  } passed:${runSummary.passes} skipped:${runSummary.pending}`;
+    groupProgress.tests.failures + groupProgress.tests.skipped
+  } passed:${groupProgress.tests.passes} skipped:${
+    groupProgress.tests.pending
+  }`;
 
   const data = {
     state: 'INPROGRESS',
@@ -46,7 +56,7 @@ export async function reportStatusToBitbucket(
 
   if (eventType === HookEvent.RUN_FINISH) {
     data.state = 'FAILED';
-    if (isResultSuccessful(runSummary)) {
+    if (isRunGroupSuccessful(groupProgress)) {
       data.state = 'SUCCESSFUL';
     }
   }
@@ -60,7 +70,9 @@ export async function reportStatusToBitbucket(
     return;
   }
 
+  const fullStatusPostUrl = getBitbucketBuildUrl(hook.url, run.meta.commit.sha);
   console.log(`[bitbucket-reporter] Posting hook`, {
+    fullStatusPostUrl,
     eventType,
     data,
   });

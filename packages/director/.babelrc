@@ -16,7 +16,7 @@
       {
         "root": ["./src/"],
         "alias": {
-          "@src": "./src/"
+          "@sorry-cypress/director": "./src/"
         }
       }
     ]

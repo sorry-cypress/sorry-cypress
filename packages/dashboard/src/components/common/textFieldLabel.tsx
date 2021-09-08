@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { theme } from '@src/theme';
+import { theme } from '@sorry-cypress/dashboard/theme';
 import { FormControl, FormControlProps, Icon, Tooltip } from 'bold-ui';
 import React, { PropsWithChildren } from 'react';
 

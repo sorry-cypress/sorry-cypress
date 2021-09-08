@@ -1,11 +1,11 @@
-import { isInstanceFailed } from '@src/lib/results';
 import {
   AssetUploadInstruction,
   InstanceResult,
   Screenshot,
-  ScreenshotsDriver,
   ScreenshotUploadInstruction,
-} from '@src/types';
+} from '@sorry-cypress/common';
+import { isInstanceFailed } from '@sorry-cypress/director/lib/results';
+import { ScreenshotsDriver } from '@sorry-cypress/director/types';
 import md5 from 'md5';
 import {
   getImageUploadUrl,
@@ -26,7 +26,7 @@ export const getVideoUploadUrl = async (
   instanceId: string,
   result: InstanceResult
 ): Promise<AssetUploadInstruction | null> => {
-  if (!result.cypressConfig.video) {
+  if (!result.cypressConfig?.video) {
     return null;
   }
   if (!isInstanceFailed(result) && !result.cypressConfig.videoUploadOnPasses) {

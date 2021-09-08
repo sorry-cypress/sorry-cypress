@@ -1,9 +1,13 @@
-import { Paper } from '@src/components';
+import { getTestListRetries } from '@sorry-cypress/common';
+import { Paper } from '@sorry-cypress/dashboard/components';
 import {
   getInstanceState,
   SpecStateTag,
-} from '@src/components/common/executionState';
-import { GetInstanceQuery, InstanceStats } from '@src/generated/graphql';
+} from '@sorry-cypress/dashboard/components/common/executionState';
+import {
+  GetInstanceQuery,
+  InstanceStats,
+} from '@sorry-cypress/dashboard/generated/graphql';
 import { Cell, Grid, Heading, HFlow, Text } from 'bold-ui';
 import { capitalize } from 'lodash';
 import React from 'react';
@@ -22,7 +26,13 @@ export function InstanceSummary({ instance }: InstanceSummaryProps) {
       <Grid>
         <Cell xs={12} lg={6}>
           <HFlow>
-            <SpecStateTag state={getInstanceState(instance.results?.stats)} />
+            <SpecStateTag
+              state={getInstanceState({
+                claimedAt: null,
+                stats: instance.results.stats,
+                retries: getTestListRetries(instance.results.tests ?? []),
+              })}
+            />
             <Heading level={2}>{instance.spec}</Heading>
           </HFlow>
           <ul>

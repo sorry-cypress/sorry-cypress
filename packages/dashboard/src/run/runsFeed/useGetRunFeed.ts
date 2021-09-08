@@ -1,6 +1,10 @@
 import { ApolloError, ApolloQueryResult } from '@apollo/client';
-import { GetRunsFeedQuery, useGetRunsFeedQuery } from '@src/generated/graphql';
-import { useAutoRefreshRate } from '@src/hooks';
+import {
+  Filters,
+  GetRunsFeedQuery,
+  useGetRunsFeedQuery,
+} from '@sorry-cypress/dashboard/generated/graphql';
+import { useAutoRefreshRate } from '@sorry-cypress/dashboard/hooks';
 
 interface UseGetRunsFeed {
   projectId: string;
@@ -50,12 +54,13 @@ export const useGetRunsFeed = ({
   return [data?.runFeed, loadMore, loading, error];
 };
 
-function getFilters(projectId: string, search?: string) {
+function getFilters(projectId: string, search?: string): Filters[] {
   const searchFilters = search
     ? [
         {
           key: 'meta.ciBuildId',
           like: search,
+          value: null,
         },
       ]
     : [];
@@ -63,6 +68,7 @@ function getFilters(projectId: string, search?: string) {
     {
       key: 'meta.projectId',
       value: projectId,
+      like: null,
     },
     ...searchFilters,
   ];

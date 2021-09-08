@@ -17,7 +17,7 @@
       {
         "root": ["./src"],
         "alias": {
-          "@src": "./src"
+          "@sorry-cypress/dashboard": "./src"
         }
       }
     ],

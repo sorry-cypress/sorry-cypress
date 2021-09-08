@@ -5,6 +5,7 @@ COPY packages/common/ ./packages/common
 COPY packages/mongo/ ./packages/mongo
 COPY package.json ./
 COPY yarn.lock ./
+COPY tsconfig.json ./
 RUN yarn install --frozen-lockfile
 
 RUN yarn workspace @sorry-cypress/common build

@@ -1,14 +1,14 @@
 import {
-  ResultFilter,
   HookEvent,
+  ResultFilter,
   SlackHook as SlackHookType,
 } from '@sorry-cypress/common';
-import { InputFieldLabel } from '@src/components';
+import { InputFieldLabel } from '@sorry-cypress/dashboard/components';
 import {
   UpdateSlackHookInput,
   useUpdateSlackHookMutation,
-} from '@src/generated/graphql';
-import { enumToString } from '@src/project/hook/hook.utils';
+} from '@sorry-cypress/dashboard/generated/graphql';
+import { enumToString } from '@sorry-cypress/dashboard/project/hook/hook.utils';
 import { Button, Cell, Grid, Select, TextField } from 'bold-ui';
 import { isEqual } from 'lodash';
 import React from 'react';

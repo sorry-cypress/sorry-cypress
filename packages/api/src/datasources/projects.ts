@@ -1,5 +1,3 @@
-import { getCreateProjectValue, HookType } from '@sorry-cypress/common';
-import { Collection } from '@sorry-cypress/mongo';
 import {
   CreateBitbucketHookInput,
   CreateGenericHookInput,
@@ -15,15 +13,16 @@ import {
   UpdateGithubHookInput,
   UpdateProjectInput,
   UpdateSlackHookInput,
-} from '@src/generated/graphql';
+} from '@sorry-cypress/api/generated/graphql';
 import {
   AggregationFilter,
   filtersToAggregations,
   getSortByAggregation,
-} from '@src/lib/query';
+} from '@sorry-cypress/api/lib/query';
+import { getCreateProjectValue, HookType } from '@sorry-cypress/common';
+import { Collection } from '@sorry-cypress/mongo';
 import { DataSource } from 'apollo-datasource';
 import { isNil, negate } from 'lodash';
-import plur from 'plur';
 import { v4 as uuid } from 'uuid';
 
 export class ProjectsAPI extends DataSource {
@@ -50,17 +49,11 @@ export class ProjectsAPI extends DataSource {
   updateBitbucketHook = updateBitbucketHook;
   deleteHook = deleteHook;
 
-  async getProjectById(id: string): Promise<Project> {
-    const result = await Collection.project().aggregate<Project>([
-      {
-        $match: {
-          projectId: id,
-        },
-      },
-    ]);
-
-    const project = (await result.toArray()).pop();
-
+  async getProjectById(id: string): Promise<Project | null> {
+    const project = await Collection.project().findOne({ projectId: id });
+    if (!project) {
+      return null;
+    }
     return {
       ...project,
       hooks: (project.hooks ?? []).map(removeSecrets),
@@ -133,10 +126,7 @@ export class ProjectsAPI extends DataSource {
     });
     return {
       success: projectResult.result.ok === 1,
-      message: `Deleted ${projectResult.deletedCount} ${plur(
-        'project',
-        projectResult.deletedCount
-      )}`,
+      message: `Deleted ${projectResult.deletedCount ?? 0} item(s)`,
       projectIds: projectResult.result.ok === 1 ? projectIds : [],
     };
   }
@@ -193,10 +183,10 @@ const getUpdateHook = <T extends { projectId: string; hookId: string }>(
 async function updateBitbucketHook(input: UpdateBitbucketHookInput) {
   const hook = { ...input, hookType: HookType.BITBUCKET_STATUS_HOOK };
 
-  const $set: Record<string, string> = {
-    'hooks.$[hooks].url': hook.url,
+  const $set: Record<string, string | undefined> = {
+    'hooks.$[hooks].url': hook.url ?? undefined,
     'hooks.$[hooks].bitbucketUsername': hook.bitbucketUsername,
-    'hooks.$[hooks].bitbucketBuildName': hook.bitbucketBuildName,
+    'hooks.$[hooks].bitbucketBuildName': hook.bitbucketBuildName ?? undefined,
   };
   if (hook.bitbucketToken) {
     $set['hooks.$[hooks].bitbucketToken'] = hook.bitbucketToken;
@@ -219,9 +209,9 @@ async function updateBitbucketHook(input: UpdateBitbucketHookInput) {
 async function updateGithubHook(input: UpdateGithubHookInput) {
   const hook = { ...input, hookType: HookType.GITHUB_STATUS_HOOK };
 
-  const $set: Record<string, string> = {
+  const $set: Record<string, string | undefined> = {
     'hooks.$[hooks].url': hook.url,
-    'hooks.$[hooks].githubContext': hook.githubContext,
+    'hooks.$[hooks].githubContext': hook.githubContext ?? undefined,
   };
   if (hook.githubToken) {
     $set['hooks.$[hooks].githubToken'] = hook.githubToken;

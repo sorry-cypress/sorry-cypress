@@ -24,6 +24,9 @@ const cache = new InMemoryCache({
     Run: {
       keyFields: ['runId'],
     },
+    Instance: {
+      keyFields: ['instanceId'],
+    },
     Query: {
       fields: {
         navStructure: {

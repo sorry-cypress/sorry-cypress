@@ -1,7 +1,7 @@
-import { CenteredContent } from '@src/components';
+import { CenteredContent } from '@sorry-cypress/dashboard/components';
 import { Button } from 'bold-ui';
 import React from 'react';
-import { RunSummary } from '../runSummary/summary';
+import { RunSummaryComponent } from '../runSummary/summary';
 import { useGetRunsFeed } from './useGetRunFeed';
 
 type RunListProps = {
@@ -42,7 +42,7 @@ export const RunsFeed = ({ projectId, search = '' }: RunListProps) => {
   return (
     <>
       {runsFeed.runs.map((run) => (
-        <RunSummary key={run.runId} runId={run.runId} />
+        <RunSummaryComponent key={run.runId} run={run} />
       ))}
       {runsFeed.hasMore && <Button onClick={loadMore}>Load More</Button>}
     </>

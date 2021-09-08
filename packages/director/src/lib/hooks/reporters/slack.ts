@@ -1,12 +1,12 @@
 import {
   HookEvent,
-  isResultSuccessful,
+  isRunGroupSuccessful,
   ResultFilter,
   Run,
-  RunSummary,
+  RunGroupProgress,
   SlackHook,
 } from '@sorry-cypress/common';
-import { getDashboardRunURL } from '@src/lib/urls';
+import { getDashboardRunURL } from '@sorry-cypress/director/lib/urls';
 import axios from 'axios';
 import { truncate } from 'lodash';
 
@@ -14,7 +14,7 @@ interface SlackReporterEventPayload {
   eventType: HookEvent;
   run: Run;
   groupId: string;
-  runSummary: RunSummary;
+  groupProgress: RunGroupProgress;
   spec: string;
 }
 
@@ -26,7 +26,7 @@ export async function reportToSlack(
     !shouldReportSlackHook(
       event.eventType,
       hook,
-      event.runSummary,
+      event.groupProgress,
       event.run.meta.commit?.branch
     )
   ) {
@@ -34,11 +34,13 @@ export async function reportToSlack(
   }
   const ciBuildId = event.run.meta.ciBuildId;
   let groupLabel = '';
+
   if (event.groupId !== event.run.meta.ciBuildId) {
     groupLabel = `, group ${event.groupId}`;
   }
+
   let title = '';
-  let color = isResultSuccessful(event.runSummary)
+  let color = isRunGroupSuccessful(event.groupProgress)
     ? successColor
     : failureColor;
 
@@ -54,7 +56,7 @@ export async function reportToSlack(
       break;
     case HookEvent.RUN_FINISH:
       title = `${
-        isResultSuccessful(event.runSummary) ? ':white_check_mark:' : ':x:'
+        isRunGroupSuccessful(event.groupProgress) ? ':white_check_mark:' : ':x:'
       } *Run finished* (${ciBuildId}${groupLabel})`;
       break;
     case HookEvent.RUN_TIMEOUT:
@@ -63,7 +65,13 @@ export async function reportToSlack(
       break;
   }
 
-  const { passes, pending, skipped, failures } = event.runSummary;
+  const {
+    passes,
+    pending,
+    skipped,
+    failures,
+    retries,
+  } = event.groupProgress.tests;
   const resultsDescription =
     `${
       passes > 0 ? ':large_green_circle:' : ':white_circle:'
@@ -73,7 +81,8 @@ export async function reportToSlack(
     } *Skipped:* ${pending}\n\n\n` +
     `${failures + skipped > 0 ? ':red_circle:' : ':white_circle:'} *Failed*: ${
       failures + skipped
-    }`;
+    }` +
+    `${retries > 0 ? `\n\n\n:large_yellow_circle: *Retries*: ${retries}` : ''}`;
 
   const commitDescription =
     (event.run.meta.commit?.branch || event.run.meta.commit?.message) &&
@@ -143,12 +152,12 @@ export async function reportToSlack(
 export function shouldReportSlackHook(
   event: HookEvent,
   hook: SlackHook,
-  runSummary: RunSummary,
-  branch: string
+  groupProgress: RunGroupProgress,
+  branch?: string
 ) {
   return (
     isSlackEventFilterPassed(event, hook) &&
-    isSlackResultFilterPassed(hook, runSummary) &&
+    isSlackResultFilterPassed(hook, groupProgress) &&
     isSlackBranchFilterPassed(hook, branch)
   );
 }
@@ -163,19 +172,19 @@ export function isSlackEventFilterPassed(event: HookEvent, hook: SlackHook) {
 
 export function isSlackResultFilterPassed(
   hook: SlackHook,
-  runSummary: RunSummary
+  groupProgress: RunGroupProgress
 ) {
   switch (hook.slackResultFilter) {
     case ResultFilter.ONLY_FAILED:
-      if (!isResultSuccessful(runSummary)) return true;
+      if (!isRunGroupSuccessful(groupProgress)) return true;
       break;
     case ResultFilter.ONLY_SUCCESSFUL:
-      if (isResultSuccessful(runSummary)) return true;
+      if (isRunGroupSuccessful(groupProgress)) return true;
       break;
     case ResultFilter.ALL:
       return true;
     default:
-      console.log(`Unexpected Slack filter type: ${hook.slackResultFilter}`);
+      console.error(`Unexpected Slack filter type: ${hook.slackResultFilter}`);
       return false;
   }
 
@@ -183,7 +192,6 @@ export function isSlackResultFilterPassed(
 }
 
 export function isSlackBranchFilterPassed(hook: SlackHook, branch?: string) {
-  console.log({ hook, branch });
   if (!hook.slackBranchFilter?.length) return true;
 
   // if slackBranchFilter is defined, not no branch known - skip

@@ -1,11 +1,12 @@
-import { Instance, Run } from '@sorry-cypress/common';
-import { Collection, ObjectId } from '@sorry-cypress/mongo';
-import { OrderingOptions } from '@src/generated/graphql';
+import { PAGE_ITEMS_LIMIT } from '@sorry-cypress/api/config';
+import { OrderingOptions } from '@sorry-cypress/api/generated/graphql';
 import {
   AggregationFilter,
   filtersToAggregations,
   getSortByAggregation,
-} from '@src/lib/query';
+} from '@sorry-cypress/api/lib/query';
+import { Instance, Run } from '@sorry-cypress/common';
+import { Collection, ObjectId } from '@sorry-cypress/mongo';
 import { DataSource } from 'apollo-datasource';
 import { isNil, negate } from 'lodash';
 import { WithId } from 'mongodb';
@@ -16,7 +17,6 @@ type RunWithFullSpecs = Run & {
   _id: string;
 };
 
-const PAGE_LIMIT = 10;
 const mergeRunSpecs = (run: RunWithFullSpecs) => {
   // merge fullspec into spec
   run.specs = run.specs.map((s) => ({
@@ -31,7 +31,7 @@ const getCursor = (runs: WithId<Run>[]) => {
     return 0;
   }
 
-  if (runs.length > PAGE_LIMIT) {
+  if (runs.length > PAGE_ITEMS_LIMIT) {
     return runs[runs.length - 2]._id;
   }
 
@@ -39,9 +39,9 @@ const getCursor = (runs: WithId<Run>[]) => {
 };
 
 const runFeedReducer = (runs: WithId<Run>[]) => ({
-  runs: runs.slice(0, PAGE_LIMIT),
+  runs: runs.slice(0, PAGE_ITEMS_LIMIT),
   cursor: getCursor(runs),
-  hasMore: runs.length > PAGE_LIMIT,
+  hasMore: runs.length > PAGE_ITEMS_LIMIT,
 });
 
 const projectAggregation = {
@@ -52,16 +52,6 @@ const projectAggregation = {
     specs: 1,
     createdAt: 1,
     completion: 1,
-    specsFull: '$specs.instanceId',
-  },
-};
-
-const lookupAggregation = {
-  $lookup: {
-    from: 'instances',
-    localField: 'specsFull',
-    foreignField: 'instanceId',
-    as: 'specsFull',
   },
 };
 
@@ -73,21 +63,22 @@ export class RunsAPI extends DataSource {
     filters: AggregationFilter[];
     cursor: string | false;
   }) {
-    const aggregationPipeline = [
+    const aggregationPipeline: any[] = [
       ...filtersToAggregations(filters),
       getSortByAggregation(),
-      cursor
-        ? {
-            $match: {
-              _id: { $lt: new ObjectId(cursor) },
-            },
-          }
-        : null,
       {
         // get one extra to know if there's more
-        $limit: PAGE_LIMIT + 1,
+        $limit: PAGE_ITEMS_LIMIT + 1,
       },
-    ].filter(negate(isNil));
+    ];
+
+    if (cursor) {
+      aggregationPipeline.unshift({
+        $match: {
+          _id: { $lt: new ObjectId(cursor) },
+        },
+      });
+    }
 
     const results = await (
       await Collection.run().aggregate<WithId<Run>>(aggregationPipeline)
@@ -107,7 +98,6 @@ export class RunsAPI extends DataSource {
       ...filtersToAggregations(filters),
       getSortByAggregation(orderDirection),
       projectAggregation,
-      lookupAggregation,
     ].filter(negate(isNil));
 
     const results = (await Collection.run()
@@ -129,9 +119,7 @@ export class RunsAPI extends DataSource {
     });
     return {
       success: result.result.ok === 1,
-      message: `${result.deletedCount} document${
-        result.deletedCount > 1 ? 's' : ''
-      } deleted`,
+      message: `Deleted ${result.deletedCount ?? 0} item(s)`,
       runIds: result.result.ok === 1 ? runIds : [],
     };
   }

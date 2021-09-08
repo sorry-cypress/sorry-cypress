@@ -1,11 +1,3 @@
-import { getExecutionDriver, getScreenshotsDriver } from '@src/drivers';
-import { RUN_NOT_EXIST } from '@src/lib/errors';
-import {
-  emitInstanceFinish,
-  emitInstanceStart,
-  emitRunFinish,
-  emitRunStart,
-} from '@src/lib/hooks/events';
 import {
   AssetUploadInstruction,
   InstanceResult,
@@ -13,13 +5,24 @@ import {
   SetInstanceTestsPayload,
   UpdateInstanceResponse,
   UpdateInstanceResultsPayload,
-} from '@src/types';
+} from '@sorry-cypress/common';
+import {
+  getExecutionDriver,
+  getScreenshotsDriver,
+} from '@sorry-cypress/director/drivers';
+import { RUN_NOT_EXIST } from '@sorry-cypress/director/lib/errors';
+import {
+  emitInstanceFinish,
+  emitInstanceStart,
+  emitRunFinish,
+  emitRunStart,
+} from '@sorry-cypress/director/lib/hooks/events';
 import { RequestHandler } from 'express';
 
 export const createInstance: RequestHandler = async (req, res) => {
   const { groupId, machineId } = req.body;
   const { runId } = req.params;
-  const cypressVersion = req.headers['x-cypress-version'].toString();
+  const cypressVersion = req.headers['x-cypress-version']?.toString() ?? '';
 
   const executionDriver = await getExecutionDriver();
 
@@ -77,22 +80,6 @@ export const createInstance: RequestHandler = async (req, res) => {
   }
 };
 
-/**
- * cypress prior to 6.7.0 sends instance results in a single API call
- */
-export const updateInstance: RequestHandler = async (req, res) => {
-  const { instanceId } = req.params;
-  const result: InstanceResult = req.body;
-
-  console.log(`>> Received instance result`, { instanceId });
-  const executionDriver = await getExecutionDriver();
-  await executionDriver.setInstanceResults(instanceId, result);
-  const instance = await executionDriver.getInstanceById(instanceId);
-
-  completeInstance(instanceId, instance.runId, instance.groupId);
-  return res.json(await getInstanceScreenshots(instanceId, result));
-};
-
 // - /instances/:instanceId/tests before running a spec
 export const setInstanceTests: RequestHandler<
   any,
@@ -119,15 +106,21 @@ export const updateInstanceResults: RequestHandler<
 
   console.log(`>> Received instance results`, { instanceId });
   const executionDriver = await getExecutionDriver();
+
   const instance = await executionDriver.updateInstanceResults(
     instanceId,
     results
   );
 
+  if (!instance.results) {
+    throw new Error('Missing results on instance after updating');
+  }
+
   completeInstance(instanceId, instance.runId, instance.groupId);
 
   try {
-    res.json(await getInstanceScreenshots(instanceId, instance.results));
+    const result = await getInstanceScreenshots(instanceId, instance.results);
+    res.json(result);
   } catch (error) {
     console.error('Unable to get upload instructions', instanceId);
     console.error(error);
@@ -145,6 +138,9 @@ async function completeInstance(
   const executionDriver = await getExecutionDriver();
 
   const instance = await executionDriver.getInstanceById(instanceId);
+  if (!instance) {
+    throw new Error('Cannot find instance to complete');
+  }
   emitInstanceFinish({
     runId: instance.runId,
     groupId: instance.groupId,

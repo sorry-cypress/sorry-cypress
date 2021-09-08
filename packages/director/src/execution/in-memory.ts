@@ -1,23 +1,7 @@
-import { INACTIVITY_TIMEOUT_SECONDS } from '@src/config';
-import { getRunCiBuildId } from '@src/lib/ciBuildId';
-import {
-  AppError,
-  INSTANCE_NOT_EXIST,
-  INSTANCE_NO_CREATE_TEST_DTO,
-  RUN_NOT_EXIST,
-} from '@src/lib/errors';
-import {
-  generateGroupId,
-  generateRunIdHash,
-  generateUUID,
-} from '@src/lib/hash';
-import { mergeInstanceResults } from '@src/lib/instance';
-import { getDashboardRunURL } from '@src/lib/urls';
 import {
   CreateRunParameters,
   CreateRunResponse,
   CreateRunWarning,
-  ExecutionDriver,
   getCreateProjectValue,
   Instance,
   InstanceResult,
@@ -27,7 +11,23 @@ import {
   SetInstanceTestsPayload,
   Task,
   UpdateInstanceResultsPayload,
-} from '@src/types';
+} from '@sorry-cypress/common';
+import { INACTIVITY_TIMEOUT_SECONDS } from '@sorry-cypress/director/config';
+import { getRunCiBuildId } from '@sorry-cypress/director/lib/ciBuildId';
+import {
+  AppError,
+  INSTANCE_NOT_EXIST,
+  INSTANCE_NO_CREATE_TEST_DTO,
+  RUN_NOT_EXIST,
+} from '@sorry-cypress/director/lib/errors';
+import {
+  generateGroupId,
+  generateRunIdHash,
+  generateUUID,
+} from '@sorry-cypress/director/lib/hash';
+import { mergeInstanceResults } from '@sorry-cypress/director/lib/instance';
+import { getDashboardRunURL } from '@sorry-cypress/director/lib/urls';
+import { ExecutionDriver } from '@sorry-cypress/director/types';
 import {
   enhanceSpec,
   getClaimedSpecs,
@@ -86,7 +86,7 @@ const createRun: ExecutionDriver['createRun'] = async (
 
     const existingGroupSpecs = getSpecsForGroup(runs[runId], groupId);
     if (newSpecs.length && existingGroupSpecs.length) {
-      response.warnings.push({
+      response.warnings?.push({
         message: `Group ${groupId} has different specs for the same run. Make sure each group in run has the same specs.`,
         originalSpecs: existingGroupSpecs.map((spec) => spec.spec).join(', '),
         newSpecs: newSpecs.join(','),
@@ -107,6 +107,7 @@ const createRun: ExecutionDriver['createRun'] = async (
     );
   }
 
+  // @ts-ignore
   runs[runId] = {
     runId,
     createdAt: new Date().toUTCString(),
@@ -151,7 +152,8 @@ const getNextTask: ExecutionDriver['getNextTask'] = async ({
   );
   runs[runId].specs[unclaimedSpecIndex].claimedAt = new Date().toISOString();
   instances[unclaimedSpec.instanceId] = {
-    _createTestsPayload: null,
+    _createTestsPayload: undefined,
+    projectId: 'some',
     spec: runs[runId].specs[unclaimedSpecIndex].spec,
     runId,
     groupId,
@@ -164,13 +166,6 @@ const getNextTask: ExecutionDriver['getNextTask'] = async ({
     instance: unclaimedSpec,
     claimedInstances: getClaimedSpecs(runs[runId], groupId).length + 1,
     totalInstances: getSpecsForGroup(runs[runId], groupId).length,
-  };
-};
-
-const getRunWithSpecs: ExecutionDriver['getRunWithSpecs'] = async (runId) => {
-  return {
-    ...runs[runId],
-    specsFull: runs[runId].specs.map((spec) => instances[spec.instanceId]),
   };
 };
 
@@ -226,7 +221,6 @@ export const driver: ExecutionDriver = {
   getRunById: (runId: string) => Promise.resolve(runs[runId]),
   maybeSetRunCompleted: async (_runId: string) => true,
   allGroupSpecsCompleted: async () => true,
-  getRunWithSpecs,
   getInstanceById: (instanceId: string) =>
     Promise.resolve(instances[instanceId]),
   createRun,

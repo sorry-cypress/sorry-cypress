@@ -2,34 +2,41 @@ import {
   getGithubStatusUrl,
   GithubHook,
   HookEvent,
-  isResultSuccessful,
-  RunSummary,
-  RunWithSpecs,
+  isRunGroupSuccessful,
+  Run,
+  RunGroupProgress,
 } from '@sorry-cypress/common';
-import { APP_NAME } from '@src/config';
-import { getDashboardRunURL } from '@src/lib/urls';
+import { APP_NAME } from '@sorry-cypress/director/config';
+import { getDashboardRunURL } from '@sorry-cypress/director/lib/urls';
 import axios from 'axios';
 
 interface GitHubReporterStatusParams {
-  run: RunWithSpecs;
+  run: Run;
   eventType: HookEvent;
-  runSummary: RunSummary;
   groupId: string;
+  groupProgress: RunGroupProgress;
 }
 export async function reportStatusToGithub(
   hook: GithubHook,
   eventData: GitHubReporterStatusParams
 ) {
-  const { eventType, runSummary, groupId, run } = eventData;
+  if (!hook.githubToken) {
+    console.warn('[github-reporter] No github token defined, ignoring hook...');
+    return;
+  }
 
-  const fullStatusPostUrl = getGithubStatusUrl(hook.url, run.meta.commit.sha);
+  const { eventType, groupId, groupProgress, run } = eventData;
+
   const description = `failed:${
-    runSummary.failures + runSummary.skipped
-  } passed:${runSummary.passes} skipped:${runSummary.pending}`;
+    groupProgress.tests.failures + groupProgress.tests.skipped
+  } passed:${groupProgress.tests.passes} skipped:${
+    groupProgress.tests.pending
+  }`;
 
   // don't append group name if groupId is non-explicit
   // otherwise rerunning would create a new status context in GH
   let context = `${hook.githubContext || APP_NAME}`;
+
   if (run.meta.ciBuildId !== groupId) {
     context = `${context}: ${groupId}`;
   }
@@ -51,7 +58,7 @@ export async function reportStatusToGithub(
 
   if (eventType === HookEvent.RUN_FINISH) {
     data.state = 'failure';
-    if (isResultSuccessful(runSummary)) {
+    if (isRunGroupSuccessful(groupProgress)) {
       data.state = 'success';
     }
   }
@@ -64,8 +71,9 @@ export async function reportStatusToGithub(
     return;
   }
 
-  console.log('[github-reporter] ', { eventType, data });
+  const fullStatusPostUrl = getGithubStatusUrl(hook.url, run.meta.commit.sha);
 
+  console.log('[github-reporter] ', { fullStatusPostUrl, eventType, data });
   try {
     axios({
       method: 'post',

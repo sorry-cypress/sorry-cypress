@@ -1,5 +1,5 @@
-import { generateUUID } from '@src/lib/hash';
-import { Run, RunSpec } from '@src/types';
+import { Run, RunSpec } from '@sorry-cypress/common';
+import { generateUUID } from '@sorry-cypress/director/lib/hash';
 import { difference } from 'lodash';
 
 export const getSpecsForGroup = (run: Run, groupId: string) =>

@@ -1,4 +1,4 @@
-import { theme } from '@src/theme/theme';
+import { theme } from '@sorry-cypress/dashboard/theme/theme';
 import { useCss } from 'bold-ui';
 import React from 'react';
 import { version } from '../../../package.json';

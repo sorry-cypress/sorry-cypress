@@ -1,9 +1,11 @@
 import {
-  getRunSummary,
-  RunSummary as RunSummaryType,
+  ArrayItemType,
+  getRunClaimedSpecsCount,
+  getRunDurationSeconds,
+  getRunOverallSpecsCount,
+  getRunTestsProgress,
 } from '@sorry-cypress/common';
 import {
-  CenteredContent,
   CiUrl,
   FormattedDate,
   HeaderLink,
@@ -13,58 +15,46 @@ import {
   TestRetriesBadge,
   TestSkippedBadge,
   TestSuccessBadge,
-} from '@src/components/';
-import { Duration } from '@src/components/common/duration';
-import { GetRunQuery, GetRunSummaryQuery } from '@src/generated/graphql';
-import { getSecondsDuration } from '@src/lib/duration';
+} from '@sorry-cypress/dashboard/components/';
+import { Duration } from '@sorry-cypress/dashboard/components/common/duration';
+import {
+  GetRunQuery,
+  GetRunsFeedQuery,
+  RunProgressFragment,
+} from '@sorry-cypress/dashboard/generated/graphql';
+import { getDurationMs } from '@sorry-cypress/dashboard/lib/duration';
 import { Cell, Grid, HFlow, Icon, Text, Tooltip } from 'bold-ui';
 import { parseISO } from 'date-fns';
-import { compact } from 'lodash';
 import React from 'react';
 import { Commit } from '../commit';
 import { DeleteRunButton } from '../deleteRun/deleteRunButton';
-import { useGetRunSummary } from './useGetRunSummary';
-
-type RunSummaryProps = {
-  runId: string;
-};
-
-export function RunSummary({ runId }: RunSummaryProps) {
-  const [run, loading, error] = useGetRunSummary(runId);
-  if (loading) {
-    return null;
-  }
-  if (!run) {
-    return <CenteredContent>No run found</CenteredContent>;
-  }
-  if (error) {
-    return (
-      <CenteredContent>Error loading run {error.toString()}</CenteredContent>
-    );
-  }
-
-  return <RunSummaryComponent run={run} runId={runId} />;
-}
 
 export function RunSummaryComponent({
   run,
-  runId,
 }: {
-  run: GetRunQuery['run'] | GetRunSummaryQuery['run'];
-  runId: string;
+  run: GetRunQuery['run'] | ArrayItemType<GetRunsFeedQuery['runFeed']['runs']>;
 }) {
   if (!run) {
     return null;
   }
+  const runId = run.runId;
   const runMeta = run.meta;
-  const runSpecs = run.specs;
   const runCreatedAt = run.createdAt;
-
-  const runSummary = getRunSummary(compact(runSpecs.map((s) => s.results)));
-
   const hasCompletion = !!run.completion;
   const completed = !!run.completion?.completed;
   const inactivityTimeoutMs = run.completion?.inactivityTimeoutMs;
+
+  if (!run.progress) {
+    return <Pre_2_0_0_Run run={run} />;
+  }
+
+  const overallSpecsCount = getRunOverallSpecsCount(run.progress);
+  const claimedSpecsCount = getRunClaimedSpecsCount(run.progress);
+  const durationSeconds = getRunDurationSeconds(
+    parseISO(run.createdAt),
+    run.progress?.updatedAt ? parseISO(run.progress?.updatedAt) : null,
+    run.completion?.inactivityTimeoutMs ?? null
+  );
 
   return (
     <Paper>
@@ -96,17 +86,15 @@ export function RunSummaryComponent({
             <li>
               <Text>Duration: </Text>
               <Duration
-                hasCompletion={hasCompletion}
-                completed={completed}
+                completion={run.completion ?? undefined}
                 createdAtISO={runCreatedAt}
-                wallClockDurationSeconds={runSummary.wallClockDurationSeconds}
+                wallClockDurationSeconds={durationSeconds}
               />
             </li>
             <li>
               <Text>Spec Files: </Text>
               <Text>
-                claimed {runSpecs.filter((s) => s.claimedAt).length} out of{' '}
-                {runSpecs.length}
+                {claimedSpecsCount} / {overallSpecsCount}
               </Text>
             </li>
           </ul>
@@ -120,18 +108,23 @@ export function RunSummaryComponent({
         </Cell>
       </Grid>
 
-      <RunSummaryTestResults runSummary={runSummary} />
+      {run.progress && <RunSummaryTestResults runProgress={run.progress} />}
     </Paper>
   );
 }
-function RunSummaryTestResults({ runSummary }: { runSummary: RunSummaryType }) {
+function RunSummaryTestResults({
+  runProgress,
+}: {
+  runProgress: RunProgressFragment;
+}) {
+  const testsProgress = getRunTestsProgress(runProgress);
   return (
     <HFlow>
-      <TestOverallBadge value={runSummary.tests} />
-      <TestSuccessBadge value={runSummary.passes} />
-      <TestFailureBadge value={runSummary.failures} />
-      <TestSkippedBadge value={runSummary.pending} />
-      <TestRetriesBadge value={runSummary.retries} />
+      <TestOverallBadge value={testsProgress.overall} />
+      <TestSuccessBadge value={testsProgress.passes} />
+      <TestFailureBadge value={testsProgress.failures} />
+      <TestSkippedBadge value={testsProgress.pending} />
+      <TestRetriesBadge value={testsProgress.retries} />
     </HFlow>
   );
 }
@@ -159,11 +152,48 @@ function RunStatus({
 function Timedout({ inactivityTimeoutMs }: { inactivityTimeoutMs: number }) {
   return (
     <Tooltip
-      text={`Timed out after ${getSecondsDuration(
-        inactivityTimeoutMs / 1000
+      text={`Timed out after ${getDurationMs(
+        inactivityTimeoutMs
       )}. Set the timeout value in project settings.`}
     >
       <Icon icon="clockOutline" fill="danger" stroke="danger" size={0.9} />
     </Tooltip>
   );
 }
+
+const Pre_2_0_0_Run = ({
+  run,
+}: {
+  run: GetRunQuery['run'] | ArrayItemType<GetRunsFeedQuery['runFeed']['runs']>;
+}) => {
+  if (!run) {
+    return null;
+  }
+  const runId = run.runId;
+  const runMeta = run.meta;
+
+  return (
+    <Paper>
+      <HFlow alignItems="center" justifyContent="space-between">
+        <div style={{ flex: 1 }}>
+          <HFlow alignItems="center">
+            <Tooltip text="This is a legacy run created prior to Sorry Cypress 2.0. Some information may be missing.">
+              <Icon icon="archiveFilled" size={1} />
+            </Tooltip>
+            <HeaderLink to={`/run/${runId}`}>{runMeta.ciBuildId}</HeaderLink>
+          </HFlow>
+        </div>
+        <DeleteRunButton runId={runId} ciBuildId={runMeta.ciBuildId} />
+      </HFlow>
+      <Grid>
+        <Cell xs={12} md={6}>
+          <Commit commit={runMeta?.commit} />
+          <CiUrl
+            ciBuildId={runMeta?.ciBuildId}
+            projectId={runMeta?.projectId}
+          />
+        </Cell>
+      </Grid>
+    </Paper>
+  );
+};

@@ -1,4 +1,4 @@
-import { Collection } from '@sorry-cypress/mongo';
+import { InstanceResult, SetInstanceTestsPayload } from '@sorry-cypress/common';
 import {
   AppError,
   INSTANCE_EXISTS,
@@ -6,9 +6,9 @@ import {
   INSTANCE_SET_TESTS_FAILED,
   SCREENSHOT_URL_UPDATE_FAILED,
   VIDEO_URL_UPDATE_FAILED,
-} from '@src/lib/errors';
-import { getSanitizedMongoObject } from '@src/lib/results';
-import { InstanceResult, SetInstanceTestsPayload } from '@src/types';
+} from '@sorry-cypress/director/lib/errors';
+import { getSanitizedMongoObject } from '@sorry-cypress/director/lib/results';
+import { Collection } from '@sorry-cypress/mongo';
 
 export const insertInstance = async ({
   runId,
@@ -16,9 +16,11 @@ export const insertInstance = async ({
   spec,
   cypressVersion,
   groupId,
+  projectId,
 }: {
   runId: string;
   instanceId: string;
+  projectId: string;
   spec: string;
   groupId: string;
   cypressVersion: string;
@@ -27,6 +29,7 @@ export const insertInstance = async ({
     await Collection.instance().insertOne({
       spec,
       runId,
+      projectId,
       instanceId,
       cypressVersion,
       groupId,

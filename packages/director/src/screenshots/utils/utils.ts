@@ -1,4 +1,4 @@
-export const sanitizeS3KeyPrefix = (prefix: string): string => {
+export const sanitizeS3KeyPrefix = (prefix?: string): string => {
   if (!prefix) {
     return '';
   }

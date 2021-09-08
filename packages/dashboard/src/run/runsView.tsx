@@ -1,5 +1,8 @@
-import { PageControls, SearchField } from '@src/components';
-import { getProjectPath, setNav } from '@src/lib/navigation';
+import { PageControls, SearchField } from '@sorry-cypress/dashboard/components';
+import {
+  getProjectPath,
+  setNav,
+} from '@sorry-cypress/dashboard/lib/navigation';
 import React, { useLayoutEffect, useState } from 'react';
 import { RunsFeed } from './runsFeed/runsFeed';
 

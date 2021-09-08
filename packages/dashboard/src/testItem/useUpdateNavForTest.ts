@@ -1,11 +1,11 @@
-import { GetInstanceQuery } from '@src/generated/graphql';
+import { GetInstanceQuery } from '@sorry-cypress/dashboard/generated/graphql';
 import {
   getInstancePath,
   getProjectPath,
   getRunPath,
   getTestPath,
   setNav,
-} from '@src/lib/navigation';
+} from '@sorry-cypress/dashboard/lib/navigation';
 import { useLayoutEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -26,8 +26,8 @@ export const useUpdateTestNav = (data: GetInstanceQuery | undefined) => {
     }
     setNav([
       {
-        label: data.instance?.run?.meta?.projectId,
-        link: getProjectPath(data.instance?.run?.meta?.projectId),
+        label: data.instance?.projectId,
+        link: getProjectPath(data.instance?.projectId),
       },
       {
         label: data.instance.run?.meta?.ciBuildId,

@@ -1,21 +1,14 @@
-import { InstanceTestUnion } from '@src/generated/graphql';
-import { isTestGteV5 } from '@src/lib/version';
+import { InstanceTest } from '@sorry-cypress/dashboard/generated/graphql';
 import { orderBy, sum } from 'lodash';
 
-export const getTestDuration = (test: InstanceTestUnion) => {
-  if (isTestGteV5(test)) {
-    return sum(test.attempts.map((a) => a.wallClockDuration));
-  }
-  return test.wallClockDuration ?? 0;
+export const getTestDuration = (test: InstanceTest) => {
+  return sum(test.attempts.map((a) => a.wallClockDuration)) ?? 0;
 };
 
-export const getTestStartedAt = (test: InstanceTestUnion) => {
-  if (isTestGteV5(test)) {
-    const attempts = orderBy(test.attempts, 'wallClockStartedAt');
-    if (!attempts.length) {
-      return null;
-    }
-    return attempts[0].wallClockStartedAt;
+export const getTestStartedAt = (test: InstanceTest) => {
+  const attempts = orderBy(test.attempts, 'wallClockStartedAt');
+  if (!attempts.length) {
+    return null;
   }
-  return test.wallClockStartedAt ?? null;
+  return attempts[0].wallClockStartedAt;
 };

@@ -1,15 +1,15 @@
+import { AssetUploadInstruction } from '@sorry-cypress/common';
 import aws from 'aws-sdk';
+import { sanitizeS3KeyPrefix } from '../utils/';
 import {
-  S3_BUCKET,
-  S3_REGION,
   S3_ACL,
-  S3_READ_URL_PREFIX,
+  S3_BUCKET,
   S3_IMAGE_KEY_PREFIX,
+  S3_READ_URL_PREFIX,
+  S3_REGION,
   S3_VIDEO_KEY_PREFIX,
 } from './config';
 import { S3SignedUploadResult } from './types';
-import { AssetUploadInstruction } from '@src/types';
-import { sanitizeS3KeyPrefix } from '../utils/';
 
 const BUCKET_URL = `https://${S3_BUCKET}.s3.amazonaws.com`;
 const ImageContentType = 'image/png';

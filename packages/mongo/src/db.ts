@@ -4,6 +4,7 @@ import {
   MONGODB_AUTH_MECHANISM,
   MONGODB_DATABASE,
   MONGODB_PASSWORD,
+  MONGODB_TLS,
   MONGODB_URI,
   MONGODB_USER,
 } from './config';
@@ -13,8 +14,15 @@ let db: mongodb.Db;
 let client: MongoClient;
 
 export const initMongo = async () => {
-  await initMongoNoIndexes();
-  createIndexes();
+  try {
+    // 👹 Wait for mongoDB to initialize, didn't want to mess with ECS health checks
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+    await initMongoNoIndexes();
+    await createIndexes();
+  } catch (e) {
+    console.error(e);
+    process.exit(1);
+  }
 };
 
 export const initMongoNoIndexes = async () => {
@@ -27,11 +35,24 @@ export const initMongoNoIndexes = async () => {
   };
 
   if (MONGODB_AUTH_MECHANISM != undefined) {
+    if (!MONGODB_USER) {
+      throw new Error(
+        'MONGODB_USER is required when MONGODB_AUTH_MECHANISM is set'
+      );
+    }
+    if (!MONGODB_PASSWORD) {
+      throw new Error(
+        'MONGODB_PASSWORD is required when MONGODB_AUTH_MECHANISM is set'
+      );
+    }
     options.authMechanism = MONGODB_AUTH_MECHANISM;
     options.auth = { user: MONGODB_USER, password: MONGODB_PASSWORD };
   }
 
-  client = await MongoClient.connect(MONGODB_URI, options);
+  client = await MongoClient.connect(MONGODB_URI, {
+    ...options,
+    tls: MONGODB_TLS === 'true',
+  });
   db = client.db(MONGODB_DATABASE);
   console.log('🥬 Created MongoDB client');
 };
@@ -48,12 +69,14 @@ function getCollection<T>(name: CollectionName) {
   return () => db.collection<T>(name);
 }
 
-function createIndexes() {
-  Collection.run().createIndex({ runId: 1 }, { unique: true });
-  Collection.run().createIndex({ 'meta.commit.message': 1 });
-  Collection.run().createIndex({ 'meta.ciBuildId': 1 });
+async function createIndexes() {
+  await Promise.all([
+    Collection.run().createIndex({ runId: 1 }, { unique: true }),
+    Collection.run().createIndex({ 'meta.commit.message': 1 }),
+    Collection.run().createIndex({ 'meta.ciBuildId': 1 }),
 
-  Collection.instance().createIndex({ instanceId: 1 }, { unique: true });
-  Collection.project().createIndex({ projectId: 1 }, { unique: true });
-  Collection.runTimeout().createIndex({ timeoutAfter: 1 }, { unique: false });
+    Collection.instance().createIndex({ instanceId: 1 }, { unique: true }),
+    Collection.project().createIndex({ projectId: 1 }, { unique: true }),
+    Collection.runTimeout().createIndex({ timeoutAfter: 1 }, { unique: false }),
+  ]);
 }

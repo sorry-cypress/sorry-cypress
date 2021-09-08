@@ -2,7 +2,6 @@ import {
   BitBucketHook,
   GithubHook,
   HookEvent,
-  RunSummary,
   RunWithSpecs,
   SlackHook,
 } from '@sorry-cypress/common';
@@ -14,7 +13,7 @@ import bitbucketHook from './fixtures/bitbucketHook.json';
 import bitbucketReportStatusRequest from './fixtures/bitbucketReportStatusRequest.json';
 import githubHook from './fixtures/githubHooks.json';
 import githubReportStatusRequest from './fixtures/githubReportStatusRequest.json';
-import runSummary from './fixtures/runSummary.json';
+import groupProgress from './fixtures/groupProgress.json';
 import slackHook from './fixtures/slackHook.json';
 import slackReportStatusRequest from './fixtures/slackReportStatusRequest.json';
 import slackReportStatusRequestWithoutCommitData from './fixtures/slackReportStatusRequestWithoutCommitData.json';
@@ -52,7 +51,7 @@ describe('Report status to GitHub', () => {
     await reportStatusToGithub(ghHook, {
       run,
       groupId: 'ciBuildId',
-      runSummary: (runSummary as unknown) as RunSummary,
+      groupProgress,
       eventType: HookEvent.RUN_START,
     });
 
@@ -72,7 +71,7 @@ describe('Report status to GitHub', () => {
       {
         run,
         groupId: 'ciBuildId',
-        runSummary: (runSummary as unknown) as RunSummary,
+        groupProgress,
         eventType: HookEvent.RUN_START,
       }
     );
@@ -95,7 +94,7 @@ describe('Report status to BitBucket', () => {
     await reportStatusToBitbucket(bbHook, {
       run,
       groupId: 'ciBuildId',
-      runSummary: (runSummary as unknown) as RunSummary,
+      groupProgress,
       eventType: HookEvent.RUN_START,
     });
 
@@ -119,7 +118,7 @@ describe('Report status to Slack', () => {
   it('should send correct request to the Slack when run is finished', async () => {
     await reportToSlack(slkHook, {
       run,
-      runSummary: (runSummary as unknown) as RunSummary,
+      groupProgress,
       eventType: HookEvent.RUN_FINISH,
       spec: 'spec',
       groupId: 'groupId',
@@ -145,7 +144,7 @@ describe('Report status to Slack', () => {
             commit: null,
           },
         },
-        runSummary: (runSummary as unknown) as RunSummary,
+        groupProgress,
         eventType: HookEvent.RUN_FINISH,
         groupId: 'groupId',
         spec: 'spec',

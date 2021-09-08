@@ -1,6 +1,9 @@
-import { Collection } from '@sorry-cypress/mongo/dist';
-import { SpecStats } from '@src/generated/graphql';
-import { AggregationFilter, filtersToAggregations } from '@src/lib/query';
+import { SpecStats } from '@sorry-cypress/api/generated/graphql';
+import {
+  AggregationFilter,
+  filtersToAggregations,
+} from '@sorry-cypress/api/lib/query';
+import { Collection } from '@sorry-cypress/mongo';
 import { DataSource } from 'apollo-datasource';
 
 interface SpecsAggregationResult {
@@ -15,7 +18,7 @@ export class SpecsAPI extends DataSource {
   }: {
     spec: string;
     filter: AggregationFilter[];
-  }): Promise<SpecStats> {
+  }): Promise<SpecStats | null> {
     const pipeline = [
       ...filtersToAggregations(filter),
       {

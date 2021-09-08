@@ -1,13 +1,11 @@
-import { VisualTestState } from '@src/components/common';
+import { getTestRetries } from '@sorry-cypress/common';
+import { VisualTestState } from '@sorry-cypress/dashboard/components/common';
 import {
   GetInstanceQuery,
   InstanceTest,
-  InstanceTestUnion,
-  InstanceTestV5,
-} from '@src/generated/graphql';
-import { getSecondsDuration } from '@src/lib/duration';
-import { areTestsGteV5 } from '@src/lib/version';
-import { TestError } from '@src/testItem/details/common';
+} from '@sorry-cypress/dashboard/generated/graphql';
+import { getDurationMs } from '@sorry-cypress/dashboard/lib/duration';
+import { TestError } from '@sorry-cypress/dashboard/testItem/details/common';
 import { DataTable, Text, Tooltip } from 'bold-ui';
 import { truncate } from 'lodash';
 import React from 'react';
@@ -16,12 +14,13 @@ import { Link } from 'react-router-dom';
 import { getTestDuration, getTestStartedAt } from './util';
 
 function TestStatus(test: InstanceTest) {
-  return <VisualTestState state={test.state} />;
+  const retries = getTestRetries(test.state, test.attempts.length);
+  return <VisualTestState state={test.state} retries={retries} />;
 }
-function TestDuration(test: InstanceTestUnion) {
+function TestDuration(test: InstanceTest) {
   return (
     <Tooltip text={`Started at ${getTestStartedAt(test)}`}>
-      <Text>{getSecondsDuration(getTestDuration(test) / 1000)}</Text>
+      <Text>{getDurationMs(getTestDuration(test))}</Text>
     </Tooltip>
   );
 }
@@ -34,11 +33,14 @@ function TestLink(test: InstanceTest) {
   );
 }
 
-function TestAttempts(test: InstanceTestV5) {
+function TestRetries(test: InstanceTest) {
+  return getTestRetries(test.state, test.attempts.length);
+}
+function TestAttempts(test: InstanceTest) {
   return test.attempts.length;
 }
 
-function TestDisplayError(test: InstanceTestV5) {
+function TestDisplayError(test: InstanceTest) {
   if (!test.displayError) {
     return null;
   }
@@ -73,6 +75,12 @@ const attemptsColumn = {
   sortable: false,
   render: TestAttempts,
 };
+const retriesColumn = {
+  name: 'retries',
+  header: 'Retries',
+  sortable: false,
+  render: TestRetries,
+};
 const errorColumn = {
   name: 'error',
   header: 'Error',
@@ -80,12 +88,12 @@ const errorColumn = {
   render: TestDisplayError,
 };
 
-const ltV5Columns = [statusColumn, durationColumn, linkColumn];
 const gteV5Columns = [
   statusColumn,
   errorColumn,
   durationColumn,
   attemptsColumn,
+  retriesColumn,
   linkColumn,
 ];
 
@@ -108,12 +116,10 @@ export const InstanceDetails = ({
     return <div>No tests reported for spec</div>;
   }
 
-  const columns = areTestsGteV5(tests) ? gteV5Columns : ltV5Columns;
-
   return (
     <div>
       <strong>Tests</strong>
-      <DataTable rows={tests} columns={columns} />
+      <DataTable rows={tests} columns={gteV5Columns} />
     </div>
   );
 };

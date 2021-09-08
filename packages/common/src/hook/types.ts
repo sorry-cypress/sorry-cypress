@@ -32,7 +32,7 @@ export type SlackHook = BaseHook & {
   username?: string;
   hookEvents: HookEvent[];
   hookType: HookType.SLACK_HOOK;
-  slackResultFilter: ResultFilter;
+  slackResultFilter: ResultFilter | null;
   slackBranchFilter?: string[];
 };
 

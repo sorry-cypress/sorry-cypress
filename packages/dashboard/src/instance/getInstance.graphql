@@ -3,11 +3,11 @@ query getInstance($instanceId: ID!) {
     instanceId
     runId
     spec
+    projectId
     run {
       runId
       meta {
         ciBuildId
-        projectId
       }
     }
     results {
@@ -20,15 +20,7 @@ query getInstance($instanceId: ID!) {
           testId
           title
           state
-          wallClockDuration
-          wallClockStartedAt
-          error
-          stack
-        }
-        ... on InstanceTestV5 {
-          testId
-          title
-          state
+          body
           displayError
           attempts {
             state

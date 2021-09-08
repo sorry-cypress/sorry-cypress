@@ -1,5 +1,4 @@
 import {
-  getRunSummary,
   Hook,
   HookEvent,
   isBitbucketHook,
@@ -7,10 +6,9 @@ import {
   isGithubHook,
   isSlackHook,
   Project,
-  RunSummary,
-  RunWithSpecs,
+  Run,
+  RunGroupProgress,
 } from '@sorry-cypress/common';
-import { compact } from 'lodash';
 import { reportStatusToBitbucket } from './bitbucket';
 import { reportToGenericWebHook } from './generic';
 import { reportStatusToGithub } from './github';
@@ -18,7 +16,7 @@ import { reportToSlack } from './slack';
 
 interface ReportHooksParams {
   eventType: HookEvent;
-  run: RunWithSpecs;
+  run: Run;
   groupId: string;
   project: Project;
   spec?: string;
@@ -30,17 +28,19 @@ export async function reportToHooks(
     if (!reportParams.project.hooks?.length) {
       return;
     }
-    const runSummary = getRunSummary(
-      compact(
-        reportParams.run.specsFull
-          .filter((s) => s.groupId === reportParams.groupId)
-          .map((s) => s.results)
-      )
+
+    const groupProgress = reportParams.run.progress?.groups.find(
+      (g) => g.groupId === reportParams.groupId
     );
+
+    if (!groupProgress) {
+      console.error('No progress for group', reportParams.groupId);
+      return;
+    }
 
     reportParams.project.hooks.forEach((hook) => {
       // swallow errors, don't trust reporters to catch errors
-      runSingleReporter({ ...reportParams, runSummary, hook }).catch(
+      runSingleReporter({ ...reportParams, groupProgress, hook }).catch(
         (error) => {
           console.error(
             '[hooks] Error while reporting hook',
@@ -64,13 +64,13 @@ export async function reportToHooks(
 }
 
 interface RunSingleReporterParams extends ReportHooksParams {
-  runSummary: RunSummary;
+  groupProgress: RunGroupProgress;
   hook: Hook;
 }
 const runSingleReporter = async ({
   hook,
   run,
-  runSummary,
+  groupProgress,
   groupId,
   eventType,
   spec,
@@ -78,7 +78,7 @@ const runSingleReporter = async ({
   if (isGithubHook(hook)) {
     return reportStatusToGithub(hook, {
       run,
-      runSummary,
+      groupProgress,
       groupId,
       eventType,
     });
@@ -88,14 +88,14 @@ const runSingleReporter = async ({
       eventType,
       run,
       groupId,
-      runSummary,
-      spec,
+      groupProgress,
+      spec: spec ?? '',
     });
   }
   if (isBitbucketHook(hook)) {
     return reportStatusToBitbucket(hook, {
       run,
-      runSummary,
+      groupProgress,
       groupId,
       eventType,
     });
@@ -104,7 +104,7 @@ const runSingleReporter = async ({
     return reportToGenericWebHook(hook, {
       run,
       groupId,
-      runSummary,
+      groupProgress,
       eventType,
       spec,
     });

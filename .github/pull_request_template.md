@@ -16,7 +16,7 @@ For new features:
 
 Your contribution is very valuable, we **really appreciate your time and effort**!
 
-Time is very valuable resource and we are trying to use it wisely - your time and our time. The reality of maintaining on open-source software is:
+Please note:
 
 - Adding a new code and / or feature complicates the maintenance
 - Most people disappear after contributing a feature, leaving the support to core maintainers

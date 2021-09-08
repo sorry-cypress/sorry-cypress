@@ -1,6 +1,7 @@
-import { TextField, useCss } from 'bold-ui';
+import { TextField } from '@material-ui/core';
+import useDebounce from '@sorry-cypress/dashboard/hooks/useDebounce';
+import { WithMaterial } from '@sorry-cypress/dashboard/lib/material';
 import React, { ChangeEvent, useState } from 'react';
-import useDebounce from '../../hooks/useDebounce';
 
 export type OnSearch = (value: string) => unknown;
 
@@ -11,7 +12,6 @@ type SearchFieldProps = {
 };
 
 const SearchField = ({ placeholder, onSearch, disabled }: SearchFieldProps) => {
-  const { css } = useCss();
   const debounce = useDebounce();
   const [value, setValue] = useState('');
 
@@ -25,23 +25,16 @@ const SearchField = ({ placeholder, onSearch, disabled }: SearchFieldProps) => {
   };
 
   return (
-    <div
-      className={css`
-        flex: 1 1;
-      `}
-    >
+    <WithMaterial>
       <TextField
+        fullWidth
+        variant="outlined"
         placeholder={placeholder}
         value={value}
-        icon="zoomOutline"
         onChange={handleOnChange}
         disabled={disabled}
-        className={css`
-          padding: calc(0.75rem + 1px) 1rem;
-          width: 100%;
-        `}
       />
-    </div>
+    </WithMaterial>
   );
 };
 

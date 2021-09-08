@@ -1,6 +1,6 @@
 {
   "name": "@sorry-cypress/director",
-  "version": "1.1.1",
+  "version": "2.0.0-beta.9",
   "author": {
     "name": "Andrew Goldis",
     "email": "agoldis@gmail.com"
@@ -16,7 +16,7 @@
     "dev": "run-p dev:nodemon types:watch",
     "dev:nodemon": "nodemon",
     "build": "npm run build:types && npm run build:js",
-    "build:types": "tsc --emitDeclarationOnly --declarationMap",
+    "build:types": "tsc",
     "types:watch": "yarn build:types --watch --preserveWatchOutput",
     "build:js": "babel src --out-dir dist --extensions \".ts\" --source-maps inline",
     "test": "jest",
@@ -31,7 +31,6 @@
     "aws-sdk": "^2.518.0",
     "axios": "^0.21.1",
     "body-parser": "^1.19.0",
-    "bullmq": "^1.14.7",
     "clone-deep": "^4.0.1",
     "date-fns": "^2.21.3",
     "dotenv": "^8.1.0",
@@ -41,6 +40,7 @@
     "lodash": "^4.17.21",
     "md5": "^2.2.1",
     "minio": "^7.0.15",
+    "semver": "^7.3.5",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
@@ -57,7 +57,7 @@
     "@types/md5": "^2.1.33",
     "@types/minio": "^7.0.5",
     "@types/node": "^14.11.2",
-    "@types/redis": "^2.8.28",
+    "@types/semver": "^7.3.8",
     "@types/uuid": "^3.4.5",
     "babel-plugin-module-resolver": "^4.0.0",
     "jest": "^25.5.4",

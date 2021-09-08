@@ -1,19 +1,18 @@
 import { GenericHook as GenericHookType } from '@sorry-cypress/common';
-import { InputFieldLabel } from '@src/components';
+import { InputFieldLabel } from '@sorry-cypress/dashboard/components';
 import {
   UpdateGenericHookInput,
   useUpdateGenericHookMutation,
-} from '@src/generated/graphql';
+} from '@sorry-cypress/dashboard/generated/graphql';
 import { Button, Cell, Grid, TextField } from 'bold-ui';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { EditHookEvents } from './editHookEvents';
-import { HookFormAction } from './hookFormReducer';
 import { useCurrentProjectId } from './useCurrentProjectId';
 import { httpUrlValidation, jsonValidation } from './validation';
+
 interface GenericHookProps {
   hook: GenericHookType;
-  dispatch: React.Dispatch<HookFormAction>;
 }
 export const GenericHook = ({ hook }: GenericHookProps) => {
   const projectId = useCurrentProjectId();

@@ -1,16 +1,16 @@
 import {
   GenericHook,
   HookEvent,
-  RunSummary,
-  RunWithSpecs,
+  Run,
+  RunGroupProgress,
 } from '@sorry-cypress/common';
-import { getDashboardRunURL } from '@src/lib/urls';
+import { getDashboardRunURL } from '@sorry-cypress/director/lib/urls';
 import axios from 'axios';
 
 interface GenericHookReporterStatusParams {
-  run: RunWithSpecs;
+  run: Run;
   eventType: HookEvent;
-  runSummary: RunSummary;
+  groupProgress: RunGroupProgress;
   groupId: string;
   spec?: string;
 }
@@ -18,7 +18,7 @@ export async function reportToGenericWebHook(
   hook: GenericHook,
   eventData: GenericHookReporterStatusParams
 ) {
-  const { runSummary, eventType, run, groupId, spec } = eventData;
+  const { groupProgress, eventType, run, groupId, spec } = eventData;
 
   if (!shouldHandleGenericHook(hook, eventType)) {
     return;
@@ -31,7 +31,7 @@ export async function reportToGenericWebHook(
       runUrl: getDashboardRunURL(run.runId),
       buildId: run.meta.ciBuildId,
       commit: run.meta.commit,
-      ...runSummary,
+      ...groupProgress.tests,
     };
 
     if (run.meta.ciBuildId !== groupId) {

@@ -1,4 +1,4 @@
-import { HookEvent, RunSummary, SlackHook } from '@sorry-cypress/common';
+import { HookEvent, RunGroupProgress, SlackHook } from '@sorry-cypress/common';
 import {
   isSlackBranchFilterPassed,
   isSlackEventFilterPassed,
@@ -45,13 +45,19 @@ describe('isSlackEventFilterPassed', () => {
 
 describe('isSlackResultFilterPassed', () => {
   it.each([
-    ['ONLY_FAILED', { failures: 1, passes: 0, pending: 0, skipped: 0 }],
-    ['ONLY_SUCCESSFUL', { failures: 0, passes: 1, pending: 0, skipped: 0 }],
-    ['ALL', { failures: 1, passes: 1, pending: 1, skipped: 1 }],
-    ['ALL', { failures: 0, passes: 0, pending: 0, skipped: 0 }],
+    [
+      'ONLY_FAILED',
+      { tests: { failures: 1, passes: 0, pending: 0, skipped: 0 } },
+    ],
+    [
+      'ONLY_SUCCESSFUL',
+      { tests: { failures: 0, passes: 1, pending: 0, skipped: 0 } },
+    ],
+    ['ALL', { tests: { failures: 1, passes: 1, pending: 1, skipped: 1 } }],
+    ['ALL', { tests: { failures: 0, passes: 0, pending: 0, skipped: 0 } }],
   ])(
     'Should return true when %s filter is matched',
-    (filter: string, runSummary: RunSummary) => {
+    (filter: string, runSummary: RunGroupProgress) => {
       const slkHook = ({
         ...slackHook,
         slackResultFilter: filter,
@@ -61,11 +67,17 @@ describe('isSlackResultFilterPassed', () => {
     }
   );
   it.each([
-    ['ONLY_FAILED', { failures: 0, passes: 1, pending: 0, skipped: 0 }],
-    ['ONLY_SUCCESSFUL', { failures: 1, passes: 1, pending: 0, skipped: 0 }],
+    [
+      'ONLY_FAILED',
+      { tests: { failures: 0, passes: 1, pending: 0, skipped: 0 } },
+    ],
+    [
+      'ONLY_SUCCESSFUL',
+      { tests: { failures: 1, passes: 1, pending: 0, skipped: 0 } },
+    ],
   ])(
     "Should return false when %s filter doesn't match",
-    (filter: string, runSummary: RunSummary) => {
+    (filter: string, runSummary: RunGroupProgress) => {
       const slkHook = ({
         ...slackHook,
         slackResultFilter: filter,
@@ -105,7 +117,7 @@ describe('isSlackBranchFilterPassed', () => {
     ['main', ['!*dev*']],
   ])(
     'Should return true when "%s" branch matches the %p filter',
-    (branch: string, filter: [string]) => {
+    (branch: string, filter: string[]) => {
       const slkHook = ({
         ...slackHook,
         slackBranchFilter: filter,
@@ -126,7 +138,7 @@ describe('isSlackBranchFilterPassed', () => {
     ['develop', ['!*Dev????']],
   ])(
     `Should return false when "%s" branch doesn't match the %p filter`,
-    (branch: string, filter: [string]) => {
+    (branch: string, filter: string[]) => {
       const slkHook = ({
         ...slackHook,
         slackBranchFilter: filter,

@@ -1,9 +1,9 @@
 import {
   InstanceScreeshot,
-  InstanceTestV5,
+  InstanceTest,
   TestAttempt,
-} from '@src/generated/graphql';
-import { useSwitch } from '@src/hooks/useSwitch';
+} from '@sorry-cypress/dashboard/generated/graphql';
+import { useSwitch } from '@sorry-cypress/dashboard/hooks/useSwitch';
 import {
   Alert,
   Button,
@@ -68,7 +68,7 @@ export const TestDetailsV5 = ({
   test,
   screenshots,
 }: {
-  test: InstanceTestV5;
+  test: InstanceTest;
   screenshots: Partial<InstanceScreeshot>[];
 }) => {
   const { css } = useCss();

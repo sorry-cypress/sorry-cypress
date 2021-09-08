@@ -1,4 +1,4 @@
-import { Instance, InstanceResult } from '../instance/types';
+import { InstanceResultStats } from '../instance/types';
 
 export interface CommitData {
   sha: string;
@@ -30,7 +30,7 @@ export interface CreateRunParameters {
   ci: RunCI;
   platform: PlatformData;
   group?: string;
-  cypressVersion: string;
+  cypressVersion?: string;
 }
 
 export type CreateRunWarning = Record<string, string> & {
@@ -59,10 +59,14 @@ export interface RunSpec {
   claimedAt: string | null;
   completedAt: string | null;
   machineId?: string;
-  results?: InstanceResult;
+  results?: {
+    error?: string;
+    retries?: number;
+    stats: InstanceResultStats;
+  };
 }
 
-type RunCompletion =
+export type RunCompletion =
   | { completed: false }
   | {
       completed: true;
@@ -76,6 +80,31 @@ export interface Run {
   specs: RunSpec[];
   completion?: RunCompletion;
   cypressVersion?: string;
+  progress: RunProgress;
+}
+
+export interface RunProgress {
+  updatedAt: Date | null;
+  groups: RunGroupProgress[];
+}
+
+export interface RunGroupProgress {
+  groupId: string;
+  instances: {
+    overall: number;
+    claimed: number;
+    complete: number;
+    passes: number;
+    failures: number;
+  };
+  tests: {
+    overall: number;
+    passes: number;
+    failures: number;
+    skipped: number;
+    pending: number;
+    retries: number;
+  };
 }
 
 export interface Task {
@@ -84,10 +113,6 @@ export interface Task {
   totalInstances: number;
   projectId: string;
 }
-
-export type RunWithSpecs = Run & {
-  specsFull: Instance[];
-};
 
 export interface RunSummary {
   failures: number;

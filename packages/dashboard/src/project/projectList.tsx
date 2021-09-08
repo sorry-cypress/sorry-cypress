@@ -1,6 +1,9 @@
-import { CenteredContent } from '@src/components';
-import { useGetProjectsQuery } from '@src/generated/graphql';
-import { ProjectListItem } from '@src/project/projectListItem';
+import { CenteredContent } from '@sorry-cypress/dashboard/components';
+import {
+  Filters,
+  useGetProjectsQuery,
+} from '@sorry-cypress/dashboard/generated/graphql';
+import { ProjectListItem } from '@sorry-cypress/dashboard/project/projectListItem';
 import { Heading } from 'bold-ui';
 import React from 'react';
 
@@ -9,20 +12,21 @@ type ProjectsListProps = {
 };
 
 const ProjectsList = ({ search }: ProjectsListProps) => {
-  const queryOptions = {
+  const filters: Filters[] = search
+    ? [
+        {
+          value: null,
+          key: 'projectId',
+          like: search,
+        },
+      ]
+    : [];
+  const { loading, error, data, refetch } = useGetProjectsQuery({
     variables: {
-      filters: search
-        ? [
-            {
-              key: 'projectId',
-              like: search,
-            },
-          ]
-        : [],
+      orderDirection: null,
+      filters,
     },
-  };
-
-  const { loading, error, data, refetch } = useGetProjectsQuery(queryOptions);
+  });
 
   if (loading) {
     return <CenteredContent>Loading ...</CenteredContent>;
@@ -66,9 +70,11 @@ const ProjectsList = ({ search }: ProjectsListProps) => {
   return (
     <>
       {projects.map((project) => (
-        <div key={project.projectId}>
-          <ProjectListItem project={project} reloadProjects={refetch} />
-        </div>
+        <ProjectListItem
+          key={project.projectId}
+          project={project}
+          reloadProjects={refetch}
+        />
       ))}
     </>
   );

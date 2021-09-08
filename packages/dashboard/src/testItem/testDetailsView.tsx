@@ -1,5 +1,5 @@
-import { useGetInstanceQuery } from '@src/generated/graphql';
-import { useAutoRefreshRate } from '@src/hooks';
+import { useGetInstanceQuery } from '@sorry-cypress/dashboard/generated/graphql';
+import { useAutoRefreshRate } from '@sorry-cypress/dashboard/hooks';
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { TestDetails } from './details';

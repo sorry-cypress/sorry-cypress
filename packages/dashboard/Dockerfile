@@ -1,9 +1,11 @@
 FROM node:14-alpine AS build
 WORKDIR /app
+COPY packages/api/src/schema ./packages/api/src/schema
 COPY packages/dashboard/ ./packages/dashboard
 COPY packages/common/ ./packages/common
 COPY package.json ./
 COPY yarn.lock ./
+COPY tsconfig.json ./
 RUN yarn install --frozen-lockfile
 RUN yarn workspace @sorry-cypress/common build
 RUN yarn workspace @sorry-cypress/dashboard build

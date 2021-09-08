@@ -6,17 +6,7 @@ fragment RunDetailSpec on RunSpec {
   groupId
   results {
     error
-    tests {
-      ... on InstanceTest {
-        state
-      }
-      ... on InstanceTestV5 {
-        state
-        attempts {
-          state
-        }
-      }
-    }
+    retries
     stats {
       ...AllInstanceStats
     }

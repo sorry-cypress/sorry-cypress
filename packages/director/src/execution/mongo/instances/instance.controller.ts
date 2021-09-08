@@ -1,12 +1,13 @@
+import { SetInstanceTestsPayload } from '@sorry-cypress/common';
 import {
   AppError,
   INSTANCE_NOT_EXIST,
-  INSTANCE_NO_CREATE_TEST_DTO,
   SCREENSHOT_URL_UPDATE_FAILED,
-} from '@src/lib/errors';
-import { mergeInstanceResults } from '@src/lib/instance';
-import { ExecutionDriver } from '@src/types';
+} from '@sorry-cypress/director/lib/errors';
+import { mergeInstanceResults } from '@sorry-cypress/director/lib/instance';
+import { ExecutionDriver } from '@sorry-cypress/director/types';
 import { updateRunSpecCompleted } from '../runs/run.controller';
+import { incProgressOverallTests } from '../runs/run.model';
 import {
   getInstanceById,
   insertInstance,
@@ -38,7 +39,23 @@ export const setVideoUrl: ExecutionDriver['setVideoUrl'] = async ({
 }) => modelsetvideoUrl(instanceId, videoUrl);
 
 // save test creation to a temp field
-export const setInstanceTests = modelSetInstanceTests;
+// increment progress
+export const setInstanceTests = async (
+  instanceId: string,
+  payload: SetInstanceTestsPayload
+) => {
+  const instance = await getInstanceById(instanceId);
+  if (!instance) {
+    throw new Error('No instance found');
+  }
+  await modelSetInstanceTests(instanceId, payload);
+  await incProgressOverallTests(
+    instance.runId,
+    instance.groupId,
+    payload.tests.length
+  );
+};
+
 // merge and save the results
 export const updateInstanceResults: ExecutionDriver['updateInstanceResults'] = async (
   instanceId,
@@ -48,9 +65,7 @@ export const updateInstanceResults: ExecutionDriver['updateInstanceResults'] = a
   if (!instance) {
     throw new AppError(INSTANCE_NOT_EXIST);
   }
-  if (!instance._createTestsPayload) {
-    throw new AppError(INSTANCE_NO_CREATE_TEST_DTO);
-  }
+
   const instanceResult = mergeInstanceResults(
     instance._createTestsPayload,
     update
@@ -58,7 +73,12 @@ export const updateInstanceResults: ExecutionDriver['updateInstanceResults'] = a
 
   await Promise.all([
     modelSetInstanceResults(instanceId, instanceResult),
-    updateRunSpecCompleted(instance.runId, instanceId),
+    updateRunSpecCompleted(
+      instance.runId,
+      instance.groupId,
+      instanceId,
+      instanceResult
+    ),
   ]);
 
   return { ...instance, results: instanceResult };

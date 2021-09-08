@@ -1,5 +1,13 @@
-import { FlexRow, HeaderLink, Paper } from '@src/components/';
-import { Project, useDeleteProjectMutation } from '@src/generated/graphql';
+import { ArrayItemType } from '@sorry-cypress/common/ts';
+import {
+  FlexRow,
+  HeaderLink,
+  Paper,
+} from '@sorry-cypress/dashboard/components/';
+import {
+  GetProjectsQuery,
+  useDeleteProjectMutation,
+} from '@sorry-cypress/dashboard/generated/graphql';
 import {
   Button,
   Heading,
@@ -13,7 +21,7 @@ import {
 import React, { useState } from 'react';
 
 type ProjectListItemProps = {
-  project: Project;
+  project: ArrayItemType<GetProjectsQuery['projects']>;
   reloadProjects: () => void;
 };
 
@@ -112,6 +120,7 @@ export function ProjectListItem({
             </Button>
             <Button
               component="a"
+              // @ts-ignore
               href={`/${project.projectId}/edit`}
               skin="ghost"
             >

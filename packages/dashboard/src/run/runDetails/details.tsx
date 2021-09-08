@@ -1,4 +1,3 @@
-import { getNumRetries } from '@sorry-cypress/common';
 import {
   RenderOnInterval,
   SpecStateTag,
@@ -6,16 +5,19 @@ import {
   TestRetriesBadge,
   TestSkippedBadge,
   TestSuccessBadge,
-} from '@src/components/';
-import { getSpecState } from '@src/components/common/executionState';
+} from '@sorry-cypress/dashboard/components/';
+import { getInstanceState } from '@sorry-cypress/dashboard/components/common/executionState';
 import {
   GetRunQuery,
   RunDetailSpecFragment,
   useGetSpecStatsQuery,
-} from '@src/generated/graphql';
-import { useHideSuccessfulSpecs } from '@src/hooks/';
-import { getSecondsDuration } from '@src/lib/duration';
-import { ResetInstanceButton } from '@src/run/runDetails/resetInstance/resetInstanceButton';
+} from '@sorry-cypress/dashboard/generated/graphql';
+import { useHideSuccessfulSpecs } from '@sorry-cypress/dashboard/hooks/';
+import {
+  getDurationMs,
+  getDurationSeconds,
+} from '@sorry-cypress/dashboard/lib/duration';
+import { ResetInstanceButton } from '@sorry-cypress/dashboard/run/runDetails/resetInstance/resetInstanceButton';
 import {
   Cell,
   DataTable,
@@ -37,7 +39,7 @@ export function RunDetails({ run }: { run: NonNullable<GetRunQuery['run']> }) {
   const { specs } = run;
   const history = useHistory();
 
-  const [isPassedHidden, setHidePassedSpecs] = useHideSuccessfulSpecs();
+  const [hidePassedSpecs, setHidePassedSpecs] = useHideSuccessfulSpecs();
 
   if (!specs) {
     return null;
@@ -49,9 +51,17 @@ export function RunDetails({ run }: { run: NonNullable<GetRunQuery['run']> }) {
 
   const rows = run.specs
     .filter((spec) => !!spec)
-    .filter((spec) =>
-      isPassedHidden ? getSpecState(spec) !== 'passed' : true
-    );
+    .filter((spec) => {
+      if (!hidePassedSpecs) {
+        return true;
+      }
+      const state = getInstanceState({
+        claimedAt: spec.claimedAt,
+        stats: spec.results?.stats,
+        retries: spec.results?.retries ?? 0,
+      });
+      return ['failed'].includes(state);
+    });
 
   return (
     <Grid>
@@ -60,8 +70,8 @@ export function RunDetails({ run }: { run: NonNullable<GetRunQuery['run']> }) {
           <strong>Spec Files</strong>
           <Switch
             label="Hide successful specs"
-            checked={isPassedHidden}
-            onChange={() => setHidePassedSpecs(!isPassedHidden)}
+            checked={hidePassedSpecs}
+            onChange={() => setHidePassedSpecs((i) => !i)}
           />
         </HFlow>
       </Cell>
@@ -171,8 +181,7 @@ const getFailuresCell = (spec: RunDetailSpecFragment) => {
 };
 
 const getRetriesCell = (spec: RunDetailSpecFragment) => {
-  const retries = getNumRetries(spec.results?.tests);
-  return <TestRetriesBadge value={retries} />;
+  return <TestRetriesBadge value={spec.results?.retries ?? 0} />;
 };
 
 const getSkippedCell = (spec: RunDetailSpecFragment) => {
@@ -180,7 +189,13 @@ const getSkippedCell = (spec: RunDetailSpecFragment) => {
 };
 
 const getItemStatusCell = (spec: RunDetailSpecFragment) => (
-  <SpecStateTag state={getSpecState(spec)} />
+  <SpecStateTag
+    state={getInstanceState({
+      claimedAt: spec.claimedAt,
+      stats: spec.results?.stats,
+      retries: spec.results?.retries ?? 0,
+    })}
+  />
 );
 
 const getMachineCell = (spec: RunDetailSpecFragment) => {
@@ -198,30 +213,28 @@ const getDurationCell = (spec: RunDetailSpecFragment) => {
   if (isNumber(spec.results?.stats?.wallClockDuration)) {
     return (
       <Tooltip text={`Started at ${spec.results?.stats.wallClockStartedAt}`}>
-        <Text>
-          {getSecondsDuration(
-            (spec.results?.stats.wallClockDuration ?? 0) / 1000
-          )}
-        </Text>
+        <Text>{getDurationMs(spec.results?.stats.wallClockDuration ?? 0)}</Text>
       </Tooltip>
     );
   }
-  if (spec.claimedAt) {
-    return (
-      <Tooltip text={`Started at ${spec.claimedAt}`}>
-        <Text>
-          <RenderOnInterval
-            render={() =>
-              getSecondsDuration(
-                differenceInSeconds(new Date(), parseISO(spec.claimedAt))
-              )
-            }
-          />
-        </Text>
-      </Tooltip>
-    );
+  if (!spec.claimedAt) {
+    return null;
   }
-  return null;
+
+  return (
+    <Tooltip text={`Started at ${spec.claimedAt}`}>
+      <Text>
+        <RenderOnInterval
+          render={() =>
+            getDurationSeconds(
+              // @ts-ignore
+              differenceInSeconds(new Date(), parseISO(spec.claimedAt))
+            )
+          }
+        />
+      </Text>
+    </Tooltip>
+  );
 };
 
 const getAvgDurationCell = (spec: RunDetailSpecFragment) => {
@@ -250,13 +263,5 @@ const SpecAvg = ({ specName }: { specName: string }) => {
   if (!data) {
     return null;
   }
-  return (
-    <>
-      {getSecondsDuration(
-        data.specStats?.avgWallClockDuration
-          ? data?.specStats?.avgWallClockDuration / 1000
-          : 0
-      )}
-    </>
-  );
+  return <>{getDurationMs(data.specStats?.avgWallClockDuration ?? 0)}</>;
 };

@@ -1,10 +1,10 @@
 import { BitBucketHook as BitbucketHookType } from '@sorry-cypress/common';
-import { InputFieldLabel } from '@src/components';
+import { InputFieldLabel } from '@sorry-cypress/dashboard/components';
 import {
   UpdateBitbucketHookInput,
   useUpdateBitbucketHookMutation,
-} from '@src/generated/graphql';
-import { useSwitch } from '@src/hooks/useSwitch';
+} from '@sorry-cypress/dashboard/generated/graphql';
+import { useSwitch } from '@sorry-cypress/dashboard/hooks/useSwitch';
 import { Button, Cell, Grid, Link, Text, TextField } from 'bold-ui';
 import React from 'react';
 import { useForm } from 'react-hook-form';

@@ -65,11 +65,13 @@ export const TestSkippedBadge = ({
 };
 
 export const TestRetriesBadge = ({ value }: { value: number }) => {
+  const color = value ? 'alert' : 'disabled';
+
   return (
-    <Text color="disabled">
+    <Text color={color}>
       <Tooltip text="Retried Tests">
         <HFlow alignItems="center" hSpacing={0.5}>
-          <Icon icon="exclamationTriangleOutline" size={1} />
+          <Icon icon="sync" size={1} />
           {value}
         </HFlow>
       </Tooltip>

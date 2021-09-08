@@ -1,4 +1,4 @@
-query getProjects($orderDirection: OrderingOptions, $filters: [Filters]) {
+query getProjects($orderDirection: OrderingOptions, $filters: [Filters!]!) {
   projects(orderDirection: $orderDirection, filters: $filters) {
     projectId
   }

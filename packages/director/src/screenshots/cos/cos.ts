@@ -1,24 +1,30 @@
+import { AssetUploadInstruction } from '@sorry-cypress/common';
 import ibm from 'ibm-cos-sdk';
+import { sanitizeS3KeyPrefix } from '../utils';
 import {
   COS_ACCESSKEY,
-  COS_SECRETKEY,
-  COS_REGION,
   COS_BUCKET,
   COS_IMAGE_KEY_PREFIX,
+  COS_REGION,
+  COS_SECRETKEY,
   COS_VIDEO_KEY_PREFIX,
 } from './config';
 import { S3SignedUploadResult } from './types';
-import { AssetUploadInstruction } from '@src/types';
-import { sanitizeS3KeyPrefix } from '../utils';
 
 const BUCKET_URL = `https://s3.${COS_REGION}.cloud-object-storage.appdomain.cloud`;
 const COS_READ_ENDPOINT = `https://${COS_BUCKET}.s3.${COS_REGION}.cloud-object-storage.appdomain.cloud`;
 const ImageContentType = 'image/png';
 const VideoContentType = 'video/mp4';
 
+if (!COS_ACCESSKEY) {
+  throw new Error('No COS_ACCESSKEY defined');
+}
+if (!COS_SECRETKEY) {
+  throw new Error('No COS_SECRETKEY defined');
+}
 const s3 = new ibm.S3({
   endpoint: BUCKET_URL,
-  credentials: new ibm.Credentials(COS_ACCESSKEY, COS_SECRETKEY, null),
+  credentials: new ibm.Credentials(COS_ACCESSKEY, COS_SECRETKEY, undefined),
   signatureVersion: 'v4',
 });
 

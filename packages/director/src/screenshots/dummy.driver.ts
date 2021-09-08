@@ -1,4 +1,4 @@
-import { ScreenshotsDriver } from '@src/types';
+import { ScreenshotsDriver } from '@sorry-cypress/director/types';
 
 export const driver: ScreenshotsDriver = {
   id: 'dummy',

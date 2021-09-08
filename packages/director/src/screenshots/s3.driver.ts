@@ -1,13 +1,12 @@
-import md5 from 'md5';
 import {
-  ScreenshotsDriver,
-  InstanceResult,
-  ScreenshotUploadInstruction,
-  Screenshot,
   AssetUploadInstruction,
-} from '@src/types';
-
-import { isInstanceFailed } from '@src/lib/results';
+  InstanceResult,
+  Screenshot,
+  ScreenshotUploadInstruction,
+} from '@sorry-cypress/common';
+import { isInstanceFailed } from '@sorry-cypress/director/lib/results';
+import { ScreenshotsDriver } from '@sorry-cypress/director/types';
+import md5 from 'md5';
 import {
   getImageUploadUrl,
   getVideoUploadUrl as s3getVideoUploadUrl,

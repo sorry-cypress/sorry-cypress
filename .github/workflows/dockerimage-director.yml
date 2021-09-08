@@ -1,4 +1,4 @@
-name: Update Dockerhub Images
+name: Update Director Dockerhub Image
 
 on:
   push:
@@ -25,4 +25,4 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Dockerhub Release
-        run: ./scripts/release-dockerhub.sh
+        run: ./scripts/release-dockerhub.sh -s director

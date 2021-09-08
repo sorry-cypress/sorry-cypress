@@ -1,8 +1,7 @@
-import { Project } from '@sorry-cypress/common';
-import { ProjectsAPI } from '@src/datasources/projects';
-import { RunsAPI } from '@src/datasources/runs';
-import { SpecsAPI } from '@src/datasources/specs';
-import { AppDatasources } from '@src/datasources/types';
+import { ProjectsAPI } from '@sorry-cypress/api/datasources/projects';
+import { RunsAPI } from '@sorry-cypress/api/datasources/runs';
+import { SpecsAPI } from '@sorry-cypress/api/datasources/specs';
+import { AppDatasources } from '@sorry-cypress/api/datasources/types';
 import {
   CreateBitbucketHookInput,
   CreateGenericHookInput,
@@ -10,8 +9,6 @@ import {
   CreateProjectInput,
   CreateSlackHookInput,
   DeleteHookInput,
-  InstanceTestUnion,
-  InstanceTestV5,
   OrderingOptions,
   RunSpec,
   UpdateBitbucketHookInput,
@@ -19,7 +16,8 @@ import {
   UpdateGithubHookInput,
   UpdateProjectInput,
   UpdateSlackHookInput,
-} from '@src/generated/graphql';
+} from '@sorry-cypress/api/generated/graphql';
+import { getTestListRetries, Project } from '@sorry-cypress/common';
 import { GraphQLScalarType } from 'graphql';
 import { GraphQLDateTime } from 'graphql-iso-date';
 import { get, identity } from 'lodash';
@@ -29,12 +27,6 @@ const getDatasourceWithInput = <T>(path: string) => (
   { input }: { input: T },
   { dataSources }: { dataSources: AppDatasources }
 ) => get(dataSources, path)(input);
-
-function isInstanceV5(
-  candidate: InstanceTestUnion
-): candidate is InstanceTestV5 {
-  return !!(candidate as InstanceTestV5).attempts;
-}
 
 function getStringLiteral(name: string) {
   return new GraphQLScalarType({
@@ -57,28 +49,25 @@ export const resolvers = {
   GithubHookType: getStringLiteral('GithubHookType'),
   BitbucketHookType: getStringLiteral('BitbucketHookType'),
 
-  InstanceTestUnion: {
-    __resolveType(obj: InstanceTestUnion) {
-      if (isInstanceV5(obj)) {
-        return 'InstanceTestV5';
-      }
-
-      return 'InstanceTest';
-    },
-  },
   RunSpec: {
     results: async (
-      { instanceId }: RunSpec,
+      parent: RunSpec,
       _: any,
       { dataSources }: { dataSources: AppDatasources }
     ) => {
-      const response = await dataSources.instancesAPI.getResultsByInstanceId(
-        instanceId
+      if (parent.results) {
+        return parent.results;
+      }
+      const response = await dataSources.instancesAPI.getInstanceById(
+        parent.instanceId
       );
-      if (!response) {
+      if (!response?.results) {
         return null;
       }
-      return response.results;
+      return {
+        ...response.results,
+        retries: getTestListRetries(response.results?.tests ?? []),
+      };
     },
   },
   Query: {
@@ -106,7 +95,7 @@ export const resolvers = {
       { cursor, filters }: Parameters<RunsAPI['getRunFeed']>[0],
       { dataSources }: { dataSources: AppDatasources }
     ) => dataSources.runsAPI.getRunFeed({ cursor: cursor || false, filters }),
-    run: (
+    run: async (
       _: any,
       { id }: { id: string },
       { dataSources }: { dataSources: AppDatasources }
@@ -116,11 +105,21 @@ export const resolvers = {
       args: Parameters<SpecsAPI['getSpecStats']>[0],
       { dataSources }: { dataSources: AppDatasources }
     ) => dataSources.specsAPI.getSpecStats(args),
-    instance: (
+    instance: async (
       _: any,
       { id }: { id: string },
       { dataSources }: { dataSources: AppDatasources }
-    ) => dataSources.instancesAPI.getInstanceById(id),
+    ) => {
+      const instance = await dataSources.instancesAPI.getInstanceById(id);
+      if (!instance) {
+        return null;
+      }
+      const run = await dataSources.runsAPI.getRunById(instance.runId);
+      if (!run) {
+        return null;
+      }
+      return { ...instance, projectId: run.meta.projectId, run };
+    },
   },
   Mutation: {
     deleteRun: async (
@@ -150,6 +149,11 @@ export const resolvers = {
         runIds
       );
       if (instancesDeleteResponse.success) {
+        await Promise.all(
+          runIds.map((runId) =>
+            dataSources.runTimeoutAPI.deleteRunTimeouts(runId)
+          )
+        );
         return dataSources.runsAPI.deleteRunsByIds(runIds);
       } else {
         return instancesDeleteResponse;
