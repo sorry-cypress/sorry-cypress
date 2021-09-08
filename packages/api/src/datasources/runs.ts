@@ -124,15 +124,6 @@ export class RunsAPI extends DataSource {
     };
   }
 
-  async deleteRunsInDateRange(
-    startDate: Date,
-    endDate: Date,
-    limit: number = 0
-  ) {
-    const getResult = await this.getRunsInDateRange(startDate, endDate, limit);
-    return this.deleteRunsByIds(getResult.runIds);
-  }
-
   async getRunsInDateRange(startDate: Date, endDate: Date, limit: number = 0) {
     if (startDate > endDate) {
       return {
@@ -148,6 +139,7 @@ export class RunsAPI extends DataSource {
           $gte: startDate.toISOString(),
         },
       })
+      .project({ _id: 0, runId: 1 })
       .limit(limit)
       .toArray();
     const runIds = response.map((x) => x.runId);
