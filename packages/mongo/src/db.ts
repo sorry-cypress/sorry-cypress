@@ -76,6 +76,7 @@ async function createIndexes() {
     Collection.run().createIndex({ 'meta.ciBuildId': 1 }),
 
     Collection.instance().createIndex({ instanceId: 1 }, { unique: true }),
+    Collection.instance().createIndex({ runId: 1 }),
     Collection.project().createIndex({ projectId: 1 }, { unique: true }),
     Collection.runTimeout().createIndex({ timeoutAfter: 1 }, { unique: false }),
   ]);

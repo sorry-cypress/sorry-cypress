@@ -164,15 +164,36 @@ export const resolvers = {
       { startDate, endDate }: { startDate: Date; endDate: Date },
       { dataSources }: { dataSources: AppDatasources }
     ) => {
-      const instancesDeleteResponse = await dataSources.instancesAPI.deleteInstancesInDateRange(
-        startDate,
-        endDate
-      );
-      if (instancesDeleteResponse.success === true) {
-        return dataSources.runsAPI.deleteRunsInDateRange(startDate, endDate);
-      } else {
-        return instancesDeleteResponse;
+      // Process the deletion in batches
+      const batchSize = 20;
+      const processedRunIds: string[] = [];
+      while (true) {
+        const getRunsResponse = await dataSources.runsAPI.getRunsInDateRange(
+          startDate,
+          endDate,
+          batchSize
+        );
+        if (getRunsResponse.runIds.length == 0) {
+          // No more runs in the range, break out of the loop
+          break;
+        }
+        // Delete the runs
+        const runsDeleteResponse = await resolvers.Mutation.deleteRuns(
+          _,
+          { runIds: getRunsResponse.runIds },
+          { dataSources }
+        );
+        if (!runsDeleteResponse.success) {
+          return runsDeleteResponse;
+        }
+        processedRunIds.push(...getRunsResponse.runIds);
       }
+
+      return {
+        success: true,
+        message: `Deleted ${processedRunIds.length} item(s)`,
+        runIds: processedRunIds,
+      };
     },
     createProject: (
       _: any,

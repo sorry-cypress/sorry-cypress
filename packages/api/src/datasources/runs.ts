@@ -124,7 +124,7 @@ export class RunsAPI extends DataSource {
     };
   }
 
-  async deleteRunsInDateRange(startDate: Date, endDate: Date) {
+  async getRunsInDateRange(startDate: Date, endDate: Date, limit: number = 0) {
     if (startDate > endDate) {
       return {
         success: false,
@@ -132,15 +132,21 @@ export class RunsAPI extends DataSource {
         runIds: [],
       };
     }
-    const response = (await Collection.run()
+    const response = await Collection.run()
       .find({
         createdAt: {
           $lte: endDate.toISOString(),
           $gte: startDate.toISOString(),
         },
       })
-      .toArray()) as Run[];
-    const runIds = response.map((x) => x.runId) as string[];
-    return await this.deleteRunsByIds(runIds);
+      .project({ _id: 0, runId: 1 })
+      .limit(limit)
+      .toArray();
+    const runIds = response.map((x) => x.runId);
+    return {
+      success: true,
+      message: `Found ${runIds.length ?? 0} item(s)`,
+      runIds: runIds,
+    };
   }
 }
