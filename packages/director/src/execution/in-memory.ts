@@ -17,7 +17,6 @@ import { getRunCiBuildId } from '@sorry-cypress/director/lib/ciBuildId';
 import {
   AppError,
   INSTANCE_NOT_EXIST,
-  INSTANCE_NO_CREATE_TEST_DTO,
   RUN_NOT_EXIST,
 } from '@sorry-cypress/director/lib/errors';
 import {
@@ -199,10 +198,6 @@ const updateInstanceResults = async (
   const instance = instances[instanceId];
   if (!instance) {
     throw new AppError(INSTANCE_NOT_EXIST);
-  }
-
-  if (!instance._createTestsPayload) {
-    throw new AppError(INSTANCE_NO_CREATE_TEST_DTO);
   }
 
   const instanceResult = mergeInstanceResults(
