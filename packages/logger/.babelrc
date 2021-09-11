@@ -1,0 +1,12 @@
+{
+  "plugins": [
+    [
+      "module-resolver",
+      {
+        "alias": {
+          "@currents/logger": "./src"
+        }
+      }
+    ]
+  ]
+}

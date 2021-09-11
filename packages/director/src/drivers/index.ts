@@ -6,6 +6,7 @@ import {
   ExecutionDriver,
   ScreenshotsDriver,
 } from '@sorry-cypress/director/types';
+import { getLogger } from '@sorry-cypress/logger';
 
 let executionDriver: ExecutionDriver | null = null;
 let storageDriver: ScreenshotsDriver | null = null;
@@ -33,6 +34,6 @@ export const getExecutionDriver = async (): Promise<ExecutionDriver> => {
     throw new Error('Cannot determine execution driver');
   }
   await executionDriver.init();
-  console.log('🔧 Director execution driver: ', executionDriver.id);
+  getLogger().log(`🔧 Director execution driver: ${executionDriver.id}`);
   return executionDriver;
 };

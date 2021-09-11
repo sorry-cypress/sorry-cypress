@@ -5,7 +5,8 @@ services:
     image: mongo:4.2
     volumes:
       - ./data/data-mongo-cypress:/data/db
-
+    ports:
+      - 27017:27017
   director:
     image: agoldis/sorry-cypress-director:latest
     environment:

@@ -7,6 +7,7 @@ import {
   SlackHook,
 } from '@sorry-cypress/common';
 import { getDashboardRunURL } from '@sorry-cypress/director/lib/urls';
+import { getLogger } from '@sorry-cypress/logger';
 import axios from 'axios';
 import { truncate } from 'lodash';
 
@@ -144,8 +145,11 @@ export async function reportToSlack(
       ],
       icon_url: 'https://sorry-cypress.s3.amazonaws.com/images/icon-bg.png',
     },
-  }).catch((err) => {
-    console.error(`Error: Hook Post to ${hook.url} responded with `, err);
+  }).catch((error) => {
+    getLogger().error(
+      { error, ...hook },
+      `Error while posting hook to ${hook.url}`
+    );
   });
 }
 
@@ -184,7 +188,7 @@ export function isSlackResultFilterPassed(
     case ResultFilter.ALL:
       return true;
     default:
-      console.error(`Unexpected Slack filter type: ${hook.slackResultFilter}`);
+      getLogger().error({ ...hook }, `Unexpected Slack filter type`);
       return false;
   }
 

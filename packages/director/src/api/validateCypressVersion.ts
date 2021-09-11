@@ -1,3 +1,4 @@
+import { getLogger } from '@sorry-cypress/logger';
 import express from 'express';
 import semver from 'semver';
 
@@ -19,17 +20,24 @@ export const validateCypressVersion = (
   const cypressVersion = req.headers['x-cypress-version']?.toString();
 
   if (!cypressVersion) {
-    console.warn('[validateCypressVersion] No cypress version detected');
+    getLogger().warn(
+      req.headers,
+      '[validateCypressVersion] No cypress version detected'
+    );
     return next();
   }
 
   if (!semver.valid(cypressVersion)) {
-    console.warn('[validateCypressVersion] Invalid cypress version');
+    getLogger().warn(
+      req.headers,
+      '[validateCypressVersion] Invalid cypress version'
+    );
     return next();
   }
 
   if (semver.lt(cypressVersion, '6.7.0')) {
-    console.warn(
+    getLogger().warn(
+      req.headers,
       `[validateCypressVersion] Unsupported cypress version ${cypressVersion}`
     );
     return next(

@@ -15,7 +15,7 @@
     "packages/*"
   ],
   "scripts": {
-    "killall": "ps -ef | egrep \"webpack|node|nodemon\" | grep currents | awk '{ print $2 }' | xargs kill",
+    "killall": "ps -ef | egrep \"webpack|node|nodemon\" | grep sorry | awk '{ print $2 }' | xargs kill",
     "release": "./scripts/release-github.sh",
     "release-packages": "wsrun release",
     "build": "wsrun -t build",

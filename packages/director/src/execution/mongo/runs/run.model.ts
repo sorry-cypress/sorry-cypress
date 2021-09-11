@@ -12,6 +12,7 @@ import {
 } from '@sorry-cypress/director/lib/errors';
 import { getSanitizedMongoObject } from '@sorry-cypress/director/lib/results';
 import { ExecutionDriver } from '@sorry-cypress/director/types';
+import { getLogger } from '@sorry-cypress/logger';
 import { Collection } from '@sorry-cypress/mongo';
 import { omit, pick } from 'lodash';
 
@@ -69,6 +70,10 @@ export const setSpecClaimed = async (
   instanceId: string,
   machineId: string
 ) => {
+  getLogger().log(
+    { runId, groupId, instanceId, machineId },
+    'Setting spec as claimed'
+  );
   const { matchedCount, modifiedCount } = await Collection.run().updateOne(
     {
       runId,
@@ -100,6 +105,10 @@ export const setSpecClaimed = async (
   );
 
   if (matchedCount && modifiedCount) {
+    getLogger().log(
+      { runId, groupId, instanceId, machineId },
+      'Success setting spec as claimed'
+    );
     return;
   } else {
     throw new AppError(CLAIM_FAILED);
@@ -158,7 +167,6 @@ export const setSpecCompleted = async (
 ) => {
   const stats = instanceResult.stats;
   const hasFailures = stats.failures > 0 || stats.skipped > 0;
-
   const retries = getTestListRetries(instanceResult.tests);
   const { matchedCount, modifiedCount } = await Collection.run().updateOne(
     {

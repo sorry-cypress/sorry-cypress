@@ -196,6 +196,7 @@ const updateInstanceResults = async (
   update: UpdateInstanceResultsPayload
 ) => {
   const instance = instances[instanceId];
+
   if (!instance) {
     throw new AppError(INSTANCE_NOT_EXIST);
   }
