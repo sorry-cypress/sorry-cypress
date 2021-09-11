@@ -82,7 +82,6 @@ export const setInstanceTests = async (
     }
   );
 
-  throw new Error('Oh!');
   if (matchedCount && modifiedCount) {
     return;
   } else {

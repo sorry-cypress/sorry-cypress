@@ -24,10 +24,6 @@ export const checkRunCompletionOnTimeout = async (
   runId: string,
   timeoutSeconds: number
 ) => {
-  if (await maybeSetRunCompleted(runId)) {
-    return;
-  }
-
   const run = await getRunById(runId);
   if (!run) {
     getLogger().warn(
@@ -39,13 +35,17 @@ export const checkRunCompletionOnTimeout = async (
     return;
   }
 
+  if (await maybeSetRunCompleted(runId)) {
+    return;
+  }
+
   getLogger().log(
     {
       runId,
       timeoutSeconds,
       createdAt: run.createdAt,
     },
-    `[run-completion] Run  timed out after ${timeoutSeconds} seconds`
+    `[run-completion] Run timed out after ${timeoutSeconds} seconds`
   );
 
   setRunCompletedWithTimeout({
@@ -69,9 +69,7 @@ export const checkRunTimeouts = async () => {
   runTimeouts.forEach(async (timeoutTask) => {
     try {
       getLogger().debug(
-        {
-          ...timeoutTask,
-        },
+        timeoutTask,
         `[run-timeout] Checking run timeout for runId...`
       );
       await checkRunCompletionOnTimeout(
@@ -81,7 +79,8 @@ export const checkRunTimeouts = async () => {
       await runTimeoutModel.setRunTimeoutChecked(timeoutTask._id);
     } catch (error) {
       getLogger().error(
-        { ...timeoutTask, ...error }`[run-timeout] Error checking run timeout`
+        { ...timeoutTask, error },
+        `[run-timeout] Error checking run timeout`
       );
     }
   });

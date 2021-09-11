@@ -3,7 +3,7 @@ WORKDIR /app
 COPY packages/director/ ./packages/director/
 COPY packages/common/ ./packages/common
 COPY packages/mongo/ ./packages/mongo
-COPY packages/loger/ ./packages/loger
+COPY packages/logger/ ./packages/logger
 COPY package.json ./
 COPY yarn.lock ./
 COPY tsconfig.json ./
