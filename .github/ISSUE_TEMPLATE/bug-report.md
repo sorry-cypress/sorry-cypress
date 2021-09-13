@@ -3,7 +3,7 @@ name: Bug Report
 about: A bug 🐞
 ---
 
-Please note, issues that are not following the template will be closes automatically:
+Please note - issues that are not following the template will be closes automatically:
 
 - [ ] I have verified that all sorry-cypress services are running and accessible
 - [ ] I have read documentation and found no answer to my problem
