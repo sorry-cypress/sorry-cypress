@@ -10,7 +10,6 @@ import { getInstanceState } from '@sorry-cypress/dashboard/components/common/exe
 import {
   GetRunQuery,
   RunDetailSpecFragment,
-  useGetSpecStatsQuery,
 } from '@sorry-cypress/dashboard/generated/graphql';
 import { useHideSuccessfulSpecs } from '@sorry-cypress/dashboard/hooks/';
 import {
@@ -116,12 +115,12 @@ export function RunDetails({ run }: { run: NonNullable<GetRunQuery['run']> }) {
                 sortable: false,
                 render: getDurationCell,
               },
-              {
-                name: 'average-duration',
-                header: 'Avg Duration',
-                sortable: false,
-                render: getAvgDurationCell,
-              },
+              // {
+              //   name: 'average-duration',
+              //   header: 'Avg Duration',
+              //   sortable: false,
+              //   render: getAvgDurationCell,
+              // },
               {
                 name: 'failures',
                 header: '',
@@ -237,31 +236,31 @@ const getDurationCell = (spec: RunDetailSpecFragment) => {
   );
 };
 
-const getAvgDurationCell = (spec: RunDetailSpecFragment) => {
-  if (!spec.spec) {
-    return null;
-  }
-  return <SpecAvg specName={spec.spec} />;
-};
+// const getAvgDurationCell = (spec: RunDetailSpecFragment) => {
+//   if (!spec.spec) {
+//     return null;
+//   }
+//   return <SpecAvg specName={spec.spec} />;
+// };
 
 function getMachineName(machineId: string) {
   return (stringHash(machineId) % 10000) + 1;
 }
 
-const SpecAvg = ({ specName }: { specName: string }) => {
-  const { data, error, loading } = useGetSpecStatsQuery({
-    variables: { spec: specName },
-  });
-  if (loading) {
-    return null;
-  }
-  if (error) {
-    console.error(error);
-    return null;
-  }
+// const SpecAvg = ({ specName }: { specName: string }) => {
+//   const { data, error, loading } = useGetSpecStatsQuery({
+//     variables: { spec: specName },
+//   });
+//   if (loading) {
+//     return null;
+//   }
+//   if (error) {
+//     console.error(error);
+//     return null;
+//   }
 
-  if (!data) {
-    return null;
-  }
-  return <>{getDurationMs(data.specStats?.avgWallClockDuration ?? 0)}</>;
-};
+//   if (!data) {
+//     return null;
+//   }
+//   return <>{getDurationMs(data.specStats?.avgWallClockDuration ?? 0)}</>;
+// };
