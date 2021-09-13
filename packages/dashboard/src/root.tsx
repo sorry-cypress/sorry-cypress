@@ -2,11 +2,11 @@ import { ApolloProvider } from '@apollo/client';
 import { ThemeProvider } from 'bold-ui';
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { Content, Footer, Header, Layout } from './components';
+import { Content, Layout } from './components';
+import { DashboardView } from './dashboard/dashboardView';
 import { InstanceDetailsView } from './instance/instanceDetailsView';
 import { client } from './lib/apolloClient';
 import { ProjectEditView } from './project/projectEditView';
-import { ProjectsView } from './project/projectsView';
 import { RunDetailsView } from './run/runDetails/runDetailsView';
 import { RunRedirect } from './run/runsRedirect';
 import { RunsView } from './run/runsView';
@@ -58,9 +58,8 @@ export const Root = () => {
         <Router>
           <ErrorBoundary>
             <Layout>
-              <Header />
               <Content>
-                <Route path="/" exact component={ProjectsView} />
+                <Route path="/" exact component={DashboardView} />
 
                 <Switch>
                   <Route
@@ -81,7 +80,6 @@ export const Root = () => {
                   component={TestDetailsView}
                 />
               </Content>
-              <Footer />
             </Layout>
           </ErrorBoundary>
         </Router>

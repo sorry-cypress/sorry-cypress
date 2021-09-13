@@ -1,6 +1,7 @@
 import { PageControls, SearchField } from '@sorry-cypress/dashboard/components';
 import {
   getProjectPath,
+  NavItemType,
   setNav,
 } from '@sorry-cypress/dashboard/lib/navigation';
 import React, { useLayoutEffect, useState } from 'react';
@@ -24,8 +25,13 @@ export function RunsView({
   useLayoutEffect(() => {
     setNav([
       {
+        type: NavItemType.project,
         label: projectId,
         link: getProjectPath(projectId),
+      },
+      {
+        type: NavItemType.latestRuns,
+        label: 'Latest runs',
       },
     ]);
   }, []);

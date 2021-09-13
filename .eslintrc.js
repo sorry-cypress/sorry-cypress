@@ -21,6 +21,7 @@ module.exports = {
 
   rules: {
     'no-warning-comments': 2,
+    'react/prop-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/triple-slash-reference': 0,
     '@typescript-eslint/ban-ts-ignore': 'off',
@@ -49,13 +50,16 @@ module.exports = {
     'no-fallthrough': 'warn',
     'no-useless-escape': 'warn',
     'max-depth': ['error', 4],
-    'comma-dangle': ['error', {
-      'arrays': 'always-multiline',
-      'objects': 'always-multiline',
-      'imports': 'ignore',
-      'exports': 'ignore',
-      'functions': 'ignore'
-    }],
+    'comma-dangle': [
+      'error',
+      {
+        arrays: 'always-multiline',
+        objects: 'always-multiline',
+        imports: 'ignore',
+        exports: 'ignore',
+        functions: 'ignore',
+      },
+    ],
     camelcase: 'off',
     quotes: ['off', 'single'],
     semi: 0,

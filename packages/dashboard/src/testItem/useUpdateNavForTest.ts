@@ -4,6 +4,7 @@ import {
   getProjectPath,
   getRunPath,
   getTestPath,
+  NavItemType,
   setNav,
 } from '@sorry-cypress/dashboard/lib/navigation';
 import { useLayoutEffect } from 'react';
@@ -26,18 +27,27 @@ export const useUpdateTestNav = (data: GetInstanceQuery | undefined) => {
     }
     setNav([
       {
+        type: NavItemType.project,
         label: data.instance?.projectId,
         link: getProjectPath(data.instance?.projectId),
       },
       {
+        type: NavItemType.latestRuns,
+        label: 'Runs',
+        link: getProjectPath(data.instance?.projectId),
+      },
+      {
+        type: NavItemType.run,
         label: data.instance.run?.meta?.ciBuildId,
         link: getRunPath(data.instance.runId),
       },
       {
+        type: NavItemType.spec,
         label: data.instance.spec,
         link: getInstancePath(instanceId),
       },
       {
+        type: NavItemType.test,
         label: test.title && test.title.join(' | '),
         link: getTestPath(data.instance.instanceId, testId),
       },
