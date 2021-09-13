@@ -8,6 +8,7 @@ import {
 } from '@sorry-cypress/common';
 import { APP_NAME } from '@sorry-cypress/director/config';
 import { getDashboardRunURL } from '@sorry-cypress/director/lib/urls';
+import { getLogger } from '@sorry-cypress/logger';
 import axios from 'axios';
 
 interface GitHubReporterStatusParams {
@@ -21,7 +22,10 @@ export async function reportStatusToGithub(
   eventData: GitHubReporterStatusParams
 ) {
   if (!hook.githubToken) {
-    console.warn('[github-reporter] No github token defined, ignoring hook...');
+    getLogger().warn(
+      { ...hook, runId: eventData.run.runId, groupID: eventData.groupId },
+      '[github-reporter] No github token defined, ignoring hook...'
+    );
     return;
   }
 
@@ -73,7 +77,10 @@ export async function reportStatusToGithub(
 
   const fullStatusPostUrl = getGithubStatusUrl(hook.url, run.meta.commit.sha);
 
-  console.log('[github-reporter] ', { fullStatusPostUrl, eventType, data });
+  getLogger().log(
+    { fullStatusPostUrl, eventType, ...data },
+    '[github-reporter] Sending HTTP request to GitHub'
+  );
   try {
     axios({
       method: 'post',
@@ -88,9 +95,9 @@ export async function reportStatusToGithub(
       data,
     });
   } catch (error) {
-    console.error(
+    getLogger().error(
+      { error, fullStatusPostUrl, eventType, ...data },
       `[github-reporter] Hook post to ${fullStatusPostUrl} responded with error`
     );
-    console.error(error);
   }
 }

@@ -6,6 +6,7 @@ import {
 } from '@sorry-cypress/director/lib/errors';
 import { mergeInstanceResults } from '@sorry-cypress/director/lib/instance';
 import { ExecutionDriver } from '@sorry-cypress/director/types';
+import { getLogger } from '@sorry-cypress/logger';
 import { updateRunSpecCompleted } from '../runs/run.controller';
 import { incProgressOverallTests } from '../runs/run.model';
 import {
@@ -46,9 +47,21 @@ export const setInstanceTests = async (
 ) => {
   const instance = await getInstanceById(instanceId);
   if (!instance) {
+    getLogger().error(
+      { instanceId },
+      'No instance found for setting instance tests'
+    );
     throw new Error('No instance found');
   }
+  getLogger().log(
+    { instanceId, runId: instance.runId, groupId: instance.groupId },
+    'Setting instance tests'
+  );
   await modelSetInstanceTests(instanceId, payload);
+  getLogger().log(
+    { instanceId, runId: instance.runId, groupId: instance.groupId },
+    'Updating group progress'
+  );
   await incProgressOverallTests(
     instance.runId,
     instance.groupId,
@@ -63,6 +76,10 @@ export const updateInstanceResults: ExecutionDriver['updateInstanceResults'] = a
 ) => {
   const instance = await getInstanceById(instanceId);
   if (!instance) {
+    getLogger().error(
+      { instanceId },
+      'No instance found for setting instance results'
+    );
     throw new AppError(INSTANCE_NOT_EXIST);
   }
 
@@ -71,6 +88,10 @@ export const updateInstanceResults: ExecutionDriver['updateInstanceResults'] = a
     update
   );
 
+  getLogger().log(
+    { instanceId, runId: instance.runId, groupId: instance.groupId },
+    'Setting instance results'
+  );
   await Promise.all([
     modelSetInstanceResults(instanceId, instanceResult),
     updateRunSpecCompleted(

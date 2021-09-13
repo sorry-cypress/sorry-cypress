@@ -1,4 +1,5 @@
 import { AssetUploadInstruction } from '@sorry-cypress/common';
+import { getLogger } from '@sorry-cypress/logger';
 import ibm from 'ibm-cos-sdk';
 import { sanitizeS3KeyPrefix } from '../utils';
 import {
@@ -7,7 +8,7 @@ import {
   COS_IMAGE_KEY_PREFIX,
   COS_REGION,
   COS_SECRETKEY,
-  COS_VIDEO_KEY_PREFIX,
+  COS_VIDEO_KEY_PREFIX
 } from './config';
 import { S3SignedUploadResult } from './types';
 
@@ -52,7 +53,10 @@ export const getUploadUrl = async ({
       s3Params,
       (error: Error, uploadUrl: string) => {
         if (error) {
-          console.log('errors from signed request: ' + error);
+          getLogger().error(
+            { error },
+            'Errors while getting signed upload URL'
+          );
           return reject(error);
         }
         return resolve({

@@ -9,6 +9,7 @@ import {
   Run,
   RunGroupProgress,
 } from '@sorry-cypress/common';
+import { getLogger } from '@sorry-cypress/logger';
 import { reportStatusToBitbucket } from './bitbucket';
 import { reportToGenericWebHook } from './generic';
 import { reportStatusToGithub } from './github';
@@ -34,7 +35,10 @@ export async function reportToHooks(
     );
 
     if (!groupProgress) {
-      console.error('No progress for group', reportParams.groupId);
+      getLogger().error(
+        { groupId: reportParams.groupId },
+        'No progress for group'
+      );
       return;
     }
 
@@ -42,23 +46,26 @@ export async function reportToHooks(
       // swallow errors, don't trust reporters to catch errors
       runSingleReporter({ ...reportParams, groupProgress, hook }).catch(
         (error) => {
-          console.error(
-            '[hooks] Error while reporting hook',
-            reportParams.run.runId,
-            hook.hookId,
-            hook.hookType
+          getLogger().error(
+            {
+              runId: reportParams.run.runId,
+              hookId: hook.hookId,
+              hookType: hook.hookType,
+              error,
+            },
+            '[hooks] Error while reporting hook'
           );
-          console.error(error);
         }
       );
     });
   } catch (error) {
-    console.error(
-      `[hooks] Failed to run hooks`,
-      reportParams.run.runId,
-      reportParams.project.projectId
+    getLogger().error(
+      {
+        runId: reportParams.run.runId,
+        error,
+      },
+      `[hooks] Failed to run hooks`
     );
-    console.error(error);
   }
   return;
 }

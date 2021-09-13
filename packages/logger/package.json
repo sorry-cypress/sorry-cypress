@@ -1,0 +1,33 @@
+{
+  "name": "@sorry-cypress/logger",
+  "version": "1.0.0",
+  "author": {
+    "name": "Andrew Goldis",
+    "email": "agoldis@gmail.com"
+  },
+  "license": "MIT",
+  "main": "dist/index.js",
+  "typings": "dist/",
+  "scripts": {
+    "dev": "run-p js:watch",
+    "build": "npm run types && npm run build:js",
+    "types": "tsc --noEmit",
+    "js:watch": "yarn build:js --watch",
+    "build:js": "node ./build.js",
+    "lint": "eslint ./ --ext ts,tsx",
+    "release": "echo \"skipping release\"",
+    "test": "jest --passWithNoTests"
+  },
+  "devDependencies": {
+    "@types/pino": "^6.3.8",
+    "@types/uuid": "^8.3.0",
+    "babel-jest": "^27.1.1",
+    "esbuild": "^0.12.15",
+    "esbuild-node-externals": "^1.2.0"
+  },
+  "dependencies": {
+    "pino": "^6.11.3",
+    "pino-pretty": "^5.0.2",
+    "uuid": "^8.3.2"
+  }
+}

@@ -11,6 +11,8 @@
     "paths": {
       "@sorry-cypress/common/*": ["common/src/*"],
       "@sorry-cypress/common": ["common/src"],
+      "@sorry-cypress/logger/*": ["logger/src/*"],
+      "@sorry-cypress/logger": ["logger/src"],
       "@sorry-cypress/mongo/*": ["mongo/src/*"],
       "@sorry-cypress/mongo": ["mongo/src"],
       "@sorry-cypress/director/*": ["director/src/*"],

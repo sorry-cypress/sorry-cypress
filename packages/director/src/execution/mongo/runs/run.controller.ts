@@ -21,6 +21,7 @@ import {
 } from '@sorry-cypress/director/lib/hash';
 import { getDashboardRunURL } from '@sorry-cypress/director/lib/urls';
 import { ExecutionDriver } from '@sorry-cypress/director/types';
+import { getLogger } from '@sorry-cypress/logger';
 import { runTimeoutModel } from '@sorry-cypress/mongo';
 import { addSeconds } from 'date-fns';
 import { curry, property, uniq } from 'lodash';
@@ -153,8 +154,16 @@ export const getNextTask: ExecutionDriver['getNextTask'] = async ({
   machineId,
   cypressVersion,
 }): Promise<Task> => {
+  getLogger().log(
+    { runId, groupId, machineId, cypressVersion },
+    'Getting the next unclaimed spec'
+  );
   const run = await getById(runId);
   if (!run) {
+    getLogger().error(
+      { runId, groupId, machineId, cypressVersion },
+      'Run not found'
+    );
     throw new AppError(RUN_NOT_EXIST);
   }
 
@@ -162,6 +171,10 @@ export const getNextTask: ExecutionDriver['getNextTask'] = async ({
   const spec = getFirstUnclaimedSpec(run, groupId);
 
   if (!spec) {
+    getLogger().log(
+      { runId, groupId, machineId, cypressVersion },
+      'No more unclaimed specs'
+    );
     return {
       instance: null,
       claimedInstances: getClaimedSpecs(run, runId).length,
@@ -169,6 +182,11 @@ export const getNextTask: ExecutionDriver['getNextTask'] = async ({
       projectId: run.meta.projectId,
     };
   }
+
+  getLogger().log(
+    { runId, groupId, machineId, cypressVersion, spec },
+    'Received unclaimed spec, setting spec as claimed'
+  );
 
   try {
     await setSpecClaimed(runId, groupId, spec.instanceId, machineId);
@@ -188,9 +206,18 @@ export const getNextTask: ExecutionDriver['getNextTask'] = async ({
     };
   } catch (error) {
     if (error.code && error.code === CLAIM_FAILED) {
+      getLogger().log(
+        { runId, groupId, machineId, spec },
+        'The spec is already claimed, tring a different spec'
+      );
       // just try to get next available spec
       return await getNextTask({ runId, machineId, groupId, cypressVersion });
     }
+
+    getLogger().error(
+      { runId, groupId, machineId, spec },
+      'Unexpected error while claiming a spec'
+    );
     throw error;
   }
 };
@@ -226,8 +253,8 @@ export const allGroupSpecsCompleted: ExecutionDriver['allGroupSpecsCompleted'] =
 
 export const maybeSetRunCompleted = async (runId: string) => {
   if (await allRunSpecsCompleted(runId)) {
-    console.log(`[run-completion] Run completed`, { runId });
-    setRunCompleted(runId).catch(console.error);
+    getLogger().log({ runId }, `[run-completion] Run completed`);
+    setRunCompleted(runId).catch(getLogger().error);
     return true;
   }
   // timeout should handle

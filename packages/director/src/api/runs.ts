@@ -1,13 +1,14 @@
 import { CreateRunParameters } from '@sorry-cypress/common';
 import { getExecutionDriver } from '@sorry-cypress/director/drivers';
 import { isKeyAllowed } from '@sorry-cypress/director/lib/allowedKeys';
+import { getLogger } from '@sorry-cypress/logger';
 import { RequestHandler } from 'express';
 
 export const blockKeys: RequestHandler = (req, res, next) => {
   const { recordKey } = req.body;
 
   if (!isKeyAllowed(recordKey)) {
-    console.log(`<< Record key is not allowed`, { recordKey });
+    getLogger().warn({ recordKey }, `Record key is not allowed`);
 
     return res
       .status(403)
@@ -21,22 +22,19 @@ export const handleCreateRun: RequestHandler<
   unknown,
   CreateRunParameters
 > = async (req, res) => {
-  const { group, ciBuildId, ci } = req.body;
   const cypressVersion = req.headers['x-cypress-version']?.toString();
-
   const executionDriver = await getExecutionDriver();
 
-  console.log(`>> Machine is joining / creating a run`, {
-    ciBuildId,
-    group,
-    ci,
-  });
+  getLogger().log(
+    { ...req.body, ...req.headers },
+    `New machine is requesting to create a run`
+  );
 
   const response = await executionDriver.createRun({
     ...req.body,
     cypressVersion,
   });
 
-  console.log(`<< Responding to machine`, response);
+  getLogger().log(response, `Responding to machine`);
   return res.json(response);
 };

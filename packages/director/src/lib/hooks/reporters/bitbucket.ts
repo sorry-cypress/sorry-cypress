@@ -8,6 +8,7 @@ import {
 } from '@sorry-cypress/common';
 import { APP_NAME } from '@sorry-cypress/director/config';
 import { getDashboardRunURL } from '@sorry-cypress/director/lib/urls';
+import { getLogger } from '@sorry-cypress/logger';
 import axios from 'axios';
 import md5 from 'md5';
 
@@ -22,12 +23,23 @@ export async function reportStatusToBitbucket(
   eventData: BBReporterStatusParams
 ) {
   if (!hook.bitbucketUsername) {
-    console.warn('[bitbucket-reporter] No bitbucketUsername, ignoring hook...');
+    getLogger().warn(
+      {
+        runId: eventData.run.runId,
+        groupId: eventData.groupId,
+      },
+      '[bitbucket-reporter] No bitbucketUsername, ignoring hook...'
+    );
     return;
   }
 
   if (!hook.bitbucketToken) {
-    console.warn('[bitbucket-reporter] No bitbucketToken, ignoring hook...');
+    getLogger().warn(
+      {
+        ...hook,
+      },
+      '[bitbucket-reporter] No bitbucketToken, ignoring hook...'
+    );
     return;
   }
 
@@ -71,11 +83,16 @@ export async function reportStatusToBitbucket(
   }
 
   const fullStatusPostUrl = getBitbucketBuildUrl(hook.url, run.meta.commit.sha);
-  console.log(`[bitbucket-reporter] Posting hook`, {
-    fullStatusPostUrl,
-    eventType,
-    data,
-  });
+  getLogger().log(
+    {
+      runId: eventData.run.runId,
+      groupId: eventData.groupId,
+      fullStatusPostUrl,
+      eventType,
+      data,
+    },
+    `[bitbucket-reporter] Posting hook`
+  );
 
   try {
     await axios({
@@ -91,9 +108,13 @@ export async function reportStatusToBitbucket(
       data,
     });
   } catch (err) {
-    console.error(
+    getLogger().error(
+      {
+        runId: eventData.run.runId,
+        groupId: eventData.groupId,
+        fullStatusPostUrl,
+      },
       `[bitbucket-reporter] Hook post to ${fullStatusPostUrl} error`
     );
-    console.error(err);
   }
 }
