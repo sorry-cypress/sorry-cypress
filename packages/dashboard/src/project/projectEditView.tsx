@@ -6,7 +6,11 @@ import {
   useGetProjectQuery,
   useUpdateProjectMutation,
 } from '@sorry-cypress/dashboard/generated/graphql';
-import { setNav } from '@sorry-cypress/dashboard/lib/navigation';
+import {
+  getProjectPath,
+  NavItemType,
+  setNav,
+} from '@sorry-cypress/dashboard/lib/navigation';
 import { Alert, Button, Cell, Grid, Text, TextField } from 'bold-ui';
 import React, { useLayoutEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -43,8 +47,27 @@ function _ProjectEditView() {
   const [_, dispatch] = useHooksFormReducer();
 
   useLayoutEffect(() => {
-    setNav([]);
-  }, []);
+    if (isNewProject) {
+      setNav([
+        {
+          type: NavItemType.newProject,
+          label: 'New project',
+        },
+      ]);
+    } else {
+      setNav([
+        {
+          label: projectId,
+          type: NavItemType.project,
+          link: getProjectPath(projectId),
+        },
+        {
+          type: NavItemType.projectSettings,
+          label: 'Project Settings',
+        },
+      ]);
+    }
+  }, [isNewProject]);
 
   const [notification, setNotification] = useState<string | null>(null);
   const [operationError, setOperationError] = useState<string | null>(null);
@@ -94,7 +117,7 @@ function _ProjectEditView() {
       } else {
         setNotification('Project Saved!');
       }
-    } catch (error) {
+    } catch (error: any) {
       setOperationError(error.toString());
     }
   }
@@ -116,7 +139,7 @@ function _ProjectEditView() {
 
       setNotification('Project Created!');
       history.push(`/${result.data?.createProject.projectId}/edit`);
-    } catch (error) {
+    } catch (error: any) {
       setOperationError(error.toString());
     }
   }

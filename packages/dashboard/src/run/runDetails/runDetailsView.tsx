@@ -6,6 +6,7 @@ import { useAutoRefreshRate } from '@sorry-cypress/dashboard/hooks/useAutoRefres
 import {
   getProjectPath,
   getRunPath,
+  NavItemType,
   setNav,
 } from '@sorry-cypress/dashboard/lib/navigation';
 import { RunSummaryComponent } from '@sorry-cypress/dashboard/run/runSummary/summary';
@@ -57,10 +58,17 @@ const updateNav = (data?: GetRunQuery) =>
 
     setNav([
       {
+        type: NavItemType.project,
         label: data.run.meta.projectId,
         link: getProjectPath(data.run.meta.projectId),
       },
       {
+        type: NavItemType.latestRuns,
+        label: 'Runs',
+        link: getProjectPath(data.run.meta.projectId),
+      },
+      {
+        type: NavItemType.run,
         label: data.run.meta.ciBuildId,
         link: getRunPath(data.run.runId),
       },

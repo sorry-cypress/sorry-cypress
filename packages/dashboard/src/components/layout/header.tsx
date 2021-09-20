@@ -1,71 +1,198 @@
 import { useReactiveVar } from '@apollo/client';
-import { useAutoRefresh } from '@sorry-cypress/dashboard/hooks/useAutoRefresh';
-import { navStructure } from '@sorry-cypress/dashboard/lib/navigation';
-import { Breadcrumbs, Icon, Switch, Tooltip, useCss } from 'bold-ui';
-import { truncate } from 'lodash';
+import {
+  Breadcrumbs,
+  FormControlLabel,
+  FormGroup,
+  IconButton,
+  Link,
+  styled,
+  Switch,
+  Toolbar,
+  Tooltip,
+} from '@material-ui/core';
+import MuiAppBar, {
+  AppBarProps as MuiAppBarProps,
+} from '@material-ui/core/AppBar';
+import {
+  BookOutlined,
+  HomeOutlined as HomeOutlinedIcon,
+  Menu as MenuIcon,
+  NavigateNext as NavigateNextIcon,
+  PlayLessonOutlined,
+  PlaylistAdd,
+  RuleFolderOutlined,
+  RuleOutlined,
+  ScienceOutlined,
+  SettingsOutlined,
+} from '@material-ui/icons';
+import { useAutoRefresh } from '@sorry-cypress/dashboard/hooks';
+import {
+  NavItemType,
+  navStructure,
+} from '@sorry-cypress/dashboard/lib/navigation';
+import { initial, isNil, last, truncate } from 'lodash';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
+import { DRAWER_WIDTH, DRAWER_WIDTH_SM } from './sidebar';
 
-export const Header = () => {
-  const { css, theme } = useCss();
+const AppBar = styled(MuiAppBar, {
+  shouldForwardProp: (prop) => prop !== 'open',
+})<AppBarProps>(({ theme, open }) => ({
+  [theme.breakpoints.up('md')]: {
+    zIndex: theme.zIndex.drawer + 1,
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    ...(open && {
+      marginLeft: DRAWER_WIDTH,
+      width: `calc(100% - ${DRAWER_WIDTH}px)`,
+      transition: theme.transitions.create(['width', 'margin'], {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.enteringScreen,
+      }),
+    }),
+    ...(!open && {
+      marginLeft: DRAWER_WIDTH_SM,
+      width: `calc(100% - ${DRAWER_WIDTH_SM}px)`,
+    }),
+  },
+  backgroundColor: '#F8F9FA',
+}));
+
+const ICONS = {
+  [NavItemType.project]: BookOutlined,
+  [NavItemType.newProject]: PlaylistAdd,
+  [NavItemType.projectSettings]: SettingsOutlined,
+  [NavItemType.run]: RuleFolderOutlined,
+  [NavItemType.latestRuns]: PlayLessonOutlined,
+  [NavItemType.spec]: RuleOutlined,
+  [NavItemType.test]: ScienceOutlined,
+} as { [key in NavItemType]: typeof BookOutlined };
+
+export const Header: HeaderType = ({ open, onMenuClick }) => {
   const nav = useReactiveVar(navStructure);
+  const navItems = nav.length > 1 ? initial(nav) : [];
+  const lastNavItem = nav.length > 1 ? last(nav) : nav?.[0];
+  const LastItemIcon =
+    lastNavItem && !isNil(lastNavItem.type) && ICONS[lastNavItem.type];
   const [shouldAutoRefresh, setShouldAutoRefresh] = useAutoRefresh();
 
-  const lastNavItem = nav.pop();
   return (
-    <header
-      className={css`
-        padding: 32px;
-        background-color: ${theme.pallete.gray.c90};
-        display: flex;
-      `}
-    >
-      <div>
-        <Breadcrumbs>
-          <Link to="/">All Projects</Link>
-          {/*breadcrumb removes hover event from the last crumb so the there is a little hackery to get the tooltip working*/}
-          {nav.map((navItem) => (
-            <Tooltip
-              text={decodeURIComponent(navItem.label ?? '')}
-              key={navItem.link}
-            >
-              <Link to={`/${navItem.link}`}>
-                {truncate(decodeURIComponent(navItem.label ?? ''))}
+    <AppBar position="fixed" open={open}>
+      <Toolbar sx={{ pl: { xs: 1 } }}>
+        <IconButton
+          color="primary"
+          aria-label="Menu"
+          component="span"
+          onClick={onMenuClick}
+          sx={{ mr: 1.5 }}
+        >
+          <MenuIcon />
+        </IconButton>
+        <Breadcrumbs
+          aria-label="breadcrumb"
+          sx={{ flex: 1 }}
+          separator={<NavigateNextIcon color="disabled" fontSize="small" />}
+        >
+          <Link
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              color: lastNavItem ? '#6a6a6a' : 'text.primary',
+              fontWeight: lastNavItem ? undefined : '500',
+            }}
+            color="inherit"
+            component={RouterLink}
+            underline="hover"
+            to="/"
+          >
+            <HomeOutlinedIcon
+              sx={{ mr: 0.5, color: 'text.secondary' }}
+              fontSize="medium"
+            />
+            Home
+          </Link>
+          {navItems.map((navItem) => {
+            const Icon = !isNil(navItem.type) ? ICONS[navItem.type] : undefined;
+            return (
+              <Tooltip
+                title={decodeURIComponent(navItem.label ?? '')}
+                key={navItem.label}
+              >
+                <Link
+                  component={navItem?.link ? RouterLink : 'span'}
+                  underline={navItem?.link ? 'hover' : 'none'}
+                  to={navItem?.link ? `/${navItem.link}` : undefined}
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    color: '#6a6a6a',
+                  }}
+                >
+                  {Icon && (
+                    <Icon
+                      sx={{ mr: 0.5, color: 'text.secondary' }}
+                      fontSize="medium"
+                    />
+                  )}
+                  {truncate(decodeURIComponent(navItem.label ?? ''))}
+                </Link>
+              </Tooltip>
+            );
+          })}
+          {lastNavItem && (
+            <Tooltip title={decodeURIComponent(lastNavItem?.label ?? '')}>
+              <Link
+                component={lastNavItem?.link ? RouterLink : 'span'}
+                underline={lastNavItem?.link ? 'hover' : 'none'}
+                to={lastNavItem?.link ? `/${lastNavItem?.link}` : undefined}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  color: 'text.primary',
+                  fontWeight: '500',
+                }}
+              >
+                {LastItemIcon && (
+                  <LastItemIcon sx={{ mr: 0.5 }} fontSize="medium" />
+                )}
+                {truncate(decodeURIComponent(lastNavItem?.label ?? ''))}
               </Link>
             </Tooltip>
-          ))}
-          <span> </span>
+          )}
         </Breadcrumbs>
-      </div>
-      <div
-        className={css`
-          flex: 1;
-        `}
-      >
-        <Tooltip text={decodeURIComponent(lastNavItem?.label ?? '')}>
-          <Link to={`/${lastNavItem?.link}`}>
-            {truncate(decodeURIComponent(lastNavItem?.label ?? ''))}
-          </Link>
-        </Tooltip>
-      </div>
-      <Switch
-        label="Auto Refresh"
-        checked={!!shouldAutoRefresh}
-        onChange={() => {
-          setShouldAutoRefresh(!shouldAutoRefresh);
-          window.location.reload();
-        }}
-      />
-      &nbsp;
-      <Tooltip text="Toggle polling for updates">
-        <Icon
-          className={css`
-            align-self: center;
-          `}
-          icon="infoCircleOutline"
-          size={1}
-        />
-      </Tooltip>
-    </header>
+        <FormGroup>
+          <Tooltip
+            title="Toggle polling for updates
+          "
+          >
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={!!shouldAutoRefresh}
+                  onChange={() => {
+                    setShouldAutoRefresh(!shouldAutoRefresh);
+                    window.location.reload();
+                  }}
+                  inputProps={{ 'aria-label': 'Auto Refresh' }}
+                />
+              }
+              sx={{
+                color: 'text.primary',
+              }}
+              label="Auto Refresh"
+            />
+          </Tooltip>
+        </FormGroup>
+      </Toolbar>
+    </AppBar>
   );
 };
+
+type HeaderProps = { open: boolean; onMenuClick: () => void };
+type HeaderType = React.FC<HeaderProps>;
+
+interface AppBarProps extends MuiAppBarProps {
+  open?: boolean;
+}

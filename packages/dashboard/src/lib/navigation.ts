@@ -1,9 +1,19 @@
 import { makeVar } from '@apollo/client';
 import { isNil } from 'lodash';
 
+export enum NavItemType {
+  project,
+  newProject,
+  projectSettings,
+  run,
+  latestRuns,
+  spec,
+  test,
+}
 interface NavItem {
   label?: string | null;
-  link: string;
+  link?: string;
+  type?: NavItemType;
 }
 export const navStructure = makeVar<NavItem[]>([]);
 
@@ -17,7 +27,7 @@ export const setNav = (elements: NavItem[]) =>
 
 const detectBadPath = (fn: (value: string) => string) => (value: unknown) => {
   if (isNil(value)) {
-    throw new Error(`Uknown path param for ${fn.name}`);
+    throw new Error(`Unknown path param for ${fn.name}`);
   }
   return fn(value as string);
 };
