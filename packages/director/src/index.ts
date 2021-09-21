@@ -1,3 +1,6 @@
+// organize-imports-ignore
+import 'source-map-support/register'
+
 import { init as initHooks } from '@sorry-cypress/director/lib/hooks/init';
 import { getLogger } from '@sorry-cypress/logger';
 import { app } from './app';

@@ -5,26 +5,12 @@ import {
   filtersToAggregations,
   getSortByAggregation,
 } from '@sorry-cypress/api/lib/query';
-import { Instance, Run } from '@sorry-cypress/common';
+import { Run } from '@sorry-cypress/common';
+import { getLogger } from '@sorry-cypress/logger';
 import { Collection, ObjectId } from '@sorry-cypress/mongo';
 import { DataSource } from 'apollo-datasource';
 import { isNil, negate } from 'lodash';
 import { WithId } from 'mongodb';
-
-type RunWithFullSpecs = Run & {
-  specsFull: Instance[];
-} & {
-  _id: string;
-};
-
-const mergeRunSpecs = (run: RunWithFullSpecs) => {
-  // merge fullspec into spec
-  run.specs = run.specs.map((s) => ({
-    ...s,
-    ...(run.specsFull.find((full) => full.instanceId === s.instanceId) || {}),
-  }));
-  return run;
-};
 
 const getCursor = (runs: WithId<Run>[]) => {
   if (!runs.length) {
@@ -43,17 +29,6 @@ const runFeedReducer = (runs: WithId<Run>[]) => ({
   cursor: getCursor(runs),
   hasMore: runs.length > PAGE_ITEMS_LIMIT,
 });
-
-const projectAggregation = {
-  $project: {
-    _id: 1,
-    runId: 1,
-    meta: 1,
-    specs: 1,
-    createdAt: 1,
-    completion: 1,
-  },
-};
 
 export class RunsAPI extends DataSource {
   async getRunFeed({
@@ -97,14 +72,19 @@ export class RunsAPI extends DataSource {
     const aggregationPipeline = [
       ...filtersToAggregations(filters),
       getSortByAggregation(orderDirection),
-      projectAggregation,
     ].filter(negate(isNil));
 
-    const results = (await Collection.run()
-      .aggregate(aggregationPipeline)
-      .toArray()) as RunWithFullSpecs[];
+    getLogger().log({ aggregationPipeline }, 'Getting all runs...');
 
-    return results.map(mergeRunSpecs);
+    try {
+      const results = (await Collection.run()
+        .aggregate(aggregationPipeline)
+        .toArray()) as Run[];
+      return results;
+    } catch (error) {
+      getLogger().error({ error }, 'Error wihle getting all runs...');
+      throw error;
+    }
   }
 
   getRunById(id: string) {
