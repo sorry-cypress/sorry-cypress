@@ -52,6 +52,7 @@
     "@graphql-tools/load-files": "^6.3.2",
     "@graphql-tools/merge": "^6.2.11",
     "@sorry-cypress/common": "1.0.0",
+    "@sorry-cypress/logger": "1.0.0",
     "@sorry-cypress/mongo": "1.0.0",
     "apollo-server": "^2.18.1",
     "dotenv": "^8.1.0",
@@ -59,6 +60,7 @@
     "graphql-iso-date": "^3.6.1",
     "lodash": "^4.17.21",
     "plur": "^4.0.0",
+    "source-map-support": "^0.5.20",
     "uuid": "^3.3.2"
   },
   "jest": {

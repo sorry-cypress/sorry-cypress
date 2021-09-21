@@ -1,3 +1,6 @@
+// organize-imports-ignore
+import 'source-map-support/register'
+
 import { initMongoNoIndexes } from '@sorry-cypress/mongo';
 import { ApolloServer } from 'apollo-server';
 import { PORT } from './config';
