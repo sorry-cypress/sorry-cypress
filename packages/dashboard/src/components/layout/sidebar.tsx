@@ -1,5 +1,15 @@
 import { useReactiveVar } from '@apollo/client';
 import {
+  Book as BookIcon,
+  Close as CloseIcon,
+  Favorite as FavoriteIcon,
+  FavoriteBorder as FavoriteBorderIcon,
+  GitHub as GitHubIcon,
+  Help as HelpIcon,
+  PlayLesson as PlayLessonIcon,
+  Settings as SettingsIcon,
+} from '@mui/icons-material';
+import {
   Alert,
   AlertTitle,
   Avatar,
@@ -16,25 +26,16 @@ import {
   Skeleton,
   Tooltip,
   useMediaQuery,
-} from '@material-ui/core';
-import { red } from '@material-ui/core/colors';
+} from '@mui/material';
+import { red } from '@mui/material/colors';
 import {
   createTheme,
   styled,
+  StyledEngineProvider,
   Theme,
   ThemeProvider,
   useTheme,
-} from '@material-ui/core/styles';
-import {
-  Book as BookIcon,
-  Close as CloseIcon,
-  Favorite as FavoriteIcon,
-  FavoriteBorder as FavoriteBorderIcon,
-  GitHub as GitHubIcon,
-  Help as HelpIcon,
-  PlayLesson as PlayLessonIcon,
-  Settings as SettingsIcon,
-} from '@material-ui/icons';
+} from '@mui/material/styles';
 import { useGetProjectsQuery } from '@sorry-cypress/dashboard/generated/graphql';
 import {
   NavItemType,
@@ -184,6 +185,7 @@ export const ProjectListMenu: ProjectListMenuType = ({
                 component={RouterLink}
                 to={`/${project.projectId}/runs`}
                 onClick={onItemClick}
+                size="large"
               >
                 <BookIcon />
               </IconButton>
@@ -276,6 +278,7 @@ export const ProjectDetailsMenu: ProjectDetailsMenuType = ({
                 component={RouterLink}
                 to={item.link}
                 onClick={onItemClick}
+                size="large"
               >
                 <item.iconComponent />
               </IconButton>
@@ -337,7 +340,9 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
             </RouterLink>
           </ListItemAvatar>
           <ListItemText
-            sx={{ my: 0 }}
+            sx={{
+              m: smallScreen ? 1 : 0,
+            }}
             primary={<span>Sorry Cypress</span>}
             primaryTypographyProps={{
               sx: {
@@ -348,7 +353,7 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
               fontSize: open ? 28 : 0,
               width: open ? undefined : 0,
               letterSpacing: 0,
-              textAlign: 'right',
+              textAlign: smallScreen ? 'left' : 'right',
               color: 'text.primary',
               component: RouterLink,
               to: '/',
@@ -362,7 +367,7 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
               fontSize: open ? 14 : 0,
               width: open ? undefined : 0,
               letterSpacing: 0,
-              textAlign: 'right',
+              textAlign: smallScreen ? 'left' : 'right',
               component: Link,
               underline: 'none',
               target: '_blank',
@@ -465,6 +470,7 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
                 href="https://github.com/sorry-cypress/sorry-cypress"
                 target="_blank"
                 rel="noreferrer"
+                size="large"
               >
                 <GitHubIcon
                   sx={{
@@ -510,6 +516,7 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
                 href="https://sorry-cypress.dev/"
                 target="_blank"
                 rel="noreferrer"
+                size="large"
               >
                 <HelpIcon
                   sx={{
@@ -558,6 +565,7 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
               href="https://github.com/sponsors/agoldis"
               target="_blank"
               rel="noreferrer"
+              size="large"
             >
               <FavoriteIcon
                 {...(open ? { component: FavoriteBorderIcon } : {})}
@@ -579,33 +587,35 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
 
   const DrawerComponent = smallScreen ? MuiDrawer : Drawer;
   return (
-    <ThemeProvider theme={sidebarTheme}>
-      <DrawerComponent
-        variant={smallScreen ? 'temporary' : 'permanent'}
-        open={open}
-        {...(smallScreen
-          ? {
-              anchor: 'left',
-              ModalProps: {
-                keepMounted: true,
-              },
-            }
-          : {})}
-        sx={
-          smallScreen
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={sidebarTheme}>
+        <DrawerComponent
+          variant={smallScreen ? 'temporary' : 'permanent'}
+          open={open}
+          {...(smallScreen
             ? {
-                '& .MuiDrawer-paper': {
-                  boxSizing: 'border-box',
-                  width: '100%',
-                  backgroundImage: 'unset',
+                anchor: 'left',
+                ModalProps: {
+                  keepMounted: true,
                 },
               }
-            : {}
-        }
-      >
-        {drawerContent}
-      </DrawerComponent>
-    </ThemeProvider>
+            : {})}
+          sx={
+            smallScreen
+              ? {
+                  '& .MuiDrawer-paper': {
+                    boxSizing: 'border-box',
+                    width: '100%',
+                    backgroundImage: 'unset',
+                  },
+                }
+              : {}
+          }
+        >
+          {drawerContent}
+        </DrawerComponent>
+      </ThemeProvider>
+    </StyledEngineProvider>
   );
 };
 

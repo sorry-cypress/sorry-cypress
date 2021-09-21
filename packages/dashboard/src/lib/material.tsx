@@ -1,4 +1,9 @@
-import { createTheme, ThemeOptions, ThemeProvider } from '@material-ui/core';
+import {
+  createTheme,
+  StyledEngineProvider,
+  ThemeOptions,
+  ThemeProvider,
+} from '@mui/material';
 import React, { PropsWithChildren } from 'react';
 
 const themeOptions: ThemeOptions = {
@@ -31,5 +36,9 @@ const themeOptions: ThemeOptions = {
 const materialTheme = createTheme(themeOptions);
 
 export const WithMaterial = ({ children }: PropsWithChildren<any>) => {
-  return <ThemeProvider theme={materialTheme}>{children}</ThemeProvider>;
+  return (
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={materialTheme}>{children}</ThemeProvider>
+    </StyledEngineProvider>
+  );
 };

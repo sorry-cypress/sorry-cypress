@@ -1,4 +1,4 @@
-import { TextField } from '@material-ui/core';
+import { TextField } from '@mui/material';
 import useDebounce from '@sorry-cypress/dashboard/hooks/useDebounce';
 import { WithMaterial } from '@sorry-cypress/dashboard/lib/material';
 import React, { ChangeEvent, useState } from 'react';

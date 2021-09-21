@@ -1,4 +1,4 @@
-import { Button, Grid } from '@material-ui/core';
+import { Button, Grid } from '@mui/material';
 import { SearchField } from '@sorry-cypress/dashboard/components';
 import { WithMaterial } from '@sorry-cypress/dashboard/lib/material';
 import { setNav } from '@sorry-cypress/dashboard/lib/navigation';

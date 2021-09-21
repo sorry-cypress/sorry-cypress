@@ -1,5 +1,5 @@
-import { Box, Toolbar, useMediaQuery } from '@material-ui/core';
-import { useTheme } from '@material-ui/core/styles';
+import { Box, Toolbar, useMediaQuery } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { useLocalStorage } from '@sorry-cypress/dashboard/hooks';
 import { WithMaterial } from '@sorry-cypress/dashboard/lib/material';
 import React, { PropsWithChildren } from 'react';
