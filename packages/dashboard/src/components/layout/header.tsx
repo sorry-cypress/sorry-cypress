@@ -1,19 +1,5 @@
 import { useReactiveVar } from '@apollo/client';
 import {
-  Breadcrumbs,
-  FormControlLabel,
-  FormGroup,
-  IconButton,
-  Link,
-  styled,
-  Switch,
-  Toolbar,
-  Tooltip,
-} from '@material-ui/core';
-import MuiAppBar, {
-  AppBarProps as MuiAppBarProps,
-} from '@material-ui/core/AppBar';
-import {
   BookOutlined,
   HomeOutlined as HomeOutlinedIcon,
   Menu as MenuIcon,
@@ -24,7 +10,19 @@ import {
   RuleOutlined,
   ScienceOutlined,
   SettingsOutlined,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
+import {
+  Breadcrumbs,
+  FormControlLabel,
+  FormGroup,
+  IconButton,
+  Link,
+  styled,
+  Switch,
+  Toolbar,
+  Tooltip,
+} from '@mui/material';
+import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import { useAutoRefresh } from '@sorry-cypress/dashboard/hooks';
 import {
   NavItemType,
@@ -87,6 +85,7 @@ export const Header: HeaderType = ({ open, onMenuClick }) => {
           component="span"
           onClick={onMenuClick}
           sx={{ mr: 1.5 }}
+          size="large"
         >
           <MenuIcon />
         </IconButton>
