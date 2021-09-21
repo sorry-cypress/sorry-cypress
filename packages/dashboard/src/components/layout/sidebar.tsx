@@ -99,7 +99,6 @@ const DrawerHeader = styled('div', { name: 'DrawerHeader' })(({ theme }) => ({
   [theme.breakpoints.up('sm')]: {
     justifyContent: 'center',
   },
-  padding: theme.spacing(0, 1),
   ...theme.mixins.toolbar,
 }));
 
@@ -116,6 +115,7 @@ const DrawerFooter = styled('div', {
   width: '100%',
   position: 'absolute',
   bottom: 0,
+  overflow: 'auto',
   padding: theme.spacing(0, 1),
   ...theme.mixins.toolbar,
 }));
@@ -139,13 +139,22 @@ const Drawer = styled(MuiDrawer, {
   } as any;
 });
 
+const DrawerContentContainer = styled('div', {
+  shouldForwardProp: (prop) => prop !== 'open',
+})<SidebarProps>(({ open }) => ({
+  display: 'grid',
+  gridTemplateRows: `100px auto ${open ? '60px' : '160px'}`,
+  overflowY: 'auto',
+  overflowX: 'hidden',
+}));
+
 export const ProjectListMenu: ProjectListMenuType = ({
   projects,
   open,
   onItemClick,
 }) => {
   return (
-    <>
+    <div>
       {projects?.map((project) => {
         if (open) {
           return (
@@ -193,7 +202,7 @@ export const ProjectListMenu: ProjectListMenuType = ({
           </Tooltip>
         );
       })}
-    </>
+    </div>
   );
 };
 
@@ -315,7 +324,7 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
   };
 
   const drawerContent = (
-    <>
+    <DrawerContentContainer open={open}>
       <DrawerHeader>
         <ListItem
           component="div"
@@ -399,6 +408,7 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
           display: open ? 'block' : 'flex',
           flexDirection: 'column',
           alignItems: 'center',
+          overflow: 'auto',
         }}
       >
         <ListItem component="div">
@@ -582,7 +592,7 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
           </Tooltip>
         </div>
       </DrawerFooter>
-    </>
+    </DrawerContentContainer>
   );
 
   const DrawerComponent = smallScreen ? MuiDrawer : Drawer;
