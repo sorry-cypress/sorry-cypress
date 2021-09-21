@@ -1,6 +1,6 @@
 {
   "name": "@sorry-cypress/dashboard",
-  "version": "2.0.0-beta.12",
+  "version": "2.0.0-beta.13",
   "author": {
     "name": "Andrew Goldis",
     "email": "agoldis@gmail.com"
@@ -29,8 +29,8 @@
     "@apollo/client": "^3.3.11",
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
-    "@mui/material": "^5.0.0",
     "@mui/icons-material": "^5.0.0",
+    "@mui/material": "^5.0.0",
     "@popperjs/core": "^2.4.0",
     "@sorry-cypress/common": "1.0.0",
     "bold-ui": "^1.0.0-beta.40",
