@@ -24,6 +24,8 @@ async function start() {
     resolvers,
     dataSources: () => dataSources,
     onHealthCheck: async () => 'true',
+    playground: true,
+    introspection: true,
   });
 
   server
