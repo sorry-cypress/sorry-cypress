@@ -27,6 +27,7 @@ const themeOptions: ThemeOptions = {
     fontWeightMedium: 500,
     fontFamily: 'IBM Plex Sans',
     fontWeightRegular: 400,
+    button: { textTransform: 'unset' },
   },
   spacing: 8,
   shape: {

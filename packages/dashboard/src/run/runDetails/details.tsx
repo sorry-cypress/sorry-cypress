@@ -1,4 +1,5 @@
 import {
+  Paper,
   RenderOnInterval,
   SpecStateTag,
   TestFailureBadge,
@@ -76,83 +77,85 @@ export function RunDetails({ run }: { run: NonNullable<GetRunQuery['run']> }) {
       </Cell>
       <Cell xs={12}>
         <VFlow>
-          <DataTable
-            rows={rows}
-            loading={false}
-            onRowClick={handleRowClick}
-            columns={[
-              {
-                name: 'status',
-                header: 'Status',
-                sortable: false,
-                render: getItemStatusCell,
-              },
-              {
-                name: 'machine',
-                header: (
-                  <Tooltip text="Random but consistent">
-                    <Text>Machine #</Text>
-                  </Tooltip>
-                ),
-                sortable: false,
-                render: getMachineCell,
-              },
-              {
-                name: 'group',
-                header: 'Group',
-                sortable: false,
-                render: getGroupIdCell,
-              },
-              {
-                name: 'link',
-                header: 'Name',
-                sortable: false,
-                render: getSpecNameCell,
-              },
-              {
-                name: 'duration',
-                header: 'Duration',
-                sortable: false,
-                render: getDurationCell,
-              },
-              // {
-              //   name: 'average-duration',
-              //   header: 'Avg Duration',
-              //   sortable: false,
-              //   render: getAvgDurationCell,
-              // },
-              {
-                name: 'failures',
-                header: '',
-                sortable: false,
-                render: getFailuresCell,
-              },
-              {
-                name: 'passes',
-                header: '',
-                sortable: false,
-                render: getPassesCell,
-              },
-              {
-                name: 'retries',
-                header: '',
-                sortable: false,
-                render: getRetriesCell,
-              },
-              {
-                name: 'skipped',
-                header: '',
-                sortable: false,
-                render: getSkippedCell,
-              },
-              {
-                name: 'actions',
-                header: 'Actions',
-                sortable: false,
-                render: getActionsCell(run),
-              },
-            ]}
-          />
+          <Paper>
+            <DataTable
+              rows={rows}
+              loading={false}
+              onRowClick={handleRowClick}
+              columns={[
+                {
+                  name: 'status',
+                  header: 'Status',
+                  sortable: false,
+                  render: getItemStatusCell,
+                },
+                {
+                  name: 'machine',
+                  header: (
+                    <Tooltip text="Random but consistent">
+                      <Text>Machine #</Text>
+                    </Tooltip>
+                  ),
+                  sortable: false,
+                  render: getMachineCell,
+                },
+                {
+                  name: 'group',
+                  header: 'Group',
+                  sortable: false,
+                  render: getGroupIdCell,
+                },
+                {
+                  name: 'link',
+                  header: 'Name',
+                  sortable: false,
+                  render: getSpecNameCell,
+                },
+                {
+                  name: 'duration',
+                  header: 'Duration',
+                  sortable: false,
+                  render: getDurationCell,
+                },
+                // {
+                //   name: 'average-duration',
+                //   header: 'Avg Duration',
+                //   sortable: false,
+                //   render: getAvgDurationCell,
+                // },
+                {
+                  name: 'failures',
+                  header: '',
+                  sortable: false,
+                  render: getFailuresCell,
+                },
+                {
+                  name: 'passes',
+                  header: '',
+                  sortable: false,
+                  render: getPassesCell,
+                },
+                {
+                  name: 'retries',
+                  header: '',
+                  sortable: false,
+                  render: getRetriesCell,
+                },
+                {
+                  name: 'skipped',
+                  header: '',
+                  sortable: false,
+                  render: getSkippedCell,
+                },
+                {
+                  name: 'actions',
+                  header: 'Actions',
+                  sortable: false,
+                  render: getActionsCell(run),
+                },
+              ]}
+            />
+          </Paper>
         </VFlow>
       </Cell>
     </Grid>

@@ -20,6 +20,7 @@ import {
   Text,
 } from 'bold-ui';
 import React, { useState } from 'react';
+import { Paper } from '../components';
 import { enumToString } from './hook/hook.utils';
 import { HookEdit } from './hook/hookEdit';
 import { useHooksFormReducer } from './hook/hookFormReducer';
@@ -96,7 +97,7 @@ export const HooksEditor = () => {
           hook: result.data[field],
         },
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       setOperationError(error.toString());
       return;
@@ -104,50 +105,52 @@ export const HooksEditor = () => {
   }
 
   return (
-    <Grid>
-      <Cell xs={12}>
-        <Text variant="h2">Hooks</Text>
-      </Cell>
-      {operationError && (
-        <Cell xs={12}>
-          <Alert type="danger" onCloseClick={() => setOperationError(null)}>
-            {operationError}
-          </Alert>
-        </Cell>
-      )}
-      <Cell xs={12}>
-        <HFlow alignItems="center">
-          <Text>Select hook type: </Text>
-          <Select
-            itemToString={enumToString}
-            items={Object.keys(HookType).sort()}
-            name="hookType"
-            onChange={(value: HookType) => {
-              setCurrentHookType(value);
-            }}
-            value={currentHookType}
-            clearable={false}
-          />
-          <Button size="small" onClick={createNewHook}>
-            <Icon icon="plus" size={1.3} style={{ marginRight: '5px' }} />
-            <span>Add Hook</span>
-          </Button>
-        </HFlow>
-      </Cell>
-      <Cell xs={12}>
-        {!formState.hooks.length && <Text>No hooks defined</Text>}
-        <Table>
-          <TableBody>
-            {formState.hooks?.map((hook: Hook) => (
-              <TableRow key={hook.hookId}>
-                <TableCell>
-                  <HookEdit hook={hook} dispatch={dispatch} />
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Cell>
-    </Grid>
+    <>
+      <Text variant="h2">Hooks</Text>
+      <Paper>
+        <Grid>
+          {operationError && (
+            <Cell xs={12}>
+              <Alert type="danger" onCloseClick={() => setOperationError(null)}>
+                {operationError}
+              </Alert>
+            </Cell>
+          )}
+          <Cell xs={12}>
+            <HFlow alignItems="center">
+              <Text>Select hook type: </Text>
+              <Select
+                itemToString={enumToString}
+                items={Object.keys(HookType).sort()}
+                name="hookType"
+                onChange={(value: HookType) => {
+                  setCurrentHookType(value);
+                }}
+                value={currentHookType}
+                clearable={false}
+              />
+              <Button size="small" onClick={createNewHook}>
+                <Icon icon="plus" size={1.3} style={{ marginRight: '5px' }} />
+                <span>Add Hook</span>
+              </Button>
+            </HFlow>
+          </Cell>
+          <Cell xs={12}>
+            {!formState.hooks.length && <Text>No hooks defined</Text>}
+            <Table>
+              <TableBody>
+                {formState.hooks?.map((hook: Hook) => (
+                  <TableRow key={hook.hookId}>
+                    <TableCell>
+                      <HookEdit hook={hook} dispatch={dispatch} />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Cell>
+        </Grid>
+      </Paper>
+    </>
   );
 };

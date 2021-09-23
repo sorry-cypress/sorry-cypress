@@ -11,6 +11,7 @@ import { truncate } from 'lodash';
 import React from 'react';
 import { generatePath, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
+import { Paper } from '../components';
 import { getTestDuration, getTestStartedAt } from './util';
 
 function TestStatus(test: InstanceTest) {
@@ -119,7 +120,9 @@ export const InstanceDetails = ({
   return (
     <div>
       <strong>Tests</strong>
-      <DataTable rows={tests} columns={gteV5Columns} />
+      <Paper>
+        <DataTable rows={tests} columns={gteV5Columns} />
+      </Paper>
     </div>
   );
 };
