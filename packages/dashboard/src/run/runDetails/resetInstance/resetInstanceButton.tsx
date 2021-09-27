@@ -15,7 +15,6 @@ import {
   Text,
 } from 'bold-ui';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useRouteMatch } from 'react-router-dom';
 
 export const ResetInstanceButton = ({
   instanceId,
@@ -24,10 +23,6 @@ export const ResetInstanceButton = ({
   instanceId: string;
   runId: string;
 }) => {
-  const {
-    params: { projectId },
-  } = useRouteMatch<{ projectId: string }>();
-
   const [resetInstance] = useResetInstanceMutation({
     variables: {
       instanceId: instanceId,

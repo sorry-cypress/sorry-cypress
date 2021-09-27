@@ -1,5 +1,6 @@
-import { Button, Grid } from '@mui/material';
-import { SearchField } from '@sorry-cypress/dashboard/components';
+import { Add as AddIcon } from '@mui/icons-material';
+import { Typography } from '@mui/material';
+import { Toolbar } from '@sorry-cypress/dashboard/components';
 import { WithMaterial } from '@sorry-cypress/dashboard/lib/material';
 import { setNav } from '@sorry-cypress/dashboard/lib/navigation';
 import ProjectsList from '@sorry-cypress/dashboard/project/projectList';
@@ -15,32 +16,29 @@ export function DashboardView() {
 
   return (
     <WithMaterial>
-      <Grid container spacing={3} direction="row" alignItems="center">
-        <Grid
-          style={{ justifyContent: 'flex-end', display: 'flex' }}
-          item
-          xs={12}
-          justifyContent="flex-end"
-        >
-          <Button
-            disableElevation
-            variant="contained"
-            color="primary"
-            size="small"
-            onClick={() => {
+      <Toolbar
+        actions={[
+          {
+            key: 'newProject',
+            text: 'Add New Project',
+            primary: true,
+            icon: AddIcon,
+            onClick: () => {
               history.push('/--create-new-project--/edit');
-            }}
-          >
-            Add New Project
-          </Button>
-        </Grid>
-        <Grid item xs={12}>
-          <SearchField
-            placeholder="Enter project id"
-            onSearch={(value) => setSearch(value)}
-          />
-        </Grid>
-      </Grid>
+            },
+          },
+        ]}
+        searchPlaceholder="Enter project id"
+        onSearch={setSearch}
+      />
+      <Typography
+        component="h1"
+        variant="h6"
+        gutterBottom
+        sx={{ color: '#606871', mb: 5 }}
+      >
+        Projects
+      </Typography>
       <ProjectsList search={search} />
     </WithMaterial>
   );

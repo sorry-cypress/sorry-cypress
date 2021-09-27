@@ -415,7 +415,11 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
           {open && (
             <ListItemText
               sx={{ mt: 4, mb: 2 }}
-              primary={isHome ? 'Projects' : currentProject?.label}
+              primary={
+                isHome
+                  ? 'Projects'
+                  : decodeURIComponent(currentProject?.label || '')
+              }
               primaryTypographyProps={{
                 fontSize: 22,
                 letterSpacing: 0,
