@@ -1,4 +1,5 @@
-import { TextField } from '@mui/material';
+import { Search } from '@mui/icons-material';
+import { InputAdornment, TextField, Theme } from '@mui/material';
 import useDebounce from '@sorry-cypress/dashboard/hooks/useDebounce';
 import { WithMaterial } from '@sorry-cypress/dashboard/lib/material';
 import React, { ChangeEvent, useState } from 'react';
@@ -28,6 +29,28 @@ const SearchField = ({ placeholder, onSearch, disabled }: SearchFieldProps) => {
     <WithMaterial>
       <TextField
         fullWidth
+        size="small"
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <Search />
+            </InputAdornment>
+          ),
+        }}
+        inputProps={{
+          sx: {
+            pt: 0.8,
+            pb: 0.8,
+            width: { lg: 180 },
+            transition: (theme: Theme) =>
+              theme.transitions.create('width', {
+                duration: theme.transitions.duration.short,
+              }),
+            '&:focus': {
+              width: { lg: 300 },
+            },
+          },
+        }}
         variant="outlined"
         placeholder={placeholder}
         value={value}

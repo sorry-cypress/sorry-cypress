@@ -2,7 +2,7 @@ import { ApolloProvider } from '@apollo/client';
 import { ThemeProvider } from 'bold-ui';
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { Content, Layout } from './components';
+import { Layout } from './components';
 import { DashboardView } from './dashboard/dashboardView';
 import { InstanceDetailsView } from './instance/instanceDetailsView';
 import { client } from './lib/apolloClient';
@@ -58,28 +58,26 @@ export const Root = () => {
         <Router>
           <ErrorBoundary>
             <Layout>
-              <Content>
-                <Route path="/" exact component={DashboardView} />
+              <Route path="/" exact component={DashboardView} />
 
-                <Switch>
-                  <Route
-                    path="/:projectId+/runs/:buildId"
-                    component={RunRedirect}
-                  />
-                  <Route path="/:projectId+/runs" component={RunsView} />
-                </Switch>
-                <Route path="/:projectId+/edit" component={ProjectEditView} />
-                <Route path="/run/:id" component={RunDetailsView} />
+              <Switch>
                 <Route
-                  path="/instance/:id"
-                  component={InstanceDetailsView}
-                  exact
+                  path="/:projectId+/runs/:buildId"
+                  component={RunRedirect}
                 />
-                <Route
-                  path="/instance/:instanceId/test/:testId"
-                  component={TestDetailsView}
-                />
-              </Content>
+                <Route path="/:projectId+/runs" component={RunsView} />
+              </Switch>
+              <Route path="/:projectId+/edit" component={ProjectEditView} />
+              <Route path="/run/:id" component={RunDetailsView} />
+              <Route
+                path="/instance/:id"
+                component={InstanceDetailsView}
+                exact
+              />
+              <Route
+                path="/instance/:instanceId/test/:testId"
+                component={TestDetailsView}
+              />
             </Layout>
           </ErrorBoundary>
         </Router>

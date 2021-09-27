@@ -1,4 +1,4 @@
-import { Box, Toolbar, useMediaQuery } from '@mui/material';
+import { Box, Container, Toolbar, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useLocalStorage } from '@sorry-cypress/dashboard/hooks';
 import { WithMaterial } from '@sorry-cypress/dashboard/lib/material';
@@ -20,17 +20,26 @@ export const Layout = ({ children }: PropsWithChildren<any>) => {
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
       <WithMaterial>
         <Sidebar open={open} onToggleSidebar={toggleSidebar} />
         <Header open={open} onMenuClick={toggleSidebar} />
       </WithMaterial>
-      <Box component="main" sx={{ flexGrow: 1, p: 3, pt: 0 }}>
+      <Container
+        maxWidth="xl"
+        component="main"
+        sx={{
+          flex: 1,
+          padding: 3,
+          backgroundColor: '#E8E8EC',
+          width: 'auto',
+        }}
+      >
         <WithMaterial>
           <Toolbar />
         </WithMaterial>
         {children}
-      </Box>
+      </Container>
     </Box>
   );
 };

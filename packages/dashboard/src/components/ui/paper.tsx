@@ -9,6 +9,7 @@ export const Paper = (props: PaperProps) => {
          {
           margin: 12px 0;
           padding: 12px;
+          background-color: #fff;
         }
       `}
       {...props}
