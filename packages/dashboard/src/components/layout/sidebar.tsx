@@ -12,6 +12,7 @@ import {
 import {
   Alert,
   AlertTitle,
+  alpha,
   Avatar,
   Button,
   Drawer as MuiDrawer,
@@ -165,7 +166,9 @@ export const ProjectListMenu: ProjectListMenuType = ({
               to={`/${project.projectId}/runs`}
               onClick={onItemClick}
             >
-              <ListItemIcon sx={{ opacity: 0.6, minWidth: 28 }}>
+              <ListItemIcon
+                sx={{ opacity: 0.6, minWidth: 28, color: project.projectColor }}
+              >
                 <BookIcon />
               </ListItemIcon>
               <ListItemText
@@ -190,7 +193,7 @@ export const ProjectListMenu: ProjectListMenuType = ({
             <div style={{ paddingBottom: '8px' }}>
               <IconButton
                 aria-label={decodeURIComponent(project.projectId)}
-                sx={{ opacity: 0.6, padding: 1.5 }}
+                sx={{ opacity: 0.6, padding: 1.5, color: project.projectColor }}
                 component={RouterLink}
                 to={`/${project.projectId}/runs`}
                 onClick={onItemClick}
@@ -208,6 +211,7 @@ export const ProjectListMenu: ProjectListMenuType = ({
 
 export const ProjectDetailsMenu: ProjectDetailsMenuType = ({
   projectId,
+  projectColor,
   open,
   onItemClick,
   selectedItem,
@@ -281,8 +285,9 @@ export const ProjectDetailsMenu: ProjectDetailsMenuType = ({
                   opacity: selected ? 1 : 0.6,
                   padding: 1.5,
                   backgroundColor: selected
-                    ? 'rgba(255, 255, 255, 0.05)'
+                    ? alpha(projectColor || '#3486E3', 0.1)
                     : undefined,
+                  color: selected ? projectColor || '#3486E3' : undefined,
                 }}
                 component={RouterLink}
                 to={item.link}
@@ -301,8 +306,8 @@ export const ProjectDetailsMenu: ProjectDetailsMenuType = ({
 
 export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
   const nav = useReactiveVar(navStructure);
-  const currentProject = nav.find((item) => item.type === NavItemType.project);
-  const projectView = currentProject && nav?.[1];
+  const projectNavItem = nav.find((item) => item.type === NavItemType.project);
+  const projectView = projectNavItem && nav?.[1];
   const theme = useTheme();
   const smallScreen = !useMediaQuery(theme.breakpoints.up('md'), {
     noSsr: true,
@@ -314,10 +319,13 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
       filters: [],
     },
   });
-  const isHome = !loading && !error && !currentProject;
+  const isHome = !loading && !error && !projectNavItem;
   const { projects } = (data || {}) as {
-    projects: Array<{ projectId: string }>;
+    projects: Array<{ projectId: string; projectColor: string }>;
   };
+  const currentProject = projects?.find(
+    (item) => item.projectId === decodeURIComponent(projectNavItem?.label || '')
+  );
 
   const handleMenuItemClick = () => {
     smallScreen && onToggleSidebar?.();
@@ -418,7 +426,7 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
               primary={
                 isHome
                   ? 'Projects'
-                  : decodeURIComponent(currentProject?.label || '')
+                  : decodeURIComponent(projectNavItem?.label || '')
               }
               primaryTypographyProps={{
                 fontSize: 22,
@@ -444,9 +452,10 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
             onItemClick={handleMenuItemClick}
           />
         )}
-        {!loading && !isHome && currentProject?.label && projectView?.type && (
+        {!loading && !isHome && projectNavItem?.label && projectView?.type && (
           <ProjectDetailsMenu
-            projectId={currentProject.label}
+            projectId={projectNavItem.label}
+            projectColor={currentProject?.projectColor}
             open={open}
             selectedItem={projectView.type}
             onItemClick={handleMenuItemClick}
@@ -638,6 +647,7 @@ type SidebarType = React.FC<SidebarProps>;
 
 type ProjectDetailsMenuProps = {
   projectId: string;
+  projectColor?: string;
   open: boolean;
   onItemClick: () => void;
   selectedItem: NavItemType;
@@ -645,7 +655,7 @@ type ProjectDetailsMenuProps = {
 type ProjectDetailsMenuType = React.FC<ProjectDetailsMenuProps>;
 
 type ProjectListMenuProps = {
-  projects: Array<{ projectId: string }>;
+  projects: Array<{ projectId: string; projectColor: string }>;
   open: boolean;
   onItemClick: () => void;
 };

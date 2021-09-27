@@ -27,7 +27,8 @@ import {
   TextField,
 } from 'bold-ui';
 import React, { useLayoutEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { CirclePicker } from 'react-color';
+import { Controller, useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import { useHooksFormReducer, WithHooksForm } from './hook/hookFormReducer';
 import { useCurrentProjectId } from './hook/useCurrentProjectId';
@@ -46,10 +47,13 @@ export function ProjectEditView() {
 interface ProjectFormFields {
   projectId: string;
   inactivityTimeoutMinutes: number;
+  projectColor: string;
 }
 function _ProjectEditView() {
   const projectId = useCurrentProjectId();
-  const { register, handleSubmit, errors, reset } = useForm<ProjectFormFields>({
+  const { control, register, handleSubmit, errors, reset } = useForm<
+    ProjectFormFields
+  >({
     mode: 'onChange',
     defaultValues: {
       projectId: '',
@@ -125,6 +129,7 @@ function _ProjectEditView() {
           (data?.project.inactivityTimeoutSeconds ?? DEFAULT_TIMEOUT_SECONDS) /
             60
         ),
+        projectColor: data?.project.projectColor || '',
       });
     },
   });
@@ -186,12 +191,14 @@ function _ProjectEditView() {
         projectId: data.projectId,
         inactivityTimeoutSeconds:
           data.inactivityTimeoutMinutes * 60 ?? DEFAULT_TIMEOUT_SECONDS,
+        projectColor: data?.projectColor,
       });
     } else {
       updateProject({
         projectId: data.projectId,
         inactivityTimeoutSeconds:
           data.inactivityTimeoutMinutes * 60 ?? DEFAULT_TIMEOUT_SECONDS,
+        projectColor: data?.projectColor,
       });
     }
   };
@@ -294,8 +301,32 @@ function _ProjectEditView() {
                 />
               </InputFieldLabel>
             </Cell>
-
-            <Cell>
+            <Cell xs={12}>
+              <InputFieldLabel
+                htmlFor="projectColor"
+                label="Project Color"
+                helpText="A color to easily differentiate this project from others"
+                error={errors['projectColor']?.message}
+              >
+                <Controller
+                  control={control}
+                  render={({ onChange, value }) => (
+                    <CirclePicker
+                      circleSize={20}
+                      color={value}
+                      onChange={(color) => onChange(color.hex)}
+                    />
+                  )}
+                  name="projectColor"
+                  defaultValue=""
+                />
+                {errors.projectColor && <Text>{errors.projectColor}</Text>}
+              </InputFieldLabel>
+            </Cell>
+            <Cell
+              style={{ display: 'flex', justifyContent: 'flex-end' }}
+              size={12}
+            >
               <Button
                 type="submit"
                 kind="primary"
