@@ -1,6 +1,6 @@
 {
   "name": "@sorry-cypress/dashboard",
-  "version": "2.0.0-beta.15",
+  "version": "2.0.0-beta.16",
   "author": {
     "name": "Andrew Goldis",
     "email": "agoldis@gmail.com"
@@ -69,9 +69,9 @@
     "@graphql-codegen/typescript-operations": "1.17.14",
     "@graphql-codegen/typescript-react-apollo": "^2.2.1",
     "@types/lodash": "^4.14.150",
-    "@types/react-color": "^3.0.5",
     "@types/node": "^14.11.2",
     "@types/react": "^17.0.2",
+    "@types/react-color": "^3.0.5",
     "@types/react-dom": "^17.0.2",
     "@types/react-router-dom": "^5.1.5",
     "@types/react-tooltip": "^3.9.3",
