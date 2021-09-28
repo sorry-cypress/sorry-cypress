@@ -5,5 +5,5 @@ export interface Project {
   createdAt: string;
   hooks?: Hook[] | null;
   inactivityTimeoutSeconds?: number;
-  projectColor?: string;
+  projectColor?: string | null;
 }

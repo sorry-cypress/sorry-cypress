@@ -3,7 +3,7 @@ import { Project } from './types';
 export function getCreateProjectValue(
   projectId: string,
   inactivityTimeoutSeconds?: number,
-  projectColor?: string
+  projectColor?: string | null
 ) {
   return {
     projectId: projectId.trim(),
