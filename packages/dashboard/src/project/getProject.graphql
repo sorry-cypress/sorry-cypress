@@ -2,6 +2,7 @@ query getProject($projectId: ID!) {
   project(id: $projectId) {
     projectId
     inactivityTimeoutSeconds
+    projectColor
     hooks {
       hookId
       url

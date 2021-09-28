@@ -1,5 +1,6 @@
 import { Book } from '@mui/icons-material';
 import {
+  alpha,
   Avatar,
   Card,
   CardActionArea,
@@ -38,10 +39,13 @@ export function ProjectListItem({ project }: ProjectListItemProps) {
               <ListItemAvatar>
                 <Avatar
                   sx={{
-                    backgroundColor: '#3486E310',
+                    backgroundColor: alpha(
+                      project.projectColor || '#3486E3',
+                      0.1
+                    ),
                   }}
                 >
-                  <Book sx={{ color: '#3486E3' }} />
+                  <Book sx={{ color: project.projectColor || '#3486E3' }} />
                 </Avatar>
               </ListItemAvatar>
               <ListItemText

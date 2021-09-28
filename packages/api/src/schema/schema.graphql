@@ -49,21 +49,25 @@ type Project {
   projectId: ID!
   hooks: [Hook!]!
   inactivityTimeoutSeconds: Int
+  projectColor: String
 }
 
 input CreateProjectInput {
   projectId: ID!
   inactivityTimeoutSeconds: Int!
+  projectColor: String
 }
 
 input UpdateProjectInput {
   projectId: ID!
   inactivityTimeoutSeconds: Int!
+  projectColor: String
 }
 
 input ProjectInput {
   projectId: String!
   inactivityTimeoutSeconds: Int
+  projectColor: String
   hooks: [HookInput]
 }
 

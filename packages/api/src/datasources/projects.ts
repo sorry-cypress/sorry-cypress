@@ -68,7 +68,8 @@ export class ProjectsAPI extends DataSource {
     try {
       const project = getCreateProjectValue(
         projectInput.projectId,
-        projectInput.inactivityTimeoutSeconds
+        projectInput.inactivityTimeoutSeconds,
+        projectInput.projectColor
       );
       await Collection.project().insertOne(project);
       return project;
@@ -86,6 +87,7 @@ export class ProjectsAPI extends DataSource {
       {
         $set: {
           inactivityTimeoutSeconds: input.inactivityTimeoutSeconds,
+          projectColor: input.projectColor,
         },
       },
       {
