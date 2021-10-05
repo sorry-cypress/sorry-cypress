@@ -16,6 +16,7 @@ export type Scalars = {
   SlackResultFilter: any;
   GithubHookType: any;
   BitbucketHookType: any;
+  TeamsHookType: any;
   DateTime: string;
 };
 
@@ -26,6 +27,7 @@ export type Mutation = {
   createGithubHook: GithubHook;
   createProject: Project;
   createSlackHook: SlackHook;
+  createTeamsHook: TeamsHook;
   deleteHook: DeleteHookResponse;
   deleteProject: DeleteProjectResponse;
   deleteRun: DeleteRunResponse;
@@ -37,6 +39,7 @@ export type Mutation = {
   updateGithubHook: GithubHook;
   updateProject: Project;
   updateSlackHook: SlackHook;
+  updateTeamsHook: TeamsHook;
 };
 
 
@@ -62,6 +65,11 @@ export type MutationCreateProjectArgs = {
 
 export type MutationCreateSlackHookArgs = {
   input: CreateSlackHookInput;
+};
+
+
+export type MutationCreateTeamsHookArgs = {
+  input: CreateTeamsHookInput;
 };
 
 
@@ -118,6 +126,11 @@ export type MutationUpdateProjectArgs = {
 
 export type MutationUpdateSlackHookArgs = {
   input: UpdateSlackHookInput;
+};
+
+
+export type MutationUpdateTeamsHookArgs = {
+  input: UpdateTeamsHookInput;
 };
 
 export type DeleteHookInput = {
@@ -202,6 +215,26 @@ export type UpdateBitbucketHookInput = {
   bitbucketBuildName: Maybe<Scalars['String']>;
 };
 
+export type TeamsHook = {
+  __typename?: 'TeamsHook';
+  projectId: Scalars['ID'];
+  hookId: Scalars['ID'];
+  url: Scalars['String'];
+  hookType: Scalars['TeamsHookType'];
+  hookEvents: Array<Scalars['String']>;
+};
+
+export type CreateTeamsHookInput = {
+  projectId: Scalars['ID'];
+};
+
+export type UpdateTeamsHookInput = {
+  projectId: Scalars['ID'];
+  hookId: Scalars['ID'];
+  url: Scalars['String'];
+  hookEvents: Array<Scalars['String']>;
+};
+
 export type GenericHook = {
   __typename?: 'GenericHook';
   projectId: Scalars['ID'];
@@ -254,6 +287,7 @@ export type HookInput = {
   slackResultFilter: Maybe<Scalars['String']>;
   slackBranchFilter: Maybe<Array<Maybe<Scalars['String']>>>;
 };
+
 
 
 
@@ -632,6 +666,13 @@ export type CreateSlackHookMutationVariables = Exact<{
 
 export type CreateSlackHookMutation = { __typename?: 'Mutation', createSlackHook: { __typename?: 'SlackHook', hookId: string, hookType: any, url: string, hookEvents: Array<string>, slackResultFilter: Maybe<any>, slackBranchFilter: Maybe<Array<string>> } };
 
+export type CreateTeamsHookMutationVariables = Exact<{
+  input: CreateTeamsHookInput;
+}>;
+
+
+export type CreateTeamsHookMutation = { __typename?: 'Mutation', createTeamsHook: { __typename?: 'TeamsHook', hookId: string, hookType: any, url: string, hookEvents: Array<string> } };
+
 export type DeleteHookMutationVariables = Exact<{
   input: DeleteHookInput;
 }>;
@@ -666,6 +707,13 @@ export type UpdateSlackHookMutationVariables = Exact<{
 
 
 export type UpdateSlackHookMutation = { __typename?: 'Mutation', updateSlackHook: { __typename?: 'SlackHook', hookId: string } };
+
+export type UpdateTeamsHookMutationVariables = Exact<{
+  input: UpdateTeamsHookInput;
+}>;
+
+
+export type UpdateTeamsHookMutation = { __typename?: 'Mutation', updateTeamsHook: { __typename?: 'TeamsHook', hookId: string } };
 
 export type UpdateProjectMutationVariables = Exact<{
   input: UpdateProjectInput;
@@ -1231,6 +1279,41 @@ export function useCreateSlackHookMutation(baseOptions?: Apollo.MutationHookOpti
 export type CreateSlackHookMutationHookResult = ReturnType<typeof useCreateSlackHookMutation>;
 export type CreateSlackHookMutationResult = Apollo.MutationResult<CreateSlackHookMutation>;
 export type CreateSlackHookMutationOptions = Apollo.BaseMutationOptions<CreateSlackHookMutation, CreateSlackHookMutationVariables>;
+export const CreateTeamsHookDocument = gql`
+    mutation createTeamsHook($input: CreateTeamsHookInput!) {
+  createTeamsHook(input: $input) {
+    hookId
+    hookType
+    url
+    hookEvents
+  }
+}
+    `;
+export type CreateTeamsHookMutationFn = Apollo.MutationFunction<CreateTeamsHookMutation, CreateTeamsHookMutationVariables>;
+
+/**
+ * __useCreateTeamsHookMutation__
+ *
+ * To run a mutation, you first call `useCreateTeamsHookMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateTeamsHookMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createTeamsHookMutation, { data, loading, error }] = useCreateTeamsHookMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateTeamsHookMutation(baseOptions?: Apollo.MutationHookOptions<CreateTeamsHookMutation, CreateTeamsHookMutationVariables>) {
+        return Apollo.useMutation<CreateTeamsHookMutation, CreateTeamsHookMutationVariables>(CreateTeamsHookDocument, baseOptions);
+      }
+export type CreateTeamsHookMutationHookResult = ReturnType<typeof useCreateTeamsHookMutation>;
+export type CreateTeamsHookMutationResult = Apollo.MutationResult<CreateTeamsHookMutation>;
+export type CreateTeamsHookMutationOptions = Apollo.BaseMutationOptions<CreateTeamsHookMutation, CreateTeamsHookMutationVariables>;
 export const DeleteHookDocument = gql`
     mutation deleteHook($input: DeleteHookInput!) {
   deleteHook(input: $input) {
@@ -1392,6 +1475,38 @@ export function useUpdateSlackHookMutation(baseOptions?: Apollo.MutationHookOpti
 export type UpdateSlackHookMutationHookResult = ReturnType<typeof useUpdateSlackHookMutation>;
 export type UpdateSlackHookMutationResult = Apollo.MutationResult<UpdateSlackHookMutation>;
 export type UpdateSlackHookMutationOptions = Apollo.BaseMutationOptions<UpdateSlackHookMutation, UpdateSlackHookMutationVariables>;
+export const UpdateTeamsHookDocument = gql`
+    mutation updateTeamsHook($input: UpdateTeamsHookInput!) {
+  updateTeamsHook(input: $input) {
+    hookId
+  }
+}
+    `;
+export type UpdateTeamsHookMutationFn = Apollo.MutationFunction<UpdateTeamsHookMutation, UpdateTeamsHookMutationVariables>;
+
+/**
+ * __useUpdateTeamsHookMutation__
+ *
+ * To run a mutation, you first call `useUpdateTeamsHookMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateTeamsHookMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateTeamsHookMutation, { data, loading, error }] = useUpdateTeamsHookMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateTeamsHookMutation(baseOptions?: Apollo.MutationHookOptions<UpdateTeamsHookMutation, UpdateTeamsHookMutationVariables>) {
+        return Apollo.useMutation<UpdateTeamsHookMutation, UpdateTeamsHookMutationVariables>(UpdateTeamsHookDocument, baseOptions);
+      }
+export type UpdateTeamsHookMutationHookResult = ReturnType<typeof useUpdateTeamsHookMutation>;
+export type UpdateTeamsHookMutationResult = Apollo.MutationResult<UpdateTeamsHookMutation>;
+export type UpdateTeamsHookMutationOptions = Apollo.BaseMutationOptions<UpdateTeamsHookMutation, UpdateTeamsHookMutationVariables>;
 export const UpdateProjectDocument = gql`
     mutation updateProject($input: UpdateProjectInput!) {
   updateProject(input: $input) {
@@ -1638,4 +1753,3 @@ export type GetRunsFeedQueryResult = Apollo.QueryResult<GetRunsFeedQuery, GetRun
   "possibleTypes": {}
 };
       export default result;
-    

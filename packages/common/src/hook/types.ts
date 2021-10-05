@@ -7,6 +7,7 @@ export enum HookType {
   GENERIC_HOOK = 'GENERIC_HOOK',
   SLACK_HOOK = 'SLACK_HOOK',
   BITBUCKET_STATUS_HOOK = 'BITBUCKET_STATUS_HOOK',
+  TEAMS_HOOK = 'TEAMS_HOOK',
 }
 
 export enum HookEvent {
@@ -55,5 +56,10 @@ export type BitBucketHook = BaseHook & {
   bitbucketBuildName?: string;
 };
 
-export type HookWithCustomEvents = SlackHook | GenericHook;
-export type Hook = SlackHook | GenericHook | GithubHook | BitBucketHook;
+export type TeamsHook = BaseHook & {
+  hookEvents: HookEvent[];
+  hookType: HookType.TEAMS_HOOK;
+};
+
+export type HookWithCustomEvents = SlackHook | TeamsHook | GenericHook;
+export type Hook = SlackHook | TeamsHook | GenericHook | GithubHook | BitBucketHook;
