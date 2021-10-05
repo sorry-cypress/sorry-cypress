@@ -1,21 +1,17 @@
 import {
-  HookEvent,
-  ResultFilter,
   TeamsHook as TeamsHookType,
 } from '@sorry-cypress/common';
 import { InputFieldLabel } from '@sorry-cypress/dashboard/components';
-import { isEqual } from 'lodash';
 import { EditHookEvents } from './editHookEvents';
 import { useCurrentProjectId } from './useCurrentProjectId';
-import { Controller, FormProvider, useForm } from 'react-hook-form';
-import { enumToString } from '@sorry-cypress/dashboard/project/hook/hook.utils';
+import { FormProvider, useForm } from 'react-hook-form';
 import {
   UpdateTeamsHookInput,
   useUpdateTeamsHookMutation,
 } from '@sorry-cypress/dashboard/generated/graphql';
-import { Button, Cell, Grid, Select, TextField } from 'bold-ui';
+import { Button, Cell, Grid, TextField } from 'bold-ui';
 import React from 'react';
-import { httpUrlValidation, slackResultValidation } from './validation';
+import { httpUrlValidation } from './validation';
 
 interface TeamsHookProps {
   hook: TeamsHookType;

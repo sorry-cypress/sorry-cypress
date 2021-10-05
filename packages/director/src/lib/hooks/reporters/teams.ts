@@ -1,7 +1,6 @@
 import {
   HookEvent,
   isRunGroupSuccessful,
-  ResultFilter,
   Run,
   RunGroupProgress,
   TeamsHook,
@@ -85,31 +84,85 @@ export async function reportToTeams(
     method: 'post',
     url: hook.url,
     data: {
-      "@type": "MessageCard",
-      "@context": "http://schema.org/extensions",
-      "themeColor": "0076D7",
-      "summary": `${title}`,
-      "sections": [{
-          "activityTitle": `${title}`,
-          "activitySubtitle": `${commitDescription}`,
-          "activityImage": "https://teamsnodesample.azurewebsites.net/static/img/image5.png",
-          "facts": [{
-              "name": "Passed",
-              "value": `${passes}`,
-          }, {
-              "name": "Failed or Skipped",
-              "value": `${failures + skipped}`,
-          }, {
-              "name": "Retries",
-              "value": `${retries}`,
-          }],
-          "markdown": true,
-      }],
-      "actions": [{
-        "type": "openUrl",
-        "title": "Tabs in Teams",
-        "value": `${getDashboardRunURL}`,
-      }],
+      "type":"message",
+      "attachments":[
+        {
+          "contentType":"application/vnd.microsoft.card.adaptive",
+          "contentUrl":null,
+          "content":{
+            "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+            "type": "AdaptiveCard",
+            "version": "1.0",
+            "body": [
+                {
+                  "type": "ColumnSet",
+                  "columns": [
+                    {
+                      "type": "Column",
+                      "padding": "None",
+                      "width": "auto",
+                      "items": [
+                        {
+                          "type": "Image",
+                          "url": "https://gblobscdn.gitbook.com/spaces%2F-MS6gDAYECuzpKjjzrdc%2Favatar-1611996755562.png?alt=media",
+                          "altText": "Sorry-Cypress",
+                        },
+                      ],
+                    },
+                    {
+                      "type": "Column",
+                      "padding": "None",
+                      "width": "auto",
+                      "items": [
+                        {
+                          "type": "TextBlock",
+                          "text": `${title}`,
+                          "wrap": true,
+                        },
+                        {
+                          "type": "TextBlock",
+                          "text": `${commitDescription}`,
+                          "wrap": true,
+                        },
+                      ],
+                    },
+                  ],
+                  "padding": "None",
+                },
+                {
+                    "type": "FactSet",
+                    "facts": [
+                        {
+                            "title": "Passes",
+                            "value": `${passes}`,
+                        },
+                        {
+                            "title": "Fails",
+                            "value": `${failures + skipped}`,
+                        },
+                        {
+                            "title": "Retries",
+                            "value": `${retries}`,
+                        },
+                    ],
+                },
+                {
+                    "type": "ActionSet",
+                    "actions": [
+                        {
+                            "type": "Action.OpenUrl",
+                            "title": "View in Sorry-Cypress",
+                            "url": `${getDashboardRunURL(event.run.runId)}`,
+                            "style": "positive",
+                            "isPrimary": true,
+                        },
+                    ],
+                },
+            ],
+            "padding": "None",
+          },
+        },
+      ],
     },
   }).catch((error) => {
     getLogger().error(
