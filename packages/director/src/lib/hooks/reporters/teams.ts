@@ -54,7 +54,7 @@ export async function reportToTeams(
       break;
     case HookEvent.RUN_FINISH:
       title = `${
-        isRunGroupSuccessful(event.groupProgress) ? '(happy)' : '(fail)'
+        isRunGroupSuccessful(event.groupProgress) ? '&#x2705;' : '&#x274C;'
       } *Run finished* (${ciBuildId}${groupLabel})`;
       break;
     case HookEvent.RUN_TIMEOUT:
@@ -106,8 +106,11 @@ export async function reportToTeams(
                           "type": "Image",
                           "url": "https://gblobscdn.gitbook.com/spaces%2F-MS6gDAYECuzpKjjzrdc%2Favatar-1611996755562.png?alt=media",
                           "altText": "Sorry-Cypress",
+                          "size": "Large",
+                          "style": "Person",
                         },
                       ],
+                      "style": "emphasis",
                     },
                     {
                       "type": "Column",
@@ -125,9 +128,11 @@ export async function reportToTeams(
                           "wrap": true,
                         },
                       ],
+                      "style": "emphasis"
                     },
                   ],
                   "padding": "None",
+                  "style": "emphasis",
                 },
                 {
                     "type": "FactSet",
