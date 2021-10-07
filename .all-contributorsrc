@@ -277,6 +277,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "scottux",
+      "name": "Scott",
+      "avatar_url": "https://avatars.githubusercontent.com/u/135884?v=4",
+      "profile": "http://www.scottux.com",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
