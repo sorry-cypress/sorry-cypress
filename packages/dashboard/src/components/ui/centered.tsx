@@ -8,7 +8,7 @@ export const CenteredContent = ({ children }: PropsWithChildren<unknown>) => {
     <div
       className={css`
         text-align: center;
-        padding: 2rem 1rem;
+        padding: 2rem 0;
       `}
     >
       {children}

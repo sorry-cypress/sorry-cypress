@@ -1,7 +1,7 @@
 import { TestState } from '@sorry-cypress/dashboard/generated/graphql';
+import { isIdle } from '@sorry-cypress/dashboard/lib/time';
 import { Tag } from 'bold-ui';
 import React from 'react';
-import { isIdle } from './duration';
 
 type TestStateProps = {
   state?: TestState | 'unknown';

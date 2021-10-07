@@ -1,40 +1,65 @@
+import { Alert, Button, Skeleton } from '@mui/material';
 import { CenteredContent } from '@sorry-cypress/dashboard/components';
-import { Button } from 'bold-ui';
-import React from 'react';
-import { RunSummaryComponent } from '../runSummary/summary';
+import { range } from 'lodash';
+import React, { FunctionComponent } from 'react';
+import { RunSummary } from '../runSummary/runSummary';
 import { useGetRunsFeed } from './useGetRunFeed';
 
-type RunListProps = {
-  projectId: string;
-  search?: string;
-};
+export const RunsFeed: RunsFeedComponent = (props) => {
+  const {
+    projectId,
+    search = '',
+    showActions = false,
+    compact = false,
+  } = props;
 
-export const RunsFeed = ({ projectId, search = '' }: RunListProps) => {
   const [runsFeed, loadMore, loading, error] = useGetRunsFeed({
     projectId,
     search,
   });
 
   if (loading) {
-    return <CenteredContent>Loading ...</CenteredContent>;
+    return (
+      <>
+        {range(0, 3).map((key) => (
+          <Skeleton
+            variant="rectangular"
+            height={compact ? 100 : 180}
+            key={key}
+            animation="wave"
+            sx={{ my: 2 }}
+          />
+        ))}
+      </>
+    );
   }
 
   if (!runsFeed || error) {
-    return <CenteredContent>{'Error loading data'}</CenteredContent>;
+    return (
+      <CenteredContent>
+        <Alert severity="error" variant="filled">
+          Error loading data
+        </Alert>
+      </CenteredContent>
+    );
   }
 
   if (runsFeed.runs.length === 0) {
     if (search) {
       return (
         <CenteredContent>
-          <p>No runs found</p>
+          <Alert severity="warning" variant="filled">
+            No runs found
+          </Alert>
         </CenteredContent>
       );
     }
 
     return (
       <CenteredContent>
-        <p>No runs started yet</p>
+        <Alert severity="info" variant="filled">
+          No runs started yet
+        </Alert>
       </CenteredContent>
     );
   }
@@ -42,9 +67,24 @@ export const RunsFeed = ({ projectId, search = '' }: RunListProps) => {
   return (
     <>
       {runsFeed.runs.map((run) => (
-        <RunSummaryComponent key={run.runId} run={run} />
+        <RunSummary
+          brief
+          linkToRun
+          key={run.runId}
+          run={run}
+          showActions={showActions}
+          compact={compact}
+        />
       ))}
       {runsFeed.hasMore && <Button onClick={loadMore}>Load More</Button>}
     </>
   );
 };
+
+type RunsFeedProps = {
+  compact?: boolean;
+  projectId: string;
+  showActions?: boolean;
+  search?: string;
+};
+type RunsFeedComponent = FunctionComponent<RunsFeedProps>;

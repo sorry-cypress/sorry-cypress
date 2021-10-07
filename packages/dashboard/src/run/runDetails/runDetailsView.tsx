@@ -9,7 +9,7 @@ import {
   NavItemType,
   setNav,
 } from '@sorry-cypress/dashboard/lib/navigation';
-import { RunSummaryComponent } from '@sorry-cypress/dashboard/run/runSummary/summary';
+import { RunSummary } from '@sorry-cypress/dashboard/run/runSummary/runSummary';
 import React, { useLayoutEffect } from 'react';
 import { RunDetails } from './details';
 
@@ -43,7 +43,7 @@ export function RunDetailsView({
 
   return (
     <>
-      <RunSummaryComponent run={data.run} />
+      <RunSummary run={data.run} />
       <RunDetails run={data.run} />
     </>
   );
