@@ -4,6 +4,7 @@ import {
   CreateGithubHookInput,
   CreateProjectInput,
   CreateSlackHookInput,
+  CreateTeamsHookInput,
   DeleteHookInput,
   Hook,
   OrderingOptions,
@@ -13,6 +14,7 @@ import {
   UpdateGithubHookInput,
   UpdateProjectInput,
   UpdateSlackHookInput,
+  UpdateTeamsHookInput,
 } from '@sorry-cypress/api/generated/graphql';
 import {
   AggregationFilter,
@@ -41,10 +43,14 @@ export class ProjectsAPI extends DataSource {
   createSlackHook = getCreateHook<CreateSlackHookInput>(HookType.SLACK_HOOK, {
     hookEvents: [],
   });
+  createTeamsHook = getCreateHook<CreateTeamsHookInput>(HookType.TEAMS_HOOK, {
+    hookEvents: [],
+  });
   updateGenericHook = getUpdateHook<UpdateGenericHookInput>(
     HookType.GENERIC_HOOK
   );
   updateSlackHook = getUpdateHook<UpdateSlackHookInput>(HookType.SLACK_HOOK);
+  updateTeamsHook = getUpdateHook<UpdateTeamsHookInput>(HookType.TEAMS_HOOK);
   updateGithubHook = updateGithubHook;
   updateBitbucketHook = updateBitbucketHook;
   deleteHook = deleteHook;

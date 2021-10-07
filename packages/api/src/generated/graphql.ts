@@ -14,6 +14,7 @@ export type Scalars = {
   SlackResultFilter: any;
   GithubHookType: any;
   BitbucketHookType: any;
+  TeamsHookType: any;
   DateTime: any;
 };
 
@@ -24,6 +25,7 @@ export type Mutation = {
   createGithubHook: GithubHook;
   createProject: Project;
   createSlackHook: SlackHook;
+  createTeamsHook: TeamsHook;
   deleteHook: DeleteHookResponse;
   deleteProject: DeleteProjectResponse;
   deleteRun: DeleteRunResponse;
@@ -35,6 +37,7 @@ export type Mutation = {
   updateGithubHook: GithubHook;
   updateProject: Project;
   updateSlackHook: SlackHook;
+  updateTeamsHook: TeamsHook;
 };
 
 
@@ -60,6 +63,11 @@ export type MutationCreateProjectArgs = {
 
 export type MutationCreateSlackHookArgs = {
   input: CreateSlackHookInput;
+};
+
+
+export type MutationCreateTeamsHookArgs = {
+  input: CreateTeamsHookInput;
 };
 
 
@@ -116,6 +124,11 @@ export type MutationUpdateProjectArgs = {
 
 export type MutationUpdateSlackHookArgs = {
   input: UpdateSlackHookInput;
+};
+
+
+export type MutationUpdateTeamsHookArgs = {
+  input: UpdateTeamsHookInput;
 };
 
 export type DeleteHookInput = {
@@ -200,6 +213,26 @@ export type UpdateBitbucketHookInput = {
   bitbucketBuildName?: Maybe<Scalars['String']>;
 };
 
+export type TeamsHook = {
+  __typename?: 'TeamsHook';
+  projectId: Scalars['ID'];
+  hookId: Scalars['ID'];
+  url: Scalars['String'];
+  hookType: Scalars['TeamsHookType'];
+  hookEvents: Array<Scalars['String']>;
+};
+
+export type CreateTeamsHookInput = {
+  projectId: Scalars['ID'];
+};
+
+export type UpdateTeamsHookInput = {
+  projectId: Scalars['ID'];
+  hookId: Scalars['ID'];
+  url: Scalars['String'];
+  hookEvents: Array<Scalars['String']>;
+};
+
 export type GenericHook = {
   __typename?: 'GenericHook';
   projectId: Scalars['ID'];
@@ -252,6 +285,7 @@ export type HookInput = {
   slackResultFilter?: Maybe<Scalars['String']>;
   slackBranchFilter?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
+
 
 
 
@@ -655,6 +689,9 @@ export type ResolversTypes = {
   BitbucketHook: ResolverTypeWrapper<BitbucketHook>;
   CreateBitbucketHookInput: CreateBitbucketHookInput;
   UpdateBitbucketHookInput: UpdateBitbucketHookInput;
+  TeamsHook: ResolverTypeWrapper<TeamsHook>;
+  CreateTeamsHookInput: CreateTeamsHookInput;
+  UpdateTeamsHookInput: UpdateTeamsHookInput;
   GenericHook: ResolverTypeWrapper<GenericHook>;
   CreateGenericHookInput: CreateGenericHookInput;
   UpdateGenericHookInput: UpdateGenericHookInput;
@@ -665,6 +702,7 @@ export type ResolversTypes = {
   SlackResultFilter: ResolverTypeWrapper<Scalars['SlackResultFilter']>;
   GithubHookType: ResolverTypeWrapper<Scalars['GithubHookType']>;
   BitbucketHookType: ResolverTypeWrapper<Scalars['BitbucketHookType']>;
+  TeamsHookType: ResolverTypeWrapper<Scalars['TeamsHookType']>;
   Query: ResolverTypeWrapper<{}>;
   DeleteRunResponse: ResolverTypeWrapper<DeleteRunResponse>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
@@ -718,6 +756,9 @@ export type ResolversParentTypes = {
   BitbucketHook: BitbucketHook;
   CreateBitbucketHookInput: CreateBitbucketHookInput;
   UpdateBitbucketHookInput: UpdateBitbucketHookInput;
+  TeamsHook: TeamsHook;
+  CreateTeamsHookInput: CreateTeamsHookInput;
+  UpdateTeamsHookInput: UpdateTeamsHookInput;
   GenericHook: GenericHook;
   CreateGenericHookInput: CreateGenericHookInput;
   UpdateGenericHookInput: UpdateGenericHookInput;
@@ -728,6 +769,7 @@ export type ResolversParentTypes = {
   SlackResultFilter: Scalars['SlackResultFilter'];
   GithubHookType: Scalars['GithubHookType'];
   BitbucketHookType: Scalars['BitbucketHookType'];
+  TeamsHookType: Scalars['TeamsHookType'];
   Query: {};
   DeleteRunResponse: DeleteRunResponse;
   Boolean: Scalars['Boolean'];
@@ -769,6 +811,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   createGithubHook?: Resolver<ResolversTypes['GithubHook'], ParentType, ContextType, RequireFields<MutationCreateGithubHookArgs, 'input'>>;
   createProject?: Resolver<ResolversTypes['Project'], ParentType, ContextType, RequireFields<MutationCreateProjectArgs, 'project'>>;
   createSlackHook?: Resolver<ResolversTypes['SlackHook'], ParentType, ContextType, RequireFields<MutationCreateSlackHookArgs, 'input'>>;
+  createTeamsHook?: Resolver<ResolversTypes['TeamsHook'], ParentType, ContextType, RequireFields<MutationCreateTeamsHookArgs, 'input'>>;
   deleteHook?: Resolver<ResolversTypes['DeleteHookResponse'], ParentType, ContextType, RequireFields<MutationDeleteHookArgs, 'input'>>;
   deleteProject?: Resolver<ResolversTypes['DeleteProjectResponse'], ParentType, ContextType, RequireFields<MutationDeleteProjectArgs, 'projectId'>>;
   deleteRun?: Resolver<ResolversTypes['DeleteRunResponse'], ParentType, ContextType, RequireFields<MutationDeleteRunArgs, 'runId'>>;
@@ -780,6 +823,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   updateGithubHook?: Resolver<ResolversTypes['GithubHook'], ParentType, ContextType, RequireFields<MutationUpdateGithubHookArgs, 'input'>>;
   updateProject?: Resolver<ResolversTypes['Project'], ParentType, ContextType, RequireFields<MutationUpdateProjectArgs, 'input'>>;
   updateSlackHook?: Resolver<ResolversTypes['SlackHook'], ParentType, ContextType, RequireFields<MutationUpdateSlackHookArgs, 'input'>>;
+  updateTeamsHook?: Resolver<ResolversTypes['TeamsHook'], ParentType, ContextType, RequireFields<MutationUpdateTeamsHookArgs, 'input'>>;
 };
 
 export type DeleteHookResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteHookResponse'] = ResolversParentTypes['DeleteHookResponse']> = {
@@ -817,6 +861,15 @@ export type BitbucketHookResolvers<ContextType = any, ParentType extends Resolve
   bitbucketUsername?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   bitbucketToken?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   bitbucketBuildName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type TeamsHookResolvers<ContextType = any, ParentType extends ResolversParentTypes['TeamsHook'] = ResolversParentTypes['TeamsHook']> = {
+  projectId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  hookId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  hookType?: Resolver<ResolversTypes['TeamsHookType'], ParentType, ContextType>;
+  hookEvents?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
@@ -864,6 +917,10 @@ export interface GithubHookTypeScalarConfig extends GraphQLScalarTypeConfig<Reso
 
 export interface BitbucketHookTypeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['BitbucketHookType'], any> {
   name: 'BitbucketHookType';
+}
+
+export interface TeamsHookTypeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['TeamsHookType'], any> {
+  name: 'TeamsHookType';
 }
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
@@ -1102,6 +1159,7 @@ export type Resolvers<ContextType = any> = {
   SlackHook?: SlackHookResolvers<ContextType>;
   GithubHook?: GithubHookResolvers<ContextType>;
   BitbucketHook?: BitbucketHookResolvers<ContextType>;
+  TeamsHook?: TeamsHookResolvers<ContextType>;
   GenericHook?: GenericHookResolvers<ContextType>;
   Hook?: HookResolvers<ContextType>;
   GenericHookType?: GraphQLScalarType;
@@ -1109,6 +1167,7 @@ export type Resolvers<ContextType = any> = {
   SlackResultFilter?: GraphQLScalarType;
   GithubHookType?: GraphQLScalarType;
   BitbucketHookType?: GraphQLScalarType;
+  TeamsHookType?: GraphQLScalarType;
   Query?: QueryResolvers<ContextType>;
   DeleteRunResponse?: DeleteRunResponseResolvers<ContextType>;
   SpecStats?: SpecStatsResolvers<ContextType>;

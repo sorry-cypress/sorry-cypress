@@ -4,6 +4,7 @@ import {
   GithubHook,
   Hook,
   SlackHook,
+  TeamsHook,
 } from './types';
 
 export function isGenericHook(hook: Hook): hook is GenericHook {
@@ -20,4 +21,8 @@ export function isGithubHook(hook: Hook): hook is GithubHook {
 
 export function isBitbucketHook(hook: Hook): hook is BitBucketHook {
   return hook.hookType === 'BITBUCKET_STATUS_HOOK';
+}
+
+export function isTeamsHook(hook: Hook): hook is TeamsHook {
+  return hook.hookType === 'TEAMS_HOOK';
 }

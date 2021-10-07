@@ -1,0 +1,8 @@
+mutation createTeamsHook($input: CreateTeamsHookInput!) {
+  createTeamsHook(input: $input) {
+    hookId
+    hookType
+    url
+    hookEvents
+  }
+}

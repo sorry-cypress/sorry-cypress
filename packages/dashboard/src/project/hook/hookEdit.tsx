@@ -5,6 +5,7 @@ import {
   isGenericHook,
   isGithubHook,
   isSlackHook,
+  isTeamsHook,
 } from '@sorry-cypress/common';
 import { useDeleteHookMutation } from '@sorry-cypress/dashboard/generated/graphql';
 import { useSwitch } from '@sorry-cypress/dashboard/hooks/useSwitch';
@@ -17,6 +18,7 @@ import { GithubHook } from './githubHook';
 import { enumToString } from './hook.utils';
 import { HookFormAction } from './hookFormReducer';
 import { SlackHook } from './slackHook';
+import { TeamsHook } from './teamsHook';
 
 const TogglerWrapper = styled(HFlow)`
   display: flex;
@@ -104,6 +106,7 @@ const HookDetails = ({ hook }: { hook: Hook }) => {
         {isGenericHook(hook) && <GenericHook hook={hook} />}
         {isSlackHook(hook) && <SlackHook hook={hook} />}
         {isBitbucketHook(hook) && <BitbucketHook hook={hook} />}
+        {isTeamsHook(hook) && <TeamsHook hook={hook} />}
       </Cell>
       <Cell xs={12}>
         <HFlow justifyContent="space-between"></HFlow>

@@ -5,6 +5,7 @@ import {
   isGenericHook,
   isGithubHook,
   isSlackHook,
+  isTeamsHook,
   Project,
   Run,
   RunGroupProgress,
@@ -14,6 +15,7 @@ import { reportStatusToBitbucket } from './bitbucket';
 import { reportToGenericWebHook } from './generic';
 import { reportStatusToGithub } from './github';
 import { reportToSlack } from './slack';
+import { reportToTeams } from './teams';
 
 interface ReportHooksParams {
   eventType: HookEvent;
@@ -92,6 +94,15 @@ const runSingleReporter = async ({
   }
   if (isSlackHook(hook)) {
     return reportToSlack(hook, {
+      eventType,
+      run,
+      groupId,
+      groupProgress,
+      spec: spec ?? '',
+    });
+  }
+  if (isTeamsHook(hook)) {
+    return reportToTeams(hook, {
       eventType,
       run,
       groupId,

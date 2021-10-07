@@ -1,0 +1,90 @@
+{
+  "method": "post",
+  "url": "https://xyz123.webhok.office.com/webhook/abc987/IncomingWebhook/123/456",
+  "data": {
+    "type":"message",
+    "attachments":[
+      {
+        "contentType":"application/vnd.microsoft.card.adaptive",
+        "contentUrl":null,
+        "content":{
+          "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+          "type": "AdaptiveCard",
+          "version": "1.0",
+          "body": [
+              {
+                "type": "ColumnSet",
+                "columns": [
+                  {
+                    "type": "Column",
+                    "padding": "None",
+                    "width": "auto",
+                    "items": [
+                      {
+                        "type": "Image",
+                        "url": "https://gblobscdn.gitbook.com/spaces%2F-MS6gDAYECuzpKjjzrdc%2Favatar-1611996755562.png?alt=media",
+                        "altText": "Sorry-Cypress",
+                        "size": "Large",
+                        "style": "Person"
+                      }
+                    ],
+                    "style": "emphasis"
+                  },
+                  {
+                    "type": "Column",
+                    "padding": "None",
+                    "width": "auto",
+                    "items": [
+                      {
+                        "type": "TextBlock",
+                        "text": "&#x2705; *Run finished* (testCiBuildId, group groupId)",
+                        "wrap": true
+                      },
+                      {
+                        "type": "TextBlock",
+                        "text": "*Branch:*\ntestBranch\n\n*Commit:*\ntestMessage",
+                        "wrap": true
+                      }
+                    ],
+                    "style": "emphasis"
+                  }
+                ],
+                "padding": "None",
+                "style": "emphasis"
+              },
+              {
+                  "type": "FactSet",
+                  "facts": [
+                      {
+                          "title": "Passes",
+                          "value": "1"
+                      },
+                      {
+                          "title": "Fails",
+                          "value": "0"
+                      },
+                      {
+                          "title": "Retries",
+                          "value": "undefined"
+                      }
+                  ]
+              },
+              {
+                  "type": "ActionSet",
+                  "actions": [
+                      {
+                          "type": "Action.OpenUrl",
+                          "title": "View in Sorry-Cypress",
+                          "url": "http://localhost:8080/run/testRunId",
+                          "style": "positive",
+                          "isPrimary": true
+                      }
+                  ]
+              }
+          ],
+          "padding": "None"
+        }
+      }
+    ]
+  }
+}
