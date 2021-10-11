@@ -25,10 +25,10 @@ export const RunSummaryTestResults: RunSummaryTestResultsComponent = (
         <TestFailureBadge value={testsStats.failures} />
       </Grid>
       <Grid item>
-        <TestSkippedBadge value={testsStats.pending} />
+        <TestRetriesBadge value={testsStats.retries} />
       </Grid>
       <Grid item>
-        <TestRetriesBadge value={testsStats.retries} />
+        <TestSkippedBadge value={testsStats.pending} />
       </Grid>
     </Grid>
   );
