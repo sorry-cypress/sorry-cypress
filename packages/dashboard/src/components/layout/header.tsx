@@ -28,6 +28,7 @@ import {
   NavItemType,
   navStructure,
 } from '@sorry-cypress/dashboard/lib/navigation';
+import { getBase } from '@sorry-cypress/dashboard/lib/path';
 import { initial, isNil, last, truncate } from 'lodash';
 import React, { FunctionComponent } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
@@ -138,13 +139,15 @@ export const Header: HeaderComponent = ({ open, onMenuClick }) => {
                       fontSize="medium"
                     />
                   )}
-                  {truncate(decodeURIComponent(navItem.label ?? ''))}
+                  {navItem.type === NavItemType.spec
+                    ? getBase(decodeURIComponent(navItem.label ?? ''))
+                    : truncate(decodeURIComponent(navItem.label ?? ''))}
                 </Link>
               </Tooltip>
             );
           })}
           {lastNavItem && (
-            <Tooltip title={decodeURIComponent(lastNavItem?.label ?? '')}>
+            <Tooltip title={decodeURIComponent(lastNavItem.label ?? '')}>
               <Link
                 component={lastNavItem?.link ? RouterLink : 'span'}
                 underline={lastNavItem?.link ? 'hover' : 'none'}
@@ -159,7 +162,9 @@ export const Header: HeaderComponent = ({ open, onMenuClick }) => {
                 {LastItemIcon && (
                   <LastItemIcon sx={{ mr: 0.5 }} fontSize="medium" />
                 )}
-                {truncate(decodeURIComponent(lastNavItem?.label ?? ''))}
+                {lastNavItem.type === NavItemType.spec
+                  ? getBase(decodeURIComponent(lastNavItem.label ?? ''))
+                  : truncate(decodeURIComponent(lastNavItem.label ?? ''))}
               </Link>
             </Tooltip>
           )}

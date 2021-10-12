@@ -16,7 +16,6 @@ export const TestSuccessBadge: TestBadgeComponent = (props) => {
   return (
     <Tooltip title="Passed Tests" arrow>
       <Chip
-        size="small"
         color={value ? 'green' : 'grey'}
         shade={!value ? 300 : undefined}
         label={<Pad number={value} />}
@@ -32,7 +31,6 @@ export const TestFailureBadge: TestBadgeComponent = (props) => {
   return (
     <Tooltip title="Failed Tests" arrow>
       <Chip
-        size="small"
         color={value ? 'red' : 'grey'}
         shade={!value ? 300 : undefined}
         label={<Pad number={value} />}
@@ -48,7 +46,6 @@ export const TestSkippedBadge: TestBadgeComponent = (props) => {
   return (
     <Tooltip title="Skipped Tests" arrow>
       <Chip
-        size="small"
         color={value ? 'orange' : 'grey'}
         shade={!value ? 300 : undefined}
         label={<Pad number={value} />}
@@ -64,7 +61,6 @@ export const TestRetriesBadge: TestBadgeComponent = (props) => {
   return (
     <Tooltip title="Flaky Tests" arrow>
       <Chip
-        size="small"
         color={value ? 'pink' : 'grey'}
         shade={!value ? 300 : undefined}
         label={<Pad number={value} />}
@@ -80,7 +76,6 @@ export const TestOverallBadge: TestBadgeComponent = (props) => {
   return (
     <Tooltip title="Total Tests" arrow>
       <Chip
-        size="small"
         color="cyan"
         label={<Pad number={value} />}
         icon={RadioButtonUncheckedIcon}

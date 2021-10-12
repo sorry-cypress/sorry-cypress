@@ -61,7 +61,7 @@ export const Toolbar: ToolbarComponent = (props) => {
         justifyContent="flex-end"
         alignItems="center"
         mb={{ xs: 1, lg: 0 }}
-        mr={{ xs: 0, lg: 2 }}
+        mr={{ xs: 0, lg: onSearch ? 2 : 0 }}
       >
         <Grid
           item
@@ -81,9 +81,11 @@ export const Toolbar: ToolbarComponent = (props) => {
                     size="small"
                     selected={action.selected}
                     onChange={action.onClick}
-                    sx={{ py: '6px' }}
+                    sx={{ py: '6px', textTransform: 'none' }}
                   >
-                    {action.icon && <action.icon />}
+                    {action.icon && (
+                      <action.icon sx={{ mr: 0.5, fontSize: 18 }} />
+                    )}
                     {action.text}
                   </ToggleButton>
                 </Grid>
@@ -96,7 +98,9 @@ export const Toolbar: ToolbarComponent = (props) => {
                   variant="outlined"
                   color={action.primary ? 'primary' : 'inherit'}
                   size="medium"
-                  startIcon={action.icon && <action.icon />}
+                  startIcon={
+                    action.icon && <action.icon sx={{ fontSize: 18 }} />
+                  }
                   onClick={action.onClick}
                 >
                   {action.text}

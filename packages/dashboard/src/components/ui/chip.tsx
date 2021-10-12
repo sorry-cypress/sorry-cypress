@@ -14,6 +14,7 @@ export const Chip: ChipComponent = forwardRef((props, ref) => {
   return (
     <UIChip
       ref={ref}
+      size="small"
       icon={
         Icon && (
           <Icon
@@ -23,10 +24,12 @@ export const Chip: ChipComponent = forwardRef((props, ref) => {
           />
         )
       }
-      sx={{
-        backgroundColor: alpha(get(colors, [color, shade]), 0.15),
-      }}
       {...restProps}
+      sx={{
+        backgroundColor: alpha(get(colors, [color, shade]), Icon ? 0.15 : 0.4),
+        color: Icon ? undefined : 'text.secondary',
+        ...restProps.sx,
+      }}
     ></UIChip>
   );
 });

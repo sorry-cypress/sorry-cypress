@@ -1,53 +1,14 @@
+import { AcUnit as AcUnitIcon } from '@mui/icons-material';
+import { Tooltip } from '@mui/material';
+import { blue } from '@mui/material/colors';
 import { TestState } from '@sorry-cypress/dashboard/generated/graphql';
 import { isIdle } from '@sorry-cypress/dashboard/lib/time';
-import { Tag } from 'bold-ui';
-import React from 'react';
+import React, { FunctionComponent } from 'react';
+import { Chip } from '..';
 
-type TestStateProps = {
-  state?: TestState | 'unknown';
-  retries?: number;
-};
+export const getInstanceState: GetInstanceState = (data) => {
+  const { claimedAt, retries, stats } = data;
 
-export const VisualTestState = ({ state, retries = 0 }: TestStateProps) => {
-  if (retries > 0) {
-    return <Tag type="alert">Flaky</Tag>;
-  }
-  switch (state) {
-    case TestState.Failed:
-      return <Tag type="danger">Failed</Tag>;
-    case TestState.Passed:
-      return <Tag type="success">Passed</Tag>;
-    case TestState.Pending:
-      return <Tag type="normal">Skipped</Tag>;
-    case TestState.Skipped:
-      return <Tag type="alert">Skipped</Tag>;
-    default:
-      return <Tag type="normal">Unknown</Tag>;
-  }
-};
-
-export type InstanceState =
-  | 'passed'
-  | 'failed'
-  | 'pending'
-  | 'running'
-  | 'notests'
-  | 'flaky'
-  | 'idle';
-
-export const getInstanceState = ({
-  claimedAt,
-  retries,
-  stats,
-}: {
-  claimedAt: string | null;
-  retries: number;
-  stats?: {
-    failures: number;
-    tests: number;
-    skipped: number;
-  };
-}): InstanceState => {
   if (claimedAt && !stats && isIdle(claimedAt)) {
     return 'idle';
   }
@@ -65,7 +26,7 @@ export const getInstanceState = ({
   }
 
   if (!stats.tests) {
-    return 'notests';
+    return 'noTests';
   }
 
   if (retries > 0) {
@@ -75,22 +36,95 @@ export const getInstanceState = ({
   return 'passed';
 };
 
-export const SpecStateTag = ({ state }: { state: InstanceState }) => {
-  switch (state) {
-    case 'failed':
-      return <Tag type="danger">Failed</Tag>;
-    case 'flaky':
-      return <Tag type="alert">Flaky</Tag>;
-    case 'passed':
-      return <Tag type="success">Passed</Tag>;
-    case 'notests':
-      return <Tag type="normal">No Tests</Tag>;
-    case 'pending':
-      return <Tag type="normal">Pending</Tag>;
-    case 'running':
-      return <Tag type="info">Running</Tag>;
+export const VisualTestState: VisualTestStateComponent = (props) => {
+  const { state, retries = 0 } = props;
 
+  if (retries > 0) {
+    return (
+      <Tooltip title="Flaky">
+        <Chip
+          label={
+            <>
+              Passed{' '}
+              <AcUnitIcon sx={{ fontSize: 'inherit', color: blue[400] }} />
+            </>
+          }
+          color="lime"
+        ></Chip>
+      </Tooltip>
+    );
+  }
+
+  switch (state) {
+    case TestState.Failed:
+      return <Chip label="Failed" color="red"></Chip>;
+    case TestState.Passed:
+      return <Chip label="Passed" color="green"></Chip>;
+    case TestState.Pending:
+      return <Chip label="Pending" color="grey"></Chip>;
+    case TestState.Skipped:
+      return <Chip label="Skipped" color="orange"></Chip>;
     default:
-      return <Tag type="normal">Unknown</Tag>;
+      return <Chip label="Unknown" color="yellow"></Chip>;
   }
 };
+
+export const SpecStateTag: SpecStateTagComponent = (props) => {
+  const { state } = props;
+
+  switch (state) {
+    case 'failed':
+      return <Chip label="Failed" color="red"></Chip>;
+    case 'flaky':
+      return (
+        <Tooltip title="Flaky">
+          <Chip
+            label={
+              <>
+                <span>Passed </span>
+                <AcUnitIcon sx={{ fontSize: 'inherit', color: blue[400] }} />
+              </>
+            }
+            color="lime"
+          ></Chip>
+        </Tooltip>
+      );
+    case 'passed':
+      return <Chip label="Passed" color="green"></Chip>;
+    case 'noTests':
+      return <Chip label="No Tests" color="blueGrey"></Chip>;
+    case 'pending':
+      return <Chip label="Pending" color="grey"></Chip>;
+    case 'running':
+      return <Chip label="Running" color="cyan"></Chip>;
+    default:
+      return <Chip label="Unknown" color="yellow"></Chip>;
+  }
+};
+
+export type InstanceState =
+  | 'passed'
+  | 'failed'
+  | 'pending'
+  | 'running'
+  | 'noTests'
+  | 'flaky'
+  | 'idle';
+type GetInstanceState = (InstanceData: {
+  claimedAt: string | null;
+  retries: number;
+  stats?: {
+    failures: number;
+    tests: number;
+    skipped: number;
+  };
+}) => InstanceState;
+
+type TestStateProps = {
+  state?: TestState | 'unknown';
+  retries?: number;
+};
+type VisualTestStateComponent = FunctionComponent<TestStateProps>;
+
+type SpecStateTagProps = { state: InstanceState };
+type SpecStateTagComponent = FunctionComponent<SpecStateTagProps>;
