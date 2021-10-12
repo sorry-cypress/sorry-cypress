@@ -1,12 +1,10 @@
+import { PrecisionManufacturing as PrecisionManufacturingIcon } from '@mui/icons-material';
+import { Grid, Link, Tooltip, Typography } from '@mui/material';
 import { environment } from '@sorry-cypress/dashboard/state/environment';
-import { Icon, Tooltip } from 'bold-ui';
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 
-type CiLinkProps = {
-  ciBuildId: string | null | undefined;
-  projectId: string | null | undefined;
-};
-export const CiUrl = ({ ciBuildId, projectId }: CiLinkProps) => {
+export const CiUrl: CiUrlComponent = (props) => {
+  const { ciBuildId, projectId, disableLink } = props;
   if (typeof environment.CI_URL !== 'string') {
     return null;
   }
@@ -28,16 +26,38 @@ export const CiUrl = ({ ciBuildId, projectId }: CiLinkProps) => {
     .replace('{project_id}', projectId)
     .replace('{build_id}', ciBuildId);
   return (
-    <div>
-      <strong>CI_URL </strong>
-      <Tooltip text="Generated from CI_URL env var">
-        <Icon size={1} icon="infoCircleOutline" />
-      </Tooltip>
-      <ul>
-        <li>
-          <a href={parsedUrl}>{name}</a>
-        </li>
-      </ul>
-    </div>
+    <Grid container>
+      <Grid item container alignItems="flex-start">
+        <Grid item mt={0.4} mr={1}>
+          <Tooltip title="CI URL">
+            <PrecisionManufacturingIcon fontSize="small" />
+          </Tooltip>
+        </Grid>
+        <Grid item>
+          <Tooltip title="CI URL (Generated from CI_URL env var)">
+            <Typography component="p" variant="subtitle1">
+              {!disableLink && (
+                <Link
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={parsedUrl}
+                  underline="hover"
+                >
+                  {name}
+                </Link>
+              )}
+              {disableLink && name}
+            </Typography>
+          </Tooltip>
+        </Grid>
+      </Grid>
+    </Grid>
   );
 };
+
+type CiUrlProps = {
+  ciBuildId: string | null | undefined;
+  projectId: string | null | undefined;
+  disableLink?: boolean;
+};
+type CiUrlComponent = FunctionComponent<CiUrlProps>;

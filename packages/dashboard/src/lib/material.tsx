@@ -9,7 +9,7 @@ import React, { PropsWithChildren } from 'react';
 const themeOptions: ThemeOptions = {
   palette: {
     primary: {
-      main: '#093c52',
+      main: '#1976d2',
       contrastText: '#ebecf1',
     },
     secondary: {
@@ -17,7 +17,7 @@ const themeOptions: ThemeOptions = {
       contrastText: '#EBECF1',
     },
     text: {
-      primary: 'rgba(56,59,65,0.99)',
+      primary: '#3d4752cc',
       secondary: '#4a4646',
       disabled: 'rgba(121,121,121,0.67)',
     },

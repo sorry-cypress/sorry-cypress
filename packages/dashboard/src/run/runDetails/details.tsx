@@ -16,7 +16,7 @@ import { useHideSuccessfulSpecs } from '@sorry-cypress/dashboard/hooks/';
 import {
   getDurationMs,
   getDurationSeconds,
-} from '@sorry-cypress/dashboard/lib/duration';
+} from '@sorry-cypress/dashboard/lib/time';
 import { ResetInstanceButton } from '@sorry-cypress/dashboard/run/runDetails/resetInstance/resetInstanceButton';
 import {
   Cell,

@@ -29,7 +29,7 @@ import {
   navStructure,
 } from '@sorry-cypress/dashboard/lib/navigation';
 import { initial, isNil, last, truncate } from 'lodash';
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { DRAWER_WIDTH, DRAWER_WIDTH_SM } from './sidebar';
 
@@ -68,7 +68,7 @@ const ICONS = {
   [NavItemType.test]: ScienceOutlined,
 } as { [key in NavItemType]: typeof BookOutlined };
 
-export const Header: HeaderType = ({ open, onMenuClick }) => {
+export const Header: HeaderComponent = ({ open, onMenuClick }) => {
   const nav = useReactiveVar(navStructure);
   const navItems = nav.length > 1 ? initial(nav) : [];
   const lastNavItem = nav.length > 1 ? last(nav) : nav?.[0];
@@ -98,7 +98,7 @@ export const Header: HeaderType = ({ open, onMenuClick }) => {
             sx={{
               display: 'flex',
               alignItems: 'center',
-              color: lastNavItem ? '#6a6a6a' : 'text.primary',
+              color: lastNavItem ? 'text.primary' : 'text.secondary',
               fontWeight: lastNavItem ? undefined : '500',
             }}
             color="inherit"
@@ -107,7 +107,10 @@ export const Header: HeaderType = ({ open, onMenuClick }) => {
             to="/"
           >
             <HomeOutlinedIcon
-              sx={{ mr: 0.5, color: 'text.secondary' }}
+              sx={{
+                mr: 0.5,
+                color: lastNavItem ? 'text.primary' : 'text.secondary',
+              }}
               fontSize="medium"
             />
             Home
@@ -131,7 +134,7 @@ export const Header: HeaderType = ({ open, onMenuClick }) => {
                 >
                   {Icon && (
                     <Icon
-                      sx={{ mr: 0.5, color: 'text.secondary' }}
+                      sx={{ mr: 0.5, color: 'text.primary' }}
                       fontSize="medium"
                     />
                   )}
@@ -149,7 +152,7 @@ export const Header: HeaderType = ({ open, onMenuClick }) => {
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
-                  color: 'text.primary',
+                  color: 'text.secondary',
                   fontWeight: '500',
                 }}
               >
@@ -190,7 +193,7 @@ export const Header: HeaderType = ({ open, onMenuClick }) => {
 };
 
 type HeaderProps = { open: boolean; onMenuClick: () => void };
-type HeaderType = React.FC<HeaderProps>;
+type HeaderComponent = FunctionComponent<HeaderProps>;
 
 interface AppBarProps extends MuiAppBarProps {
   open?: boolean;

@@ -34,8 +34,8 @@ export function DashboardView() {
       <Typography
         component="h1"
         variant="h6"
-        gutterBottom
-        sx={{ color: '#606871', mb: 5 }}
+        color="text.primary"
+        sx={{ mb: 5 }}
       >
         Projects
       </Typography>

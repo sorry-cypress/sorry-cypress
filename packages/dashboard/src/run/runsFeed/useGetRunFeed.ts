@@ -60,7 +60,7 @@ function getFilters(projectId: string, search?: string): Filters[] {
         {
           key: 'meta.ciBuildId',
           like: search,
-          value: null,
+          value: (undefined as unknown) as null,
         },
       ]
     : [];

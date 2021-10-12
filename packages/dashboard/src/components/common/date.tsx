@@ -1,12 +1,23 @@
-import React from 'react';
+import { Tooltip } from '@mui/material';
+import { FORMAT, FORMAT_SHORTER } from '@sorry-cypress/dashboard/constants';
 import { format } from 'date-fns';
-import { Tooltip } from 'bold-ui';
+import React, { FunctionComponent } from 'react';
 
-const FORMAT = 'MMM dd yyyy, HH:mm:ss';
-export const FormattedDate = ({ value }: { value: Date }) => {
-  return (
-    <Tooltip text={value.toUTCString()}>
-      <span>{format(value, FORMAT)}</span>
-    </Tooltip>
-  );
+export const FormattedDate: DateComponent = (props) => {
+  const { value, showTooltip = true, short = false } = props;
+  const render = <span>{format(value, short ? FORMAT_SHORTER : FORMAT)}</span>;
+
+  if (showTooltip) {
+    return <Tooltip title={value.toUTCString()}>{render}</Tooltip>;
+  }
+
+  return render;
 };
+
+type DateProps = {
+  value: Date;
+  showTooltip?: boolean;
+  short?: boolean;
+};
+
+type DateComponent = FunctionComponent<DateProps>;
