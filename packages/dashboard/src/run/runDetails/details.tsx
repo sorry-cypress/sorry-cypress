@@ -54,7 +54,7 @@ export const RunDetails: RunDetailsComponent = (props) => {
       <DataGrid
         style={{ border: 0 }}
         autoHeight
-        hideFooter
+        hideFooter={rows.length <= 100}
         getRowId={(row) => row.instanceId}
         rows={rows}
         loading={false}
