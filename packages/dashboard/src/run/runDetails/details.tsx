@@ -46,7 +46,7 @@ export const RunDetails: RunDetailsComponent = (props) => {
         stats: spec.results?.stats,
         retries: spec.results?.retries ?? 0,
       });
-      return ['failed', 'pending'].includes(state);
+      return ['failed', 'pending', 'running'].includes(state);
     });
 
   return (
