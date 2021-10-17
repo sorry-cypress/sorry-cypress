@@ -1,0 +1,5 @@
+mutation updateTeamsHook($input: UpdateTeamsHookInput!) {
+  updateTeamsHook(input: $input) {
+    hookId
+  }
+}

@@ -4,11 +4,13 @@ import {
   HookEvent,
   RunWithSpecs,
   SlackHook,
+  TeamsHook,
 } from '@sorry-cypress/common';
 import axios from 'axios';
 import { reportStatusToBitbucket } from '../reporters/bitbucket';
 import { reportStatusToGithub } from '../reporters/github';
 import { reportToSlack } from '../reporters/slack';
+import { reportToTeams } from '../reporters/teams';
 import bitbucketHook from './fixtures/bitbucketHook.json';
 import bitbucketReportStatusRequest from './fixtures/bitbucketReportStatusRequest.json';
 import githubHook from './fixtures/githubHooks.json';
@@ -17,6 +19,8 @@ import groupProgress from './fixtures/groupProgress.json';
 import slackHook from './fixtures/slackHook.json';
 import slackReportStatusRequest from './fixtures/slackReportStatusRequest.json';
 import slackReportStatusRequestWithoutCommitData from './fixtures/slackReportStatusRequestWithoutCommitData.json';
+import teamsHook from './fixtures/teamsHook.json';
+import teamsReportStatusRequest from './fixtures/teamsReportStatusRequest.json';
 
 jest.mock('axios');
 
@@ -154,6 +158,31 @@ describe('Report status to Slack', () => {
     expect(axios).toBeCalledWith({
       ...slackReportStatusRequestWithoutCommitData,
       url: 'https://hooks.slack.com/services/123/XXX/zzz',
+    });
+  });
+});
+
+describe('Report status to Teams', () => {
+  const tmsHook = ({
+    ...teamsHook,
+    url:
+      'https://xyz123.webhok.office.com/webhook/abc987/IncomingWebhook/123/456',
+    hookEvents: ['RUN_FINISH'],
+  } as unknown) as TeamsHook;
+
+  it('should send correct request to Teams when run is finished', async () => {
+    await reportToTeams(tmsHook, {
+      run,
+      groupProgress,
+      eventType: HookEvent.RUN_FINISH,
+      spec: 'spec',
+      groupId: 'groupId',
+    });
+
+    expect(axios).toBeCalledWith({
+      ...teamsReportStatusRequest,
+      url:
+        'https://xyz123.webhok.office.com/webhook/abc987/IncomingWebhook/123/456',
     });
   });
 });

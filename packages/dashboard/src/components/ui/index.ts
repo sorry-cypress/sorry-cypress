@@ -1,4 +1,6 @@
+export * from './card';
 export * from './centered';
+export * from './chip';
 export * from './flexRow';
 export * from './headerLink';
 export * from './pageControls';

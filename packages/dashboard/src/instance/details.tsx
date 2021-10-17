@@ -4,7 +4,7 @@ import {
   GetInstanceQuery,
   InstanceTest,
 } from '@sorry-cypress/dashboard/generated/graphql';
-import { getDurationMs } from '@sorry-cypress/dashboard/lib/duration';
+import { getDurationMs } from '@sorry-cypress/dashboard/lib/time';
 import { TestError } from '@sorry-cypress/dashboard/testItem/details/common';
 import { DataTable, Text, Tooltip } from 'bold-ui';
 import { truncate } from 'lodash';

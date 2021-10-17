@@ -20,7 +20,9 @@ export const Layout = ({ children }: PropsWithChildren<any>) => {
   };
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+    <Box
+      sx={{ display: 'flex', minHeight: '100vh', backgroundColor: '#E8E8EC' }}
+    >
       <WithMaterial>
         <Sidebar open={open} onToggleSidebar={toggleSidebar} />
         <Header open={open} onMenuClick={toggleSidebar} />

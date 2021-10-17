@@ -1,9 +1,13 @@
-import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
+import { gql } from '@apollo/client';
 export type Maybe<T> = T | null;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type Exact<T extends { [key: string]: unknown }> = {
+  [K in keyof T]: T[K];
+};
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
+  { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
+  { [SubKey in K]: Maybe<T[SubKey]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -16,6 +20,7 @@ export type Scalars = {
   SlackResultFilter: any;
   GithubHookType: any;
   BitbucketHookType: any;
+  TeamsHookType: any;
   DateTime: string;
 };
 
@@ -26,6 +31,7 @@ export type Mutation = {
   createGithubHook: GithubHook;
   createProject: Project;
   createSlackHook: SlackHook;
+  createTeamsHook: TeamsHook;
   deleteHook: DeleteHookResponse;
   deleteProject: DeleteProjectResponse;
   deleteRun: DeleteRunResponse;
@@ -37,87 +43,80 @@ export type Mutation = {
   updateGithubHook: GithubHook;
   updateProject: Project;
   updateSlackHook: SlackHook;
+  updateTeamsHook: TeamsHook;
 };
-
 
 export type MutationCreateBitbucketHookArgs = {
   input: CreateBitbucketHookInput;
 };
 
-
 export type MutationCreateGenericHookArgs = {
   input: CreateGenericHookInput;
 };
-
 
 export type MutationCreateGithubHookArgs = {
   input: CreateGithubHookInput;
 };
 
-
 export type MutationCreateProjectArgs = {
   project: CreateProjectInput;
 };
-
 
 export type MutationCreateSlackHookArgs = {
   input: CreateSlackHookInput;
 };
 
+export type MutationCreateTeamsHookArgs = {
+  input: CreateTeamsHookInput;
+};
 
 export type MutationDeleteHookArgs = {
   input: DeleteHookInput;
 };
 
-
 export type MutationDeleteProjectArgs = {
   projectId: Scalars['ID'];
 };
-
 
 export type MutationDeleteRunArgs = {
   runId: Scalars['ID'];
 };
 
-
 export type MutationDeleteRunsArgs = {
   runIds: Array<Maybe<Scalars['ID']>>;
 };
-
 
 export type MutationDeleteRunsInDateRangeArgs = {
   startDate: Scalars['DateTime'];
   endDate: Scalars['DateTime'];
 };
 
-
 export type MutationResetInstanceArgs = {
   instanceId: Scalars['ID'];
 };
-
 
 export type MutationUpdateBitbucketHookArgs = {
   input: UpdateBitbucketHookInput;
 };
 
-
 export type MutationUpdateGenericHookArgs = {
   input: UpdateGenericHookInput;
 };
-
 
 export type MutationUpdateGithubHookArgs = {
   input: UpdateGithubHookInput;
 };
 
-
 export type MutationUpdateProjectArgs = {
   input: UpdateProjectInput;
 };
 
-
 export type MutationUpdateSlackHookArgs = {
   input: UpdateSlackHookInput;
+};
+
+export type MutationUpdateTeamsHookArgs = {
+  input: UpdateTeamsHookInput;
 };
 
 export type DeleteHookInput = {
@@ -202,6 +201,26 @@ export type UpdateBitbucketHookInput = {
   bitbucketBuildName: Maybe<Scalars['String']>;
 };
 
+export type TeamsHook = {
+  __typename?: 'TeamsHook';
+  projectId: Scalars['ID'];
+  hookId: Scalars['ID'];
+  url: Scalars['String'];
+  hookType: Scalars['TeamsHookType'];
+  hookEvents: Array<Scalars['String']>;
+};
+
+export type CreateTeamsHookInput = {
+  projectId: Scalars['ID'];
+};
+
+export type UpdateTeamsHookInput = {
+  projectId: Scalars['ID'];
+  hookId: Scalars['ID'];
+  url: Scalars['String'];
+  hookEvents: Array<Scalars['String']>;
+};
+
 export type GenericHook = {
   __typename?: 'GenericHook';
   projectId: Scalars['ID'];
@@ -255,11 +274,6 @@ export type HookInput = {
   slackBranchFilter: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
-
-
-
-
-
 export type Query = {
   __typename?: 'Query';
   projects: Array<Project>;
@@ -271,17 +285,14 @@ export type Query = {
   specStats: Maybe<SpecStats>;
 };
 
-
 export type QueryProjectsArgs = {
   orderDirection?: Maybe<OrderingOptions>;
   filters?: Maybe<Array<Maybe<Filters>>>;
 };
 
-
 export type QueryProjectArgs = {
   id: Scalars['ID'];
 };
-
 
 export type QueryRunsArgs = {
   orderDirection?: Maybe<OrderingOptions>;
@@ -289,22 +300,18 @@ export type QueryRunsArgs = {
   filters?: Maybe<Array<Maybe<Filters>>>;
 };
 
-
 export type QueryRunFeedArgs = {
   cursor: Maybe<Scalars['String']>;
   filters?: Maybe<Array<Maybe<Filters>>>;
 };
 
-
 export type QueryRunArgs = {
   id: Scalars['ID'];
 };
 
-
 export type QueryInstanceArgs = {
   id: Scalars['ID'];
 };
-
 
 export type QuerySpecStatsArgs = {
   spec: Scalars['String'];
@@ -525,7 +532,7 @@ export enum TestState {
   Failed = 'failed',
   Passed = 'passed',
   Pending = 'pending',
-  Skipped = 'skipped'
+  Skipped = 'skipped',
 }
 
 export type InstanceTest = {
@@ -553,10 +560,9 @@ export type TestAttempt = {
   wallClockDuration: Maybe<Scalars['Int']>;
 };
 
-
 export enum OrderingOptions {
   Desc = 'DESC',
-  Asc = 'ASC'
+  Asc = 'ASC',
 }
 
 export type Filters = {
@@ -569,343 +575,616 @@ export type GetInstanceQueryVariables = Exact<{
   instanceId: Scalars['ID'];
 }>;
 
-
-export type GetInstanceQuery = { __typename?: 'Query', instance: Maybe<{ __typename?: 'Instance', instanceId: string, runId: string, spec: string, projectId: string, run: { __typename?: 'Run', runId: string, meta: { __typename?: 'RunMeta', ciBuildId: string } }, results: Maybe<{ __typename?: 'InstanceResults', error: Maybe<string>, videoUrl: Maybe<string>, stats: (
-        { __typename?: 'InstanceStats' }
-        & AllInstanceStatsFragment
-      ), tests: Maybe<Array<{ __typename?: 'InstanceTest', testId: string, title: Array<string>, state: TestState, body: Maybe<string>, displayError: Maybe<string>, attempts: Array<{ __typename?: 'TestAttempt', state: Maybe<string>, wallClockDuration: Maybe<number>, wallClockStartedAt: Maybe<string>, error: Maybe<{ __typename?: 'TestError', name: string, message: string, stack: string }> }> }>>, screenshots: Array<{ __typename?: 'InstanceScreeshot', testId: string, screenshotId: string, height: number, width: number, screenshotURL: Maybe<string> }>, cypressConfig: Maybe<{ __typename?: 'CypressConfig', video: boolean, videoUploadOnPasses: boolean }> }> }> };
+export type GetInstanceQuery = {
+  __typename?: 'Query';
+  instance: Maybe<{
+    __typename?: 'Instance';
+    instanceId: string;
+    runId: string;
+    spec: string;
+    projectId: string;
+    run: {
+      __typename?: 'Run';
+      runId: string;
+      meta: { __typename?: 'RunMeta'; ciBuildId: string };
+    };
+    results: Maybe<{
+      __typename?: 'InstanceResults';
+      error: Maybe<string>;
+      videoUrl: Maybe<string>;
+      stats: { __typename?: 'InstanceStats' } & AllInstanceStatsFragment;
+      tests: Maybe<
+        Array<{
+          __typename?: 'InstanceTest';
+          testId: string;
+          title: Array<string>;
+          state: TestState;
+          body: Maybe<string>;
+          displayError: Maybe<string>;
+          attempts: Array<{
+            __typename?: 'TestAttempt';
+            state: Maybe<string>;
+            wallClockDuration: Maybe<number>;
+            wallClockStartedAt: Maybe<string>;
+            error: Maybe<{
+              __typename?: 'TestError';
+              name: string;
+              message: string;
+              stack: string;
+            }>;
+          }>;
+        }>
+      >;
+      screenshots: Array<{
+        __typename?: 'InstanceScreeshot';
+        testId: string;
+        screenshotId: string;
+        height: number;
+        width: number;
+        screenshotURL: Maybe<string>;
+      }>;
+      cypressConfig: Maybe<{
+        __typename?: 'CypressConfig';
+        video: boolean;
+        videoUploadOnPasses: boolean;
+      }>;
+    }>;
+  }>;
+};
 
 export type CreateProjectMutationVariables = Exact<{
   project: CreateProjectInput;
 }>;
 
-
-export type CreateProjectMutation = { __typename?: 'Mutation', createProject: { __typename?: 'Project', projectId: string, inactivityTimeoutSeconds: Maybe<number>, projectColor: Maybe<string> } };
+export type CreateProjectMutation = {
+  __typename?: 'Mutation';
+  createProject: {
+    __typename?: 'Project';
+    projectId: string;
+    inactivityTimeoutSeconds: Maybe<number>;
+    projectColor: Maybe<string>;
+  };
+};
 
 export type DeleteProjectMutationVariables = Exact<{
   projectId: Scalars['ID'];
 }>;
 
-
-export type DeleteProjectMutation = { __typename?: 'Mutation', deleteProject: { __typename?: 'DeleteProjectResponse', success: boolean, message: string, projectIds: Array<Maybe<string>> } };
+export type DeleteProjectMutation = {
+  __typename?: 'Mutation';
+  deleteProject: {
+    __typename?: 'DeleteProjectResponse';
+    success: boolean;
+    message: string;
+    projectIds: Array<Maybe<string>>;
+  };
+};
 
 export type GetProjectQueryVariables = Exact<{
   projectId: Scalars['ID'];
 }>;
 
-
-export type GetProjectQuery = { __typename?: 'Query', project: Maybe<{ __typename?: 'Project', projectId: string, inactivityTimeoutSeconds: Maybe<number>, projectColor: Maybe<string>, hooks: Array<{ __typename?: 'Hook', hookId: Maybe<string>, url: Maybe<string>, headers: Maybe<string>, hookEvents: Maybe<Array<Maybe<string>>>, hookType: Maybe<string>, slackResultFilter: Maybe<string>, slackBranchFilter: Maybe<Array<Maybe<string>>>, githubContext: Maybe<string>, githubToken: Maybe<string>, bitbucketUsername: Maybe<string>, bitbucketToken: Maybe<string>, bitbucketBuildName: Maybe<string> }> }> };
+export type GetProjectQuery = {
+  __typename?: 'Query';
+  project: Maybe<{
+    __typename?: 'Project';
+    projectId: string;
+    inactivityTimeoutSeconds: Maybe<number>;
+    projectColor: Maybe<string>;
+    hooks: Array<{
+      __typename?: 'Hook';
+      hookId: Maybe<string>;
+      url: Maybe<string>;
+      headers: Maybe<string>;
+      hookEvents: Maybe<Array<Maybe<string>>>;
+      hookType: Maybe<string>;
+      slackResultFilter: Maybe<string>;
+      slackBranchFilter: Maybe<Array<Maybe<string>>>;
+      githubContext: Maybe<string>;
+      githubToken: Maybe<string>;
+      bitbucketUsername: Maybe<string>;
+      bitbucketToken: Maybe<string>;
+      bitbucketBuildName: Maybe<string>;
+    }>;
+  }>;
+};
 
 export type GetProjectsQueryVariables = Exact<{
   orderDirection: Maybe<OrderingOptions>;
   filters: Array<Filters> | Filters;
 }>;
 
-
-export type GetProjectsQuery = { __typename?: 'Query', projects: Array<{ __typename?: 'Project', projectId: string, projectColor: Maybe<string> }> };
+export type GetProjectsQuery = {
+  __typename?: 'Query';
+  projects: Array<{
+    __typename?: 'Project';
+    projectId: string;
+    projectColor: Maybe<string>;
+  }>;
+};
 
 export type CreateBitbucketHookMutationVariables = Exact<{
   input: CreateBitbucketHookInput;
 }>;
 
-
-export type CreateBitbucketHookMutation = { __typename?: 'Mutation', createBitbucketHook: { __typename?: 'BitbucketHook', projectId: string, hookId: string, hookType: any, url: string, bitbucketUsername: Maybe<string>, bitbucketBuildName: Maybe<string> } };
+export type CreateBitbucketHookMutation = {
+  __typename?: 'Mutation';
+  createBitbucketHook: {
+    __typename?: 'BitbucketHook';
+    projectId: string;
+    hookId: string;
+    hookType: any;
+    url: string;
+    bitbucketUsername: Maybe<string>;
+    bitbucketBuildName: Maybe<string>;
+  };
+};
 
 export type CreateGenericHookMutationVariables = Exact<{
   input: CreateGenericHookInput;
 }>;
 
-
-export type CreateGenericHookMutation = { __typename?: 'Mutation', createGenericHook: { __typename?: 'GenericHook', hookId: string, hookType: any, url: string, hookEvents: Array<string>, headers: Maybe<string> } };
+export type CreateGenericHookMutation = {
+  __typename?: 'Mutation';
+  createGenericHook: {
+    __typename?: 'GenericHook';
+    hookId: string;
+    hookType: any;
+    url: string;
+    hookEvents: Array<string>;
+    headers: Maybe<string>;
+  };
+};
 
 export type CreateGithubHookMutationVariables = Exact<{
   input: CreateGithubHookInput;
 }>;
 
-
-export type CreateGithubHookMutation = { __typename?: 'Mutation', createGithubHook: { __typename?: 'GithubHook', projectId: string, hookId: string, hookType: any, url: string, githubToken: Maybe<string>, githubContext: Maybe<string> } };
+export type CreateGithubHookMutation = {
+  __typename?: 'Mutation';
+  createGithubHook: {
+    __typename?: 'GithubHook';
+    projectId: string;
+    hookId: string;
+    hookType: any;
+    url: string;
+    githubToken: Maybe<string>;
+    githubContext: Maybe<string>;
+  };
+};
 
 export type CreateSlackHookMutationVariables = Exact<{
   input: CreateSlackHookInput;
 }>;
 
+export type CreateSlackHookMutation = {
+  __typename?: 'Mutation';
+  createSlackHook: {
+    __typename?: 'SlackHook';
+    hookId: string;
+    hookType: any;
+    url: string;
+    hookEvents: Array<string>;
+    slackResultFilter: Maybe<any>;
+    slackBranchFilter: Maybe<Array<string>>;
+  };
+};
 
-export type CreateSlackHookMutation = { __typename?: 'Mutation', createSlackHook: { __typename?: 'SlackHook', hookId: string, hookType: any, url: string, hookEvents: Array<string>, slackResultFilter: Maybe<any>, slackBranchFilter: Maybe<Array<string>> } };
+export type CreateTeamsHookMutationVariables = Exact<{
+  input: CreateTeamsHookInput;
+}>;
+
+export type CreateTeamsHookMutation = {
+  __typename?: 'Mutation';
+  createTeamsHook: {
+    __typename?: 'TeamsHook';
+    hookId: string;
+    hookType: any;
+    url: string;
+    hookEvents: Array<string>;
+  };
+};
 
 export type DeleteHookMutationVariables = Exact<{
   input: DeleteHookInput;
 }>;
 
-
-export type DeleteHookMutation = { __typename?: 'Mutation', deleteHook: { __typename?: 'DeleteHookResponse', hookId: string, projectId: string } };
+export type DeleteHookMutation = {
+  __typename?: 'Mutation';
+  deleteHook: {
+    __typename?: 'DeleteHookResponse';
+    hookId: string;
+    projectId: string;
+  };
+};
 
 export type UpdateBitbucketHookMutationVariables = Exact<{
   input: UpdateBitbucketHookInput;
 }>;
 
-
-export type UpdateBitbucketHookMutation = { __typename?: 'Mutation', updateBitbucketHook: { __typename?: 'BitbucketHook', hookId: string } };
+export type UpdateBitbucketHookMutation = {
+  __typename?: 'Mutation';
+  updateBitbucketHook: { __typename?: 'BitbucketHook'; hookId: string };
+};
 
 export type UpdateGenericHookMutationVariables = Exact<{
   input: UpdateGenericHookInput;
 }>;
 
-
-export type UpdateGenericHookMutation = { __typename?: 'Mutation', updateGenericHook: { __typename?: 'GenericHook', hookId: string } };
+export type UpdateGenericHookMutation = {
+  __typename?: 'Mutation';
+  updateGenericHook: { __typename?: 'GenericHook'; hookId: string };
+};
 
 export type UpdateGithubHookMutationVariables = Exact<{
   input: UpdateGithubHookInput;
 }>;
 
-
-export type UpdateGithubHookMutation = { __typename?: 'Mutation', updateGithubHook: { __typename?: 'GithubHook', hookId: string } };
+export type UpdateGithubHookMutation = {
+  __typename?: 'Mutation';
+  updateGithubHook: { __typename?: 'GithubHook'; hookId: string };
+};
 
 export type UpdateSlackHookMutationVariables = Exact<{
   input: UpdateSlackHookInput;
 }>;
 
+export type UpdateSlackHookMutation = {
+  __typename?: 'Mutation';
+  updateSlackHook: { __typename?: 'SlackHook'; hookId: string };
+};
 
-export type UpdateSlackHookMutation = { __typename?: 'Mutation', updateSlackHook: { __typename?: 'SlackHook', hookId: string } };
+export type UpdateTeamsHookMutationVariables = Exact<{
+  input: UpdateTeamsHookInput;
+}>;
+
+export type UpdateTeamsHookMutation = {
+  __typename?: 'Mutation';
+  updateTeamsHook: { __typename?: 'TeamsHook'; hookId: string };
+};
 
 export type UpdateProjectMutationVariables = Exact<{
   input: UpdateProjectInput;
 }>;
 
-
-export type UpdateProjectMutation = { __typename?: 'Mutation', updateProject: { __typename?: 'Project', projectId: string, inactivityTimeoutSeconds: Maybe<number>, projectColor: Maybe<string> } };
+export type UpdateProjectMutation = {
+  __typename?: 'Mutation';
+  updateProject: {
+    __typename?: 'Project';
+    projectId: string;
+    inactivityTimeoutSeconds: Maybe<number>;
+    projectColor: Maybe<string>;
+  };
+};
 
 export type DeleteRunMutationVariables = Exact<{
   runId: Scalars['ID'];
 }>;
 
-
-export type DeleteRunMutation = { __typename?: 'Mutation', deleteRun: { __typename?: 'DeleteRunResponse', success: boolean, message: string, runIds: Array<Maybe<string>> } };
+export type DeleteRunMutation = {
+  __typename?: 'Mutation';
+  deleteRun: {
+    __typename?: 'DeleteRunResponse';
+    success: boolean;
+    message: string;
+    runIds: Array<Maybe<string>>;
+  };
+};
 
 export type GetSpecStatsQueryVariables = Exact<{
   spec: Scalars['String'];
 }>;
 
-
-export type GetSpecStatsQuery = { __typename?: 'Query', specStats: Maybe<{ __typename?: 'SpecStats', spec: string, count: number, avgWallClockDuration: number }> };
+export type GetSpecStatsQuery = {
+  __typename?: 'Query';
+  specStats: Maybe<{
+    __typename?: 'SpecStats';
+    spec: string;
+    count: number;
+    avgWallClockDuration: number;
+  }>;
+};
 
 export type GetRunQueryVariables = Exact<{
   runId: Scalars['ID'];
 }>;
 
-
-export type GetRunQuery = { __typename?: 'Query', run: Maybe<{ __typename?: 'Run', runId: string, createdAt: string, completion: Maybe<(
-      { __typename?: 'RunCompletion' }
-      & RunSummaryCompletionFragment
-    )>, meta: (
-      { __typename?: 'RunMeta' }
-      & RunSummaryMetaFragment
-    ), specs: Array<(
-      { __typename?: 'RunSpec' }
-      & RunDetailSpecFragment
-    )>, progress: Maybe<(
-      { __typename?: 'RunProgress' }
-      & RunProgressFragment
-    )> }> };
+export type GetRunQuery = {
+  __typename?: 'Query';
+  run: Maybe<{
+    __typename?: 'Run';
+    runId: string;
+    createdAt: string;
+    completion: Maybe<
+      { __typename?: 'RunCompletion' } & RunSummaryCompletionFragment
+    >;
+    meta: { __typename?: 'RunMeta' } & RunSummaryMetaFragment;
+    specs: Array<{ __typename?: 'RunSpec' } & RunDetailSpecFragment>;
+    progress: Maybe<{ __typename?: 'RunProgress' } & RunProgressFragment>;
+  }>;
+};
 
 export type ResetInstanceMutationVariables = Exact<{
   instanceId: Scalars['ID'];
 }>;
 
+export type ResetInstanceMutation = {
+  __typename?: 'Mutation';
+  resetInstance: {
+    __typename?: 'ResetInstanceResponse';
+    success: Maybe<boolean>;
+    message: string;
+    instanceId: string;
+  };
+};
 
-export type ResetInstanceMutation = { __typename?: 'Mutation', resetInstance: { __typename?: 'ResetInstanceResponse', success: Maybe<boolean>, message: string, instanceId: string } };
+export type RunDetailSpecFragment = {
+  __typename?: 'RunSpec';
+  instanceId: string;
+  spec: string;
+  claimedAt: Maybe<string>;
+  machineId: Maybe<string>;
+  groupId: Maybe<string>;
+  results: Maybe<{
+    __typename?: 'RunSpecResults';
+    error: Maybe<string>;
+    retries: Maybe<number>;
+    stats: { __typename?: 'InstanceStats' } & AllInstanceStatsFragment;
+  }>;
+};
 
-export type RunDetailSpecFragment = { __typename?: 'RunSpec', instanceId: string, spec: string, claimedAt: Maybe<string>, machineId: Maybe<string>, groupId: Maybe<string>, results: Maybe<{ __typename?: 'RunSpecResults', error: Maybe<string>, retries: Maybe<number>, stats: (
-      { __typename?: 'InstanceStats' }
-      & AllInstanceStatsFragment
-    ) }> };
+export type AllInstanceStatsFragment = {
+  __typename?: 'InstanceStats';
+  suites: number;
+  tests: number;
+  pending: number;
+  passes: number;
+  failures: number;
+  skipped: number;
+  wallClockDuration: number;
+  wallClockStartedAt: string;
+  wallClockEndedAt: string;
+};
 
-export type AllInstanceStatsFragment = { __typename?: 'InstanceStats', suites: number, tests: number, pending: number, passes: number, failures: number, skipped: number, wallClockDuration: number, wallClockStartedAt: string, wallClockEndedAt: string };
+export type RunSummaryCompletionFragment = {
+  __typename?: 'RunCompletion';
+  completed: boolean;
+  inactivityTimeoutMs: Maybe<number>;
+};
 
-export type RunSummaryCompletionFragment = { __typename?: 'RunCompletion', completed: boolean, inactivityTimeoutMs: Maybe<number> };
+export type RunSummaryMetaFragment = {
+  __typename?: 'RunMeta';
+  ciBuildId: string;
+  projectId: string;
+  commit: Maybe<{
+    __typename?: 'Commit';
+    sha: Maybe<string>;
+    branch: Maybe<string>;
+    remoteOrigin: Maybe<string>;
+    message: Maybe<string>;
+    authorEmail: Maybe<string>;
+    authorName: Maybe<string>;
+  }>;
+};
 
-export type RunSummaryMetaFragment = { __typename?: 'RunMeta', ciBuildId: string, projectId: string, commit: Maybe<{ __typename?: 'Commit', sha: Maybe<string>, branch: Maybe<string>, remoteOrigin: Maybe<string>, message: Maybe<string>, authorEmail: Maybe<string>, authorName: Maybe<string> }> };
-
-export type RunSummarySpecFragment = { __typename?: 'RunSpec', claimedAt: Maybe<string>, results: Maybe<{ __typename?: 'RunSpecResults', stats: (
-      { __typename?: 'InstanceStats' }
-      & AllInstanceStatsFragment
-    ) }> };
+export type RunSummarySpecFragment = {
+  __typename?: 'RunSpec';
+  claimedAt: Maybe<string>;
+  results: Maybe<{
+    __typename?: 'RunSpecResults';
+    stats: { __typename?: 'InstanceStats' } & AllInstanceStatsFragment;
+  }>;
+};
 
 export type GetRunsFeedQueryVariables = Exact<{
   cursor: Maybe<Scalars['String']>;
   filters: Array<Filters> | Filters;
 }>;
 
+export type GetRunsFeedQuery = {
+  __typename?: 'Query';
+  runFeed: {
+    __typename?: 'RunFeed';
+    cursor: string;
+    hasMore: boolean;
+    runs: Array<{
+      __typename?: 'Run';
+      runId: string;
+      createdAt: string;
+      completion: Maybe<
+        { __typename?: 'RunCompletion' } & RunSummaryCompletionFragment
+      >;
+      meta: { __typename?: 'RunMeta' } & RunSummaryMetaFragment;
+      progress: Maybe<{ __typename?: 'RunProgress' } & RunProgressFragment>;
+    }>;
+  };
+};
 
-export type GetRunsFeedQuery = { __typename?: 'Query', runFeed: { __typename?: 'RunFeed', cursor: string, hasMore: boolean, runs: Array<{ __typename?: 'Run', runId: string, createdAt: string, completion: Maybe<(
-        { __typename?: 'RunCompletion' }
-        & RunSummaryCompletionFragment
-      )>, meta: (
-        { __typename?: 'RunMeta' }
-        & RunSummaryMetaFragment
-      ), progress: Maybe<(
-        { __typename?: 'RunProgress' }
-        & RunProgressFragment
-      )> }> } };
+export type RunProgressFragment = {
+  __typename?: 'RunProgress';
+  updatedAt: Maybe<string>;
+  groups: Array<{
+    __typename?: 'RunGroupProgress';
+    groupId: string;
+    instances: {
+      __typename?: 'RunGroupProgressInstances';
+    } & RunGroupProgressInstancesFragment;
+    tests: {
+      __typename?: 'RunGroupProgressTests';
+    } & RunGroupProgressTestsFragment;
+  }>;
+};
 
-export type RunProgressFragment = { __typename?: 'RunProgress', updatedAt: Maybe<string>, groups: Array<{ __typename?: 'RunGroupProgress', groupId: string, instances: (
-      { __typename?: 'RunGroupProgressInstances' }
-      & RunGroupProgressInstancesFragment
-    ), tests: (
-      { __typename?: 'RunGroupProgressTests' }
-      & RunGroupProgressTestsFragment
-    ) }> };
+export type RunGroupProgressInstancesFragment = {
+  __typename?: 'RunGroupProgressInstances';
+  overall: number;
+  claimed: number;
+  complete: number;
+  failures: number;
+  passes: number;
+};
 
-export type RunGroupProgressInstancesFragment = { __typename?: 'RunGroupProgressInstances', overall: number, claimed: number, complete: number, failures: number, passes: number };
-
-export type RunGroupProgressTestsFragment = { __typename?: 'RunGroupProgressTests', overall: number, passes: number, failures: number, pending: number, skipped: number, retries: number };
+export type RunGroupProgressTestsFragment = {
+  __typename?: 'RunGroupProgressTests';
+  overall: number;
+  passes: number;
+  failures: number;
+  pending: number;
+  skipped: number;
+  retries: number;
+};
 
 export const AllInstanceStatsFragmentDoc = gql`
-    fragment AllInstanceStats on InstanceStats {
-  suites
-  tests
-  pending
-  passes
-  failures
-  skipped
-  suites
-  wallClockDuration
-  wallClockStartedAt
-  wallClockEndedAt
-}
-    `;
+  fragment AllInstanceStats on InstanceStats {
+    suites
+    tests
+    pending
+    passes
+    failures
+    skipped
+    suites
+    wallClockDuration
+    wallClockStartedAt
+    wallClockEndedAt
+  }
+`;
 export const RunDetailSpecFragmentDoc = gql`
-    fragment RunDetailSpec on RunSpec {
-  instanceId
-  spec
-  claimedAt
-  machineId
-  groupId
-  results {
-    error
-    retries
-    stats {
-      ...AllInstanceStats
-    }
-  }
-}
-    ${AllInstanceStatsFragmentDoc}`;
-export const RunSummaryCompletionFragmentDoc = gql`
-    fragment RunSummaryCompletion on RunCompletion {
-  completed
-  inactivityTimeoutMs
-}
-    `;
-export const RunSummaryMetaFragmentDoc = gql`
-    fragment RunSummaryMeta on RunMeta {
-  ciBuildId
-  projectId
-  commit {
-    sha
-    branch
-    remoteOrigin
-    message
-    authorEmail
-    authorName
-  }
-}
-    `;
-export const RunSummarySpecFragmentDoc = gql`
-    fragment RunSummarySpec on RunSpec {
-  claimedAt
-  results {
-    stats {
-      ...AllInstanceStats
-    }
-  }
-}
-    ${AllInstanceStatsFragmentDoc}`;
-export const RunGroupProgressInstancesFragmentDoc = gql`
-    fragment RunGroupProgressInstances on RunGroupProgressInstances {
-  overall
-  claimed
-  complete
-  failures
-  passes
-}
-    `;
-export const RunGroupProgressTestsFragmentDoc = gql`
-    fragment RunGroupProgressTests on RunGroupProgressTests {
-  overall
-  passes
-  failures
-  pending
-  skipped
-  retries
-}
-    `;
-export const RunProgressFragmentDoc = gql`
-    fragment RunProgress on RunProgress {
-  updatedAt
-  groups {
-    groupId
-    instances {
-      ...RunGroupProgressInstances
-    }
-    tests {
-      ...RunGroupProgressTests
-    }
-  }
-}
-    ${RunGroupProgressInstancesFragmentDoc}
-${RunGroupProgressTestsFragmentDoc}`;
-export const GetInstanceDocument = gql`
-    query getInstance($instanceId: ID!) {
-  instance(id: $instanceId) {
+  fragment RunDetailSpec on RunSpec {
     instanceId
-    runId
     spec
-    projectId
-    run {
-      runId
-      meta {
-        ciBuildId
-      }
-    }
+    claimedAt
+    machineId
+    groupId
     results {
       error
+      retries
       stats {
         ...AllInstanceStats
       }
+    }
+  }
+  ${AllInstanceStatsFragmentDoc}
+`;
+export const RunSummaryCompletionFragmentDoc = gql`
+  fragment RunSummaryCompletion on RunCompletion {
+    completed
+    inactivityTimeoutMs
+  }
+`;
+export const RunSummaryMetaFragmentDoc = gql`
+  fragment RunSummaryMeta on RunMeta {
+    ciBuildId
+    projectId
+    commit {
+      sha
+      branch
+      remoteOrigin
+      message
+      authorEmail
+      authorName
+    }
+  }
+`;
+export const RunSummarySpecFragmentDoc = gql`
+  fragment RunSummarySpec on RunSpec {
+    claimedAt
+    results {
+      stats {
+        ...AllInstanceStats
+      }
+    }
+  }
+  ${AllInstanceStatsFragmentDoc}
+`;
+export const RunGroupProgressInstancesFragmentDoc = gql`
+  fragment RunGroupProgressInstances on RunGroupProgressInstances {
+    overall
+    claimed
+    complete
+    failures
+    passes
+  }
+`;
+export const RunGroupProgressTestsFragmentDoc = gql`
+  fragment RunGroupProgressTests on RunGroupProgressTests {
+    overall
+    passes
+    failures
+    pending
+    skipped
+    retries
+  }
+`;
+export const RunProgressFragmentDoc = gql`
+  fragment RunProgress on RunProgress {
+    updatedAt
+    groups {
+      groupId
+      instances {
+        ...RunGroupProgressInstances
+      }
       tests {
-        ... on InstanceTest {
-          testId
-          title
-          state
-          body
-          displayError
-          attempts {
+        ...RunGroupProgressTests
+      }
+    }
+  }
+  ${RunGroupProgressInstancesFragmentDoc}
+  ${RunGroupProgressTestsFragmentDoc}
+`;
+export const GetInstanceDocument = gql`
+  query getInstance($instanceId: ID!) {
+    instance(id: $instanceId) {
+      instanceId
+      runId
+      spec
+      projectId
+      run {
+        runId
+        meta {
+          ciBuildId
+        }
+      }
+      results {
+        error
+        stats {
+          ...AllInstanceStats
+        }
+        tests {
+          ... on InstanceTest {
+            testId
+            title
             state
-            wallClockDuration
-            wallClockStartedAt
-            error {
-              name
-              message
-              stack
+            body
+            displayError
+            attempts {
+              state
+              wallClockDuration
+              wallClockStartedAt
+              error {
+                name
+                message
+                stack
+              }
             }
           }
         }
+        screenshots {
+          testId
+          screenshotId
+          height
+          width
+          screenshotURL
+        }
+        cypressConfig {
+          video
+          videoUploadOnPasses
+        }
+        videoUrl
       }
-      screenshots {
-        testId
-        screenshotId
-        height
-        width
-        screenshotURL
-      }
-      cypressConfig {
-        video
-        videoUploadOnPasses
-      }
-      videoUrl
     }
   }
-}
-    ${AllInstanceStatsFragmentDoc}`;
+  ${AllInstanceStatsFragmentDoc}
+`;
 
 /**
  * __useGetInstanceQuery__
@@ -923,25 +1202,49 @@ export const GetInstanceDocument = gql`
  *   },
  * });
  */
-export function useGetInstanceQuery(baseOptions: Apollo.QueryHookOptions<GetInstanceQuery, GetInstanceQueryVariables>) {
-        return Apollo.useQuery<GetInstanceQuery, GetInstanceQueryVariables>(GetInstanceDocument, baseOptions);
-      }
-export function useGetInstanceLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetInstanceQuery, GetInstanceQueryVariables>) {
-          return Apollo.useLazyQuery<GetInstanceQuery, GetInstanceQueryVariables>(GetInstanceDocument, baseOptions);
-        }
-export type GetInstanceQueryHookResult = ReturnType<typeof useGetInstanceQuery>;
-export type GetInstanceLazyQueryHookResult = ReturnType<typeof useGetInstanceLazyQuery>;
-export type GetInstanceQueryResult = Apollo.QueryResult<GetInstanceQuery, GetInstanceQueryVariables>;
-export const CreateProjectDocument = gql`
-    mutation createProject($project: CreateProjectInput!) {
-  createProject(project: $project) {
-    projectId
-    inactivityTimeoutSeconds
-    projectColor
-  }
+export function useGetInstanceQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetInstanceQuery,
+    GetInstanceQueryVariables
+  >
+) {
+  return Apollo.useQuery<GetInstanceQuery, GetInstanceQueryVariables>(
+    GetInstanceDocument,
+    baseOptions
+  );
 }
-    `;
-export type CreateProjectMutationFn = Apollo.MutationFunction<CreateProjectMutation, CreateProjectMutationVariables>;
+export function useGetInstanceLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetInstanceQuery,
+    GetInstanceQueryVariables
+  >
+) {
+  return Apollo.useLazyQuery<GetInstanceQuery, GetInstanceQueryVariables>(
+    GetInstanceDocument,
+    baseOptions
+  );
+}
+export type GetInstanceQueryHookResult = ReturnType<typeof useGetInstanceQuery>;
+export type GetInstanceLazyQueryHookResult = ReturnType<
+  typeof useGetInstanceLazyQuery
+>;
+export type GetInstanceQueryResult = Apollo.QueryResult<
+  GetInstanceQuery,
+  GetInstanceQueryVariables
+>;
+export const CreateProjectDocument = gql`
+  mutation createProject($project: CreateProjectInput!) {
+    createProject(project: $project) {
+      projectId
+      inactivityTimeoutSeconds
+      projectColor
+    }
+  }
+`;
+export type CreateProjectMutationFn = Apollo.MutationFunction<
+  CreateProjectMutation,
+  CreateProjectMutationVariables
+>;
 
 /**
  * __useCreateProjectMutation__
@@ -960,22 +1263,40 @@ export type CreateProjectMutationFn = Apollo.MutationFunction<CreateProjectMutat
  *   },
  * });
  */
-export function useCreateProjectMutation(baseOptions?: Apollo.MutationHookOptions<CreateProjectMutation, CreateProjectMutationVariables>) {
-        return Apollo.useMutation<CreateProjectMutation, CreateProjectMutationVariables>(CreateProjectDocument, baseOptions);
-      }
-export type CreateProjectMutationHookResult = ReturnType<typeof useCreateProjectMutation>;
-export type CreateProjectMutationResult = Apollo.MutationResult<CreateProjectMutation>;
-export type CreateProjectMutationOptions = Apollo.BaseMutationOptions<CreateProjectMutation, CreateProjectMutationVariables>;
-export const DeleteProjectDocument = gql`
-    mutation deleteProject($projectId: ID!) {
-  deleteProject(projectId: $projectId) {
-    success
-    message
-    projectIds
-  }
+export function useCreateProjectMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateProjectMutation,
+    CreateProjectMutationVariables
+  >
+) {
+  return Apollo.useMutation<
+    CreateProjectMutation,
+    CreateProjectMutationVariables
+  >(CreateProjectDocument, baseOptions);
 }
-    `;
-export type DeleteProjectMutationFn = Apollo.MutationFunction<DeleteProjectMutation, DeleteProjectMutationVariables>;
+export type CreateProjectMutationHookResult = ReturnType<
+  typeof useCreateProjectMutation
+>;
+export type CreateProjectMutationResult = Apollo.MutationResult<
+  CreateProjectMutation
+>;
+export type CreateProjectMutationOptions = Apollo.BaseMutationOptions<
+  CreateProjectMutation,
+  CreateProjectMutationVariables
+>;
+export const DeleteProjectDocument = gql`
+  mutation deleteProject($projectId: ID!) {
+    deleteProject(projectId: $projectId) {
+      success
+      message
+      projectIds
+    }
+  }
+`;
+export type DeleteProjectMutationFn = Apollo.MutationFunction<
+  DeleteProjectMutation,
+  DeleteProjectMutationVariables
+>;
 
 /**
  * __useDeleteProjectMutation__
@@ -994,35 +1315,50 @@ export type DeleteProjectMutationFn = Apollo.MutationFunction<DeleteProjectMutat
  *   },
  * });
  */
-export function useDeleteProjectMutation(baseOptions?: Apollo.MutationHookOptions<DeleteProjectMutation, DeleteProjectMutationVariables>) {
-        return Apollo.useMutation<DeleteProjectMutation, DeleteProjectMutationVariables>(DeleteProjectDocument, baseOptions);
-      }
-export type DeleteProjectMutationHookResult = ReturnType<typeof useDeleteProjectMutation>;
-export type DeleteProjectMutationResult = Apollo.MutationResult<DeleteProjectMutation>;
-export type DeleteProjectMutationOptions = Apollo.BaseMutationOptions<DeleteProjectMutation, DeleteProjectMutationVariables>;
+export function useDeleteProjectMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteProjectMutation,
+    DeleteProjectMutationVariables
+  >
+) {
+  return Apollo.useMutation<
+    DeleteProjectMutation,
+    DeleteProjectMutationVariables
+  >(DeleteProjectDocument, baseOptions);
+}
+export type DeleteProjectMutationHookResult = ReturnType<
+  typeof useDeleteProjectMutation
+>;
+export type DeleteProjectMutationResult = Apollo.MutationResult<
+  DeleteProjectMutation
+>;
+export type DeleteProjectMutationOptions = Apollo.BaseMutationOptions<
+  DeleteProjectMutation,
+  DeleteProjectMutationVariables
+>;
 export const GetProjectDocument = gql`
-    query getProject($projectId: ID!) {
-  project(id: $projectId) {
-    projectId
-    inactivityTimeoutSeconds
-    projectColor
-    hooks {
-      hookId
-      url
-      headers
-      hookEvents
-      hookType
-      slackResultFilter
-      slackBranchFilter
-      githubContext
-      githubToken
-      bitbucketUsername
-      bitbucketToken
-      bitbucketBuildName
+  query getProject($projectId: ID!) {
+    project(id: $projectId) {
+      projectId
+      inactivityTimeoutSeconds
+      projectColor
+      hooks {
+        hookId
+        url
+        headers
+        hookEvents
+        hookType
+        slackResultFilter
+        slackBranchFilter
+        githubContext
+        githubToken
+        bitbucketUsername
+        bitbucketToken
+        bitbucketBuildName
+      }
     }
   }
-}
-    `;
+`;
 
 /**
  * __useGetProjectQuery__
@@ -1040,23 +1376,44 @@ export const GetProjectDocument = gql`
  *   },
  * });
  */
-export function useGetProjectQuery(baseOptions: Apollo.QueryHookOptions<GetProjectQuery, GetProjectQueryVariables>) {
-        return Apollo.useQuery<GetProjectQuery, GetProjectQueryVariables>(GetProjectDocument, baseOptions);
-      }
-export function useGetProjectLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProjectQuery, GetProjectQueryVariables>) {
-          return Apollo.useLazyQuery<GetProjectQuery, GetProjectQueryVariables>(GetProjectDocument, baseOptions);
-        }
-export type GetProjectQueryHookResult = ReturnType<typeof useGetProjectQuery>;
-export type GetProjectLazyQueryHookResult = ReturnType<typeof useGetProjectLazyQuery>;
-export type GetProjectQueryResult = Apollo.QueryResult<GetProjectQuery, GetProjectQueryVariables>;
-export const GetProjectsDocument = gql`
-    query getProjects($orderDirection: OrderingOptions, $filters: [Filters!]!) {
-  projects(orderDirection: $orderDirection, filters: $filters) {
-    projectId
-    projectColor
-  }
+export function useGetProjectQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetProjectQuery,
+    GetProjectQueryVariables
+  >
+) {
+  return Apollo.useQuery<GetProjectQuery, GetProjectQueryVariables>(
+    GetProjectDocument,
+    baseOptions
+  );
 }
-    `;
+export function useGetProjectLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetProjectQuery,
+    GetProjectQueryVariables
+  >
+) {
+  return Apollo.useLazyQuery<GetProjectQuery, GetProjectQueryVariables>(
+    GetProjectDocument,
+    baseOptions
+  );
+}
+export type GetProjectQueryHookResult = ReturnType<typeof useGetProjectQuery>;
+export type GetProjectLazyQueryHookResult = ReturnType<
+  typeof useGetProjectLazyQuery
+>;
+export type GetProjectQueryResult = Apollo.QueryResult<
+  GetProjectQuery,
+  GetProjectQueryVariables
+>;
+export const GetProjectsDocument = gql`
+  query getProjects($orderDirection: OrderingOptions, $filters: [Filters!]!) {
+    projects(orderDirection: $orderDirection, filters: $filters) {
+      projectId
+      projectColor
+    }
+  }
+`;
 
 /**
  * __useGetProjectsQuery__
@@ -1075,28 +1432,52 @@ export const GetProjectsDocument = gql`
  *   },
  * });
  */
-export function useGetProjectsQuery(baseOptions: Apollo.QueryHookOptions<GetProjectsQuery, GetProjectsQueryVariables>) {
-        return Apollo.useQuery<GetProjectsQuery, GetProjectsQueryVariables>(GetProjectsDocument, baseOptions);
-      }
-export function useGetProjectsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProjectsQuery, GetProjectsQueryVariables>) {
-          return Apollo.useLazyQuery<GetProjectsQuery, GetProjectsQueryVariables>(GetProjectsDocument, baseOptions);
-        }
-export type GetProjectsQueryHookResult = ReturnType<typeof useGetProjectsQuery>;
-export type GetProjectsLazyQueryHookResult = ReturnType<typeof useGetProjectsLazyQuery>;
-export type GetProjectsQueryResult = Apollo.QueryResult<GetProjectsQuery, GetProjectsQueryVariables>;
-export const CreateBitbucketHookDocument = gql`
-    mutation createBitbucketHook($input: CreateBitbucketHookInput!) {
-  createBitbucketHook(input: $input) {
-    projectId
-    hookId
-    hookType
-    url
-    bitbucketUsername
-    bitbucketBuildName
-  }
+export function useGetProjectsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetProjectsQuery,
+    GetProjectsQueryVariables
+  >
+) {
+  return Apollo.useQuery<GetProjectsQuery, GetProjectsQueryVariables>(
+    GetProjectsDocument,
+    baseOptions
+  );
 }
-    `;
-export type CreateBitbucketHookMutationFn = Apollo.MutationFunction<CreateBitbucketHookMutation, CreateBitbucketHookMutationVariables>;
+export function useGetProjectsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetProjectsQuery,
+    GetProjectsQueryVariables
+  >
+) {
+  return Apollo.useLazyQuery<GetProjectsQuery, GetProjectsQueryVariables>(
+    GetProjectsDocument,
+    baseOptions
+  );
+}
+export type GetProjectsQueryHookResult = ReturnType<typeof useGetProjectsQuery>;
+export type GetProjectsLazyQueryHookResult = ReturnType<
+  typeof useGetProjectsLazyQuery
+>;
+export type GetProjectsQueryResult = Apollo.QueryResult<
+  GetProjectsQuery,
+  GetProjectsQueryVariables
+>;
+export const CreateBitbucketHookDocument = gql`
+  mutation createBitbucketHook($input: CreateBitbucketHookInput!) {
+    createBitbucketHook(input: $input) {
+      projectId
+      hookId
+      hookType
+      url
+      bitbucketUsername
+      bitbucketBuildName
+    }
+  }
+`;
+export type CreateBitbucketHookMutationFn = Apollo.MutationFunction<
+  CreateBitbucketHookMutation,
+  CreateBitbucketHookMutationVariables
+>;
 
 /**
  * __useCreateBitbucketHookMutation__
@@ -1115,24 +1496,42 @@ export type CreateBitbucketHookMutationFn = Apollo.MutationFunction<CreateBitbuc
  *   },
  * });
  */
-export function useCreateBitbucketHookMutation(baseOptions?: Apollo.MutationHookOptions<CreateBitbucketHookMutation, CreateBitbucketHookMutationVariables>) {
-        return Apollo.useMutation<CreateBitbucketHookMutation, CreateBitbucketHookMutationVariables>(CreateBitbucketHookDocument, baseOptions);
-      }
-export type CreateBitbucketHookMutationHookResult = ReturnType<typeof useCreateBitbucketHookMutation>;
-export type CreateBitbucketHookMutationResult = Apollo.MutationResult<CreateBitbucketHookMutation>;
-export type CreateBitbucketHookMutationOptions = Apollo.BaseMutationOptions<CreateBitbucketHookMutation, CreateBitbucketHookMutationVariables>;
-export const CreateGenericHookDocument = gql`
-    mutation createGenericHook($input: CreateGenericHookInput!) {
-  createGenericHook(input: $input) {
-    hookId
-    hookType
-    url
-    hookEvents
-    headers
-  }
+export function useCreateBitbucketHookMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateBitbucketHookMutation,
+    CreateBitbucketHookMutationVariables
+  >
+) {
+  return Apollo.useMutation<
+    CreateBitbucketHookMutation,
+    CreateBitbucketHookMutationVariables
+  >(CreateBitbucketHookDocument, baseOptions);
 }
-    `;
-export type CreateGenericHookMutationFn = Apollo.MutationFunction<CreateGenericHookMutation, CreateGenericHookMutationVariables>;
+export type CreateBitbucketHookMutationHookResult = ReturnType<
+  typeof useCreateBitbucketHookMutation
+>;
+export type CreateBitbucketHookMutationResult = Apollo.MutationResult<
+  CreateBitbucketHookMutation
+>;
+export type CreateBitbucketHookMutationOptions = Apollo.BaseMutationOptions<
+  CreateBitbucketHookMutation,
+  CreateBitbucketHookMutationVariables
+>;
+export const CreateGenericHookDocument = gql`
+  mutation createGenericHook($input: CreateGenericHookInput!) {
+    createGenericHook(input: $input) {
+      hookId
+      hookType
+      url
+      hookEvents
+      headers
+    }
+  }
+`;
+export type CreateGenericHookMutationFn = Apollo.MutationFunction<
+  CreateGenericHookMutation,
+  CreateGenericHookMutationVariables
+>;
 
 /**
  * __useCreateGenericHookMutation__
@@ -1151,25 +1550,43 @@ export type CreateGenericHookMutationFn = Apollo.MutationFunction<CreateGenericH
  *   },
  * });
  */
-export function useCreateGenericHookMutation(baseOptions?: Apollo.MutationHookOptions<CreateGenericHookMutation, CreateGenericHookMutationVariables>) {
-        return Apollo.useMutation<CreateGenericHookMutation, CreateGenericHookMutationVariables>(CreateGenericHookDocument, baseOptions);
-      }
-export type CreateGenericHookMutationHookResult = ReturnType<typeof useCreateGenericHookMutation>;
-export type CreateGenericHookMutationResult = Apollo.MutationResult<CreateGenericHookMutation>;
-export type CreateGenericHookMutationOptions = Apollo.BaseMutationOptions<CreateGenericHookMutation, CreateGenericHookMutationVariables>;
-export const CreateGithubHookDocument = gql`
-    mutation createGithubHook($input: CreateGithubHookInput!) {
-  createGithubHook(input: $input) {
-    projectId
-    hookId
-    hookType
-    url
-    githubToken
-    githubContext
-  }
+export function useCreateGenericHookMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateGenericHookMutation,
+    CreateGenericHookMutationVariables
+  >
+) {
+  return Apollo.useMutation<
+    CreateGenericHookMutation,
+    CreateGenericHookMutationVariables
+  >(CreateGenericHookDocument, baseOptions);
 }
-    `;
-export type CreateGithubHookMutationFn = Apollo.MutationFunction<CreateGithubHookMutation, CreateGithubHookMutationVariables>;
+export type CreateGenericHookMutationHookResult = ReturnType<
+  typeof useCreateGenericHookMutation
+>;
+export type CreateGenericHookMutationResult = Apollo.MutationResult<
+  CreateGenericHookMutation
+>;
+export type CreateGenericHookMutationOptions = Apollo.BaseMutationOptions<
+  CreateGenericHookMutation,
+  CreateGenericHookMutationVariables
+>;
+export const CreateGithubHookDocument = gql`
+  mutation createGithubHook($input: CreateGithubHookInput!) {
+    createGithubHook(input: $input) {
+      projectId
+      hookId
+      hookType
+      url
+      githubToken
+      githubContext
+    }
+  }
+`;
+export type CreateGithubHookMutationFn = Apollo.MutationFunction<
+  CreateGithubHookMutation,
+  CreateGithubHookMutationVariables
+>;
 
 /**
  * __useCreateGithubHookMutation__
@@ -1188,25 +1605,43 @@ export type CreateGithubHookMutationFn = Apollo.MutationFunction<CreateGithubHoo
  *   },
  * });
  */
-export function useCreateGithubHookMutation(baseOptions?: Apollo.MutationHookOptions<CreateGithubHookMutation, CreateGithubHookMutationVariables>) {
-        return Apollo.useMutation<CreateGithubHookMutation, CreateGithubHookMutationVariables>(CreateGithubHookDocument, baseOptions);
-      }
-export type CreateGithubHookMutationHookResult = ReturnType<typeof useCreateGithubHookMutation>;
-export type CreateGithubHookMutationResult = Apollo.MutationResult<CreateGithubHookMutation>;
-export type CreateGithubHookMutationOptions = Apollo.BaseMutationOptions<CreateGithubHookMutation, CreateGithubHookMutationVariables>;
-export const CreateSlackHookDocument = gql`
-    mutation createSlackHook($input: CreateSlackHookInput!) {
-  createSlackHook(input: $input) {
-    hookId
-    hookType
-    url
-    hookEvents
-    slackResultFilter
-    slackBranchFilter
-  }
+export function useCreateGithubHookMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateGithubHookMutation,
+    CreateGithubHookMutationVariables
+  >
+) {
+  return Apollo.useMutation<
+    CreateGithubHookMutation,
+    CreateGithubHookMutationVariables
+  >(CreateGithubHookDocument, baseOptions);
 }
-    `;
-export type CreateSlackHookMutationFn = Apollo.MutationFunction<CreateSlackHookMutation, CreateSlackHookMutationVariables>;
+export type CreateGithubHookMutationHookResult = ReturnType<
+  typeof useCreateGithubHookMutation
+>;
+export type CreateGithubHookMutationResult = Apollo.MutationResult<
+  CreateGithubHookMutation
+>;
+export type CreateGithubHookMutationOptions = Apollo.BaseMutationOptions<
+  CreateGithubHookMutation,
+  CreateGithubHookMutationVariables
+>;
+export const CreateSlackHookDocument = gql`
+  mutation createSlackHook($input: CreateSlackHookInput!) {
+    createSlackHook(input: $input) {
+      hookId
+      hookType
+      url
+      hookEvents
+      slackResultFilter
+      slackBranchFilter
+    }
+  }
+`;
+export type CreateSlackHookMutationFn = Apollo.MutationFunction<
+  CreateSlackHookMutation,
+  CreateSlackHookMutationVariables
+>;
 
 /**
  * __useCreateSlackHookMutation__
@@ -1225,21 +1660,92 @@ export type CreateSlackHookMutationFn = Apollo.MutationFunction<CreateSlackHookM
  *   },
  * });
  */
-export function useCreateSlackHookMutation(baseOptions?: Apollo.MutationHookOptions<CreateSlackHookMutation, CreateSlackHookMutationVariables>) {
-        return Apollo.useMutation<CreateSlackHookMutation, CreateSlackHookMutationVariables>(CreateSlackHookDocument, baseOptions);
-      }
-export type CreateSlackHookMutationHookResult = ReturnType<typeof useCreateSlackHookMutation>;
-export type CreateSlackHookMutationResult = Apollo.MutationResult<CreateSlackHookMutation>;
-export type CreateSlackHookMutationOptions = Apollo.BaseMutationOptions<CreateSlackHookMutation, CreateSlackHookMutationVariables>;
-export const DeleteHookDocument = gql`
-    mutation deleteHook($input: DeleteHookInput!) {
-  deleteHook(input: $input) {
-    hookId
-    projectId
-  }
+export function useCreateSlackHookMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateSlackHookMutation,
+    CreateSlackHookMutationVariables
+  >
+) {
+  return Apollo.useMutation<
+    CreateSlackHookMutation,
+    CreateSlackHookMutationVariables
+  >(CreateSlackHookDocument, baseOptions);
 }
-    `;
-export type DeleteHookMutationFn = Apollo.MutationFunction<DeleteHookMutation, DeleteHookMutationVariables>;
+export type CreateSlackHookMutationHookResult = ReturnType<
+  typeof useCreateSlackHookMutation
+>;
+export type CreateSlackHookMutationResult = Apollo.MutationResult<
+  CreateSlackHookMutation
+>;
+export type CreateSlackHookMutationOptions = Apollo.BaseMutationOptions<
+  CreateSlackHookMutation,
+  CreateSlackHookMutationVariables
+>;
+export const CreateTeamsHookDocument = gql`
+  mutation createTeamsHook($input: CreateTeamsHookInput!) {
+    createTeamsHook(input: $input) {
+      hookId
+      hookType
+      url
+      hookEvents
+    }
+  }
+`;
+export type CreateTeamsHookMutationFn = Apollo.MutationFunction<
+  CreateTeamsHookMutation,
+  CreateTeamsHookMutationVariables
+>;
+
+/**
+ * __useCreateTeamsHookMutation__
+ *
+ * To run a mutation, you first call `useCreateTeamsHookMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateTeamsHookMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createTeamsHookMutation, { data, loading, error }] = useCreateTeamsHookMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateTeamsHookMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateTeamsHookMutation,
+    CreateTeamsHookMutationVariables
+  >
+) {
+  return Apollo.useMutation<
+    CreateTeamsHookMutation,
+    CreateTeamsHookMutationVariables
+  >(CreateTeamsHookDocument, baseOptions);
+}
+export type CreateTeamsHookMutationHookResult = ReturnType<
+  typeof useCreateTeamsHookMutation
+>;
+export type CreateTeamsHookMutationResult = Apollo.MutationResult<
+  CreateTeamsHookMutation
+>;
+export type CreateTeamsHookMutationOptions = Apollo.BaseMutationOptions<
+  CreateTeamsHookMutation,
+  CreateTeamsHookMutationVariables
+>;
+export const DeleteHookDocument = gql`
+  mutation deleteHook($input: DeleteHookInput!) {
+    deleteHook(input: $input) {
+      hookId
+      projectId
+    }
+  }
+`;
+export type DeleteHookMutationFn = Apollo.MutationFunction<
+  DeleteHookMutation,
+  DeleteHookMutationVariables
+>;
 
 /**
  * __useDeleteHookMutation__
@@ -1258,20 +1764,38 @@ export type DeleteHookMutationFn = Apollo.MutationFunction<DeleteHookMutation, D
  *   },
  * });
  */
-export function useDeleteHookMutation(baseOptions?: Apollo.MutationHookOptions<DeleteHookMutation, DeleteHookMutationVariables>) {
-        return Apollo.useMutation<DeleteHookMutation, DeleteHookMutationVariables>(DeleteHookDocument, baseOptions);
-      }
-export type DeleteHookMutationHookResult = ReturnType<typeof useDeleteHookMutation>;
-export type DeleteHookMutationResult = Apollo.MutationResult<DeleteHookMutation>;
-export type DeleteHookMutationOptions = Apollo.BaseMutationOptions<DeleteHookMutation, DeleteHookMutationVariables>;
-export const UpdateBitbucketHookDocument = gql`
-    mutation updateBitbucketHook($input: UpdateBitbucketHookInput!) {
-  updateBitbucketHook(input: $input) {
-    hookId
-  }
+export function useDeleteHookMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteHookMutation,
+    DeleteHookMutationVariables
+  >
+) {
+  return Apollo.useMutation<DeleteHookMutation, DeleteHookMutationVariables>(
+    DeleteHookDocument,
+    baseOptions
+  );
 }
-    `;
-export type UpdateBitbucketHookMutationFn = Apollo.MutationFunction<UpdateBitbucketHookMutation, UpdateBitbucketHookMutationVariables>;
+export type DeleteHookMutationHookResult = ReturnType<
+  typeof useDeleteHookMutation
+>;
+export type DeleteHookMutationResult = Apollo.MutationResult<
+  DeleteHookMutation
+>;
+export type DeleteHookMutationOptions = Apollo.BaseMutationOptions<
+  DeleteHookMutation,
+  DeleteHookMutationVariables
+>;
+export const UpdateBitbucketHookDocument = gql`
+  mutation updateBitbucketHook($input: UpdateBitbucketHookInput!) {
+    updateBitbucketHook(input: $input) {
+      hookId
+    }
+  }
+`;
+export type UpdateBitbucketHookMutationFn = Apollo.MutationFunction<
+  UpdateBitbucketHookMutation,
+  UpdateBitbucketHookMutationVariables
+>;
 
 /**
  * __useUpdateBitbucketHookMutation__
@@ -1290,20 +1814,38 @@ export type UpdateBitbucketHookMutationFn = Apollo.MutationFunction<UpdateBitbuc
  *   },
  * });
  */
-export function useUpdateBitbucketHookMutation(baseOptions?: Apollo.MutationHookOptions<UpdateBitbucketHookMutation, UpdateBitbucketHookMutationVariables>) {
-        return Apollo.useMutation<UpdateBitbucketHookMutation, UpdateBitbucketHookMutationVariables>(UpdateBitbucketHookDocument, baseOptions);
-      }
-export type UpdateBitbucketHookMutationHookResult = ReturnType<typeof useUpdateBitbucketHookMutation>;
-export type UpdateBitbucketHookMutationResult = Apollo.MutationResult<UpdateBitbucketHookMutation>;
-export type UpdateBitbucketHookMutationOptions = Apollo.BaseMutationOptions<UpdateBitbucketHookMutation, UpdateBitbucketHookMutationVariables>;
-export const UpdateGenericHookDocument = gql`
-    mutation updateGenericHook($input: UpdateGenericHookInput!) {
-  updateGenericHook(input: $input) {
-    hookId
-  }
+export function useUpdateBitbucketHookMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateBitbucketHookMutation,
+    UpdateBitbucketHookMutationVariables
+  >
+) {
+  return Apollo.useMutation<
+    UpdateBitbucketHookMutation,
+    UpdateBitbucketHookMutationVariables
+  >(UpdateBitbucketHookDocument, baseOptions);
 }
-    `;
-export type UpdateGenericHookMutationFn = Apollo.MutationFunction<UpdateGenericHookMutation, UpdateGenericHookMutationVariables>;
+export type UpdateBitbucketHookMutationHookResult = ReturnType<
+  typeof useUpdateBitbucketHookMutation
+>;
+export type UpdateBitbucketHookMutationResult = Apollo.MutationResult<
+  UpdateBitbucketHookMutation
+>;
+export type UpdateBitbucketHookMutationOptions = Apollo.BaseMutationOptions<
+  UpdateBitbucketHookMutation,
+  UpdateBitbucketHookMutationVariables
+>;
+export const UpdateGenericHookDocument = gql`
+  mutation updateGenericHook($input: UpdateGenericHookInput!) {
+    updateGenericHook(input: $input) {
+      hookId
+    }
+  }
+`;
+export type UpdateGenericHookMutationFn = Apollo.MutationFunction<
+  UpdateGenericHookMutation,
+  UpdateGenericHookMutationVariables
+>;
 
 /**
  * __useUpdateGenericHookMutation__
@@ -1322,20 +1864,38 @@ export type UpdateGenericHookMutationFn = Apollo.MutationFunction<UpdateGenericH
  *   },
  * });
  */
-export function useUpdateGenericHookMutation(baseOptions?: Apollo.MutationHookOptions<UpdateGenericHookMutation, UpdateGenericHookMutationVariables>) {
-        return Apollo.useMutation<UpdateGenericHookMutation, UpdateGenericHookMutationVariables>(UpdateGenericHookDocument, baseOptions);
-      }
-export type UpdateGenericHookMutationHookResult = ReturnType<typeof useUpdateGenericHookMutation>;
-export type UpdateGenericHookMutationResult = Apollo.MutationResult<UpdateGenericHookMutation>;
-export type UpdateGenericHookMutationOptions = Apollo.BaseMutationOptions<UpdateGenericHookMutation, UpdateGenericHookMutationVariables>;
-export const UpdateGithubHookDocument = gql`
-    mutation updateGithubHook($input: UpdateGithubHookInput!) {
-  updateGithubHook(input: $input) {
-    hookId
-  }
+export function useUpdateGenericHookMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateGenericHookMutation,
+    UpdateGenericHookMutationVariables
+  >
+) {
+  return Apollo.useMutation<
+    UpdateGenericHookMutation,
+    UpdateGenericHookMutationVariables
+  >(UpdateGenericHookDocument, baseOptions);
 }
-    `;
-export type UpdateGithubHookMutationFn = Apollo.MutationFunction<UpdateGithubHookMutation, UpdateGithubHookMutationVariables>;
+export type UpdateGenericHookMutationHookResult = ReturnType<
+  typeof useUpdateGenericHookMutation
+>;
+export type UpdateGenericHookMutationResult = Apollo.MutationResult<
+  UpdateGenericHookMutation
+>;
+export type UpdateGenericHookMutationOptions = Apollo.BaseMutationOptions<
+  UpdateGenericHookMutation,
+  UpdateGenericHookMutationVariables
+>;
+export const UpdateGithubHookDocument = gql`
+  mutation updateGithubHook($input: UpdateGithubHookInput!) {
+    updateGithubHook(input: $input) {
+      hookId
+    }
+  }
+`;
+export type UpdateGithubHookMutationFn = Apollo.MutationFunction<
+  UpdateGithubHookMutation,
+  UpdateGithubHookMutationVariables
+>;
 
 /**
  * __useUpdateGithubHookMutation__
@@ -1354,20 +1914,38 @@ export type UpdateGithubHookMutationFn = Apollo.MutationFunction<UpdateGithubHoo
  *   },
  * });
  */
-export function useUpdateGithubHookMutation(baseOptions?: Apollo.MutationHookOptions<UpdateGithubHookMutation, UpdateGithubHookMutationVariables>) {
-        return Apollo.useMutation<UpdateGithubHookMutation, UpdateGithubHookMutationVariables>(UpdateGithubHookDocument, baseOptions);
-      }
-export type UpdateGithubHookMutationHookResult = ReturnType<typeof useUpdateGithubHookMutation>;
-export type UpdateGithubHookMutationResult = Apollo.MutationResult<UpdateGithubHookMutation>;
-export type UpdateGithubHookMutationOptions = Apollo.BaseMutationOptions<UpdateGithubHookMutation, UpdateGithubHookMutationVariables>;
-export const UpdateSlackHookDocument = gql`
-    mutation updateSlackHook($input: UpdateSlackHookInput!) {
-  updateSlackHook(input: $input) {
-    hookId
-  }
+export function useUpdateGithubHookMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateGithubHookMutation,
+    UpdateGithubHookMutationVariables
+  >
+) {
+  return Apollo.useMutation<
+    UpdateGithubHookMutation,
+    UpdateGithubHookMutationVariables
+  >(UpdateGithubHookDocument, baseOptions);
 }
-    `;
-export type UpdateSlackHookMutationFn = Apollo.MutationFunction<UpdateSlackHookMutation, UpdateSlackHookMutationVariables>;
+export type UpdateGithubHookMutationHookResult = ReturnType<
+  typeof useUpdateGithubHookMutation
+>;
+export type UpdateGithubHookMutationResult = Apollo.MutationResult<
+  UpdateGithubHookMutation
+>;
+export type UpdateGithubHookMutationOptions = Apollo.BaseMutationOptions<
+  UpdateGithubHookMutation,
+  UpdateGithubHookMutationVariables
+>;
+export const UpdateSlackHookDocument = gql`
+  mutation updateSlackHook($input: UpdateSlackHookInput!) {
+    updateSlackHook(input: $input) {
+      hookId
+    }
+  }
+`;
+export type UpdateSlackHookMutationFn = Apollo.MutationFunction<
+  UpdateSlackHookMutation,
+  UpdateSlackHookMutationVariables
+>;
 
 /**
  * __useUpdateSlackHookMutation__
@@ -1386,22 +1964,90 @@ export type UpdateSlackHookMutationFn = Apollo.MutationFunction<UpdateSlackHookM
  *   },
  * });
  */
-export function useUpdateSlackHookMutation(baseOptions?: Apollo.MutationHookOptions<UpdateSlackHookMutation, UpdateSlackHookMutationVariables>) {
-        return Apollo.useMutation<UpdateSlackHookMutation, UpdateSlackHookMutationVariables>(UpdateSlackHookDocument, baseOptions);
-      }
-export type UpdateSlackHookMutationHookResult = ReturnType<typeof useUpdateSlackHookMutation>;
-export type UpdateSlackHookMutationResult = Apollo.MutationResult<UpdateSlackHookMutation>;
-export type UpdateSlackHookMutationOptions = Apollo.BaseMutationOptions<UpdateSlackHookMutation, UpdateSlackHookMutationVariables>;
-export const UpdateProjectDocument = gql`
-    mutation updateProject($input: UpdateProjectInput!) {
-  updateProject(input: $input) {
-    projectId
-    inactivityTimeoutSeconds
-    projectColor
-  }
+export function useUpdateSlackHookMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateSlackHookMutation,
+    UpdateSlackHookMutationVariables
+  >
+) {
+  return Apollo.useMutation<
+    UpdateSlackHookMutation,
+    UpdateSlackHookMutationVariables
+  >(UpdateSlackHookDocument, baseOptions);
 }
-    `;
-export type UpdateProjectMutationFn = Apollo.MutationFunction<UpdateProjectMutation, UpdateProjectMutationVariables>;
+export type UpdateSlackHookMutationHookResult = ReturnType<
+  typeof useUpdateSlackHookMutation
+>;
+export type UpdateSlackHookMutationResult = Apollo.MutationResult<
+  UpdateSlackHookMutation
+>;
+export type UpdateSlackHookMutationOptions = Apollo.BaseMutationOptions<
+  UpdateSlackHookMutation,
+  UpdateSlackHookMutationVariables
+>;
+export const UpdateTeamsHookDocument = gql`
+  mutation updateTeamsHook($input: UpdateTeamsHookInput!) {
+    updateTeamsHook(input: $input) {
+      hookId
+    }
+  }
+`;
+export type UpdateTeamsHookMutationFn = Apollo.MutationFunction<
+  UpdateTeamsHookMutation,
+  UpdateTeamsHookMutationVariables
+>;
+
+/**
+ * __useUpdateTeamsHookMutation__
+ *
+ * To run a mutation, you first call `useUpdateTeamsHookMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateTeamsHookMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateTeamsHookMutation, { data, loading, error }] = useUpdateTeamsHookMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateTeamsHookMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateTeamsHookMutation,
+    UpdateTeamsHookMutationVariables
+  >
+) {
+  return Apollo.useMutation<
+    UpdateTeamsHookMutation,
+    UpdateTeamsHookMutationVariables
+  >(UpdateTeamsHookDocument, baseOptions);
+}
+export type UpdateTeamsHookMutationHookResult = ReturnType<
+  typeof useUpdateTeamsHookMutation
+>;
+export type UpdateTeamsHookMutationResult = Apollo.MutationResult<
+  UpdateTeamsHookMutation
+>;
+export type UpdateTeamsHookMutationOptions = Apollo.BaseMutationOptions<
+  UpdateTeamsHookMutation,
+  UpdateTeamsHookMutationVariables
+>;
+export const UpdateProjectDocument = gql`
+  mutation updateProject($input: UpdateProjectInput!) {
+    updateProject(input: $input) {
+      projectId
+      inactivityTimeoutSeconds
+      projectColor
+    }
+  }
+`;
+export type UpdateProjectMutationFn = Apollo.MutationFunction<
+  UpdateProjectMutation,
+  UpdateProjectMutationVariables
+>;
 
 /**
  * __useUpdateProjectMutation__
@@ -1420,22 +2066,40 @@ export type UpdateProjectMutationFn = Apollo.MutationFunction<UpdateProjectMutat
  *   },
  * });
  */
-export function useUpdateProjectMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProjectMutation, UpdateProjectMutationVariables>) {
-        return Apollo.useMutation<UpdateProjectMutation, UpdateProjectMutationVariables>(UpdateProjectDocument, baseOptions);
-      }
-export type UpdateProjectMutationHookResult = ReturnType<typeof useUpdateProjectMutation>;
-export type UpdateProjectMutationResult = Apollo.MutationResult<UpdateProjectMutation>;
-export type UpdateProjectMutationOptions = Apollo.BaseMutationOptions<UpdateProjectMutation, UpdateProjectMutationVariables>;
-export const DeleteRunDocument = gql`
-    mutation deleteRun($runId: ID!) {
-  deleteRun(runId: $runId) {
-    success
-    message
-    runIds
-  }
+export function useUpdateProjectMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateProjectMutation,
+    UpdateProjectMutationVariables
+  >
+) {
+  return Apollo.useMutation<
+    UpdateProjectMutation,
+    UpdateProjectMutationVariables
+  >(UpdateProjectDocument, baseOptions);
 }
-    `;
-export type DeleteRunMutationFn = Apollo.MutationFunction<DeleteRunMutation, DeleteRunMutationVariables>;
+export type UpdateProjectMutationHookResult = ReturnType<
+  typeof useUpdateProjectMutation
+>;
+export type UpdateProjectMutationResult = Apollo.MutationResult<
+  UpdateProjectMutation
+>;
+export type UpdateProjectMutationOptions = Apollo.BaseMutationOptions<
+  UpdateProjectMutation,
+  UpdateProjectMutationVariables
+>;
+export const DeleteRunDocument = gql`
+  mutation deleteRun($runId: ID!) {
+    deleteRun(runId: $runId) {
+      success
+      message
+      runIds
+    }
+  }
+`;
+export type DeleteRunMutationFn = Apollo.MutationFunction<
+  DeleteRunMutation,
+  DeleteRunMutationVariables
+>;
 
 /**
  * __useDeleteRunMutation__
@@ -1454,21 +2118,34 @@ export type DeleteRunMutationFn = Apollo.MutationFunction<DeleteRunMutation, Del
  *   },
  * });
  */
-export function useDeleteRunMutation(baseOptions?: Apollo.MutationHookOptions<DeleteRunMutation, DeleteRunMutationVariables>) {
-        return Apollo.useMutation<DeleteRunMutation, DeleteRunMutationVariables>(DeleteRunDocument, baseOptions);
-      }
-export type DeleteRunMutationHookResult = ReturnType<typeof useDeleteRunMutation>;
-export type DeleteRunMutationResult = Apollo.MutationResult<DeleteRunMutation>;
-export type DeleteRunMutationOptions = Apollo.BaseMutationOptions<DeleteRunMutation, DeleteRunMutationVariables>;
-export const GetSpecStatsDocument = gql`
-    query getSpecStats($spec: String!) {
-  specStats(spec: $spec) {
-    spec
-    count
-    avgWallClockDuration
-  }
+export function useDeleteRunMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteRunMutation,
+    DeleteRunMutationVariables
+  >
+) {
+  return Apollo.useMutation<DeleteRunMutation, DeleteRunMutationVariables>(
+    DeleteRunDocument,
+    baseOptions
+  );
 }
-    `;
+export type DeleteRunMutationHookResult = ReturnType<
+  typeof useDeleteRunMutation
+>;
+export type DeleteRunMutationResult = Apollo.MutationResult<DeleteRunMutation>;
+export type DeleteRunMutationOptions = Apollo.BaseMutationOptions<
+  DeleteRunMutation,
+  DeleteRunMutationVariables
+>;
+export const GetSpecStatsDocument = gql`
+  query getSpecStats($spec: String!) {
+    specStats(spec: $spec) {
+      spec
+      count
+      avgWallClockDuration
+    }
+  }
+`;
 
 /**
  * __useGetSpecStatsQuery__
@@ -1486,38 +2163,62 @@ export const GetSpecStatsDocument = gql`
  *   },
  * });
  */
-export function useGetSpecStatsQuery(baseOptions: Apollo.QueryHookOptions<GetSpecStatsQuery, GetSpecStatsQueryVariables>) {
-        return Apollo.useQuery<GetSpecStatsQuery, GetSpecStatsQueryVariables>(GetSpecStatsDocument, baseOptions);
-      }
-export function useGetSpecStatsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSpecStatsQuery, GetSpecStatsQueryVariables>) {
-          return Apollo.useLazyQuery<GetSpecStatsQuery, GetSpecStatsQueryVariables>(GetSpecStatsDocument, baseOptions);
-        }
-export type GetSpecStatsQueryHookResult = ReturnType<typeof useGetSpecStatsQuery>;
-export type GetSpecStatsLazyQueryHookResult = ReturnType<typeof useGetSpecStatsLazyQuery>;
-export type GetSpecStatsQueryResult = Apollo.QueryResult<GetSpecStatsQuery, GetSpecStatsQueryVariables>;
+export function useGetSpecStatsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetSpecStatsQuery,
+    GetSpecStatsQueryVariables
+  >
+) {
+  return Apollo.useQuery<GetSpecStatsQuery, GetSpecStatsQueryVariables>(
+    GetSpecStatsDocument,
+    baseOptions
+  );
+}
+export function useGetSpecStatsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetSpecStatsQuery,
+    GetSpecStatsQueryVariables
+  >
+) {
+  return Apollo.useLazyQuery<GetSpecStatsQuery, GetSpecStatsQueryVariables>(
+    GetSpecStatsDocument,
+    baseOptions
+  );
+}
+export type GetSpecStatsQueryHookResult = ReturnType<
+  typeof useGetSpecStatsQuery
+>;
+export type GetSpecStatsLazyQueryHookResult = ReturnType<
+  typeof useGetSpecStatsLazyQuery
+>;
+export type GetSpecStatsQueryResult = Apollo.QueryResult<
+  GetSpecStatsQuery,
+  GetSpecStatsQueryVariables
+>;
 export const GetRunDocument = gql`
-    query getRun($runId: ID!) {
-  run(id: $runId) {
-    runId
-    createdAt
-    completion {
-      ...RunSummaryCompletion
-    }
-    meta {
-      ...RunSummaryMeta
-    }
-    specs {
-      ...RunDetailSpec
-    }
-    progress {
-      ...RunProgress
+  query getRun($runId: ID!) {
+    run(id: $runId) {
+      runId
+      createdAt
+      completion {
+        ...RunSummaryCompletion
+      }
+      meta {
+        ...RunSummaryMeta
+      }
+      specs {
+        ...RunDetailSpec
+      }
+      progress {
+        ...RunProgress
+      }
     }
   }
-}
-    ${RunSummaryCompletionFragmentDoc}
-${RunSummaryMetaFragmentDoc}
-${RunDetailSpecFragmentDoc}
-${RunProgressFragmentDoc}`;
+  ${RunSummaryCompletionFragmentDoc}
+  ${RunSummaryMetaFragmentDoc}
+  ${RunDetailSpecFragmentDoc}
+  ${RunProgressFragmentDoc}
+`;
 
 /**
  * __useGetRunQuery__
@@ -1535,25 +2236,41 @@ ${RunProgressFragmentDoc}`;
  *   },
  * });
  */
-export function useGetRunQuery(baseOptions: Apollo.QueryHookOptions<GetRunQuery, GetRunQueryVariables>) {
-        return Apollo.useQuery<GetRunQuery, GetRunQueryVariables>(GetRunDocument, baseOptions);
-      }
-export function useGetRunLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRunQuery, GetRunQueryVariables>) {
-          return Apollo.useLazyQuery<GetRunQuery, GetRunQueryVariables>(GetRunDocument, baseOptions);
-        }
+export function useGetRunQuery(
+  baseOptions: Apollo.QueryHookOptions<GetRunQuery, GetRunQueryVariables>
+) {
+  return Apollo.useQuery<GetRunQuery, GetRunQueryVariables>(
+    GetRunDocument,
+    baseOptions
+  );
+}
+export function useGetRunLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetRunQuery, GetRunQueryVariables>
+) {
+  return Apollo.useLazyQuery<GetRunQuery, GetRunQueryVariables>(
+    GetRunDocument,
+    baseOptions
+  );
+}
 export type GetRunQueryHookResult = ReturnType<typeof useGetRunQuery>;
 export type GetRunLazyQueryHookResult = ReturnType<typeof useGetRunLazyQuery>;
-export type GetRunQueryResult = Apollo.QueryResult<GetRunQuery, GetRunQueryVariables>;
+export type GetRunQueryResult = Apollo.QueryResult<
+  GetRunQuery,
+  GetRunQueryVariables
+>;
 export const ResetInstanceDocument = gql`
-    mutation resetInstance($instanceId: ID!) {
-  resetInstance(instanceId: $instanceId) {
-    success
-    message
-    instanceId
+  mutation resetInstance($instanceId: ID!) {
+    resetInstance(instanceId: $instanceId) {
+      success
+      message
+      instanceId
+    }
   }
-}
-    `;
-export type ResetInstanceMutationFn = Apollo.MutationFunction<ResetInstanceMutation, ResetInstanceMutationVariables>;
+`;
+export type ResetInstanceMutationFn = Apollo.MutationFunction<
+  ResetInstanceMutation,
+  ResetInstanceMutationVariables
+>;
 
 /**
  * __useResetInstanceMutation__
@@ -1572,35 +2289,51 @@ export type ResetInstanceMutationFn = Apollo.MutationFunction<ResetInstanceMutat
  *   },
  * });
  */
-export function useResetInstanceMutation(baseOptions?: Apollo.MutationHookOptions<ResetInstanceMutation, ResetInstanceMutationVariables>) {
-        return Apollo.useMutation<ResetInstanceMutation, ResetInstanceMutationVariables>(ResetInstanceDocument, baseOptions);
-      }
-export type ResetInstanceMutationHookResult = ReturnType<typeof useResetInstanceMutation>;
-export type ResetInstanceMutationResult = Apollo.MutationResult<ResetInstanceMutation>;
-export type ResetInstanceMutationOptions = Apollo.BaseMutationOptions<ResetInstanceMutation, ResetInstanceMutationVariables>;
+export function useResetInstanceMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    ResetInstanceMutation,
+    ResetInstanceMutationVariables
+  >
+) {
+  return Apollo.useMutation<
+    ResetInstanceMutation,
+    ResetInstanceMutationVariables
+  >(ResetInstanceDocument, baseOptions);
+}
+export type ResetInstanceMutationHookResult = ReturnType<
+  typeof useResetInstanceMutation
+>;
+export type ResetInstanceMutationResult = Apollo.MutationResult<
+  ResetInstanceMutation
+>;
+export type ResetInstanceMutationOptions = Apollo.BaseMutationOptions<
+  ResetInstanceMutation,
+  ResetInstanceMutationVariables
+>;
 export const GetRunsFeedDocument = gql`
-    query getRunsFeed($cursor: String, $filters: [Filters!]!) {
-  runFeed(cursor: $cursor, filters: $filters) {
-    cursor
-    hasMore
-    runs {
-      runId
-      createdAt
-      completion {
-        ...RunSummaryCompletion
-      }
-      meta {
-        ...RunSummaryMeta
-      }
-      progress {
-        ...RunProgress
+  query getRunsFeed($cursor: String, $filters: [Filters!]!) {
+    runFeed(cursor: $cursor, filters: $filters) {
+      cursor
+      hasMore
+      runs {
+        runId
+        createdAt
+        completion {
+          ...RunSummaryCompletion
+        }
+        meta {
+          ...RunSummaryMeta
+        }
+        progress {
+          ...RunProgress
+        }
       }
     }
   }
-}
-    ${RunSummaryCompletionFragmentDoc}
-${RunSummaryMetaFragmentDoc}
-${RunProgressFragmentDoc}`;
+  ${RunSummaryCompletionFragmentDoc}
+  ${RunSummaryMetaFragmentDoc}
+  ${RunProgressFragmentDoc}
+`;
 
 /**
  * __useGetRunsFeedQuery__
@@ -1619,23 +2352,43 @@ ${RunProgressFragmentDoc}`;
  *   },
  * });
  */
-export function useGetRunsFeedQuery(baseOptions: Apollo.QueryHookOptions<GetRunsFeedQuery, GetRunsFeedQueryVariables>) {
-        return Apollo.useQuery<GetRunsFeedQuery, GetRunsFeedQueryVariables>(GetRunsFeedDocument, baseOptions);
-      }
-export function useGetRunsFeedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRunsFeedQuery, GetRunsFeedQueryVariables>) {
-          return Apollo.useLazyQuery<GetRunsFeedQuery, GetRunsFeedQueryVariables>(GetRunsFeedDocument, baseOptions);
-        }
+export function useGetRunsFeedQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetRunsFeedQuery,
+    GetRunsFeedQueryVariables
+  >
+) {
+  return Apollo.useQuery<GetRunsFeedQuery, GetRunsFeedQueryVariables>(
+    GetRunsFeedDocument,
+    baseOptions
+  );
+}
+export function useGetRunsFeedLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetRunsFeedQuery,
+    GetRunsFeedQueryVariables
+  >
+) {
+  return Apollo.useLazyQuery<GetRunsFeedQuery, GetRunsFeedQueryVariables>(
+    GetRunsFeedDocument,
+    baseOptions
+  );
+}
 export type GetRunsFeedQueryHookResult = ReturnType<typeof useGetRunsFeedQuery>;
-export type GetRunsFeedLazyQueryHookResult = ReturnType<typeof useGetRunsFeedLazyQuery>;
-export type GetRunsFeedQueryResult = Apollo.QueryResult<GetRunsFeedQuery, GetRunsFeedQueryVariables>;
+export type GetRunsFeedLazyQueryHookResult = ReturnType<
+  typeof useGetRunsFeedLazyQuery
+>;
+export type GetRunsFeedQueryResult = Apollo.QueryResult<
+  GetRunsFeedQuery,
+  GetRunsFeedQueryVariables
+>;
 
-      export interface PossibleTypesResultData {
-        possibleTypes: {
-          [key: string]: string[]
-        }
-      }
-      const result: PossibleTypesResultData = {
-  "possibleTypes": {}
+export interface PossibleTypesResultData {
+  possibleTypes: {
+    [key: string]: string[];
+  };
+}
+const result: PossibleTypesResultData = {
+  possibleTypes: {},
 };
-      export default result;
-    
+export default result;

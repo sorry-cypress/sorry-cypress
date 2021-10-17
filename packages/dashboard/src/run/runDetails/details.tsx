@@ -1,55 +1,41 @@
+import { Grid, Link, Tooltip } from '@mui/material';
+import { DataGrid, GridRenderCellParams, GridRowsProp } from '@mui/x-data-grid';
 import {
   Paper,
   RenderOnInterval,
-  SpecStateTag,
   TestFailureBadge,
   TestRetriesBadge,
   TestSkippedBadge,
   TestSuccessBadge,
 } from '@sorry-cypress/dashboard/components/';
-import { getInstanceState } from '@sorry-cypress/dashboard/components/common/executionState';
 import {
-  GetRunQuery,
-  RunDetailSpecFragment,
-} from '@sorry-cypress/dashboard/generated/graphql';
-import { useHideSuccessfulSpecs } from '@sorry-cypress/dashboard/hooks/';
+  getInstanceState,
+  SpecStateTag,
+} from '@sorry-cypress/dashboard/components/common/executionState';
+import { GetRunQuery } from '@sorry-cypress/dashboard/generated/graphql';
+import { getBase } from '@sorry-cypress/dashboard/lib/path';
 import {
   getDurationMs,
   getDurationSeconds,
-} from '@sorry-cypress/dashboard/lib/duration';
+} from '@sorry-cypress/dashboard/lib/time';
 import { ResetInstanceButton } from '@sorry-cypress/dashboard/run/runDetails/resetInstance/resetInstanceButton';
-import {
-  Cell,
-  DataTable,
-  Grid,
-  HFlow,
-  Switch,
-  Text,
-  Tooltip,
-  VFlow,
-} from 'bold-ui';
 import { differenceInSeconds, parseISO } from 'date-fns';
 import { isNumber } from 'lodash';
-import React from 'react';
-import { generatePath, useHistory } from 'react-router';
-import { Link } from 'react-router-dom';
+import React, { FunctionComponent } from 'react';
+import { generatePath } from 'react-router';
+import { Link as RouterLink } from 'react-router-dom';
 import stringHash from 'string-hash';
 
-export function RunDetails({ run }: { run: NonNullable<GetRunQuery['run']> }) {
-  const { specs } = run;
-  const history = useHistory();
+export const RunDetails: RunDetailsComponent = (props) => {
+  const { run, hidePassedSpecs } = props;
 
-  const [hidePassedSpecs, setHidePassedSpecs] = useHideSuccessfulSpecs();
+  const { specs } = run;
 
   if (!specs) {
     return null;
   }
 
-  function handleRowClick(row: RunDetailSpecFragment) {
-    history.push(generatePath(`/instance/${row.instanceId}`));
-  }
-
-  const rows = run.specs
+  const rows: GridRowsProp = run.specs
     .filter((spec) => !!spec)
     .filter((spec) => {
       if (!hidePassedSpecs) {
@@ -60,113 +46,86 @@ export function RunDetails({ run }: { run: NonNullable<GetRunQuery['run']> }) {
         stats: spec.results?.stats,
         retries: spec.results?.retries ?? 0,
       });
-      return ['failed'].includes(state);
+      return ['failed', 'pending', 'running'].includes(state);
     });
 
   return (
-    <Grid>
-      <Cell xs={12}>
-        <HFlow justifyContent="space-between" alignItems="center">
-          <strong>Spec Files</strong>
-          <Switch
-            label="Hide successful specs"
-            checked={hidePassedSpecs}
-            onChange={() => setHidePassedSpecs((i) => !i)}
-          />
-        </HFlow>
-      </Cell>
-      <Cell xs={12}>
-        <VFlow>
-          <Paper>
-            <DataTable
-              rows={rows}
-              loading={false}
-              onRowClick={handleRowClick}
-              columns={[
-                {
-                  name: 'status',
-                  header: 'Status',
-                  sortable: false,
-                  render: getItemStatusCell,
-                },
-                {
-                  name: 'machine',
-                  header: (
-                    <Tooltip text="Random but consistent">
-                      <Text>Machine #</Text>
-                    </Tooltip>
-                  ),
-                  sortable: false,
-                  render: getMachineCell,
-                },
-                {
-                  name: 'group',
-                  header: 'Group',
-                  sortable: false,
-                  render: getGroupIdCell,
-                },
-                {
-                  name: 'link',
-                  header: 'Name',
-                  sortable: false,
-                  render: getSpecNameCell,
-                },
-                {
-                  name: 'duration',
-                  header: 'Duration',
-                  sortable: false,
-                  render: getDurationCell,
-                },
-                // {
-                //   name: 'average-duration',
-                //   header: 'Avg Duration',
-                //   sortable: false,
-                //   render: getAvgDurationCell,
-                // },
-                {
-                  name: 'failures',
-                  header: '',
-                  sortable: false,
-                  render: getFailuresCell,
-                },
-                {
-                  name: 'passes',
-                  header: '',
-                  sortable: false,
-                  render: getPassesCell,
-                },
-                {
-                  name: 'retries',
-                  header: '',
-                  sortable: false,
-                  render: getRetriesCell,
-                },
-                {
-                  name: 'skipped',
-                  header: '',
-                  sortable: false,
-                  render: getSkippedCell,
-                },
-                {
-                  name: 'actions',
-                  header: 'Actions',
-                  sortable: false,
-                  render: getActionsCell(run),
-                },
-              ]}
-            />
-          </Paper>
-        </VFlow>
-      </Cell>
-    </Grid>
+    <Paper sx={{ p: 0 }}>
+      <DataGrid
+        style={{ border: 0 }}
+        autoHeight
+        hideFooter={rows.length <= 100}
+        getRowId={(row) => row.instanceId}
+        rows={rows}
+        loading={false}
+        columns={[
+          {
+            field: 'status',
+            headerName: 'Status',
+            sortable: false,
+            renderCell: getItemStatusCell,
+          },
+          {
+            field: 'machine',
+            headerName: 'Machine #',
+            sortable: false,
+            renderCell: getMachineCell,
+          },
+          {
+            field: 'group',
+            headerName: 'Group',
+            sortable: false,
+            renderCell: getGroupIdCell,
+          },
+          {
+            field: 'specName',
+            headerName: 'Spec Name',
+            sortable: false,
+            renderCell: getSpecNameCell,
+            flex: 1,
+            minWidth: 150,
+          },
+          {
+            field: 'duration',
+            headerName: 'Duration',
+            sortable: false,
+            renderCell: getDurationCell,
+            width: 90,
+          },
+          // {
+          //   field: 'average-duration',
+          //   headerName: 'Avg Duration',
+          //   sortable: false,
+          //   renderCell: getAvgDurationCell,
+          //   align:'right',
+          // },
+          {
+            field: 'stats',
+            headerName: 'Tests stats',
+            sortable: false,
+            renderCell: getTestStatsCell,
+            minWidth: 280,
+          },
+          {
+            field: 'actions',
+            headerName: 'Actions',
+            sortable: false,
+            width: 80,
+            align: 'center',
+            renderCell: getActionsCell(run),
+          },
+        ]}
+      />
+    </Paper>
   );
-}
+};
 
 const getActionsCell = (run: NonNullable<GetRunQuery['run']>) => {
-  const getAction = (spec: RunDetailSpecFragment) => {
-    return spec.claimedAt ? (
+  const getAction = (params: GridRenderCellParams) => {
+    return params.row.claimedAt ? (
       <ResetInstanceButton
-        instanceId={spec.instanceId ?? 0}
+        spec={params.row.spec}
+        instanceId={params.row.instanceId ?? 0}
         runId={run.runId}
       />
     ) : null;
@@ -174,76 +133,93 @@ const getActionsCell = (run: NonNullable<GetRunQuery['run']>) => {
   return getAction;
 };
 
-const getPassesCell = (spec: RunDetailSpecFragment) => {
-  return <TestSuccessBadge value={spec.results?.stats?.passes ?? 0} />;
+const getTestStatsCell = (params: GridRenderCellParams) => {
+  return (
+    <Grid container spacing={1}>
+      <Grid item>
+        <TestSuccessBadge value={params.row.results?.stats?.passes ?? 0} />
+      </Grid>
+      <Grid item>
+        <TestFailureBadge value={params.row.results?.stats?.failures ?? 0} />
+      </Grid>
+      <Grid item>
+        <TestRetriesBadge value={params.row.results?.retries ?? 0} />
+      </Grid>
+      <Grid item>
+        <TestSkippedBadge value={params.row.results?.stats?.pending ?? 0} />
+      </Grid>
+    </Grid>
+  );
 };
 
-const getFailuresCell = (spec: RunDetailSpecFragment) => {
-  return <TestFailureBadge value={spec.results?.stats?.failures ?? 0} />;
-};
-
-const getRetriesCell = (spec: RunDetailSpecFragment) => {
-  return <TestRetriesBadge value={spec.results?.retries ?? 0} />;
-};
-
-const getSkippedCell = (spec: RunDetailSpecFragment) => {
-  return <TestSkippedBadge value={spec.results?.stats?.pending ?? 0} />;
-};
-
-const getItemStatusCell = (spec: RunDetailSpecFragment) => (
+const getItemStatusCell = (params: GridRenderCellParams) => (
   <SpecStateTag
     state={getInstanceState({
-      claimedAt: spec.claimedAt,
-      stats: spec.results?.stats,
-      retries: spec.results?.retries ?? 0,
+      claimedAt: params.row.claimedAt,
+      stats: params.row.results?.stats,
+      retries: params.row.results?.retries ?? 0,
     })}
   />
 );
 
-const getMachineCell = (spec: RunDetailSpecFragment) => {
-  if (spec.machineId) {
-    return getMachineName(spec.machineId);
+const getMachineCell = (params: GridRenderCellParams) => {
+  if (params.row.machineId) {
+    return getMachineName(params.row.machineId);
   }
   return null;
 };
-const getGroupIdCell = (spec: RunDetailSpecFragment) => spec.groupId;
-const getSpecNameCell = (spec: RunDetailSpecFragment) => (
-  <Link to={generatePath(`/instance/${spec.instanceId}`)}>{spec.spec}</Link>
+const getGroupIdCell = (params: GridRenderCellParams) => params.row.groupId;
+const getSpecNameCell = (params: GridRenderCellParams) => (
+  <Tooltip title={params.row.spec}>
+    <Link
+      component={RouterLink}
+      to={generatePath(`/instance/${params.row.instanceId}`)}
+      sx={{ width: '100%' }}
+      underline="hover"
+      noWrap
+    >
+      {getBase(params.row.spec)}
+    </Link>
+  </Tooltip>
 );
 
-const getDurationCell = (spec: RunDetailSpecFragment) => {
-  if (isNumber(spec.results?.stats?.wallClockDuration)) {
+const getDurationCell = (params: GridRenderCellParams) => {
+  if (isNumber(params.row.results?.stats?.wallClockDuration)) {
     return (
-      <Tooltip text={`Started at ${spec.results?.stats.wallClockStartedAt}`}>
-        <Text>{getDurationMs(spec.results?.stats.wallClockDuration ?? 0)}</Text>
+      <Tooltip
+        title={`Started at ${params.row.results?.stats.wallClockStartedAt}`}
+      >
+        <span>
+          {getDurationMs(params.row.results?.stats.wallClockDuration ?? 0)}
+        </span>
       </Tooltip>
     );
   }
-  if (!spec.claimedAt) {
+  if (!params.row.claimedAt) {
     return null;
   }
 
   return (
-    <Tooltip text={`Started at ${spec.claimedAt}`}>
-      <Text>
+    <Tooltip title={`Started at ${params.row.claimedAt}`}>
+      <span>
         <RenderOnInterval
           render={() =>
             getDurationSeconds(
               // @ts-ignore
-              differenceInSeconds(new Date(), parseISO(spec.claimedAt))
+              differenceInSeconds(new Date(), parseISO(params.row.claimedAt))
             )
           }
         />
-      </Text>
+      </span>
     </Tooltip>
   );
 };
 
-// const getAvgDurationCell = (spec: RunDetailSpecFragment) => {
-//   if (!spec.spec) {
+// const getAvgDurationCell = (params: GridRenderCellParams) => {
+//   if (!params.row.spec) {
 //     return null;
 //   }
-//   return <SpecAvg specName={spec.spec} />;
+//   return <SpecAvg specName={params.row.spec} />;
 // };
 
 function getMachineName(machineId: string) {
@@ -267,3 +243,9 @@ function getMachineName(machineId: string) {
 //   }
 //   return <>{getDurationMs(data.specStats?.avgWallClockDuration ?? 0)}</>;
 // };
+
+type RunDetailsProps = {
+  run: NonNullable<GetRunQuery['run']>;
+  hidePassedSpecs: boolean;
+};
+type RunDetailsComponent = FunctionComponent<RunDetailsProps>;

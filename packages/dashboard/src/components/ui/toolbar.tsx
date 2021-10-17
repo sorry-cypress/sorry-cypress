@@ -12,32 +12,15 @@ import {
   Menu,
   MenuItem,
   Theme,
+  ToggleButton,
 } from '@mui/material';
 import { SxProps } from '@mui/system';
 import { useBreakpoint } from '@sorry-cypress/dashboard/hooks';
 import { indexOf } from 'lodash';
-import React, { MouseEvent } from 'react';
+import React, { FunctionComponent, MouseEvent } from 'react';
 import { SearchField } from './searchField';
 
-type ToolbarProps = {
-  actions?: ToolbarAction[];
-  onSearch?: (text: string) => void;
-  searchPlaceholder?: string;
-  sx?: SxProps<Theme> | undefined;
-};
-
-type ToolbarType = React.FC<ToolbarProps>;
-
-type ToolbarAction = {
-  key: string;
-  text: string;
-  icon: SvgIconComponent;
-  primary: boolean;
-  showInMenuBreakpoint?: Breakpoint[];
-  onClick: () => void;
-};
-
-const Toolbar: ToolbarType = (props) => {
+export const Toolbar: ToolbarComponent = (props) => {
   const { actions = [], onSearch, searchPlaceholder, sx } = props;
 
   const breakpoint = useBreakpoint();
@@ -73,27 +56,58 @@ const Toolbar: ToolbarType = (props) => {
       <Grid
         item
         container
+        flex={1}
         xs={12}
-        lg="auto"
         justifyContent="flex-end"
         alignItems="center"
         mb={{ xs: 1, lg: 0 }}
-        mr={{ xs: 0, lg: 2 }}
+        mr={{ xs: 0, lg: onSearch ? 2 : 0 }}
       >
-        <Grid item xs>
-          {outsideActions.map((action) => (
-            <Button
-              key={action.key}
-              disableElevation
-              variant="outlined"
-              color={action.primary ? 'primary' : 'secondary'}
-              size="medium"
-              startIcon={action.icon && <action.icon />}
-              onClick={action.onClick}
-            >
-              {action.text}
-            </Button>
-          ))}
+        <Grid
+          item
+          xs
+          container
+          columnSpacing={1}
+          flex={1}
+          justifyContent="flex-end"
+        >
+          {outsideActions.map((action) => {
+            if (action.toggleButton) {
+              return (
+                <Grid item key={action.key}>
+                  <ToggleButton
+                    value={action.key}
+                    color={action.primary ? 'primary' : undefined}
+                    size="small"
+                    selected={action.selected}
+                    onChange={action.onClick}
+                    sx={{ py: '6px', textTransform: 'none' }}
+                  >
+                    {action.icon && (
+                      <action.icon sx={{ mr: 0.5, fontSize: 18 }} />
+                    )}
+                    {action.text}
+                  </ToggleButton>
+                </Grid>
+              );
+            }
+            return (
+              <Grid item key={action.key}>
+                <Button
+                  disableElevation
+                  variant="outlined"
+                  color={action.primary ? 'primary' : 'inherit'}
+                  size="medium"
+                  startIcon={
+                    action.icon && <action.icon sx={{ fontSize: 18 }} />
+                  }
+                  onClick={action.onClick}
+                >
+                  {action.text}
+                </Button>
+              </Grid>
+            );
+          })}
         </Grid>
         {moreActions.length > 0 && (
           <Grid item xs="auto" sx={{ display: { lg: 'none' } }}>
@@ -145,4 +159,20 @@ const Toolbar: ToolbarType = (props) => {
   );
 };
 
-export { Toolbar };
+type ToolbarAction = {
+  key: string;
+  text: string;
+  icon: SvgIconComponent;
+  primary: boolean;
+  toggleButton?: boolean;
+  selected?: boolean;
+  showInMenuBreakpoint?: Breakpoint[];
+  onClick: () => void;
+};
+type ToolbarProps = {
+  actions?: ToolbarAction[];
+  onSearch?: (text: string) => void;
+  searchPlaceholder?: string;
+  sx?: SxProps<Theme> | undefined;
+};
+type ToolbarComponent = FunctionComponent<ToolbarProps>;

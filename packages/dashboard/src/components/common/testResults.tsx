@@ -1,93 +1,111 @@
-import { HFlow, Icon, Text, Tooltip } from 'bold-ui';
-import React from 'react';
+import {
+  CheckCircleOutline as CheckCircleOutlineIcon,
+  ErrorOutline as ErrorOutlineIcon,
+  Flaky as FlakyIcon,
+  NextPlanOutlined as NextPlanOutlinedIcon,
+  RadioButtonUnchecked as RadioButtonUncheckedIcon,
+} from '@mui/icons-material';
+import { Box, Tooltip } from '@mui/material';
+import { padStart } from 'lodash';
+import React, { FunctionComponent } from 'react';
+import { Chip } from '..';
 
-export const TestSuccessBadge = ({ value }: { value: number }) => {
-  const color = value ? 'success' : 'disabled';
+export const TestSuccessBadge: TestBadgeComponent = (props) => {
+  const { value } = props;
+
   return (
-    <Text color={color}>
-      <Tooltip text="Passed Tests">
-        <HFlow alignItems="center" hSpacing={0.5}>
-          <Icon icon="checkCircleOutline" size={1} />
-          {value}
-        </HFlow>
-      </Tooltip>
-    </Text>
+    <Tooltip title="Passed Tests" arrow>
+      <Chip
+        color={value ? 'green' : 'grey'}
+        shade={!value ? 300 : undefined}
+        label={<Pad number={value} />}
+        icon={CheckCircleOutlineIcon}
+      />
+    </Tooltip>
   );
 };
 
-export const TestFailureBadge = ({ value }: { value: number }) => {
-  const color = value ? 'danger' : 'disabled';
+export const TestFailureBadge: TestBadgeComponent = (props) => {
+  const { value } = props;
+
   return (
-    <Text color={color}>
-      <Tooltip text="Failed Tests">
-        <HFlow alignItems="center" hSpacing={0.5}>
-          <Icon icon="exclamationTriangleOutline" size={1} />
-          {value}
-        </HFlow>
-      </Tooltip>
-    </Text>
+    <Tooltip title="Failed Tests" arrow>
+      <Chip
+        color={value ? 'red' : 'grey'}
+        shade={!value ? 300 : undefined}
+        label={<Pad number={value} />}
+        icon={ErrorOutlineIcon}
+      />
+    </Tooltip>
   );
 };
 
-export const TestRetriesSkippedBadge = ({
-  retries,
-  skipped,
-}: {
-  retries: number;
-  skipped: number;
-}) => {
+export const TestSkippedBadge: TestBadgeComponent = (props) => {
+  const { value } = props;
+
   return (
-    <div style={{ display: 'flex' }}>
-      <TestRetriesBadge value={retries} />
-      <TestSkippedBadge value={skipped} style={{ paddingLeft: '1rem' }} />
-    </div>
+    <Tooltip title="Skipped Tests" arrow>
+      <Chip
+        color={value ? 'orange' : 'grey'}
+        shade={!value ? 300 : undefined}
+        label={<Pad number={value} />}
+        icon={NextPlanOutlinedIcon}
+      />
+    </Tooltip>
   );
 };
 
-export const TestSkippedBadge = ({
-  value,
-  style,
-}: {
+export const TestRetriesBadge: TestBadgeComponent = (props) => {
+  const { value } = props;
+
+  return (
+    <Tooltip title="Flaky Tests" arrow>
+      <Chip
+        color={value ? 'pink' : 'grey'}
+        shade={!value ? 300 : undefined}
+        label={<Pad number={value} />}
+        icon={FlakyIcon}
+      />
+    </Tooltip>
+  );
+};
+
+export const TestOverallBadge: TestBadgeComponent = (props) => {
+  const { value } = props;
+
+  return (
+    <Tooltip title="Total Tests" arrow>
+      <Chip
+        color="cyan"
+        label={<Pad number={value} />}
+        icon={RadioButtonUncheckedIcon}
+      />
+    </Tooltip>
+  );
+};
+
+const Pad: PadComponent = (props) => {
+  const { number } = props;
+
+  return (
+    <Box
+      component="span"
+      whiteSpace="pre"
+      sx={{
+        opacity: !number ? 0.4 : undefined,
+      }}
+    >
+      {padStart(number?.toString(), 4)}
+    </Box>
+  );
+};
+
+type PadProps = {
+  number: number;
+};
+type PadComponent = FunctionComponent<PadProps>;
+
+type TestBadgeProps = {
   value: number;
-  style?: any;
-}) => {
-  const color = value ? 'normal' : 'disabled';
-  return (
-    <Text color={color} style={style}>
-      <Tooltip text="Skipped Tests">
-        <HFlow alignItems="center" hSpacing={0.5}>
-          <Icon icon="timesOutline" size={1} />
-          {value}
-        </HFlow>
-      </Tooltip>
-    </Text>
-  );
 };
-
-export const TestRetriesBadge = ({ value }: { value: number }) => {
-  const color = value ? 'alert' : 'disabled';
-
-  return (
-    <Text color={color}>
-      <Tooltip text="Retried Tests">
-        <HFlow alignItems="center" hSpacing={0.5}>
-          <Icon icon="sync" size={1} />
-          {value}
-        </HFlow>
-      </Tooltip>
-    </Text>
-  );
-};
-
-export const TestOverallBadge = ({ value }: { value: number }) => {
-  return (
-    <Text>
-      <Tooltip text="Total Tests">
-        <HFlow alignItems="center" hSpacing={0.5}>
-          <Icon icon="fileWithItensOutline" size={1} />
-          {value}
-        </HFlow>
-      </Tooltip>
-    </Text>
-  );
-};
+type TestBadgeComponent = FunctionComponent<TestBadgeProps>;

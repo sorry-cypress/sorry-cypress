@@ -52,7 +52,6 @@ export function ProjectListItem({ project }: ProjectListItemProps) {
                 primary={decodeURIComponent(project.projectId)}
                 primaryTypographyProps={{
                   variant: 'body1',
-                  color: '#606871',
                 }}
               />
             </ListItem>

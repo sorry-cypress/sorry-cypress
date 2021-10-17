@@ -135,6 +135,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="http://jovanilic.com"><img src="https://avatars.githubusercontent.com/u/15846154?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jovan Ilić</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=Zaista" title="Code">💻</a></td>
+    <td align="center"><a href="http://www.scottux.com"><img src="https://avatars.githubusercontent.com/u/135884?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Scott</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=scottux" title="Code">💻</a></td>
   </tr>
 </table>
 

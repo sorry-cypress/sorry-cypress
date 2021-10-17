@@ -1,18 +1,16 @@
-import { Box, Container } from '@mui/material';
-import React, { PropsWithChildren } from 'react';
+import { Paper as UIPaper, PaperProps } from '@mui/material';
+import React from 'react';
 
-interface ContainerProps {
-  children: React.ReactNodeArray;
-}
-
-export const Paper: React.FC<PropsWithChildren<ContainerProps>> = ({
-  children,
-}) => {
+export const Paper = (props: PaperProps) => {
   return (
-    <Container>
-      <Box sx={{ backgroundColor: '#fff', margin: '12px 0', padding: '12px' }}>
-        {children}
-      </Box>
-    </Container>
+    <UIPaper
+      elevation={0}
+      {...props}
+      sx={{
+        my: 1.5,
+        p: 1.5,
+        ...props.sx,
+      }}
+    />
   );
 };

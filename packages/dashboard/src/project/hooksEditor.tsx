@@ -4,6 +4,7 @@ import {
   useCreateGenericHookMutation,
   useCreateGithubHookMutation,
   useCreateSlackHookMutation,
+  useCreateTeamsHookMutation,
 } from '@sorry-cypress/dashboard/generated/graphql';
 import {
   Alert,
@@ -40,6 +41,7 @@ export const HooksEditor = () => {
   const [createBitbucketHook] = useCreateBitbucketHookMutation();
   const [createGithubHook] = useCreateGithubHookMutation();
   const [createSlackHook] = useCreateSlackHookMutation();
+  const [createTeamsHook] = useCreateTeamsHookMutation();
 
   async function createNewHook() {
     const input = {
@@ -50,6 +52,7 @@ export const HooksEditor = () => {
       | typeof createBitbucketHook
       | typeof createGithubHook
       | typeof createSlackHook
+      | typeof createTeamsHook
       | null = null;
     let field = '';
     switch (currentHookType) {
@@ -63,6 +66,11 @@ export const HooksEditor = () => {
       case HookType.GITHUB_STATUS_HOOK:
         fn = createGithubHook;
         field = 'createGithubHook';
+        break;
+      case HookType.TEAMS_HOOK:
+        fn = createTeamsHook;
+        field = 'createTeamsHook';
+
         break;
       case HookType.BITBUCKET_STATUS_HOOK:
         fn = createBitbucketHook;

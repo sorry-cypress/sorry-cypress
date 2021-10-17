@@ -8,6 +8,7 @@ import {
   CreateGithubHookInput,
   CreateProjectInput,
   CreateSlackHookInput,
+  CreateTeamsHookInput,
   DeleteHookInput,
   OrderingOptions,
   RunSpec,
@@ -16,6 +17,7 @@ import {
   UpdateGithubHookInput,
   UpdateProjectInput,
   UpdateSlackHookInput,
+  UpdateTeamsHookInput,
 } from '@sorry-cypress/api/generated/graphql';
 import { getTestListRetries, Project } from '@sorry-cypress/common';
 import { GraphQLScalarType } from 'graphql';
@@ -48,6 +50,7 @@ export const resolvers = {
   SlackHookType: getStringLiteral('SlackHookType'),
   GithubHookType: getStringLiteral('GithubHookType'),
   BitbucketHookType: getStringLiteral('BitbucketHookType'),
+  TeamsHookType: getStringLiteral('TeamsHookType'),
 
   RunSpec: {
     results: async (
@@ -254,6 +257,12 @@ export const resolvers = {
     ),
     updateSlackHook: getDatasourceWithInput<UpdateSlackHookInput>(
       'projectsAPI.updateSlackHook'
+    ),
+    createTeamsHook: getDatasourceWithInput<CreateTeamsHookInput>(
+      'projectsAPI.createTeamsHook'
+    ),
+    updateTeamsHook: getDatasourceWithInput<UpdateTeamsHookInput>(
+      'projectsAPI.updateTeamsHook'
     ),
     deleteHook: getDatasourceWithInput<DeleteHookInput>(
       'projectsAPI.deleteHook'
