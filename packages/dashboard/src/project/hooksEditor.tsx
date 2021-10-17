@@ -106,8 +106,8 @@ export const HooksEditor = () => {
 
   return (
     <>
-      <Text variant="h2">Hooks</Text>
       <Paper>
+        <Text variant="h2">Hooks</Text>
         <Grid>
           {operationError && (
             <Cell xs={12}>

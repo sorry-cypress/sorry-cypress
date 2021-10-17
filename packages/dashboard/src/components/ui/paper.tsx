@@ -1,18 +1,18 @@
-import { Paper as UIPaper, PaperProps, useStyles } from 'bold-ui';
-import React from 'react';
+import { Box, Container } from '@mui/material';
+import React, { PropsWithChildren } from 'react';
 
-export const Paper = (props: PaperProps) => {
-  const { css } = useStyles();
+interface ContainerProps {
+  children: React.ReactNodeArray;
+}
+
+export const Paper: React.FC<PropsWithChildren<ContainerProps>> = ({
+  children,
+}) => {
   return (
-    <UIPaper
-      style={css`
-         {
-          margin: 12px 0;
-          padding: 12px;
-          background-color: #fff;
-        }
-      `}
-      {...props}
-    />
+    <Container>
+      <Box sx={{ backgroundColor: '#fff', margin: '12px 0', padding: '12px' }}>
+        {children}
+      </Box>
+    </Container>
   );
 };

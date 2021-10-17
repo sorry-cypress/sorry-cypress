@@ -1,3 +1,12 @@
+import {
+  Alert,
+  Box,
+  Button,
+  Grid,
+  Input,
+  Modal,
+  Typography,
+} from '@mui/material';
 import { InputFieldLabel, Paper } from '@sorry-cypress/dashboard/components';
 import {
   CreateProjectInput,
@@ -12,20 +21,7 @@ import {
   NavItemType,
   setNav,
 } from '@sorry-cypress/dashboard/lib/navigation';
-import {
-  Alert,
-  Button,
-  Cell,
-  Grid,
-  Heading,
-  HFlow,
-  Icon,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  Text,
-  TextField,
-} from 'bold-ui';
+import { Icon } from 'bold-ui';
 import React, { useLayoutEffect, useState } from 'react';
 import { CirclePicker } from 'react-color';
 import { Controller, useForm } from 'react-hook-form';
@@ -35,6 +31,19 @@ import { useCurrentProjectId } from './hook/useCurrentProjectId';
 import { HooksEditor } from './hooksEditor';
 
 const DEFAULT_TIMEOUT_SECONDS = 600;
+
+const modalStyles = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  boxShadow: 24,
+  pt: 2,
+  px: 4,
+  pb: 3,
+};
 
 export function ProjectEditView() {
   return (
@@ -227,37 +236,33 @@ function _ProjectEditView() {
 
   return (
     <>
-      <Text variant="h2">Project Settings</Text>
       <Paper>
+        <Typography variant="h6">Project Settings</Typography>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Grid wrap>
-            <Cell xs={12}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
               {operationError ? (
-                <Alert
-                  type="danger"
-                  onCloseClick={() => setOperationError(null)}
-                >
+                <Alert severity="error" onClose={() => setOperationError(null)}>
                   {operationError}
                 </Alert>
               ) : null}
               {notification && (
-                <Alert
-                  type="success"
-                  onCloseClick={() => setNotification(null)}
-                >
+                <Alert severity="success" onClose={() => setNotification(null)}>
                   {notification}
                 </Alert>
               )}
-            </Cell>
-            <Cell xs={12} sm={6}>
+            </Grid>
+            <Grid item xs={12} sm={6}>
               <InputFieldLabel
                 required
-                htmlFor="projectId"
+                id="projectId"
                 label="Project Id"
                 helpText="This is the 'projectId' value from cypress.json."
-                error={errors['projectId']?.message}
+                error={true}
+                errorMessage={errors['projectId']?.message}
+                hasError={errors['projectId']?.message !== undefined}
               >
-                <TextField
+                <Input
                   inputRef={register({
                     required: {
                       value: true,
@@ -269,16 +274,19 @@ function _ProjectEditView() {
                   disabled={!isNewProject || disabled}
                 />
               </InputFieldLabel>
-            </Cell>
-            <Cell xs={12} sm={6}>
+            </Grid>
+            <Grid item xs={12} sm={6}>
               <InputFieldLabel
-                htmlFor="inactivityTimeoutMinutes"
+                id="inactivityTimeoutMinutes"
                 label="Runs Timeout (minutes)"
                 helpText="Runs exceeding this value will be considered as timed out"
                 required
-                error={errors['inactivityTimeoutMinutes']?.message}
+                errorMessage={errors['inactivityTimeoutMinutes']?.message}
+                hasError={
+                  errors['inactivityTimeoutMinutes']?.message !== undefined
+                }
               >
-                <TextField
+                <Input
                   name="inactivityTimeoutMinutes"
                   placeholder="Runs timeout in minutes"
                   type="number"
@@ -300,13 +308,13 @@ function _ProjectEditView() {
                   disabled={disabled}
                 />
               </InputFieldLabel>
-            </Cell>
-            <Cell xs={12}>
+            </Grid>
+            <Grid item xs={12}>
               <InputFieldLabel
-                htmlFor="projectColor"
-                label="Project Color"
+                id="projectColor"
                 helpText="A color to easily differentiate this project from others"
-                error={errors['projectColor']?.message}
+                errorMessage={errors['projectColor']?.message}
+                hasError={errors['projectColor']?.message !== undefined}
               >
                 <Controller
                   control={control}
@@ -320,91 +328,86 @@ function _ProjectEditView() {
                   name="projectColor"
                   defaultValue=""
                 />
-                {errors.projectColor && <Text>{errors.projectColor}</Text>}
+                {errors.projectColor && (
+                  <Typography>{errors.projectColor}</Typography>
+                )}
               </InputFieldLabel>
-            </Cell>
-            <Cell
-              style={{ display: 'flex', justifyContent: 'flex-end' }}
-              size={12}
-            >
+            </Grid>
+            <Grid item xs={12}>
               <Button
+                variant="contained"
                 type="submit"
-                kind="primary"
+                color="primary"
                 disabled={disabled || hasErrors}
               >
                 {isNewProject ? 'Create Project' : 'Save Settings'}
               </Button>
-            </Cell>
+            </Grid>
           </Grid>
         </form>
       </Paper>
       {!isNewProject && <HooksEditor />}
       {!isNewProject && !ProjectJustCreated && (
         <div>
-          <Modal
-            size="small"
-            onClose={() => setShowModal(false)}
-            open={shouldShowModal}
-          >
-            <ModalBody>
-              <HFlow alignItems="center">
-                <Icon
-                  icon="exclamationTriangleFilled"
-                  style={{ marginRight: '0.5rem' }}
-                  size={3}
-                  fill="danger"
-                />
-                <div>
-                  <Heading level={1}>Delete project {projectId}?</Heading>
-                  <Heading level={5}>
-                    Deleting project will permanently delete the associated data
-                    (project, run, instances, test results). Running tests
-                    associated with the project will fail.
-                  </Heading>
-                  {deleteError && <p>Delete error: {deleteError}</p>}
-                </div>
-              </HFlow>
-            </ModalBody>
-            <ModalFooter>
-              <HFlow justifyContent="flex-end">
-                <Button
-                  kind="normal"
-                  skin="ghost"
-                  onClick={() => setShowModal(false)}
-                >
-                  <Text color="inherit">Cancel</Text>
-                </Button>
-                <Button
-                  kind="danger"
-                  skin="ghost"
-                  onClick={deleteProject}
-                  disabled={deleting}
-                >
-                  <Icon icon="trashOutline" style={{ marginRight: '0.5rem' }} />
-                  <Text color="inherit">
-                    {deleting ? 'Deleting' : 'Delete'}
-                  </Text>
-                </Button>
-              </HFlow>
-            </ModalFooter>
+          <Modal open={shouldShowModal} onClose={() => setShowModal(false)}>
+            <Box>
+              <Icon
+                icon="exclamationTriangleFilled"
+                style={{ marginRight: '0.5rem' }}
+                size={3}
+                fill="danger"
+              />
+              <div>
+                <Typography variant="h5">
+                  Delete project {projectId}?
+                </Typography>
+                <Typography sx={{ mt: 2 }}>
+                  Deleting project will permanently delete the associated data
+                  (project, run, instances, test results). Running tests
+                  associated with the project will fail.
+                </Typography>
+                {deleteError && <p>Delete error: {deleteError}</p>}
+              </div>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => setShowModal(false)}
+              >
+                <Typography color="inherit">Cancel</Typography>
+              </Button>
+              <Button
+                variant="contained"
+                color="error"
+                onClick={deleteProject}
+                disabled={deleting}
+              >
+                <Icon icon="trashOutline" style={{ marginRight: '0.5rem' }} />
+                <Typography color="inherit">
+                  {deleting ? 'Deleting' : 'Delete'}
+                </Typography>
+              </Button>
+            </Box>
           </Modal>
 
-          <Text variant="h2">Remove Project</Text>
           <Paper>
-            <Text variant="main" component="div">
+            <Typography variant="h6">Remove Project</Typography>
+            <Typography variant="body1" gutterBottom component="div">
               By removing this project, all runs will be deleted and will no
               longer be available.
-            </Text>
-            <HFlow justifyContent="flex-end">
+            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
               <Button
-                kind="danger"
+                variant="contained"
+                color="error"
                 onClick={() => setShowModal(true)}
                 disabled={deleting}
               >
                 <Icon icon="trashOutline" style={{ marginRight: '0.5rem' }} />
-                <Text color="inherit">{deleting ? 'Deleting' : 'Delete'}</Text>
+                <Typography color="inherit">
+                  {deleting ? 'Deleting' : 'Delete'}
+                </Typography>
               </Button>
-            </HFlow>
+            </Box>
           </Paper>
         </div>
       )}
