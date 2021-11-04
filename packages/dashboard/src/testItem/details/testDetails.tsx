@@ -1,31 +1,52 @@
+import { Box, Grid, Typography } from '@mui/material';
 import { getTestRetries } from '@sorry-cypress/common';
-import { VisualTestState } from '@sorry-cypress/dashboard/components/common';
+import {
+  FlakyTestBadge,
+  TestAttemptsState,
+  VisualTestState,
+} from '@sorry-cypress/dashboard/components/common/testState';
 import {
   InstanceScreeshot,
   InstanceTest,
 } from '@sorry-cypress/dashboard/generated/graphql';
-import { Heading, HFlow } from 'bold-ui';
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import { TestDetailsV5 } from './testDetailsV5';
+
+export const TestDetails: TestDetailsComponent = (props) => {
+  const { test, screenshots } = props;
+
+  const title = test.title[test.title.length - 1];
+
+  return (
+    <>
+      <Typography component="h1" variant="h6" color="text.secondary" mb={0.5}>
+        {title}
+      </Typography>
+      <Grid container spacing={1}>
+        <Grid item>
+          <VisualTestState
+            state={test.state}
+            retries={getTestRetries(test.state, test.attempts.length)}
+          />
+        </Grid>
+        {test.state === 'passed' && test.attempts.length > 1 && (
+          <Grid item>
+            <FlakyTestBadge />
+          </Grid>
+        )}
+        <Grid item>
+          <TestAttemptsState attempts={test.attempts.length} />
+        </Grid>
+      </Grid>
+      <Box mt={4}>
+        <TestDetailsV5 test={test} screenshots={screenshots} />
+      </Box>
+    </>
+  );
+};
 
 type TestDetailsProps = {
   test: InstanceTest;
   screenshots: Partial<InstanceScreeshot>[];
 };
-export function TestDetails({ test, screenshots }: TestDetailsProps) {
-  const title = test.title?.join(' > ');
-
-  return (
-    <>
-      <HFlow>
-        <VisualTestState
-          state={test.state}
-          retries={getTestRetries(test.state, test.attempts.length)}
-        />
-        <Heading level={1}>{title}</Heading>
-      </HFlow>
-      <hr />
-      <TestDetailsV5 test={test} screenshots={screenshots} />
-    </>
-  );
-}
+type TestDetailsComponent = FunctionComponent<TestDetailsProps>;

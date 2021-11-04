@@ -1,10 +1,10 @@
 import { Grid } from '@mui/material';
 import {
-  TestFailureBadge,
-  TestOverallBadge,
-  TestRetriesBadge,
-  TestSkippedBadge,
-  TestSuccessBadge,
+  TestFailureChip,
+  TestOverallChip,
+  TestRetriesChip,
+  TestSkippedChip,
+  TestSuccessChip,
 } from '@sorry-cypress/dashboard/components';
 import React, { FunctionComponent } from 'react';
 
@@ -16,19 +16,19 @@ export const RunSummaryTestResults: RunSummaryTestResultsComponent = (
   return (
     <Grid container spacing={1}>
       <Grid item>
-        <TestOverallBadge value={testsStats.overall} />
+        <TestOverallChip value={testsStats.overall} />
       </Grid>
       <Grid item>
-        <TestSuccessBadge value={testsStats.passes} />
+        <TestSuccessChip value={testsStats.passes} />
       </Grid>
       <Grid item>
-        <TestFailureBadge value={testsStats.failures} />
+        <TestFailureChip value={testsStats.failures} />
       </Grid>
       <Grid item>
-        <TestRetriesBadge value={testsStats.retries} />
+        <TestRetriesChip value={testsStats.retries} />
       </Grid>
       <Grid item>
-        <TestSkippedBadge value={testsStats.pending} />
+        <TestSkippedChip value={testsStats.pending} />
       </Grid>
     </Grid>
   );

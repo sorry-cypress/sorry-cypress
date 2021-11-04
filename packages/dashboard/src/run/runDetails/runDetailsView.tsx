@@ -16,7 +16,7 @@ import {
 } from '@sorry-cypress/dashboard/lib/navigation';
 import { RunSummary } from '@sorry-cypress/dashboard/run/runSummary/runSummary';
 import React, { FunctionComponent, useLayoutEffect } from 'react';
-import { RunDetails } from './details';
+import { RunDetails } from './runDetails';
 
 export const RunDetailsView: RunDetailsViewComponent = (props) => {
   const {
@@ -114,7 +114,7 @@ export const RunDetailsView: RunDetailsViewComponent = (props) => {
         component="h1"
         variant="h6"
         color="text.primary"
-        sx={{ my: 5 }}
+        sx={{ mt: 5, mb: 2 }}
       >
         Spec Files
       </Typography>

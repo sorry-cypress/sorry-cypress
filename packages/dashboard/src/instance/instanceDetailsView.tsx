@@ -1,3 +1,4 @@
+import { Alert, AlertTitle } from '@mui/material';
 import {
   GetInstanceQuery,
   useGetInstanceQuery,
@@ -10,22 +11,19 @@ import {
   NavItemType,
   setNav,
 } from '@sorry-cypress/dashboard/lib/navigation';
-import React, { useLayoutEffect } from 'react';
-import { InstanceDetails } from './details';
-import { InstanceSummary } from './summary';
+import React, { FunctionComponent, useLayoutEffect } from 'react';
+import { Paper } from '../components';
+import { WithMaterial } from '../lib/material';
+import { InstanceDetails } from './instanceDetails';
+import { InstanceSummary } from './instanceSummary';
 
-type InstanceDetailsViewProps = {
-  match: {
-    params: {
-      id: string;
-    };
-  };
-};
-export function InstanceDetailsView({
-  match: {
-    params: { id },
-  },
-}: InstanceDetailsViewProps) {
+export const InstanceDetailsView: InstanceDetailsViewComponent = (props) => {
+  const {
+    match: {
+      params: { id, itemId, testId },
+    },
+  } = props;
+
   const autoRefreshRate = useAutoRefreshRate();
   const { loading, error, data } = useGetInstanceQuery({
     variables: { instanceId: id },
@@ -34,28 +32,45 @@ export function InstanceDetailsView({
   updateNav(data);
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error.toString()}</p>;
-  if (!data) return <p>No Data</p>;
 
-  if (!data.instance) {
-    return <p>No data reported so far</p>;
+  if (error || !data) {
+    return (
+      <Paper>
+        <Alert severity="error">
+          <AlertTitle>Error</AlertTitle>
+          {error && <p>{error.toString()}</p>}
+          {!data && <p>No Data</p>}
+        </Alert>
+      </Paper>
+    );
   }
 
-  if (!data.instance.results) {
+  if (!data.instance || !data.instance.results) {
     return (
-      <div>
-        No results yet for spec <strong>{data.instance.spec}</strong>
-      </div>
+      <Paper>
+        <Alert severity="info">
+          <AlertTitle>Info</AlertTitle>
+          {!data?.instance && <p>No data reported so far</p>}
+          {data?.instance && !data?.instance?.results && (
+            <p>
+              No results yet for spec <strong>{data.instance.spec}</strong>
+            </p>
+          )}
+        </Alert>
+      </Paper>
     );
   }
 
   return (
-    <>
+    <WithMaterial>
       <InstanceSummary instance={data.instance} />
-      <InstanceDetails instance={data.instance} />
-    </>
+      <InstanceDetails
+        instance={data.instance}
+        selectedItem={itemId || testId}
+      />
+    </WithMaterial>
   );
-}
+};
 
 function updateNav(data: GetInstanceQuery | undefined) {
   useLayoutEffect(() => {
@@ -86,3 +101,14 @@ function updateNav(data: GetInstanceQuery | undefined) {
     ]);
   }, [data]);
 }
+
+type InstanceDetailsViewProps = {
+  match: {
+    params: {
+      id: string;
+      itemId?: string;
+      testId?: string;
+    };
+  };
+};
+type InstanceDetailsViewComponent = FunctionComponent<InstanceDetailsViewProps>;

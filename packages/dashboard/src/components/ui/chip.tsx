@@ -6,10 +6,10 @@ import {
   colors,
 } from '@mui/material';
 import { get } from 'lodash';
-import React, { forwardRef, FunctionComponent } from 'react';
+import React, { forwardRef, FunctionComponent, ReactElement } from 'react';
 
 export const Chip: ChipComponent = forwardRef((props, ref) => {
-  const { color, icon: Icon, shade = 400, ...restProps } = props;
+  const { color, icon: Icon, shade = 400, endIcon, ...restProps } = props;
 
   return (
     <UIChip
@@ -24,10 +24,27 @@ export const Chip: ChipComponent = forwardRef((props, ref) => {
           />
         )
       }
+      {...(endIcon
+        ? {
+            deleteIcon: endIcon.icon,
+            onDelete: () => null,
+          }
+        : {})}
       {...restProps}
       sx={{
         backgroundColor: alpha(get(colors, [color, shade]), Icon ? 0.15 : 0.4),
         color: Icon ? undefined : 'text.secondary',
+        ...(endIcon
+          ? {
+              '& .MuiChip-deleteIcon': {
+                cursor: 'default',
+                color: endIcon.color,
+                '&:hover': {
+                  color: endIcon.color,
+                },
+              },
+            }
+          : {}),
         ...restProps.sx,
       }}
     ></UIChip>
@@ -40,5 +57,9 @@ type ChipProps = Omit<UIChipProps, 'color' | 'icon'> & {
   color: keyof typeof colors;
   shade?: keyof typeof colors.grey;
   icon?: SvgIconComponent;
+  endIcon?: {
+    icon: ReactElement<any>;
+    color?: string;
+  };
 };
 type ChipComponent = FunctionComponent<ChipProps>;
