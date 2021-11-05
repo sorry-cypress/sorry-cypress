@@ -1,6 +1,7 @@
+import AddIcon from '@mui/icons-material/Add';
+import { Chip, Grid, TextField } from '@mui/material';
 import { SlackHook } from '@sorry-cypress/common';
 import { InputFieldLabel } from '@sorry-cypress/dashboard/components';
-import { Cell, Tag, TextField } from 'bold-ui';
 import React, { ChangeEvent, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
@@ -98,7 +99,7 @@ const BranchFilter = ({
   };
 
   return (
-    <Cell xs={12}>
+    <Grid item xs={12}>
       <InputFieldLabel
         helpText='Filter for branches. You can specify branch names which only will trigger a webhook.
           You can use "?" and "*" wildcard characters
@@ -112,29 +113,33 @@ const BranchFilter = ({
       >
         <TextField
           name={'slackBranchFilter'}
-          icon={'plus'}
           placeholder="Enter branch name"
           disabled={disabled}
           onChange={handleInput}
-          onIconClick={() => addBranch()}
           onKeyDown={handleKeyDown}
           value={inputBranchName}
+          InputProps={{
+            endAdornment: (
+              <AddIcon
+                onClick={() => addBranch()}
+                style={{ cursor: 'pointer' }}
+              />
+            ),
+          }}
         />
-        <Cell xs={12}>
+        <Grid item xs={12}>
           {branches &&
             branches.map((branch, index) => (
-              <Tag
+              <Chip
+                color="primary"
+                onDelete={() => deleteBranch(branch)}
                 key={index}
-                onRemove={() => deleteBranch(branch)}
-                removable
-                type="normal"
+                label={branch}
                 style={{ margin: '3px' }}
-              >
-                {branch}
-              </Tag>
+              />
             ))}
-        </Cell>
+        </Grid>
       </InputFieldLabel>
-    </Cell>
+    </Grid>
   );
 };

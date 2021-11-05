@@ -1,18 +1,9 @@
-import {
-  Alert,
-  Box,
-  Button,
-  Grid,
-  Input,
-  Modal,
-  Typography,
-} from '@mui/material';
+import { Alert, Button, Grid, TextField, Typography } from '@mui/material';
 import { InputFieldLabel, Paper } from '@sorry-cypress/dashboard/components';
 import {
   CreateProjectInput,
   UpdateProjectInput,
   useCreateProjectMutation,
-  useDeleteProjectMutation,
   useGetProjectQuery,
   useUpdateProjectMutation,
 } from '@sorry-cypress/dashboard/generated/graphql';
@@ -21,29 +12,16 @@ import {
   NavItemType,
   setNav,
 } from '@sorry-cypress/dashboard/lib/navigation';
-import { Icon } from 'bold-ui';
 import React, { useLayoutEffect, useState } from 'react';
 import { CirclePicker } from 'react-color';
 import { Controller, useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
+import { DeleteProject } from './deleteProject';
 import { useHooksFormReducer, WithHooksForm } from './hook/hookFormReducer';
 import { useCurrentProjectId } from './hook/useCurrentProjectId';
 import { HooksEditor } from './hooksEditor';
 
 const DEFAULT_TIMEOUT_SECONDS = 600;
-
-const modalStyles = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  boxShadow: 24,
-  pt: 2,
-  px: 4,
-  pb: 3,
-};
 
 export function ProjectEditView() {
   return (
@@ -73,12 +51,6 @@ function _ProjectEditView() {
   const isNewProject = projectId === '--create-new-project--';
   const [_, dispatch] = useHooksFormReducer();
 
-  const [startDeleteProjectMutation] = useDeleteProjectMutation({
-    variables: {
-      projectId,
-    },
-  });
-
   useLayoutEffect(() => {
     if (isNewProject) {
       setNav([
@@ -102,9 +74,6 @@ function _ProjectEditView() {
     }
   }, [isNewProject]);
 
-  const [deleting, setDeleting] = useState(false);
-  const [deleteError, setDeleteError] = useState<string | null>(null);
-  const [shouldShowModal, setShowModal] = useState(false);
   const [notification, setNotification] = useState<string | null>(null);
   const [ProjectJustCreated, setProjectJustCreated] = useState(false);
   const [operationError, setOperationError] = useState<string | null>(null);
@@ -215,25 +184,6 @@ function _ProjectEditView() {
   const disabled = creating || updating || loading;
   const hasErrors = Object.keys(errors).length > 0;
 
-  function deleteProject() {
-    setDeleting(true);
-    startDeleteProjectMutation()
-      .then((result) => {
-        if (result.errors) {
-          setDeleteError(result.errors[0].message);
-          setDeleting(false);
-        } else {
-          setDeleting(false);
-          setShowModal(false);
-        }
-        history.push('/');
-      })
-      .catch((error) => {
-        setDeleting(false);
-        setDeleteError(error.toString());
-      });
-  }
-
   return (
     <>
       <Paper>
@@ -255,14 +205,12 @@ function _ProjectEditView() {
             <Grid item xs={12} sm={6}>
               <InputFieldLabel
                 required
-                id="projectId"
+                htmlFor="projectId"
                 label="Project Id"
                 helpText="This is the 'projectId' value from cypress.json."
-                error={true}
                 errorMessage={errors['projectId']?.message}
-                hasError={errors['projectId']?.message !== undefined}
               >
-                <Input
+                <TextField
                   inputRef={register({
                     required: {
                       value: true,
@@ -277,16 +225,13 @@ function _ProjectEditView() {
             </Grid>
             <Grid item xs={12} sm={6}>
               <InputFieldLabel
-                id="inactivityTimeoutMinutes"
+                htmlFor="inactivityTimeoutMinutes"
                 label="Runs Timeout (minutes)"
                 helpText="Runs exceeding this value will be considered as timed out"
                 required
                 errorMessage={errors['inactivityTimeoutMinutes']?.message}
-                hasError={
-                  errors['inactivityTimeoutMinutes']?.message !== undefined
-                }
               >
-                <Input
+                <TextField
                   name="inactivityTimeoutMinutes"
                   placeholder="Runs timeout in minutes"
                   type="number"
@@ -311,10 +256,9 @@ function _ProjectEditView() {
             </Grid>
             <Grid item xs={12}>
               <InputFieldLabel
-                id="projectColor"
+                htmlFor="projectColor"
                 helpText="A color to easily differentiate this project from others"
                 errorMessage={errors['projectColor']?.message}
-                hasError={errors['projectColor']?.message !== undefined}
               >
                 <Controller
                   control={control}
@@ -347,70 +291,7 @@ function _ProjectEditView() {
         </form>
       </Paper>
       {!isNewProject && <HooksEditor />}
-      {!isNewProject && !ProjectJustCreated && (
-        <div>
-          <Modal open={shouldShowModal} onClose={() => setShowModal(false)}>
-            <Box>
-              <Icon
-                icon="exclamationTriangleFilled"
-                style={{ marginRight: '0.5rem' }}
-                size={3}
-                fill="danger"
-              />
-              <div>
-                <Typography variant="h5">
-                  Delete project {projectId}?
-                </Typography>
-                <Typography sx={{ mt: 2 }}>
-                  Deleting project will permanently delete the associated data
-                  (project, run, instances, test results). Running tests
-                  associated with the project will fail.
-                </Typography>
-                {deleteError && <p>Delete error: {deleteError}</p>}
-              </div>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => setShowModal(false)}
-              >
-                <Typography color="inherit">Cancel</Typography>
-              </Button>
-              <Button
-                variant="contained"
-                color="error"
-                onClick={deleteProject}
-                disabled={deleting}
-              >
-                <Icon icon="trashOutline" style={{ marginRight: '0.5rem' }} />
-                <Typography color="inherit">
-                  {deleting ? 'Deleting' : 'Delete'}
-                </Typography>
-              </Button>
-            </Box>
-          </Modal>
-
-          <Paper>
-            <Typography variant="h6">Remove Project</Typography>
-            <Typography variant="body1" gutterBottom component="div">
-              By removing this project, all runs will be deleted and will no
-              longer be available.
-            </Typography>
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <Button
-                variant="contained"
-                color="error"
-                onClick={() => setShowModal(true)}
-                disabled={deleting}
-              >
-                <Icon icon="trashOutline" style={{ marginRight: '0.5rem' }} />
-                <Typography color="inherit">
-                  {deleting ? 'Deleting' : 'Delete'}
-                </Typography>
-              </Button>
-            </Box>
-          </Paper>
-        </div>
-      )}
+      {!isNewProject && !ProjectJustCreated && <DeleteProject />}
     </>
   );
 }

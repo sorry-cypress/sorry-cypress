@@ -1,3 +1,17 @@
+import AddIcon from '@mui/icons-material/Add';
+import {
+  Alert,
+  Button,
+  Grid,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+  Typography,
+} from '@mui/material';
 import { Hook, HookType } from '@sorry-cypress/common';
 import {
   useCreateBitbucketHookMutation,
@@ -6,36 +20,25 @@ import {
   useCreateSlackHookMutation,
   useCreateTeamsHookMutation,
 } from '@sorry-cypress/dashboard/generated/graphql';
-import {
-  Alert,
-  Button,
-  Cell,
-  Grid,
-  HFlow,
-  Icon,
-  Select,
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-  Text,
-} from 'bold-ui';
 import React, { useState } from 'react';
-import { Paper } from '../components';
+import { InputFieldLabel, Paper } from '../components';
 import { enumToString } from './hook/hook.utils';
 import { HookEdit } from './hook/hookEdit';
 import { useHooksFormReducer } from './hook/hookFormReducer';
 import { useCurrentProjectId } from './hook/useCurrentProjectId';
-
 // This needs serious refactoring - it's a mess 😃
 export const HooksEditor = () => {
   const [operationError, setOperationError] = useState<string | null>(null);
   const [formState, dispatch] = useHooksFormReducer();
   const projectId = useCurrentProjectId();
 
-  const [currentHookType, setCurrentHookType] = useState<HookType>(
-    Object.keys(HookType).sort()[0] as HookType
+  const [currentHookType, setCurrentHookType] = useState<HookType | undefined>(
+    undefined
   );
+
+  const handleChange = (event: SelectChangeEvent) => {
+    setCurrentHookType(event.target.value as HookType);
+  };
 
   const [createGenericHook] = useCreateGenericHookMutation();
   const [createBitbucketHook] = useCreateBitbucketHookMutation();
@@ -61,28 +64,30 @@ export const HooksEditor = () => {
         field = 'createSlackHook';
         // @ts-ignore
         input.slackResultFilter = null;
-
+        setCurrentHookType(undefined);
         break;
       case HookType.GITHUB_STATUS_HOOK:
         fn = createGithubHook;
         field = 'createGithubHook';
+        setCurrentHookType(undefined);
         break;
       case HookType.TEAMS_HOOK:
         fn = createTeamsHook;
         field = 'createTeamsHook';
-
+        setCurrentHookType(undefined);
         break;
       case HookType.BITBUCKET_STATUS_HOOK:
         fn = createBitbucketHook;
         field = 'createBitbucketHook';
-
+        setCurrentHookType(undefined);
         break;
       case HookType.GENERIC_HOOK:
         fn = createGenericHook;
         field = 'createGenericHook';
+        setCurrentHookType(undefined);
         break;
-
       default:
+        setCurrentHookType(undefined);
         throw new Error('Unknown hook type');
     }
 
@@ -113,52 +118,65 @@ export const HooksEditor = () => {
   }
 
   return (
-    <>
-      <Paper>
-        <Text variant="h2">Hooks</Text>
-        <Grid>
-          {operationError && (
-            <Cell xs={12}>
-              <Alert type="danger" onCloseClick={() => setOperationError(null)}>
-                {operationError}
-              </Alert>
-            </Cell>
-          )}
-          <Cell xs={12}>
-            <HFlow alignItems="center">
-              <Text>Select hook type: </Text>
-              <Select
-                itemToString={enumToString}
-                items={Object.keys(HookType).sort()}
-                name="hookType"
-                onChange={(value: HookType) => {
-                  setCurrentHookType(value);
-                }}
-                value={currentHookType}
-                clearable={false}
-              />
-              <Button size="small" onClick={createNewHook}>
-                <Icon icon="plus" size={1.3} style={{ marginRight: '5px' }} />
-                <span>Add Hook</span>
-              </Button>
-            </HFlow>
-          </Cell>
-          <Cell xs={12}>
-            {!formState.hooks.length && <Text>No hooks defined</Text>}
-            <Table>
-              <TableBody>
-                {formState.hooks?.map((hook: Hook) => (
-                  <TableRow key={hook.hookId}>
-                    <TableCell>
-                      <HookEdit hook={hook} dispatch={dispatch} />
-                    </TableCell>
-                  </TableRow>
+    <Paper>
+      <Typography variant="h6">Hooks</Typography>
+      <Grid container spacing={2}>
+        {operationError && (
+          <Grid item xs={12}>
+            <Alert severity="error" onClose={() => setOperationError(null)}>
+              {operationError}
+            </Alert>
+          </Grid>
+        )}
+        <Grid item xs={12}>
+          <InputFieldLabel
+            helpText="Select the hook type you want to configure"
+            htmlFor="hookType"
+            label="Select hook type"
+          >
+            <Select
+              id="hookType"
+              onChange={handleChange}
+              value={currentHookType || ''}
+            >
+              {Object.keys(HookType)
+                .sort()
+                .map((hook) => (
+                  <MenuItem key={hook} value={hook}>
+                    {enumToString(hook)}
+                  </MenuItem>
                 ))}
-              </TableBody>
-            </Table>
-          </Cell>
+            </Select>
+          </InputFieldLabel>
         </Grid>
-      </Paper>
-    </>
+        <Grid item xs={12}>
+          <Button
+            disabled={!currentHookType}
+            variant="contained"
+            color="primary"
+            onClick={createNewHook}
+          >
+            <AddIcon fontSize="small" style={{ marginRight: '5px' }} />
+            Add Hook
+          </Button>
+        </Grid>
+        <Grid item xs={12}>
+          {!formState.hooks.length && (
+            <Typography variant="body1">No hooks defined</Typography>
+          )}
+          <Table>
+            <TableBody>
+              {formState.hooks?.map((hook: Hook) => (
+                <TableRow key={hook.hookId}>
+                  <TableCell>
+                    <HookEdit hook={hook} dispatch={dispatch} />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Grid>
+      </Grid>
+    </Paper>
   );
 };

@@ -1,5 +1,12 @@
 import {
-  HookEvent,
+  Button,
+  Grid,
+  ListItemText,
+  MenuItem,
+  Select,
+  TextField,
+} from '@mui/material';
+import {
   ResultFilter,
   SlackHook as SlackHookType,
 } from '@sorry-cypress/common';
@@ -8,13 +15,11 @@ import {
   UpdateSlackHookInput,
   useUpdateSlackHookMutation,
 } from '@sorry-cypress/dashboard/generated/graphql';
-import { enumToString } from '@sorry-cypress/dashboard/project/hook/hook.utils';
-import { Button, Cell, Grid, Select, TextField } from 'bold-ui';
-import { isEqual } from 'lodash';
 import React from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { EditBranchFilter } from './editBranchFilter';
 import { EditHookEvents } from './editHookEvents';
+import { enumToString } from './hook.utils';
 import { useCurrentProjectId } from './useCurrentProjectId';
 import { httpUrlValidation, slackResultValidation } from './validation';
 
@@ -47,8 +52,8 @@ export const SlackHook = ({ hook }: SlackHookProps) => {
   return (
     <FormProvider {...formMethods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Grid wrap={true}>
-          <Cell xs={12}>
+        <Grid container>
+          <Grid item xs={12}>
             <InputFieldLabel
               helpText="Incoming Webhook URL, e.g. https://hooks.slack.com/services/XXX/YYY/ZZZ"
               label={
@@ -64,7 +69,7 @@ export const SlackHook = ({ hook }: SlackHookProps) => {
                 </span>
               }
               required
-              error={errors['url']?.message}
+              errorMessage={errors['url']?.message}
               htmlFor="url"
             >
               <TextField
@@ -83,12 +88,12 @@ export const SlackHook = ({ hook }: SlackHookProps) => {
                 disabled={loading}
               />
             </InputFieldLabel>
-          </Cell>
+          </Grid>
           <EditHookEvents hook={hook} disabled={loading} />
-          <Cell xs={12}>
+          <Grid item xs={12}>
             <InputFieldLabel
               helpText="You can specify when a webhook should be triggered: only for failed builds, only for successful builds or for all builds."
-              label={<span>Result Filter</span>}
+              label="Result Filter"
               error={errors['slackResultFilter']?.message}
               htmlFor="slackResultFilter"
               required
@@ -107,32 +112,36 @@ export const SlackHook = ({ hook }: SlackHookProps) => {
                 }}
                 render={({ name, value, onChange, ref }) => (
                   <Select
-                    itemIsEqual={isEqual}
-                    itemToString={enumToString}
-                    items={Object.keys(ResultFilter)}
                     name={name}
                     inputRef={ref}
-                    onChange={(events: HookEvent[]) => onChange(events)}
+                    onChange={(e) => onChange(e.target.value)}
                     value={value}
-                    clearable={false}
                     disabled={loading}
-                  />
+                  >
+                    {Object.keys(ResultFilter)
+                      .sort()
+                      .map((filter) => (
+                        <MenuItem key={filter} value={filter}>
+                          <ListItemText primary={enumToString(filter)} />
+                        </MenuItem>
+                      ))}
+                  </Select>
                 )}
               />
             </InputFieldLabel>
-          </Cell>
+          </Grid>
           <EditBranchFilter hook={hook} disabled={loading} />
-          <Cell>
+          <Grid item>
             <Button
-              kind="primary"
+              variant="contained"
+              color="primary"
               size="small"
-              loading={loading}
-              disabled={hasErrors}
+              disabled={hasErrors || loading}
               type="submit"
             >
               Save
             </Button>
-          </Cell>
+          </Grid>
         </Grid>
       </form>
     </FormProvider>

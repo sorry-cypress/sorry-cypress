@@ -1,3 +1,13 @@
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import {
+  Button,
+  Grid,
+  IconButton,
+  InputAdornment,
+  Link,
+  OutlinedInput,
+  TextField,
+} from '@mui/material';
 import { GithubHook as GithubHookType } from '@sorry-cypress/common';
 import { InputFieldLabel } from '@sorry-cypress/dashboard/components';
 import {
@@ -5,7 +15,6 @@ import {
   useUpdateGithubHookMutation,
 } from '@sorry-cypress/dashboard/generated/graphql';
 import { useSwitch } from '@sorry-cypress/dashboard/hooks/useSwitch';
-import { Button, Cell, Grid, Link, Text, TextField } from 'bold-ui';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useCurrentProjectId } from './useCurrentProjectId';
@@ -40,12 +49,12 @@ export const GithubHook = ({ hook }: GithubHookPros) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid>
-        <Cell xs={12}>
+        <Grid item xs={12}>
           <InputFieldLabel
             helpText="This is the GitHub repository URL, e.g. https://github.com/sorry-cypress/sorry-cypress"
             label="URL"
             htmlFor="url"
-            error={errors['url']?.message}
+            errorMessage={errors['url']?.message}
             required
           >
             <TextField
@@ -65,8 +74,8 @@ export const GithubHook = ({ hook }: GithubHookPros) => {
               disabled={disabled}
             />
           </InputFieldLabel>
-        </Cell>
-        <Cell xs={12}>
+        </Grid>
+        <Grid item xs={12}>
           <InputFieldLabel
             helpText="Your private GitHub token with repo:status permissions. Once this token is saved you will not be able to see it again. You will alwayse be able to update it."
             label={
@@ -82,42 +91,49 @@ export const GithubHook = ({ hook }: GithubHookPros) => {
               </span>
             }
             htmlFor="githubToken"
-            error={errors['githubToken']?.message}
+            errorMessage={errors['githubToken']?.message}
             required
           >
             {hook.githubToken && !editToken && (
               <>
-                <Text>Using saved token</Text>{' '}
+                Using saved token
                 <Link onClick={() => toggleEditToken(true)}>Edit</Link>
               </>
             )}
             {(!hook.githubToken || editToken) && (
-              <TextField
-                autoComplete="new-password"
-                icon={showToken ? 'eyeFilled' : 'eyeHiddenFilled'}
-                onIconClick={() => toggleToken()}
-                name="githubToken"
-                id="new-password"
-                type={showToken ? 'text' : 'password'}
-                placeholder="Enter Github token with repo:status access."
+              <OutlinedInput
                 inputRef={register({
                   required: {
                     value: true,
                     message: 'Github token is required',
                   },
                 })}
-                defaultValue={''}
+                type={showToken ? 'text' : 'password'}
+                name="githubToken"
+                id="new-password"
                 disabled={disabled}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle token visibility"
+                      onClick={() => toggleToken()}
+                      edge="end"
+                    >
+                      {showToken ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+                label="Password"
               />
             )}
           </InputFieldLabel>
-        </Cell>
-        <Cell xs={12}>
+        </Grid>
+        <Grid item xs={12}>
           <InputFieldLabel
             helpText='Status label in GitHub to differentiate this project status from others. Default value is "Sorry-Cypress-Tests"'
             label="Status Label"
             htmlFor="githubContext"
-            error={errors['githubContext']?.message}
+            errorMessage={errors['githubContext']?.message}
           >
             <TextField
               name="githubContext"
@@ -127,18 +143,18 @@ export const GithubHook = ({ hook }: GithubHookPros) => {
               disabled={disabled}
             />
           </InputFieldLabel>
-        </Cell>
-        <Cell>
+        </Grid>
+        <Grid>
           <Button
-            kind="primary"
+            variant="contained"
+            color="primary"
             size="small"
-            loading={loading}
-            disabled={hasErrors}
+            disabled={hasErrors || loading}
             type="submit"
           >
             Save
           </Button>
-        </Cell>
+        </Grid>
       </Grid>
     </form>
   );

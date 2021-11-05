@@ -1,4 +1,8 @@
-import styled from '@emotion/styled';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { Button, Grid, Typography } from '@mui/material';
+import { Box } from '@mui/system';
 import {
   Hook,
   isBitbucketHook,
@@ -9,7 +13,6 @@ import {
 } from '@sorry-cypress/common';
 import { useDeleteHookMutation } from '@sorry-cypress/dashboard/generated/graphql';
 import { useSwitch } from '@sorry-cypress/dashboard/hooks/useSwitch';
-import { Button, Cell, Grid, HFlow, Icon, Text } from 'bold-ui';
 import React from 'react';
 import { useRouteMatch } from 'react-router';
 import { BitbucketHook } from './bitbucketHook';
@@ -20,22 +23,16 @@ import { HookFormAction } from './hookFormReducer';
 import { SlackHook } from './slackHook';
 import { TeamsHook } from './teamsHook';
 
-const TogglerWrapper = styled(HFlow)`
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  height: 3rem;
-`;
 const Toggler = ({ toggleExpanded, isExpanded, title }: any) => {
   return (
-    <TogglerWrapper onClick={() => toggleExpanded()} alignItems="center">
-      {isExpanded ? (
-        <Icon icon="angleDown" size={1} />
-      ) : (
-        <Icon icon="angleRight" size={1} />
-      )}
-      <Text fontWeight="bold">{title}</Text>
-    </TogglerWrapper>
+    <Box
+      style={{ display: 'flex', cursor: 'pointer' }}
+      onClick={() => toggleExpanded()}
+      alignItems="center"
+    >
+      {isExpanded ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
+      <Typography>{title}</Typography>
+    </Box>
   );
 };
 
@@ -77,22 +74,26 @@ export const HookEdit = ({
   }
   return (
     <>
-      <HFlow justifyContent="space-between" alignItems="center">
+      <Box
+        style={{ display: 'flex' }}
+        justifyContent="space-between"
+        alignItems="center"
+      >
         <Toggler
           toggleExpanded={toggleExpanded}
           isExpanded={isExpanded}
           title={`${enumToString(hook.hookType)}: ${hook.url || 'New Hook'}`}
         />
         <Button
-          kind="danger"
-          skin="ghost"
+          variant="contained"
+          color="error"
           size="small"
           disabled={disabled}
           onClick={() => deleteHook(hook.hookId)}
         >
-          Remove
+          <DeleteIcon fontSize="small" />
         </Button>
-      </HFlow>
+      </Box>
       {isExpanded && <HookDetails hook={hook} />}
     </>
   );
@@ -100,17 +101,14 @@ export const HookEdit = ({
 
 const HookDetails = ({ hook }: { hook: Hook }) => {
   return (
-    <Grid style={{ padding: '1rem' }}>
-      <Cell xs={12}>
+    <Grid>
+      <Grid item xs={12}>
         {isGithubHook(hook) && <GithubHook hook={hook} />}
         {isGenericHook(hook) && <GenericHook hook={hook} />}
         {isSlackHook(hook) && <SlackHook hook={hook} />}
         {isBitbucketHook(hook) && <BitbucketHook hook={hook} />}
         {isTeamsHook(hook) && <TeamsHook hook={hook} />}
-      </Cell>
-      <Cell xs={12}>
-        <HFlow justifyContent="space-between"></HFlow>
-      </Cell>
+      </Grid>
     </Grid>
   );
 };
