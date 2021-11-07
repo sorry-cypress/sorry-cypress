@@ -22,14 +22,21 @@ export const InputFieldLabel = (
   const hasError = errorMessage ? true : false;
   const Help = helpText && (
     <Tooltip title={helpText}>
-      <InfoOutlinedIcon fontSize={'inherit'} />
+      <InfoOutlinedIcon fontSize="small" sx={{ marginRight: '0.25rem' }} />
     </Tooltip>
   );
   return (
-    <FormControl fullWidth required={required}>
-      <FormLabel htmlFor={htmlFor}>
+    <FormControl
+      fullWidth
+      required={required}
+      style={{ marginBottom: '1.5rem' }}
+    >
+      <FormLabel
+        htmlFor={htmlFor}
+        sx={{ display: 'flex', marginBottom: '0.5rem' }}
+      >
         {Help}
-        {label}
+        <span>{label}</span>
       </FormLabel>
       {children}
       <FormHelperText error={hasError} id={htmlFor}>
