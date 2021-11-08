@@ -30,6 +30,7 @@ import React, { useLayoutEffect, useState } from 'react';
 import { CirclePicker } from 'react-color';
 import { Controller, useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
+import { client } from '../lib/apolloClient';
 import { useHooksFormReducer, WithHooksForm } from './hook/hookFormReducer';
 import { useCurrentProjectId } from './hook/useCurrentProjectId';
 import { HooksEditor } from './hooksEditor';
@@ -109,7 +110,7 @@ function _ProjectEditView() {
     { loading: updating },
   ] = useUpdateProjectMutation();
 
-  const { loading, error, data } = useGetProjectQuery({
+  const { loading, error, data, refetch } = useGetProjectQuery({
     variables: {
       projectId: projectId,
     },
@@ -201,6 +202,7 @@ function _ProjectEditView() {
         projectColor: data?.projectColor,
       });
     }
+    client.reFetchObservableQueries();
   };
 
   const disabled = creating || updating || loading;
@@ -217,6 +219,7 @@ function _ProjectEditView() {
           setDeleting(false);
           setShowModal(false);
         }
+        client.reFetchObservableQueries();
         history.push('/');
       })
       .catch((error) => {
