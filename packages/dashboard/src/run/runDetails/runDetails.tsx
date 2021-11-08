@@ -3,15 +3,15 @@ import { DataGrid, GridRenderCellParams, GridRowsProp } from '@mui/x-data-grid';
 import {
   Paper,
   RenderOnInterval,
-  TestFailureBadge,
-  TestRetriesBadge,
-  TestSkippedBadge,
-  TestSuccessBadge,
+  TestFailureChip,
+  TestRetriesChip,
+  TestSkippedChip,
+  TestSuccessChip,
 } from '@sorry-cypress/dashboard/components/';
 import {
   getInstanceState,
-  SpecStateTag,
-} from '@sorry-cypress/dashboard/components/common/executionState';
+  SpecStateChip,
+} from '@sorry-cypress/dashboard/components/common/specState';
 import { GetRunQuery } from '@sorry-cypress/dashboard/generated/graphql';
 import { getBase } from '@sorry-cypress/dashboard/lib/path';
 import {
@@ -137,23 +137,23 @@ const getTestStatsCell = (params: GridRenderCellParams) => {
   return (
     <Grid container spacing={1}>
       <Grid item>
-        <TestSuccessBadge value={params.row.results?.stats?.passes ?? 0} />
+        <TestSuccessChip value={params.row.results?.stats?.passes ?? 0} />
       </Grid>
       <Grid item>
-        <TestFailureBadge value={params.row.results?.stats?.failures ?? 0} />
+        <TestFailureChip value={params.row.results?.stats?.failures ?? 0} />
       </Grid>
       <Grid item>
-        <TestRetriesBadge value={params.row.results?.retries ?? 0} />
+        <TestRetriesChip value={params.row.results?.retries ?? 0} />
       </Grid>
       <Grid item>
-        <TestSkippedBadge value={params.row.results?.stats?.pending ?? 0} />
+        <TestSkippedChip value={params.row.results?.stats?.pending ?? 0} />
       </Grid>
     </Grid>
   );
 };
 
 const getItemStatusCell = (params: GridRenderCellParams) => (
-  <SpecStateTag
+  <SpecStateChip
     state={getInstanceState({
       claimedAt: params.row.claimedAt,
       stats: params.row.results?.stats,

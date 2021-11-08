@@ -100,7 +100,7 @@ const DrawerHeader = styled('div', { name: 'DrawerHeader' })(({ theme }) => ({
   [theme.breakpoints.up('sm')]: {
     justifyContent: 'center',
   },
-  ...theme.mixins.toolbar,
+  ...(theme.mixins.toolbar as any),
 }));
 
 const DrawerFooter = styled('div', {
@@ -118,7 +118,7 @@ const DrawerFooter = styled('div', {
   bottom: 0,
   overflow: 'auto',
   padding: theme.spacing(0, 1),
-  ...theme.mixins.toolbar,
+  ...(theme.mixins.toolbar as any),
 }));
 
 const Drawer = styled(MuiDrawer, {

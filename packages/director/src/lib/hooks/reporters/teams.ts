@@ -22,12 +22,7 @@ export async function reportToTeams(
   hook: TeamsHook,
   event: TeamsReporterEventPayload
 ) {
-  if (
-    !shouldReportTeamsHook(
-      event.eventType,
-      hook
-    )
-  ) {
+  if (!shouldReportTeamsHook(event.eventType, hook)) {
     return;
   }
   const ciBuildId = event.run.meta.ciBuildId;
@@ -84,87 +79,88 @@ export async function reportToTeams(
     method: 'post',
     url: hook.url,
     data: {
-      "type":"message",
-      "attachments":[
+      type: 'message',
+      attachments: [
         {
-          "contentType":"application/vnd.microsoft.card.adaptive",
-          "contentUrl":null,
-          "content":{
-            "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-            "type": "AdaptiveCard",
-            "version": "1.0",
-            "body": [
-                {
-                  "type": "ColumnSet",
-                  "columns": [
-                    {
-                      "type": "Column",
-                      "padding": "None",
-                      "width": "auto",
-                      "items": [
-                        {
-                          "type": "Image",
-                          "url": "https://gblobscdn.gitbook.com/spaces%2F-MS6gDAYECuzpKjjzrdc%2Favatar-1611996755562.png?alt=media",
-                          "altText": "Sorry-Cypress",
-                          "size": "Large",
-                          "style": "Person",
-                        },
-                      ],
-                      "style": "emphasis",
-                    },
-                    {
-                      "type": "Column",
-                      "padding": "None",
-                      "width": "auto",
-                      "items": [
-                        {
-                          "type": "TextBlock",
-                          "text": `${title}`,
-                          "wrap": true,
-                        },
-                        {
-                          "type": "TextBlock",
-                          "text": `${commitDescription}`,
-                          "wrap": true,
-                        },
-                      ],
-                      "style": "emphasis"
-                    },
-                  ],
-                  "padding": "None",
-                  "style": "emphasis",
-                },
-                {
-                    "type": "FactSet",
-                    "facts": [
-                        {
-                            "title": "Passes",
-                            "value": `${passes}`,
-                        },
-                        {
-                            "title": "Fails",
-                            "value": `${failures + skipped}`,
-                        },
-                        {
-                            "title": "Retries",
-                            "value": `${retries}`,
-                        },
+          contentType: 'application/vnd.microsoft.card.adaptive',
+          contentUrl: null,
+          content: {
+            $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+            type: 'AdaptiveCard',
+            version: '1.0',
+            body: [
+              {
+                type: 'ColumnSet',
+                columns: [
+                  {
+                    type: 'Column',
+                    padding: 'None',
+                    width: 'auto',
+                    items: [
+                      {
+                        type: 'Image',
+                        url:
+                          'https://gblobscdn.gitbook.com/spaces%2F-MS6gDAYECuzpKjjzrdc%2Favatar-1611996755562.png?alt=media',
+                        altText: 'Sorry-Cypress',
+                        size: 'Large',
+                        style: 'Person',
+                      },
                     ],
-                },
-                {
-                    "type": "ActionSet",
-                    "actions": [
-                        {
-                            "type": "Action.OpenUrl",
-                            "title": "View in Sorry-Cypress",
-                            "url": `${getDashboardRunURL(event.run.runId)}`,
-                            "style": "positive",
-                            "isPrimary": true,
-                        },
+                    style: 'emphasis',
+                  },
+                  {
+                    type: 'Column',
+                    padding: 'None',
+                    width: 'auto',
+                    items: [
+                      {
+                        type: 'TextBlock',
+                        text: `${title}`,
+                        wrap: true,
+                      },
+                      {
+                        type: 'TextBlock',
+                        text: `${commitDescription}`,
+                        wrap: true,
+                      },
                     ],
-                },
+                    style: 'emphasis',
+                  },
+                ],
+                padding: 'None',
+                style: 'emphasis',
+              },
+              {
+                type: 'FactSet',
+                facts: [
+                  {
+                    title: 'Passes',
+                    value: `${passes}`,
+                  },
+                  {
+                    title: 'Fails',
+                    value: `${failures + skipped}`,
+                  },
+                  {
+                    title: 'Retries',
+                    value: `${retries}`,
+                  },
+                ],
+              },
+              {
+                type: 'ActionSet',
+                actions: [
+                  {
+                    type: 'Action.OpenUrl',
+                    title: 'View in Sorry-Cypress',
+                    url: `${getDashboardRunURL(event.run.runId)}`,
+                    style: 'positive',
+                    isPrimary: true,
+                  },
+                ],
+              },
             ],
-            "padding": "None",
+            padding: 'None',
           },
         },
       ],
@@ -177,13 +173,8 @@ export async function reportToTeams(
   });
 }
 
-export function shouldReportTeamsHook(
-  event: HookEvent,
-  hook: TeamsHook,
-) {
-  return (
-    isTeamsEventFilterPassed(event, hook)
-  );
+export function shouldReportTeamsHook(event: HookEvent, hook: TeamsHook) {
+  return isTeamsEventFilterPassed(event, hook);
 }
 
 export function isTeamsEventFilterPassed(event: HookEvent, hook: TeamsHook) {

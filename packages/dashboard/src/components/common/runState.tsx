@@ -9,7 +9,7 @@ import { Tooltip } from '@mui/material';
 import React, { FunctionComponent } from 'react';
 import { Chip, Pad } from '..';
 
-export const TestSuccessChip: TestBadgeComponent = (props) => {
+export const TestSuccessChip: TestChipComponent = (props) => {
   const { value } = props;
 
   return (
@@ -24,7 +24,7 @@ export const TestSuccessChip: TestBadgeComponent = (props) => {
   );
 };
 
-export const TestFailureBadge: TestBadgeComponent = (props) => {
+export const TestFailureChip: TestChipComponent = (props) => {
   const { value } = props;
 
   return (
@@ -39,7 +39,7 @@ export const TestFailureBadge: TestBadgeComponent = (props) => {
   );
 };
 
-export const TestSkippedBadge: TestBadgeComponent = (props) => {
+export const TestSkippedChip: TestChipComponent = (props) => {
   const { value } = props;
 
   return (
@@ -54,7 +54,7 @@ export const TestSkippedBadge: TestBadgeComponent = (props) => {
   );
 };
 
-export const TestRetriesBadge: TestBadgeComponent = (props) => {
+export const TestRetriesChip: TestChipComponent = (props) => {
   const { value } = props;
 
   return (
@@ -69,7 +69,7 @@ export const TestRetriesBadge: TestBadgeComponent = (props) => {
   );
 };
 
-export const TestOverallBadge: TestBadgeComponent = (props) => {
+export const TestOverallChip: TestChipComponent = (props) => {
   const { value } = props;
 
   return (
@@ -83,7 +83,7 @@ export const TestOverallBadge: TestBadgeComponent = (props) => {
   );
 };
 
-type TestBadgeProps = {
+type TestChipProps = {
   value: number;
 };
-type TestBadgeComponent = FunctionComponent<TestBadgeProps>;
+type TestChipComponent = FunctionComponent<TestChipProps>;

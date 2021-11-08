@@ -10,7 +10,6 @@ import { ProjectEditView } from './project/projectEditView';
 import { RunDetailsView } from './run/runDetails/runDetailsView';
 import { RunRedirect } from './run/runsRedirect';
 import { RunsView } from './run/runsView';
-import { TestDetailsView } from './testItem/testDetailsView';
 import { theme } from './theme';
 
 class ErrorBoundary extends React.Component<
@@ -70,13 +69,13 @@ export const Root = () => {
               <Route path="/:projectId+/edit" component={ProjectEditView} />
               <Route path="/run/:id" component={RunDetailsView} />
               <Route
-                path="/instance/:id"
+                path={[
+                  '/instance/:id',
+                  '/instance/:id/test/:testId',
+                  '/instance/:id/others/:itemId',
+                ]}
                 component={InstanceDetailsView}
                 exact
-              />
-              <Route
-                path="/instance/:instanceId/test/:testId"
-                component={TestDetailsView}
               />
             </Layout>
           </ErrorBoundary>

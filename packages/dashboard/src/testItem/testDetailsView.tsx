@@ -1,15 +1,11 @@
 import { useGetInstanceQuery } from '@sorry-cypress/dashboard/generated/graphql';
 import { useAutoRefreshRate } from '@sorry-cypress/dashboard/hooks';
 import React from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { TestDetails } from './details';
-import { useUpdateTestNav } from './useUpdateNavForTest';
 
-export function TestDetailsView() {
-  const { instanceId, testId } = useParams<{
-    instanceId: string;
-    testId: string;
-  }>();
+export function TestDetailsView(props: { instanceId: string; testId: string }) {
+  const { instanceId, testId } = props;
 
   const autoRefreshRate = useAutoRefreshRate();
 
@@ -17,7 +13,6 @@ export function TestDetailsView() {
     variables: { instanceId },
     pollInterval: autoRefreshRate,
   });
-  useUpdateTestNav(data);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
