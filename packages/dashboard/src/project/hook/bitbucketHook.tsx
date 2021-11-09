@@ -171,7 +171,7 @@ export const BitbucketHook = ({ hook }: BitbucketHookPros) => {
             />
           </InputFieldLabel>
         </Grid>
-        <Grid>
+        <Grid item>
           <Button
             variant="contained"
             color="primary"

@@ -6,12 +6,12 @@ import {
   FormLabel,
   Tooltip,
 } from '@mui/material';
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren, ReactNode } from 'react';
 
 interface InputFieldLabelProps extends FormControlProps {
   helpText?: string;
   htmlFor: string;
-  label?: string | React.ReactNode;
+  label?: string | ReactNode;
   errorMessage?: string;
 }
 
@@ -22,7 +22,7 @@ export const InputFieldLabel = (
   const hasError = errorMessage ? true : false;
   const Help = helpText && (
     <Tooltip title={helpText}>
-      <InfoOutlinedIcon fontSize="small" sx={{ marginRight: '0.25rem' }} />
+      <InfoOutlinedIcon fontSize="small" sx={{ mr: 0.5 }} />
     </Tooltip>
   );
   return (

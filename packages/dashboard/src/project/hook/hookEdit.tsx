@@ -36,9 +36,10 @@ import { TeamsHook } from './teamsHook';
 const Toggler = ({ toggleExpanded, isExpanded, title }: any) => {
   return (
     <Box
-      style={{ display: 'flex', cursor: 'pointer' }}
-      onClick={() => toggleExpanded()}
+      sx={{ cursor: 'pointer' }}
+      display="flex"
       alignItems="center"
+      onClick={() => toggleExpanded()}
     >
       {isExpanded ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
       <Typography>{title}</Typography>
@@ -133,7 +134,7 @@ export const HookEdit = ({
 
 const HookDetails = ({ hook }: { hook: Hook }) => {
   return (
-    <Grid sx={{ marginTop: '1rem' }}>
+    <Grid container mt={2}>
       <Grid item xs={12}>
         {isGithubHook(hook) && <GithubHook hook={hook} />}
         {isGenericHook(hook) && <GenericHook hook={hook} />}

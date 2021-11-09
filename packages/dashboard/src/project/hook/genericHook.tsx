@@ -88,7 +88,7 @@ export const GenericHook = ({ hook }: GenericHookProps) => {
 
           <EditHookEvents hook={hook} disabled={loading} />
 
-          <Grid>
+          <Grid item>
             <Button
               variant="contained"
               color="primary"

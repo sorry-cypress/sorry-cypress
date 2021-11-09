@@ -61,12 +61,10 @@ export const DeleteProject = () => {
             variant="contained"
             color="error"
             onClick={() => setShowModal(true)}
+            startIcon={<DeleteIcon />}
             disabled={deleting}
           >
-            <DeleteIcon />
-            <Typography variant="body1">
-              {deleting ? 'Deleting' : 'Delete'}
-            </Typography>
+            {deleting ? 'Deleting' : 'Delete'}
           </Button>
         </Box>
       </Paper>
@@ -102,8 +100,8 @@ export const DeleteProject = () => {
             color="error"
             onClick={deleteProject}
             disabled={deleting}
+            startIcon={<DeleteIcon />}
           >
-            <DeleteIcon />
             {deleting ? 'Deleting' : 'Delete'}
           </Button>
         </DialogActions>
