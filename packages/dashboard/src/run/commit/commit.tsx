@@ -21,17 +21,25 @@ export const Commit: CommitComponent = (props) => {
   }
 
   return (
-    <Grid container>
+    <>
       {!brief && commit.remoteOrigin && (
-        <Grid item container alignItems="flex-start" mb={0.5}>
+        <Grid
+          item
+          container
+          sm={12}
+          md={6}
+          lg={6}
+          xl={4}
+          alignItems="flex-start"
+        >
           <Grid item mt={0.4} mr={1}>
             <Tooltip title="Origin">
               <PlaceOutlined fontSize="small" />
             </Tooltip>
           </Grid>
-          <Grid item>
+          <Grid item flex={1} zeroMinWidth>
             <Tooltip title="Origin">
-              <Typography component="p" variant="subtitle1">
+              <Typography component="p" variant="subtitle1" noWrap>
                 {!noLinks && (
                   <Link
                     target="_blank"
@@ -39,7 +47,7 @@ export const Commit: CommitComponent = (props) => {
                     href={handleSshURL(commit.remoteOrigin)}
                     underline="hover"
                   >
-                    Origin
+                    {handleSshURL(commit.remoteOrigin)}
                   </Link>
                 )}
                 {noLinks && commit.remoteOrigin}
@@ -49,7 +57,15 @@ export const Commit: CommitComponent = (props) => {
         </Grid>
       )}
       {commit.branch && (
-        <Grid item container alignItems="flex-start" mb={0.5}>
+        <Grid
+          item
+          container
+          sm={12}
+          md={6}
+          lg={6}
+          xl={4}
+          alignItems="flex-start"
+        >
           <Grid item mt={0.4} mr={1}>
             <Tooltip title="Branch">
               <LinearScale fontSize="small" />
@@ -77,7 +93,7 @@ export const Commit: CommitComponent = (props) => {
           </Grid>
         </Grid>
       )}
-      <Grid item container alignItems="flex-start" mb={0.5}>
+      <Grid item container sm={12} md={6} lg={6} xl={4} alignItems="flex-start">
         <Grid item mt={0.4} mr={1}>
           <Tooltip title="Author of latest commit">
             <PersonOutline fontSize="small" />
@@ -107,16 +123,16 @@ export const Commit: CommitComponent = (props) => {
           </Tooltip>
         </Grid>
       </Grid>
-      <Grid item container alignItems="flex-start">
+      <Grid item container sm={12} md={6} lg={6} xl={4} alignItems="flex-start">
         <Grid item mt={0.4} mr={1}>
           <Tooltip title="Message of latest commit">
             <Code fontSize="small" />
           </Tooltip>
         </Grid>
-        <Grid item>
-          <Tooltip title="Message of latest commit">
-            <Typography component="p" variant="subtitle1">
-              {!noLinks && commit.remoteOrigin && (
+        <Grid item flex={1}>
+          <Typography component="p" variant="subtitle1">
+            {!noLinks && commit.remoteOrigin && (
+              <Tooltip title="Message of latest commit">
                 <Link
                   target="_blank"
                   rel="noopener noreferrer"
@@ -125,15 +141,15 @@ export const Commit: CommitComponent = (props) => {
                 >
                   <CommitMessage brief={brief} message={commit.message} />
                 </Link>
-              )}
-              {(noLinks || !commit.remoteOrigin) && (
-                <CommitMessage brief={brief} message={commit.message} />
-              )}
-            </Typography>
-          </Tooltip>
+              </Tooltip>
+            )}
+            {(noLinks || !commit.remoteOrigin) && (
+              <CommitMessage brief={brief} message={commit.message} />
+            )}
+          </Typography>
         </Grid>
       </Grid>
-    </Grid>
+    </>
   );
 };
 

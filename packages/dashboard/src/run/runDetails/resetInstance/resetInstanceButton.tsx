@@ -114,7 +114,7 @@ export const ResetInstanceButton = ({
           </Grid>
         </DialogActions>
       </Dialog>
-      <Tooltip title="Rest">
+      <Tooltip title="Reset">
         <IconButton
           size="small"
           color="error"

@@ -30,7 +30,7 @@
     "@sorry-cypress/logger": "1.0.0",
     "@sorry-cypress/mongo": "1.0.0",
     "aws-sdk": "^2.518.0",
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "clone-deep": "^4.0.1",
     "date-fns": "^2.21.3",
     "dotenv": "^8.1.0",

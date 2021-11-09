@@ -3,8 +3,9 @@ import { Grid, Link, Tooltip, Typography } from '@mui/material';
 import { environment } from '@sorry-cypress/dashboard/state/environment';
 import React, { FunctionComponent } from 'react';
 
-export const CiUrl: CiUrlComponent = (props) => {
-  const { ciBuildId, projectId, disableLink } = props;
+export function getCiData(params: getCiDataParams) {
+  const { ciBuildId, projectId } = params;
+
   if (typeof environment.CI_URL !== 'string') {
     return null;
   }
@@ -25,6 +26,16 @@ export const CiUrl: CiUrlComponent = (props) => {
   const parsedUrl = url
     .replace('{project_id}', projectId)
     .replace('{build_id}', ciBuildId);
+
+  return {
+    name,
+    url: parsedUrl,
+  };
+}
+
+export const CiUrl: CiUrlComponent = (props) => {
+  const { name, url, disableLink } = props;
+
   return (
     <Grid container>
       <Grid item container alignItems="flex-start">
@@ -40,7 +51,7 @@ export const CiUrl: CiUrlComponent = (props) => {
                 <Link
                   target="_blank"
                   rel="noopener noreferrer"
-                  href={parsedUrl}
+                  href={url}
                   underline="hover"
                 >
                   {name}
@@ -55,9 +66,14 @@ export const CiUrl: CiUrlComponent = (props) => {
   );
 };
 
-type CiUrlProps = {
+type getCiDataParams = {
   ciBuildId: string | null | undefined;
   projectId: string | null | undefined;
+};
+
+type CiUrlProps = {
+  name: string;
+  url: string;
   disableLink?: boolean;
 };
 type CiUrlComponent = FunctionComponent<CiUrlProps>;

@@ -6,7 +6,7 @@ import {
   getRunOverallSpecsCount,
   getRunTestsProgress,
 } from '@sorry-cypress/common';
-import { Card, CiUrl } from '@sorry-cypress/dashboard/components/';
+import { Card, CiUrl, getCiData } from '@sorry-cypress/dashboard/components/';
 import {
   GetRunQuery,
   GetRunsFeedQuery,
@@ -65,6 +65,10 @@ export const RunSummary: RunSummaryComponent = (props) => {
   );
 
   const testsProgress = run.progress && getRunTestsProgress(run.progress);
+  const ciData = getCiData({
+    ciBuildId: runMeta?.ciBuildId,
+    projectId: runMeta?.projectId,
+  });
 
   return (
     <WithMaterial>
@@ -134,21 +138,17 @@ export const RunSummary: RunSummaryComponent = (props) => {
             </Grid>
           </Grid>
           <Collapse in={!compact}>
-            <Grid container flexDirection="column">
-              <Grid item mb={0.5}>
-                <CiUrl
-                  ciBuildId={runMeta?.ciBuildId}
-                  projectId={runMeta?.projectId}
-                  disableLink={linkToRun}
-                />
-              </Grid>
-              <Grid item>
-                <Commit
-                  brief={brief}
-                  noLinks={linkToRun}
-                  commit={runMeta?.commit}
-                />
-              </Grid>
+            <Grid container>
+              {ciData && (
+                <Grid item sm={12} md={6} lg={6} xl={4}>
+                  <CiUrl {...ciData} disableLink={linkToRun} />
+                </Grid>
+              )}
+              <Commit
+                brief={brief}
+                noLinks={linkToRun}
+                commit={runMeta?.commit}
+              />
             </Grid>
           </Collapse>
         </CardContent>
@@ -172,6 +172,10 @@ const Pre_2_0_0_Run: LegacyRunSummaryComponent = (props) => {
 
   const runId = run.runId;
   const runMeta = run.meta;
+  const ciData = getCiData({
+    ciBuildId: runMeta?.ciBuildId,
+    projectId: runMeta?.projectId,
+  });
 
   return (
     <WithMaterial>
@@ -206,21 +210,17 @@ const Pre_2_0_0_Run: LegacyRunSummaryComponent = (props) => {
             </Grid>
           </Grid>
           <Collapse in={!compact}>
-            <Grid container flexDirection="column">
-              <Grid item mb={0.5}>
-                <CiUrl
-                  ciBuildId={runMeta?.ciBuildId}
-                  projectId={runMeta?.projectId}
-                  disableLink={linkToRun}
-                />
-              </Grid>
-              <Grid item>
-                <Commit
-                  brief={brief}
-                  noLinks={linkToRun}
-                  commit={runMeta?.commit}
-                />
-              </Grid>
+            <Grid container>
+              {ciData && (
+                <Grid item sm={12} md={6} lg={6} xl={4}>
+                  <CiUrl {...ciData} disableLink={linkToRun} />
+                </Grid>
+              )}
+              <Commit
+                brief={brief}
+                noLinks={linkToRun}
+                commit={runMeta?.commit}
+              />
             </Grid>
           </Collapse>
         </CardContent>
