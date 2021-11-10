@@ -1,3 +1,13 @@
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import {
+  Button,
+  Grid,
+  IconButton,
+  InputAdornment,
+  Link,
+  OutlinedInput,
+  TextField,
+} from '@mui/material';
 import { BitBucketHook as BitbucketHookType } from '@sorry-cypress/common';
 import { InputFieldLabel } from '@sorry-cypress/dashboard/components';
 import {
@@ -5,7 +15,6 @@ import {
   useUpdateBitbucketHookMutation,
 } from '@sorry-cypress/dashboard/generated/graphql';
 import { useSwitch } from '@sorry-cypress/dashboard/hooks/useSwitch';
-import { Button, Cell, Grid, Link, Text, TextField } from 'bold-ui';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useCurrentProjectId } from './useCurrentProjectId';
@@ -40,18 +49,18 @@ export const BitbucketHook = ({ hook }: BitbucketHookPros) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid>
-        <Cell xs={12}>
+        <Grid item xs={12}>
           <InputFieldLabel
             label="URL"
             htmlFor="url"
             required
             helpText="Bitbucket repository URL, e.g. https://bitbucket.org/sorry-cypress/sorry-cypress.git"
-            error={errors['url']?.message}
+            errorMessage={errors['url']?.message}
           >
             <TextField
+              type="search"
               name="url"
               defaultValue={hook.url}
-              clearable
               placeholder="e.g. https://bitbucket.org/project/demo.git"
               inputRef={register({
                 required: {
@@ -66,18 +75,18 @@ export const BitbucketHook = ({ hook }: BitbucketHookPros) => {
               disabled={disabled}
             />
           </InputFieldLabel>
-        </Cell>
+        </Grid>
 
-        <Cell xs={12}>
+        <Grid item xs={12}>
           <InputFieldLabel
             label="Bitbucket&nbsp;Username"
             htmlFor="bitbucketUsername"
-            error={errors['bitbucketUsername']?.message}
+            errorMessage={errors['bitbucketUsername']?.message}
             required
           >
             <TextField
               name="bitbucketUsername"
-              clearable
+              type="search"
               placeholder={'Enter Bitbucket username'}
               inputRef={register({
                 required: {
@@ -89,9 +98,9 @@ export const BitbucketHook = ({ hook }: BitbucketHookPros) => {
               disabled={disabled}
             />
           </InputFieldLabel>
-        </Cell>
+        </Grid>
 
-        <Cell xs={12}>
+        <Grid item xs={12}>
           <InputFieldLabel
             required
             label={
@@ -107,22 +116,20 @@ export const BitbucketHook = ({ hook }: BitbucketHookPros) => {
               </span>
             }
             htmlFor="bitbucketToken"
-            error={errors['bitbucketToken']?.message}
+            errorMessage={errors['bitbucketToken']?.message}
             helpText="Generate this token on bitbucket. Once this token is saved you will not be able to see it again. You will alwayse be able to update it."
           >
             {hook.bitbucketToken && !editToken && (
               <>
-                <Text>Using saved token</Text>{' '}
+                Using saved token
                 <Link onClick={() => toggleEditToken(true)}>Edit</Link>
               </>
             )}
             {(!hook.bitbucketToken || editToken) && (
-              <TextField
+              <OutlinedInput
                 autoComplete="new-password"
-                icon={showToken ? 'eyeFilled' : 'eyeHiddenFilled'}
-                onIconClick={() => toggleToken()}
-                name="bitbucketToken"
                 type={showToken ? 'text' : 'password'}
+                name="bitbucketToken"
                 placeholder="Enter Bitbucket App Password with repo:write access"
                 inputRef={register({
                   required: {
@@ -132,17 +139,28 @@ export const BitbucketHook = ({ hook }: BitbucketHookPros) => {
                 })}
                 defaultValue={''}
                 disabled={disabled}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle token visibility"
+                      onClick={() => toggleToken()}
+                      edge="end"
+                    >
+                      {showToken ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
               />
             )}
           </InputFieldLabel>
-        </Cell>
+        </Grid>
 
-        <Cell xs={12}>
+        <Grid item xs={12}>
           <InputFieldLabel
             label="Bitbucket Build Name"
             htmlFor="bitbucketBuildName"
             helpText='This string will be used as a build name in Bitbucket. Default value is "sorry-cypress".'
-            error={errors['bitbucketBuildName']?.message}
+            errorMessage={errors['bitbucketBuildName']?.message}
           >
             <TextField
               name="bitbucketBuildName"
@@ -152,18 +170,18 @@ export const BitbucketHook = ({ hook }: BitbucketHookPros) => {
               disabled={disabled}
             />
           </InputFieldLabel>
-        </Cell>
-        <Cell>
+        </Grid>
+        <Grid item>
           <Button
-            kind="primary"
+            variant="contained"
+            color="primary"
             size="small"
-            loading={loading}
-            disabled={hasErrors}
+            disabled={hasErrors || loading}
             type="submit"
           >
             Save
           </Button>
-        </Cell>
+        </Grid>
       </Grid>
     </form>
   );

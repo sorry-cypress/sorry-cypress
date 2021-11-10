@@ -1,10 +1,10 @@
+import { Button, Grid, TextField } from '@mui/material';
 import { GenericHook as GenericHookType } from '@sorry-cypress/common';
 import { InputFieldLabel } from '@sorry-cypress/dashboard/components';
 import {
   UpdateGenericHookInput,
   useUpdateGenericHookMutation,
 } from '@sorry-cypress/dashboard/generated/graphql';
-import { Button, Cell, Grid, TextField } from 'bold-ui';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { EditHookEvents } from './editHookEvents';
@@ -40,13 +40,13 @@ export const GenericHook = ({ hook }: GenericHookProps) => {
     <FormProvider {...formMethods}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid>
-          <Cell xs={12}>
+          <Grid item xs={12}>
             <InputFieldLabel
               label="URL"
               htmlFor="url"
               required
               helpText="This URL must be resolvable from sorry-cypress server"
-              error={errors['url']?.message}
+              errorMessage={errors['url']?.message}
             >
               <TextField
                 name="url"
@@ -64,13 +64,13 @@ export const GenericHook = ({ hook }: GenericHookProps) => {
                 disabled={loading}
               />
             </InputFieldLabel>
-          </Cell>
-          <Cell xs={12}>
+          </Grid>
+          <Grid item xs={12}>
             <InputFieldLabel
               label="Headers"
               htmlFor="headers"
               helpText='You can use this to pass a basic auth token or any other headers needed by your API. This must be structured as JSON, e.g.: {"X-api-key":"tough-key"}'
-              error={errors['headers']?.message}
+              errorMessage={errors['headers']?.message}
             >
               <TextField
                 name="headers"
@@ -84,21 +84,21 @@ export const GenericHook = ({ hook }: GenericHookProps) => {
                 disabled={loading}
               />
             </InputFieldLabel>
-          </Cell>
+          </Grid>
 
           <EditHookEvents hook={hook} disabled={loading} />
 
-          <Cell>
+          <Grid item>
             <Button
-              kind="primary"
+              variant="contained"
+              color="primary"
               size="small"
-              loading={loading}
-              disabled={hasErrors}
+              disabled={hasErrors || loading}
               type="submit"
             >
               Save
             </Button>
-          </Cell>
+          </Grid>
         </Grid>
       </form>
     </FormProvider>

@@ -62,4 +62,9 @@ export type TeamsHook = BaseHook & {
 };
 
 export type HookWithCustomEvents = SlackHook | TeamsHook | GenericHook;
-export type Hook = SlackHook | TeamsHook | GenericHook | GithubHook | BitBucketHook;
+export type Hook =
+  | SlackHook
+  | TeamsHook
+  | GenericHook
+  | GithubHook
+  | BitBucketHook;

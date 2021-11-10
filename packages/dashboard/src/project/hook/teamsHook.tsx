@@ -1,16 +1,14 @@
-import {
-  TeamsHook as TeamsHookType,
-} from '@sorry-cypress/common';
+import { Button, Grid, TextField } from '@mui/material';
+import { TeamsHook as TeamsHookType } from '@sorry-cypress/common';
 import { InputFieldLabel } from '@sorry-cypress/dashboard/components';
-import { EditHookEvents } from './editHookEvents';
-import { useCurrentProjectId } from './useCurrentProjectId';
-import { FormProvider, useForm } from 'react-hook-form';
 import {
   UpdateTeamsHookInput,
   useUpdateTeamsHookMutation,
 } from '@sorry-cypress/dashboard/generated/graphql';
-import { Button, Cell, Grid, TextField } from 'bold-ui';
 import React from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
+import { EditHookEvents } from './editHookEvents';
+import { useCurrentProjectId } from './useCurrentProjectId';
 import { httpUrlValidation } from './validation';
 
 interface TeamsHookProps {
@@ -42,8 +40,8 @@ export const TeamsHook = ({ hook }: TeamsHookProps) => {
   return (
     <FormProvider {...formMethods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Grid wrap={true}>
-          <Cell xs={12}>
+        <Grid container>
+          <Grid item xs={12}>
             <InputFieldLabel
               helpText="Incoming Webhook URL, e.g. https://1234.webhook.office.com/..."
               label={
@@ -59,7 +57,7 @@ export const TeamsHook = ({ hook }: TeamsHookProps) => {
                 </span>
               }
               required
-              error={errors['url']?.message}
+              errorMessage={errors['url']?.message}
               htmlFor="url"
             >
               <TextField
@@ -78,20 +76,20 @@ export const TeamsHook = ({ hook }: TeamsHookProps) => {
                 disabled={loading}
               />
             </InputFieldLabel>
-          </Cell>
+          </Grid>
           <EditHookEvents hook={hook} disabled={loading} />
 
-          <Cell>
+          <Grid item>
             <Button
-              kind="primary"
+              variant="contained"
+              color="primary"
               size="small"
-              loading={loading}
-              disabled={hasErrors}
+              disabled={hasErrors || loading}
               type="submit"
             >
               Save
             </Button>
-          </Cell>
+          </Grid>
         </Grid>
       </form>
     </FormProvider>

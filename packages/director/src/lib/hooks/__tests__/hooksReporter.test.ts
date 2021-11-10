@@ -165,7 +165,8 @@ describe('Report status to Slack', () => {
 describe('Report status to Teams', () => {
   const tmsHook = ({
     ...teamsHook,
-    url: 'https://xyz123.webhok.office.com/webhook/abc987/IncomingWebhook/123/456',
+    url:
+      'https://xyz123.webhok.office.com/webhook/abc987/IncomingWebhook/123/456',
     hookEvents: ['RUN_FINISH'],
   } as unknown) as TeamsHook;
 
@@ -180,7 +181,8 @@ describe('Report status to Teams', () => {
 
     expect(axios).toBeCalledWith({
       ...teamsReportStatusRequest,
-      url: 'https://xyz123.webhok.office.com/webhook/abc987/IncomingWebhook/123/456',
+      url:
+        'https://xyz123.webhok.office.com/webhook/abc987/IncomingWebhook/123/456',
     });
   });
 });

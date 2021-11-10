@@ -1,38 +1,47 @@
-import styled from '@emotion/styled';
-import { theme } from '@sorry-cypress/dashboard/theme';
-import { FormControl, FormControlProps, Icon, Tooltip } from 'bold-ui';
-import React, { PropsWithChildren } from 'react';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import {
+  FormControl,
+  FormControlProps,
+  FormHelperText,
+  FormLabel,
+  Tooltip,
+} from '@mui/material';
+import React, { PropsWithChildren, ReactNode } from 'react';
 
 interface InputFieldLabelProps extends FormControlProps {
   helpText?: string;
+  htmlFor: string;
+  label?: string | ReactNode;
+  errorMessage?: string;
 }
-const InfoIcon = styled(Icon)`
-  margin-right: 0.5rem;
-  fill: ${theme.pallete.gray.c50};
-
-  &:hover {
-    fill: ${theme.pallete.text.main};
-  }
-`;
 
 export const InputFieldLabel = (
   props: PropsWithChildren<InputFieldLabelProps>
 ) => {
-  const { label, helpText, ...rest } = props;
-  const Help = helpText ? (
-    <Tooltip text={helpText}>
-      <InfoIcon size={1} icon="infoCircleOutline" />
+  const { label, helpText, errorMessage, htmlFor, children, required } = props;
+  const hasError = errorMessage ? true : false;
+  const Help = helpText && (
+    <Tooltip title={helpText}>
+      <InfoOutlinedIcon fontSize="small" sx={{ mr: 0.5 }} />
     </Tooltip>
-  ) : null;
+  );
   return (
     <FormControl
-      label={
-        <>
-          {Help}
-          <span>{label}</span>
-        </>
-      }
-      {...rest}
-    />
+      fullWidth
+      required={required}
+      style={{ marginBottom: '1.5rem' }}
+    >
+      <FormLabel
+        htmlFor={htmlFor}
+        sx={{ display: 'flex', marginBottom: '0.5rem' }}
+      >
+        {Help}
+        <span>{label}</span>
+      </FormLabel>
+      {children}
+      <FormHelperText error={hasError} id={htmlFor}>
+        {errorMessage}
+      </FormHelperText>
+    </FormControl>
   );
 };

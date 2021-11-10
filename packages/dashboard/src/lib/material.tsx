@@ -23,6 +23,9 @@ const themeOptions: ThemeOptions = {
     },
   },
   typography: {
+    h6: {
+      fontWeight: 'bold',
+    },
     fontWeightBold: 700,
     fontWeightMedium: 500,
     fontFamily: 'IBM Plex Sans',
