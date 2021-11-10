@@ -286,6 +286,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "karimould",
+      "name": "Karim Ould Mahieddine",
+      "avatar_url": "https://avatars.githubusercontent.com/u/18060129?v=4",
+      "profile": "https://www.karimould.dev/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
