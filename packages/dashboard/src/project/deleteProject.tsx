@@ -1,6 +1,9 @@
+import { Warning } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import WarningIcon from '@mui/icons-material/Warning';
+import { LoadingButton } from '@mui/lab';
 import {
+  Alert,
+  AlertTitle,
   Box,
   Button,
   Dialog,
@@ -8,6 +11,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Grid,
   Typography,
 } from '@mui/material';
 import { Paper } from '@sorry-cypress/dashboard/components';
@@ -71,41 +75,49 @@ export const DeleteProject = () => {
         </Box>
       </Paper>
       <Dialog
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
+        aria-labelledby="delete-project-dialog-title"
+        aria-describedby="delete-project-dialog-description"
         open={shouldShowModal}
         onClose={() => setShowModal(false)}
       >
-        <DialogTitle>
-          <WarningIcon fontSize="large" color="error" />
-          <br />
-          Delete project {projectId}?
+        <DialogTitle id="delete-project-dialog-title">
+          Delete project `{projectId}`?
         </DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Deleting project will permanently delete the associated data
-            (project, run, instances, test results). Running tests associated
-            with the project will fail.
-            {deleteError && <p>Delete error: {deleteError}</p>}
-          </DialogContentText>
+          <Grid container alignItems="center" spacing={1}>
+            <Grid item>
+              <Warning fontSize="large" color="error" />
+            </Grid>
+            <Grid item xs>
+              <DialogContentText id="delete-project-dialog-description">
+                Deleting project will permanently delete the associated data
+                (project, run, instances, test results).
+                <br />
+                Running tests associated with the project will fail.
+              </DialogContentText>
+              {deleteError && (
+                <Alert severity="error">
+                  <AlertTitle>Delete error</AlertTitle>
+                  {deleteError.toString()}
+                </Alert>
+              )}
+            </Grid>
+          </Grid>
         </DialogContent>
         <DialogActions>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => setShowModal(false)}
-          >
+          <Button variant="contained" onClick={() => setShowModal(false)}>
             Cancel
           </Button>
-          <Button
+          <LoadingButton
+            loading={deleting}
+            loadingPosition="start"
             variant="contained"
             color="error"
             onClick={deleteProject}
-            disabled={deleting}
             startIcon={<DeleteIcon />}
           >
             {deleting ? 'Deleting' : 'Delete'}
-          </Button>
+          </LoadingButton>
         </DialogActions>
       </Dialog>
     </>

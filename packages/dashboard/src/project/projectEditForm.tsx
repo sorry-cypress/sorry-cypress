@@ -233,7 +233,7 @@ export const ProjectEditForm: ProjectEditFormComponent = function ProjectEditFor
             )}
           </InputFieldLabel>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item container xs={12} justifyContent="flex-end">
           <Button
             variant="contained"
             type="submit"
