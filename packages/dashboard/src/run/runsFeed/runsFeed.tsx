@@ -1,5 +1,4 @@
-import { Alert, Button, Skeleton } from '@mui/material';
-import { CenteredContent } from '@sorry-cypress/dashboard/components';
+import { Alert, Button, Paper, Skeleton } from '@mui/material';
 import { range } from 'lodash';
 import React, { FunctionComponent } from 'react';
 import { RunSummary } from '../runSummary/runSummary';
@@ -36,31 +35,31 @@ export const RunsFeed: RunsFeedComponent = (props) => {
 
   if (!runsFeed || error) {
     return (
-      <CenteredContent>
+      <Paper>
         <Alert severity="error" variant="filled">
           Error loading data
         </Alert>
-      </CenteredContent>
+      </Paper>
     );
   }
 
   if (runsFeed.runs.length === 0) {
     if (search) {
       return (
-        <CenteredContent>
+        <Paper>
           <Alert severity="warning" variant="filled">
             No runs found
           </Alert>
-        </CenteredContent>
+        </Paper>
       );
     }
 
     return (
-      <CenteredContent>
+      <Paper>
         <Alert severity="info" variant="filled">
           No runs started yet
         </Alert>
-      </CenteredContent>
+      </Paper>
     );
   }
 

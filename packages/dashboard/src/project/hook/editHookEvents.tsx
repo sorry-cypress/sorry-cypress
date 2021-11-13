@@ -53,6 +53,7 @@ export const EditHookEvents = ({ hook, disabled }: EditHookEventsProps) => {
                     ))}
                   </Box>
                 )}
+                size="small"
               >
                 {Object.keys(HookEvent)
                   .sort()

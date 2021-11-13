@@ -42,6 +42,7 @@ import {
   NavItemType,
   navStructure,
 } from '@sorry-cypress/dashboard/lib/navigation';
+import logoDark from '@sorry-cypress/dashboard/resources/logo-dark.svg';
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { version } from '../../../package.json';
@@ -67,7 +68,6 @@ const sidebarTheme = createTheme({
   typography: {
     fontWeightBold: 700,
     fontWeightMedium: 500,
-    fontFamily: 'IBM Plex Sans',
     fontWeightRegular: 400,
   },
 });
@@ -338,14 +338,14 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
           component="div"
           sx={{
             justifyContent: 'center',
-            maxWidth: 300,
+            maxWidth: 275,
           }}
         >
           <ListItemAvatar sx={{ minWidth: '42px' }}>
             <RouterLink to="/">
               <Avatar
                 alt="Sorry Cypress Dashboard Home"
-                src={`https://gblobscdn.gitbook.com/spaces%2F-MS6gDAYECuzpKjjzrdc%2Favatar-1611996755562.png?alt=media`}
+                src={logoDark}
                 variant="square"
                 sx={{
                   transition: 'all 0.3s',

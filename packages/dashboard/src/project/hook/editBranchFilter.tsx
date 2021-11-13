@@ -126,6 +126,7 @@ const BranchFilter = ({
               />
             ),
           }}
+          size="small"
         />
         <Grid item xs={12}>
           {branches &&

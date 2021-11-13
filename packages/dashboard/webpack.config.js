@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
@@ -25,6 +26,30 @@ module.exports = {
         test: /\.(ts|js)x?$/,
         exclude: /node_modules/,
         loader: 'babel-loader',
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf)$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 10000,
+              name: '[name].[ext]',
+              outputPath: 'fonts/',
+            },
+          },
+        ],
+      },
+      {
+        test: /\.svg$/,
+        use: [
+          {
+            loader: 'svg-url-loader',
+            options: {
+              limit: 10000,
+            },
+          },
+        ],
       },
     ],
   },

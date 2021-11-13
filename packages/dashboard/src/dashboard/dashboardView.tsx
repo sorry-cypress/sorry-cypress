@@ -1,7 +1,6 @@
 import { Add as AddIcon } from '@mui/icons-material';
 import { Typography } from '@mui/material';
 import { Toolbar } from '@sorry-cypress/dashboard/components';
-import { WithMaterial } from '@sorry-cypress/dashboard/lib/material';
 import { setNav } from '@sorry-cypress/dashboard/lib/navigation';
 import ProjectsList from '@sorry-cypress/dashboard/project/projectList';
 import React, { useLayoutEffect, useState } from 'react';
@@ -15,7 +14,7 @@ export function DashboardView() {
   }, []);
 
   return (
-    <WithMaterial>
+    <>
       <Toolbar
         actions={[
           {
@@ -40,6 +39,6 @@ export function DashboardView() {
         Projects
       </Typography>
       <ProjectsList search={search} />
-    </WithMaterial>
+    </>
   );
 }

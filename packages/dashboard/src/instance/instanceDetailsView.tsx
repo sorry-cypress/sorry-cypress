@@ -1,4 +1,4 @@
-import { Alert, AlertTitle } from '@mui/material';
+import { Alert, AlertTitle, Skeleton } from '@mui/material';
 import {
   GetInstanceQuery,
   useGetInstanceQuery,
@@ -13,7 +13,6 @@ import {
 } from '@sorry-cypress/dashboard/lib/navigation';
 import React, { FunctionComponent, useLayoutEffect } from 'react';
 import { Paper } from '../components';
-import { WithMaterial } from '../lib/material';
 import { InstanceDetails } from './instanceDetails';
 import { InstanceSummary } from './instanceSummary';
 
@@ -31,7 +30,13 @@ export const InstanceDetailsView: InstanceDetailsViewComponent = (props) => {
   });
   updateNav(data);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading)
+    return (
+      <>
+        <Skeleton variant="rectangular" height={140} sx={{ mb: 10 }} />{' '}
+        <Skeleton variant="rectangular" height={500} />
+      </>
+    );
 
   if (error || !data) {
     return (
@@ -62,13 +67,13 @@ export const InstanceDetailsView: InstanceDetailsViewComponent = (props) => {
   }
 
   return (
-    <WithMaterial>
+    <>
       <InstanceSummary instance={data.instance} />
       <InstanceDetails
         instance={data.instance}
         selectedItem={itemId || testId}
       />
-    </WithMaterial>
+    </>
   );
 };
 

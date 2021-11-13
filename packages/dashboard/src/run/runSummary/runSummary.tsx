@@ -11,7 +11,6 @@ import {
   GetRunQuery,
   GetRunsFeedQuery,
 } from '@sorry-cypress/dashboard/generated/graphql';
-import { WithMaterial } from '@sorry-cypress/dashboard/lib/material';
 import { parseISO } from 'date-fns';
 import React, { FunctionComponent } from 'react';
 import { Commit } from '../commit';
@@ -71,89 +70,85 @@ export const RunSummary: RunSummaryComponent = (props) => {
   });
 
   return (
-    <WithMaterial>
-      <Card
-        linkTo={linkToRun ? `/run/${runId}` : undefined}
-        showActions={showActions}
-        actions={
-          <>
-            <DeleteRunButton runId={runId} ciBuildId={runMeta.ciBuildId} />
-          </>
-        }
-      >
-        <CardContent sx={{ py: '8px !important' }}>
-          <Grid
-            container
-            alignItems="flex-start"
-            flexDirection={{ xs: 'column', md: 'row' }}
-          >
-            <Grid item container xs zeroMinWidth spacing={1}>
-              <Grid item container>
+    <Card
+      linkTo={linkToRun ? `/run/${runId}` : undefined}
+      showActions={showActions}
+      actions={
+        <>
+          <DeleteRunButton runId={runId} ciBuildId={runMeta.ciBuildId} />
+        </>
+      }
+    >
+      <CardContent sx={{ py: '8px !important' }}>
+        <Grid
+          container
+          alignItems="flex-start"
+          flexDirection={{ xs: 'column', md: 'row' }}
+        >
+          <Grid item container xs zeroMinWidth spacing={1}>
+            <Grid item container>
+              <Grid item>
+                {hasCompletion && !completed && <RunningStatus />}
+              </Grid>
+              <Grid item xs zeroMinWidth>
+                <Typography
+                  component="h1"
+                  variant="h6"
+                  noWrap
+                  color="text.secondary"
+                >
+                  {runMeta.ciBuildId}
+                </Typography>
+              </Grid>
+            </Grid>
+            {!compact && (
+              <Grid item container spacing={1} mb={1}>
                 <Grid item>
-                  {hasCompletion && !completed && <RunningStatus />}
+                  <RunStartTime runCreatedAt={runCreatedAt} />
                 </Grid>
-                <Grid item xs zeroMinWidth>
-                  <Typography
-                    component="h1"
-                    variant="h6"
-                    noWrap
-                    color="text.secondary"
-                  >
-                    {runMeta.ciBuildId}
-                  </Typography>
+                <Grid item>
+                  <RunDuration
+                    completed={run.completion?.completed}
+                    createdAtISO={runCreatedAt}
+                    wallClockDurationSeconds={durationSeconds}
+                  />
+                </Grid>
+                <Grid item>
+                  <RunSpecs
+                    claimedSpecsCount={claimedSpecsCount}
+                    overallSpecsCount={overallSpecsCount}
+                  />
+                </Grid>
+                <Grid item>
+                  {hasCompletion && completed && inactivityTimeoutMs && (
+                    <RunTimeoutChip inactivityTimeoutMs={inactivityTimeoutMs} />
+                  )}
                 </Grid>
               </Grid>
-              {!compact && (
-                <Grid item container spacing={1} mb={1}>
-                  <Grid item>
-                    <RunStartTime runCreatedAt={runCreatedAt} />
-                  </Grid>
-                  <Grid item>
-                    <RunDuration
-                      completed={run.completion?.completed}
-                      createdAtISO={runCreatedAt}
-                      wallClockDurationSeconds={durationSeconds}
-                    />
-                  </Grid>
-                  <Grid item>
-                    <RunSpecs
-                      claimedSpecsCount={claimedSpecsCount}
-                      overallSpecsCount={overallSpecsCount}
-                    />
-                  </Grid>
-                  <Grid item>
-                    {hasCompletion && completed && inactivityTimeoutMs && (
-                      <RunTimeoutChip
-                        inactivityTimeoutMs={inactivityTimeoutMs}
-                      />
-                    )}
-                  </Grid>
-                </Grid>
-              )}
-            </Grid>
-            <Grid item my={1}>
-              {run.progress && (
-                <RunSummaryTestResults testsStats={testsProgress} />
-              )}
-            </Grid>
+            )}
           </Grid>
-          <Collapse in={!compact}>
-            <Grid container>
-              {ciData && (
-                <Grid item sm={12} md={6} lg={6} xl={4}>
-                  <CiUrl {...ciData} disableLink={linkToRun} />
-                </Grid>
-              )}
-              <Commit
-                brief={brief}
-                noLinks={linkToRun}
-                commit={runMeta?.commit}
-              />
-            </Grid>
-          </Collapse>
-        </CardContent>
-      </Card>
-    </WithMaterial>
+          <Grid item my={1}>
+            {run.progress && (
+              <RunSummaryTestResults testsStats={testsProgress} />
+            )}
+          </Grid>
+        </Grid>
+        <Collapse in={!compact}>
+          <Grid container>
+            {ciData && (
+              <Grid item sm={12} md={6} lg={6} xl={4}>
+                <CiUrl {...ciData} disableLink={linkToRun} />
+              </Grid>
+            )}
+            <Commit
+              brief={brief}
+              noLinks={linkToRun}
+              commit={runMeta?.commit}
+            />
+          </Grid>
+        </Collapse>
+      </CardContent>
+    </Card>
   );
 };
 
@@ -178,54 +173,47 @@ const Pre_2_0_0_Run: LegacyRunSummaryComponent = (props) => {
   });
 
   return (
-    <WithMaterial>
-      <Card
-        linkTo={linkToRun ? `/run/${runId}` : undefined}
-        showActions={showActions}
-        actions={
-          <>
-            <DeleteRunButton runId={runId} ciBuildId={runMeta.ciBuildId} />
-          </>
-        }
-      >
-        <CardContent>
-          <Grid
-            direction="column"
-            container
-            alignItems="flex-start"
-            spacing={1}
-          >
-            <Grid item xs zeroMinWidth>
-              <Typography
-                component="h1"
-                variant="h6"
-                noWrap
-                color="text.secondary"
-              >
-                {runMeta.ciBuildId}
-              </Typography>
-            </Grid>
-            <Grid item mb={1}>
-              <LegacyRunChip />
-            </Grid>
+    <Card
+      linkTo={linkToRun ? `/run/${runId}` : undefined}
+      showActions={showActions}
+      actions={
+        <>
+          <DeleteRunButton runId={runId} ciBuildId={runMeta.ciBuildId} />
+        </>
+      }
+    >
+      <CardContent>
+        <Grid direction="column" container alignItems="flex-start" spacing={1}>
+          <Grid item xs zeroMinWidth>
+            <Typography
+              component="h1"
+              variant="h6"
+              noWrap
+              color="text.secondary"
+            >
+              {runMeta.ciBuildId}
+            </Typography>
           </Grid>
-          <Collapse in={!compact}>
-            <Grid container>
-              {ciData && (
-                <Grid item sm={12} md={6} lg={6} xl={4}>
-                  <CiUrl {...ciData} disableLink={linkToRun} />
-                </Grid>
-              )}
-              <Commit
-                brief={brief}
-                noLinks={linkToRun}
-                commit={runMeta?.commit}
-              />
-            </Grid>
-          </Collapse>
-        </CardContent>
-      </Card>
-    </WithMaterial>
+          <Grid item mb={1}>
+            <LegacyRunChip />
+          </Grid>
+        </Grid>
+        <Collapse in={!compact}>
+          <Grid container>
+            {ciData && (
+              <Grid item sm={12} md={6} lg={6} xl={4}>
+                <CiUrl {...ciData} disableLink={linkToRun} />
+              </Grid>
+            )}
+            <Commit
+              brief={brief}
+              noLinks={linkToRun}
+              commit={runMeta?.commit}
+            />
+          </Grid>
+        </Collapse>
+      </CardContent>
+    </Card>
   );
 };
 

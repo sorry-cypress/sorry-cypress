@@ -74,6 +74,7 @@ export const TeamsHook = ({ hook }: TeamsHookProps) => {
                   },
                 })}
                 disabled={loading}
+                size="small"
               />
             </InputFieldLabel>
           </Grid>

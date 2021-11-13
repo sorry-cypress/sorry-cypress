@@ -14,6 +14,7 @@ import { Paper } from '@sorry-cypress/dashboard/components';
 import React, { useState } from 'react';
 import { useHistory } from 'react-router';
 import { useDeleteProjectMutation } from '../generated/graphql';
+import { client } from '../lib/apolloClient';
 import { useCurrentProjectId } from './hook/useCurrentProjectId';
 
 export const DeleteProject = () => {
@@ -40,6 +41,7 @@ export const DeleteProject = () => {
           setDeleting(false);
           setShowModal(false);
         }
+        client.reFetchObservableQueries();
         history.push('/');
       })
       .catch((error) => {

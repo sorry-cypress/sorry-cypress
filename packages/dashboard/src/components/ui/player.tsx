@@ -80,7 +80,6 @@ export const Player: PlayerComponent = (props) => {
 
   return (
     <Box
-      width="100%"
       position="relative"
       p={2}
       borderRadius={2}

@@ -7,7 +7,6 @@ import {
 } from '@sorry-cypress/dashboard/generated/graphql';
 import { useHideSuccessfulSpecs } from '@sorry-cypress/dashboard/hooks';
 import { useAutoRefreshRate } from '@sorry-cypress/dashboard/hooks/useAutoRefresh';
-import { WithMaterial } from '@sorry-cypress/dashboard/lib/material';
 import {
   getProjectPath,
   getRunPath,
@@ -93,7 +92,7 @@ export const RunDetailsView: RunDetailsViewComponent = (props) => {
   }
 
   return (
-    <WithMaterial>
+    <>
       <Toolbar
         actions={[
           {
@@ -119,7 +118,7 @@ export const RunDetailsView: RunDetailsViewComponent = (props) => {
         Spec Files
       </Typography>
       <RunDetails run={data.run} hidePassedSpecs={hidePassedSpecs} />
-    </WithMaterial>
+    </>
   );
 };
 
