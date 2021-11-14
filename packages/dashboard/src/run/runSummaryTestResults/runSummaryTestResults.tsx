@@ -14,7 +14,7 @@ export const RunSummaryTestResults: RunSummaryTestResultsComponent = (
   const { testsStats } = props;
 
   return (
-    <Grid container spacing={1}>
+    <Grid container spacing={{ xs: 0.5, sm: 1 }}>
       <Grid item>
         <TestOverallChip value={testsStats.overall} />
       </Grid>

@@ -1,9 +1,13 @@
+import { Loop as LoopIcon } from '@mui/icons-material';
 import { Alert, AlertTitle, Skeleton } from '@mui/material';
 import {
   GetInstanceQuery,
   useGetInstanceQuery,
 } from '@sorry-cypress/dashboard/generated/graphql';
-import { useAutoRefreshRate } from '@sorry-cypress/dashboard/hooks/useAutoRefresh';
+import {
+  useAutoRefresh,
+  useAutoRefreshRate,
+} from '@sorry-cypress/dashboard/hooks/useAutoRefresh';
 import {
   getInstancePath,
   getProjectPath,
@@ -12,7 +16,7 @@ import {
   setNav,
 } from '@sorry-cypress/dashboard/lib/navigation';
 import React, { FunctionComponent, useLayoutEffect } from 'react';
-import { Paper } from '../components';
+import { Paper, Toolbar } from '../components';
 import { InstanceDetails } from './instanceDetails';
 import { InstanceSummary } from './instanceSummary';
 
@@ -23,6 +27,7 @@ export const InstanceDetailsView: InstanceDetailsViewComponent = (props) => {
     },
   } = props;
 
+  const [shouldAutoRefresh, setShouldAutoRefresh] = useAutoRefresh();
   const autoRefreshRate = useAutoRefreshRate();
   const { loading, error, data } = useGetInstanceQuery({
     variables: { instanceId: id },
@@ -33,7 +38,7 @@ export const InstanceDetailsView: InstanceDetailsViewComponent = (props) => {
   if (loading)
     return (
       <>
-        <Skeleton variant="rectangular" height={140} sx={{ mb: 10 }} />{' '}
+        <Skeleton variant="rectangular" height={140} sx={{ mb: 10 }} />
         <Skeleton variant="rectangular" height={500} />
       </>
     );
@@ -68,6 +73,21 @@ export const InstanceDetailsView: InstanceDetailsViewComponent = (props) => {
 
   return (
     <>
+      <Toolbar
+        actions={[
+          {
+            key: 'autoRefresh',
+            text: 'Auto Refresh',
+            icon: LoopIcon,
+            toggleButton: true,
+            selected: !!shouldAutoRefresh,
+            onClick: () => {
+              setShouldAutoRefresh(!shouldAutoRefresh);
+              window.location.reload();
+            },
+          },
+        ]}
+      />
       <InstanceSummary instance={data.instance} />
       <InstanceDetails
         instance={data.instance}
