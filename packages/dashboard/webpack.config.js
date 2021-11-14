@@ -7,9 +7,10 @@ module.exports = {
     main: ['./src/index.tsx'],
   },
   devtool: 'source-map',
+  mode: 'development',
   output: {
     publicPath: '/',
-    jsonpScriptType: 'module',
+    scriptType: 'module',
     path: path.resolve(__dirname, 'dist'),
     filename: 'index.mjs',
   },
@@ -63,6 +64,5 @@ module.exports = {
   ],
   devServer: {
     writeToDisk: true,
-    host: '0.0.0.0',
   },
 };

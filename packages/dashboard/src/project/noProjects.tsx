@@ -13,7 +13,7 @@ import { Paper } from '@sorry-cypress/dashboard/components';
 import circleCypress from '@sorry-cypress/dashboard/resources/circle-cypress.svg';
 import logoLight from '@sorry-cypress/dashboard/resources/logo-light.svg';
 import React, { FunctionComponent } from 'react';
-import { version } from '../../package.json';
+import packageJson from '../../package.json';
 import { WithHooksForm } from './hook/hookFormReducer';
 import { ProjectEditForm } from './projectEditForm';
 
@@ -147,7 +147,7 @@ const NoProjects: NoProjectsComponent = () => {
                       }}
                       color="#eeeeee"
                     >
-                      v{version}
+                      v{packageJson.version}
                     </Typography>
                   </Fade>
                   <Zoom in timeout={500} style={{ transitionDelay: '2.2s' }}>

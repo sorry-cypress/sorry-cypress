@@ -1,8 +1,6 @@
-import { useRouteMatch } from 'react-router';
+import { useParams } from 'react-router-dom';
 
 export const useCurrentProjectId = () => {
-  const {
-    params: { projectId },
-  } = useRouteMatch<{ projectId: string }>();
-  return projectId;
+  const { projectId } = useParams();
+  return projectId!;
 };

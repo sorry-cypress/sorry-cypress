@@ -18,15 +18,12 @@ import {
 } from '@sorry-cypress/dashboard/generated/graphql';
 import { useAsync } from '@sorry-cypress/dashboard/hooks/';
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import { useRouteMatch } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 export const DeleteRunButton: DeleteRunButtonComponent = (props) => {
   const { runId, ciBuildId } = props;
 
-  const {
-    params: { projectId },
-  } = useRouteMatch<{ projectId: string }>();
-
+  const { projectId } = useParams();
   const [deleteRunMutation] = useDeleteRunMutation({
     variables: {
       runId,

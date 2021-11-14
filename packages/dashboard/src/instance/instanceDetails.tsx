@@ -31,7 +31,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { useHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { INSTANCE_STATE_COLORS, Paper, TEST_STATE_ICONS } from '../components';
 import { Player } from '../components/ui/player';
 import { TestDetailsView } from '../testItem/testDetailsView';
@@ -40,7 +40,7 @@ import { getTestDuration, getTestStartedAt } from './util';
 export const InstanceDetails: InstanceDetailsComponent = (props) => {
   const { instance, selectedItem } = props;
 
-  const history = useHistory();
+  const navigate = useNavigate();
   const theme = useTheme();
   const isSmScreenOrSmaller = useMediaQuery(theme.breakpoints.down('md'));
   const [showNavigationPanel, setShowNavigationPanel] = useState(true);
@@ -89,9 +89,13 @@ export const InstanceDetails: InstanceDetailsComponent = (props) => {
 
   const handleSelect = (e: SyntheticEvent, nodeId: string[] | string) => {
     if (nodeId === 'RECORDED_VIDEO') {
-      history.replace(`/instance/${instance.instanceId}/others/${nodeId}`);
+      navigate(`/instance/${instance.instanceId}/others/${nodeId}`, {
+        replace: true,
+      });
     } else if (typeof nodeId === 'string' && testsMap[nodeId]) {
-      history.replace(`/instance/${instance.instanceId}/test/${nodeId}`);
+      navigate(`/instance/${instance.instanceId}/test/${nodeId}`, {
+        replace: true,
+      });
     }
   };
 

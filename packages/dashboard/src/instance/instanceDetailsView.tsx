@@ -16,21 +16,18 @@ import {
   setNav,
 } from '@sorry-cypress/dashboard/lib/navigation';
 import React, { FunctionComponent, useLayoutEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { Paper, Toolbar } from '../components';
 import { InstanceDetails } from './instanceDetails';
 import { InstanceSummary } from './instanceSummary';
 
-export const InstanceDetailsView: InstanceDetailsViewComponent = (props) => {
-  const {
-    match: {
-      params: { id, itemId, testId },
-    },
-  } = props;
+export const InstanceDetailsView: InstanceDetailsViewComponent = () => {
+  const { id, itemId, testId } = useParams();
 
   const [shouldAutoRefresh, setShouldAutoRefresh] = useAutoRefresh();
   const autoRefreshRate = useAutoRefreshRate();
   const { loading, error, data } = useGetInstanceQuery({
-    variables: { instanceId: id },
+    variables: { instanceId: id! },
     pollInterval: autoRefreshRate,
   });
   updateNav(data);
@@ -128,12 +125,6 @@ function updateNav(data: GetInstanceQuery | undefined) {
 }
 
 type InstanceDetailsViewProps = {
-  match: {
-    params: {
-      id: string;
-      itemId?: string;
-      testId?: string;
-    };
-  };
+  // nothing yet
 };
 type InstanceDetailsViewComponent = FunctionComponent<InstanceDetailsViewProps>;

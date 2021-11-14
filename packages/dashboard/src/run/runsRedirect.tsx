@@ -1,28 +1,21 @@
 import React from 'react';
-import { Redirect } from 'react-router';
+import { Navigate, useParams } from 'react-router-dom';
 import { useGetRunsFeed } from './runsFeed/useGetRunFeed';
 
 type RunRedirectProps = {
-  match: {
-    params: {
-      projectId: string;
-      buildId: string;
-    };
-  };
+  // nothing yet
 };
 
-export function RunRedirect({
-  match: {
-    params: { projectId, buildId },
-  },
-}: RunRedirectProps) {
+export function RunRedirect() {
+  const { projectId, buildId } = useParams();
+
   const [runsFeed, , loading] = useGetRunsFeed({
-    projectId,
+    projectId: projectId!,
     search: buildId,
   });
 
   return !loading && runsFeed && runsFeed.runs.length > 0 ? (
-    <Redirect to={`/run/${runsFeed.runs[0].runId}`} />
+    <Navigate to={`/run/${runsFeed.runs[0].runId}`} />
   ) : loading ? (
     <div>
       Redirecting to run with build id {buildId} in {projectId}
