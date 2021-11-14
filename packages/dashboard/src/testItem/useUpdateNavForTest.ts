@@ -11,10 +11,7 @@ import { useLayoutEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 export const useUpdateTestNav = (data: GetInstanceQuery | undefined) => {
-  const { instanceId, testId } = useParams<{
-    instanceId: string;
-    testId: string;
-  }>();
+  const { instanceId, testId } = useParams();
   useLayoutEffect(() => {
     if (!data?.instance) {
       return;
@@ -49,7 +46,7 @@ export const useUpdateTestNav = (data: GetInstanceQuery | undefined) => {
       {
         type: NavItemType.test,
         label: test.title && test.title.join(' | '),
-        link: getTestPath(data.instance.instanceId, testId),
+        link: getTestPath(data.instance.instanceId, testId!),
       },
     ]);
   }, [data]);

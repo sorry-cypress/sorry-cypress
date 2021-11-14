@@ -16,13 +16,13 @@ import {
 } from '@mui/material';
 import { Paper } from '@sorry-cypress/dashboard/components';
 import React, { useState } from 'react';
-import { useHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { useDeleteProjectMutation } from '../generated/graphql';
 import { client } from '../lib/apolloClient';
 import { useCurrentProjectId } from './hook/useCurrentProjectId';
 
 export const DeleteProject = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const projectId = useCurrentProjectId();
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
@@ -46,7 +46,7 @@ export const DeleteProject = () => {
           setShowModal(false);
         }
         client.reFetchObservableQueries();
-        history.push('/');
+        navigate('/');
       })
       .catch((error) => {
         setDeleting(false);

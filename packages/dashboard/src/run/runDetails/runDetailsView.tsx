@@ -21,21 +21,17 @@ import {
 } from '@sorry-cypress/dashboard/lib/navigation';
 import { RunSummary } from '@sorry-cypress/dashboard/run/runSummary/runSummary';
 import React, { FunctionComponent, useLayoutEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { RunDetails } from './runDetails';
 
-export const RunDetailsView: RunDetailsViewComponent = (props) => {
-  const {
-    match: {
-      params: { id },
-    },
-  } = props;
-
+export const RunDetailsView: RunDetailsViewComponent = () => {
+  const { id } = useParams();
   const autoRefreshRate = useAutoRefreshRate();
   const [hidePassedSpecs, setHidePassedSpecs] = useHideSuccessfulSpecs();
   const [shouldAutoRefresh, setShouldAutoRefresh] = useAutoRefresh();
 
   const { loading, error, data } = useGetRunQuery({
-    variables: { runId: id },
+    variables: { runId: id! },
     pollInterval: autoRefreshRate,
   });
 
@@ -166,10 +162,6 @@ const updateNav = (data?: GetRunQuery) =>
   }, [data]);
 
 type RunDetailsViewProps = {
-  match: {
-    params: {
-      id: string;
-    };
-  };
+  // nothing yet
 };
 type RunDetailsViewComponent = FunctionComponent<RunDetailsViewProps>;

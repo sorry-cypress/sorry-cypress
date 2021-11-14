@@ -32,7 +32,6 @@ import { red } from '@mui/material/colors';
 import {
   createTheme,
   styled,
-  StyledEngineProvider,
   Theme,
   ThemeProvider,
   useTheme,
@@ -45,7 +44,7 @@ import {
 import logoDark from '@sorry-cypress/dashboard/resources/logo-dark.svg';
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { version } from '../../../package.json';
+import packageJson from '../../../package.json';
 
 export const DRAWER_WIDTH = 310;
 export const DRAWER_WIDTH_SM = 73;
@@ -375,7 +374,7 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
               component: RouterLink,
               to: '/',
             }}
-            secondary={`v${version}`}
+            secondary={`v${packageJson.version}`}
             secondaryTypographyProps={{
               sx: {
                 transition: 'all 0.3s',
@@ -388,7 +387,7 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
               component: Link,
               underline: 'none',
               target: '_blank',
-              href: `https://github.com/sorry-cypress/sorry-cypress/releases/tag/v${version}`,
+              href: `https://github.com/sorry-cypress/sorry-cypress/releases/tag/v${packageJson.version}`,
               rel: 'noopener noreferrer',
             }}
           />
@@ -610,35 +609,35 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
 
   const DrawerComponent = smallScreen ? MuiDrawer : Drawer;
   return (
-    <StyledEngineProvider injectFirst>
-      <ThemeProvider theme={sidebarTheme}>
-        <DrawerComponent
-          variant={smallScreen ? 'temporary' : 'permanent'}
-          open={open}
-          {...(smallScreen
+    // <StyledEngineProvider injectFirst>
+    <ThemeProvider theme={sidebarTheme}>
+      <DrawerComponent
+        variant={smallScreen ? 'temporary' : 'permanent'}
+        open={open}
+        {...(smallScreen
+          ? {
+              anchor: 'left',
+              ModalProps: {
+                keepMounted: true,
+              },
+            }
+          : {})}
+        sx={
+          smallScreen
             ? {
-                anchor: 'left',
-                ModalProps: {
-                  keepMounted: true,
+                '& .MuiDrawer-paper': {
+                  boxSizing: 'border-box',
+                  width: '100%',
+                  backgroundImage: 'unset',
                 },
               }
-            : {})}
-          sx={
-            smallScreen
-              ? {
-                  '& .MuiDrawer-paper': {
-                    boxSizing: 'border-box',
-                    width: '100%',
-                    backgroundImage: 'unset',
-                  },
-                }
-              : {}
-          }
-        >
-          {drawerContent}
-        </DrawerComponent>
-      </ThemeProvider>
-    </StyledEngineProvider>
+            : {}
+        }
+      >
+        {drawerContent}
+      </DrawerComponent>
+    </ThemeProvider>
+    // </StyledEngineProvider>
   );
 };
 

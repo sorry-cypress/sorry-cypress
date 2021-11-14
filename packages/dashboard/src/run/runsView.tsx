@@ -10,15 +10,12 @@ import {
   setNav,
 } from '@sorry-cypress/dashboard/lib/navigation';
 import React, { FunctionComponent, useLayoutEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { useAutoRefresh } from '../hooks';
 import { RunsFeed } from './runsFeed/runsFeed';
 
-export const RunsView: RunsViewComponent = (props) => {
-  const {
-    match: {
-      params: { projectId },
-    },
-  } = props;
+export const RunsView: RunsViewComponent = () => {
+  const { projectId } = useParams();
 
   const [search, setSearch] = useState('');
   const [showActions, setShowActions] = useState(false);
@@ -80,7 +77,7 @@ export const RunsView: RunsViewComponent = (props) => {
         onSearch={setSearch}
       />
       <RunsFeed
-        projectId={projectId}
+        projectId={projectId!}
         search={search}
         showActions={showActions}
         compact={compactView}
@@ -90,10 +87,6 @@ export const RunsView: RunsViewComponent = (props) => {
 };
 
 type RunsViewProps = {
-  match: {
-    params: {
-      projectId: string;
-    };
-  };
+  // nothing
 };
 type RunsViewComponent = FunctionComponent<RunsViewProps>;

@@ -27,7 +27,7 @@ import {
 import { useDeleteHookMutation } from '@sorry-cypress/dashboard/generated/graphql';
 import { useSwitch } from '@sorry-cypress/dashboard/hooks/useSwitch';
 import React, { useState } from 'react';
-import { useRouteMatch } from 'react-router';
+import { useParams } from 'react-router-dom';
 import { BitbucketHook } from './bitbucketHook';
 import { GenericHook } from './genericHook';
 import { GithubHook } from './githubHook';
@@ -59,6 +59,7 @@ export const HookEdit = ({
   dispatch: React.Dispatch<HookFormAction>;
   disabled?: boolean;
 }) => {
+  const { projectId } = useParams();
   const [isExpanded, toggleExpanded] = useSwitch();
   const [isModalActive, setModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -67,9 +68,6 @@ export const HookEdit = ({
     `${enumToString(hook.hookType)} ${hook.url}` ||
     `New ${enumToString(hook.hookType)}`;
 
-  const {
-    params: { projectId },
-  } = useRouteMatch<{ projectId: string }>();
   const [sendDeleteHook] = useDeleteHookMutation();
 
   async function deleteHook(hookId: string) {
@@ -78,7 +76,7 @@ export const HookEdit = ({
       await sendDeleteHook({
         variables: {
           input: {
-            projectId,
+            projectId: projectId!,
             hookId,
           },
         },
