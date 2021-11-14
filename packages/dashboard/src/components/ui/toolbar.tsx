@@ -77,7 +77,9 @@ export const Toolbar: ToolbarComponent = (props) => {
                 <Grid item key={action.key}>
                   <ToggleButton
                     value={action.key}
-                    color={action.primary ? 'primary' : undefined}
+                    color={
+                      action.primary || action.selected ? 'primary' : undefined
+                    }
                     size="small"
                     selected={action.selected}
                     onChange={action.onClick}
@@ -163,7 +165,7 @@ type ToolbarAction = {
   key: string;
   text: string;
   icon: SvgIconComponent;
-  primary: boolean;
+  primary?: boolean;
   toggleButton?: boolean;
   selected?: boolean;
   showInMenuBreakpoint?: Breakpoint[];

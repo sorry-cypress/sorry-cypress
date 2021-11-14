@@ -1,4 +1,7 @@
-import { VisibilityOff as VisibilityOffIcon } from '@mui/icons-material';
+import {
+  Loop as LoopIcon,
+  VisibilityOff as VisibilityOffIcon,
+} from '@mui/icons-material';
 import { Alert, Grid, Skeleton, Typography } from '@mui/material';
 import { Toolbar } from '@sorry-cypress/dashboard/components';
 import {
@@ -6,8 +9,10 @@ import {
   useGetRunQuery,
 } from '@sorry-cypress/dashboard/generated/graphql';
 import { useHideSuccessfulSpecs } from '@sorry-cypress/dashboard/hooks';
-import { useAutoRefreshRate } from '@sorry-cypress/dashboard/hooks/useAutoRefresh';
-import { WithMaterial } from '@sorry-cypress/dashboard/lib/material';
+import {
+  useAutoRefresh,
+  useAutoRefreshRate,
+} from '@sorry-cypress/dashboard/hooks/useAutoRefresh';
 import {
   getProjectPath,
   getRunPath,
@@ -27,6 +32,7 @@ export const RunDetailsView: RunDetailsViewComponent = (props) => {
 
   const autoRefreshRate = useAutoRefreshRate();
   const [hidePassedSpecs, setHidePassedSpecs] = useHideSuccessfulSpecs();
+  const [shouldAutoRefresh, setShouldAutoRefresh] = useAutoRefresh();
 
   const { loading, error, data } = useGetRunQuery({
     variables: { runId: id },
@@ -93,18 +99,28 @@ export const RunDetailsView: RunDetailsViewComponent = (props) => {
   }
 
   return (
-    <WithMaterial>
+    <>
       <Toolbar
         actions={[
           {
             key: 'hidePassedSpecs',
             text: 'Hide Successful Specs',
-            primary: hidePassedSpecs,
             icon: VisibilityOffIcon,
             selected: hidePassedSpecs,
             toggleButton: true,
             onClick: () => {
               setHidePassedSpecs(!hidePassedSpecs);
+            },
+          },
+          {
+            key: 'autoRefresh',
+            text: 'Auto Refresh',
+            icon: LoopIcon,
+            toggleButton: true,
+            selected: !!shouldAutoRefresh,
+            onClick: () => {
+              setShouldAutoRefresh(!shouldAutoRefresh);
+              window.location.reload();
             },
           },
         ]}
@@ -119,7 +135,7 @@ export const RunDetailsView: RunDetailsViewComponent = (props) => {
         Spec Files
       </Typography>
       <RunDetails run={data.run} hidePassedSpecs={hidePassedSpecs} />
-    </WithMaterial>
+    </>
   );
 };
 

@@ -1,8 +1,11 @@
+import { DeleteOutline, Warning } from '@mui/icons-material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import DeleteIcon from '@mui/icons-material/Delete';
-import WarningIcon from '@mui/icons-material/Warning';
+import { LoadingButton } from '@mui/lab';
 import {
+  Alert,
+  AlertTitle,
   Button,
   Dialog,
   DialogActions,
@@ -165,39 +168,46 @@ const DeleteModal = ({
 }: IDeleteModalProps) => {
   return (
     <Dialog
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
+      aria-labelledby="delete-hook-dialog-title"
+      aria-describedby="delete-hook-dialog-description"
       open={isModalActive}
       onClose={() => handleCloseModal()}
     >
-      <DialogTitle>
-        <WarningIcon fontSize="large" color="error" />
-        <br />
+      <DialogTitle id="delete-hook-dialog-title">
         Delete {hookName}?
       </DialogTitle>
       <DialogContent>
-        <DialogContentText>
-          Deleting hooks will permanently delete the associated data.
-          {deleteError && <p>Delete error: {deleteError}</p>}
-        </DialogContentText>
+        <Grid container alignItems="center" spacing={1}>
+          <Grid item>
+            <Warning fontSize="large" color="error" />
+          </Grid>
+          <Grid item xs>
+            <DialogContentText id="delete-hook-dialog-description">
+              Deleting hooks will permanently delete the associated data.
+            </DialogContentText>
+            {deleteError && (
+              <Alert severity="error">
+                <AlertTitle>Delete error</AlertTitle>
+                {deleteError.toString()}
+              </Alert>
+            )}
+          </Grid>
+        </Grid>
       </DialogContent>
       <DialogActions>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => handleCloseModal()}
-        >
+        <Button variant="contained" onClick={() => handleCloseModal()}>
           Cancel
         </Button>
-        <Button
+        <LoadingButton
+          loading={deleting}
+          loadingPosition="start"
           variant="contained"
           color="error"
           onClick={() => handleDelete()}
-          disabled={deleting}
+          startIcon={<DeleteOutline />}
         >
-          <DeleteIcon />
           {deleting ? 'Deleting' : 'Delete'}
-        </Button>
+        </LoadingButton>
       </DialogActions>
     </Dialog>
   );

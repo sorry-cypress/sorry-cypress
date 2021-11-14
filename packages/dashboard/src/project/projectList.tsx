@@ -1,13 +1,13 @@
-import { Fade, Grid } from '@mui/material';
-import { CenteredContent } from '@sorry-cypress/dashboard/components';
+import { Fade, Grid, Skeleton } from '@mui/material';
+import { Paper } from '@sorry-cypress/dashboard/components';
 import {
   Filters,
   useGetProjectsQuery,
 } from '@sorry-cypress/dashboard/generated/graphql';
 import { ProjectListItem } from '@sorry-cypress/dashboard/project/projectListItem';
-import { Heading } from 'bold-ui';
 import React from 'react';
 import { TransitionGroup } from 'react-transition-group';
+import NoProjects from './noProjects';
 
 type ProjectsListProps = {
   search: string;
@@ -31,13 +31,24 @@ const ProjectsList = ({ search }: ProjectsListProps) => {
   });
 
   if (loading) {
-    return <CenteredContent>Loading ...</CenteredContent>;
+    return (
+      <Grid
+        container
+        rowSpacing={2}
+        columnSpacing={4}
+        columns={{ xs: 1, sm: 8, md: 12, lg: 24, xl: 24 }}
+      >
+        {[1, 2, 3, 4, 5, 6].map((key) => (
+          <Grid item key={key} xs={1} sm={4} md={6} lg={8} xl={6}>
+            <Skeleton variant="rectangular" height={88} />
+          </Grid>
+        ))}
+      </Grid>
+    );
   }
   if (!data || error) {
     return (
-      <CenteredContent>
-        {(error && error.toString()) || 'Oops an error occurred'}
-      </CenteredContent>
+      <Paper>{(error && error.toString()) || 'Oops an error occurred'}</Paper>
     );
   }
 
@@ -46,27 +57,13 @@ const ProjectsList = ({ search }: ProjectsListProps) => {
   if (projects.length === 0) {
     if (search) {
       return (
-        <CenteredContent>
+        <Paper>
           <p>No projects found </p>
-        </CenteredContent>
+        </Paper>
       );
     }
 
-    return (
-      <CenteredContent>
-        <Heading level={1}>Welcome to Sorry Cypress!</Heading>
-        <p>
-          Your projects will appear here.{' '}
-          <a
-            href="https://github.com/agoldis/sorry-cypress"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </p>
-      </CenteredContent>
-    );
+    return <NoProjects />;
   }
 
   return (

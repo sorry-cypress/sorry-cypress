@@ -86,6 +86,7 @@ export const SlackHook = ({ hook }: SlackHookProps) => {
                   },
                 })}
                 disabled={loading}
+                size="small"
               />
             </InputFieldLabel>
           </Grid>
@@ -117,6 +118,7 @@ export const SlackHook = ({ hook }: SlackHookProps) => {
                     onChange={(e) => onChange(e.target.value)}
                     value={value}
                     disabled={loading}
+                    size="small"
                   >
                     {Object.keys(ResultFilter)
                       .sort()

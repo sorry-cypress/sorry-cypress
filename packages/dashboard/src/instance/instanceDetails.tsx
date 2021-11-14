@@ -136,6 +136,7 @@ export const InstanceDetails: InstanceDetailsComponent = (props) => {
                 color="inherit"
                 sx={{
                   mr: 0.5,
+
                   fontSize:
                     node[1].isFolder || node[1].isVideo ? undefined : '1.2rem',
                   color:
@@ -175,7 +176,7 @@ export const InstanceDetails: InstanceDetailsComponent = (props) => {
                     />
                   </Tooltip>
                 )}
-              <Grid item>
+              <Grid item pr={2}>
                 <Typography variant="caption" color="inherit">
                   {node[1].test && (
                     <Tooltip
@@ -307,12 +308,10 @@ export const InstanceDetails: InstanceDetailsComponent = (props) => {
             }}
           >
             {selected?.data?.testId && (
-              <Box maxWidth="100%">
-                <TestDetailsView
-                  instanceId={instance.instanceId}
-                  testId={selected.data.testId}
-                />
-              </Box>
+              <TestDetailsView
+                instanceId={instance.instanceId}
+                testId={selected.data.testId}
+              />
             )}
             {selected?.data.videoUrl && <Player src={selected.data.videoUrl} />}
           </Paper>

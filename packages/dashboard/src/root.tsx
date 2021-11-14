@@ -1,5 +1,5 @@
 import { ApolloProvider } from '@apollo/client';
-import { ThemeProvider } from 'bold-ui';
+import { CssBaseline, ThemeProvider } from '@mui/material';
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Layout } from './components';
@@ -54,6 +54,7 @@ export const Root = () => {
   return (
     <ApolloProvider client={client}>
       <ThemeProvider theme={theme}>
+        <CssBaseline />
         <Router>
           <ErrorBoundary>
             <Layout>

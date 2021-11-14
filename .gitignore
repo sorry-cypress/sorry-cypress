@@ -70,3 +70,6 @@ credentials
 # Minio
 /data
 example/data
+
+# OS files
+.DS_Store

@@ -72,6 +72,7 @@ export const GithubHook = ({ hook }: GithubHookPros) => {
               })}
               defaultValue={hook.url}
               disabled={disabled}
+              size="small"
             />
           </InputFieldLabel>
         </Grid>
@@ -124,6 +125,7 @@ export const GithubHook = ({ hook }: GithubHookPros) => {
                   </InputAdornment>
                 }
                 label="Password"
+                size="small"
               />
             )}
           </InputFieldLabel>
@@ -141,6 +143,7 @@ export const GithubHook = ({ hook }: GithubHookPros) => {
               defaultValue={hook.githubContext}
               inputRef={register}
               disabled={disabled}
+              size="small"
             />
           </InputFieldLabel>
         </Grid>

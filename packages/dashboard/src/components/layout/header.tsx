@@ -13,17 +13,13 @@ import {
 } from '@mui/icons-material';
 import {
   Breadcrumbs,
-  FormControlLabel,
-  FormGroup,
   IconButton,
   Link,
   styled,
-  Switch,
   Toolbar,
   Tooltip,
 } from '@mui/material';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
-import { useAutoRefresh } from '@sorry-cypress/dashboard/hooks';
 import {
   NavItemType,
   navStructure,
@@ -75,7 +71,6 @@ export const Header: HeaderComponent = ({ open, onMenuClick }) => {
   const lastNavItem = nav.length > 1 ? last(nav) : nav?.[0];
   const LastItemIcon =
     lastNavItem && !isNil(lastNavItem.type) && ICONS[lastNavItem.type];
-  const [shouldAutoRefresh, setShouldAutoRefresh] = useAutoRefresh();
 
   return (
     <AppBar position="fixed" open={open}>
@@ -169,29 +164,6 @@ export const Header: HeaderComponent = ({ open, onMenuClick }) => {
             </Tooltip>
           )}
         </Breadcrumbs>
-        <FormGroup>
-          <Tooltip
-            title="Toggle polling for updates
-          "
-          >
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={!!shouldAutoRefresh}
-                  onChange={() => {
-                    setShouldAutoRefresh(!shouldAutoRefresh);
-                    window.location.reload();
-                  }}
-                  inputProps={{ 'aria-label': 'Auto Refresh' }}
-                />
-              }
-              sx={{
-                color: 'text.primary',
-              }}
-              label="Auto Refresh"
-            />
-          </Tooltip>
-        </FormGroup>
       </Toolbar>
     </AppBar>
   );

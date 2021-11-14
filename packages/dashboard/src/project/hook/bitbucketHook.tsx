@@ -73,6 +73,7 @@ export const BitbucketHook = ({ hook }: BitbucketHookPros) => {
                 },
               })}
               disabled={disabled}
+              size="small"
             />
           </InputFieldLabel>
         </Grid>
@@ -96,6 +97,7 @@ export const BitbucketHook = ({ hook }: BitbucketHookPros) => {
               })}
               defaultValue={hook.bitbucketUsername}
               disabled={disabled}
+              size="small"
             />
           </InputFieldLabel>
         </Grid>
@@ -150,6 +152,7 @@ export const BitbucketHook = ({ hook }: BitbucketHookPros) => {
                     </IconButton>
                   </InputAdornment>
                 }
+                size="small"
               />
             )}
           </InputFieldLabel>
@@ -168,6 +171,7 @@ export const BitbucketHook = ({ hook }: BitbucketHookPros) => {
               defaultValue={hook.bitbucketBuildName}
               inputRef={register}
               disabled={disabled}
+              size="small"
             />
           </InputFieldLabel>
         </Grid>

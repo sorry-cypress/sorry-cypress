@@ -135,6 +135,7 @@ export const HooksEditor = () => {
             label="Select hook type"
           >
             <Select
+              size="small"
               id="hookType"
               onChange={handleChange}
               value={currentHookType || ''}

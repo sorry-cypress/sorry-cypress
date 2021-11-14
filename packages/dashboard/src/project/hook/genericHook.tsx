@@ -62,6 +62,7 @@ export const GenericHook = ({ hook }: GenericHookProps) => {
                   },
                 })}
                 disabled={loading}
+                size="small"
               />
             </InputFieldLabel>
           </Grid>
@@ -82,6 +83,7 @@ export const GenericHook = ({ hook }: GenericHookProps) => {
                 placeholder="Enter a stringified JSON object with key values for POST call headers"
                 defaultValue={hook.headers}
                 disabled={loading}
+                size="small"
               />
             </InputFieldLabel>
           </Grid>

@@ -26,15 +26,8 @@ export const InputFieldLabel = (
     </Tooltip>
   );
   return (
-    <FormControl
-      fullWidth
-      required={required}
-      style={{ marginBottom: '1.5rem' }}
-    >
-      <FormLabel
-        htmlFor={htmlFor}
-        sx={{ display: 'flex', marginBottom: '0.5rem' }}
-      >
+    <FormControl fullWidth required={required} sx={{ mb: 1.5 }}>
+      <FormLabel htmlFor={htmlFor} sx={{ display: 'flex', marginBottom: 0.5 }}>
         {Help}
         <span>{label}</span>
       </FormLabel>
