@@ -21,6 +21,7 @@ import {
   useResetInstanceMutation,
 } from '@sorry-cypress/dashboard/generated/graphql';
 import { useAsync } from '@sorry-cypress/dashboard/hooks/';
+import { client } from '@sorry-cypress/dashboard/lib/apolloClient';
 import { getBase } from '@sorry-cypress/dashboard/lib/path';
 import React, { useCallback, useEffect, useState } from 'react';
 
@@ -56,6 +57,7 @@ export const ResetInstanceButton = ({
     if (!deleteResult) {
       return;
     }
+    client.reFetchObservableQueries();
     setShowModal(false);
   }, [deleteResult]);
 

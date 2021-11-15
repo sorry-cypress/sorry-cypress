@@ -1,5 +1,7 @@
 import { Collection } from '@sorry-cypress/mongo';
 import { DataSource } from 'apollo-datasource';
+import { findIndex } from 'lodash';
+import { RunSpec } from '../generated/graphql';
 
 export class InstancesAPI extends DataSource {
   getInstanceById(instanceId: string) {
@@ -48,18 +50,28 @@ export class InstancesAPI extends DataSource {
       };
     }
 
+    let runSpec: RunSpec | null;
     run.specs = run.specs.map((spec) => {
       if (spec.instanceId === instanceId) {
+        runSpec = spec;
         return {
           ...spec,
           claimedAt: null,
           completedAt: null,
           machineId: undefined,
+          results: undefined,
         };
       } else {
         return spec;
       }
     });
+
+    const groupId = instance.groupId;
+    const groupIndex = findIndex(run.progress.groups, { groupId });
+    const groupPath = `progress.groups.${groupIndex}`;
+    const stats = runSpec!.results?.stats;
+    const retries = runSpec!.results?.retries;
+    const specFailed = stats?.failures && stats.failures > 0;
 
     await Collection.run().updateOne(
       {
@@ -71,6 +83,18 @@ export class InstancesAPI extends DataSource {
           completion: {
             completed: false,
           },
+        },
+        $inc: {
+          [`${groupPath}.instances.claimed`]: -1,
+          [`${groupPath}.instances.complete`]: -1,
+          [`${groupPath}.instances.passes`]: -(specFailed ? 0 : 1),
+          [`${groupPath}.instances.failures`]: -(specFailed ? 1 : 0),
+          [`${groupPath}.tests.overall`]: -(stats?.tests || 0),
+          [`${groupPath}.tests.passes`]: -(stats?.passes || 0),
+          [`${groupPath}.tests.failures`]: -(stats?.failures || 0),
+          [`${groupPath}.tests.skipped`]: -(stats?.skipped || 0),
+          [`${groupPath}.tests.pending`]: -(stats?.pending || 0),
+          [`${groupPath}.tests.retries`]: -(retries || 0),
         },
       }
     );
