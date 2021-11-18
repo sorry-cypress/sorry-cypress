@@ -295,6 +295,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "pitthecat",
+      "name": "pitthecat",
+      "avatar_url": "https://avatars.githubusercontent.com/u/28391645?v=4",
+      "profile": "https://github.com/pitthecat",
+      "contributions": [
+        "infra"
+      ]
     }
   ],
   "contributorsPerLine": 7,

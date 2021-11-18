@@ -137,6 +137,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="http://jovanilic.com"><img src="https://avatars.githubusercontent.com/u/15846154?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jovan Ilić</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=Zaista" title="Code">💻</a></td>
     <td align="center"><a href="http://www.scottux.com"><img src="https://avatars.githubusercontent.com/u/135884?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Scott</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=scottux" title="Code">💻</a></td>
     <td align="center"><a href="https://www.karimould.dev/"><img src="https://avatars.githubusercontent.com/u/18060129?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Karim Ould Mahieddine</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=karimould" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/pitthecat"><img src="https://avatars.githubusercontent.com/u/28391645?v=4?s=100" width="100px;" alt=""/><br /><sub><b>pitthecat</b></sub></a><br /><a href="#infra-pitthecat" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
   </tr>
 </table>
 
