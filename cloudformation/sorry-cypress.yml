@@ -208,8 +208,8 @@ Resources:
   TargetGroupDirector:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      HealthCheckIntervalSeconds: 6
-      HealthCheckPath: /
+      HealthCheckIntervalSeconds: 15
+      HealthCheckPath: /ping
       HealthCheckProtocol: HTTP
       HealthCheckTimeoutSeconds: 5
       HealthyThresholdCount: 2
@@ -217,7 +217,7 @@ Resources:
       Name: !Join ['-', [!Ref 'AWS::StackName', 'director-tg']]
       Port: 1234
       Matcher:
-        HttpCode: 302
+        HttpCode: 200
       Protocol: HTTP
       UnhealthyThresholdCount: 2
       VpcId: !Ref VPC
@@ -226,8 +226,8 @@ Resources:
   TargetGroupAPI:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      HealthCheckIntervalSeconds: 6
-      HealthCheckPath: /
+      HealthCheckIntervalSeconds: 15
+      HealthCheckPath: /.well-known/apollo/server-health
       HealthCheckProtocol: HTTP
       HealthCheckTimeoutSeconds: 5
       HealthyThresholdCount: 2
@@ -235,7 +235,7 @@ Resources:
       Name: !Join ['-', [!Ref 'AWS::StackName', 'api-tg']]
       Port: 4000
       Matcher:
-        HttpCode: 400
+        HttpCode: 200
       Protocol: HTTP
       UnhealthyThresholdCount: 2
       VpcId: !Ref VPC
@@ -244,7 +244,7 @@ Resources:
   TargetGroupDashboard:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      HealthCheckIntervalSeconds: 6
+      HealthCheckIntervalSeconds: 15
       HealthCheckPath: /
       HealthCheckProtocol: HTTP
       HealthCheckTimeoutSeconds: 5
