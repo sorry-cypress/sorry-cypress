@@ -453,7 +453,7 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
         )}
         {!loading && !isHome && projectNavItem?.label && projectView?.type && (
           <ProjectDetailsMenu
-            projectId={projectNavItem.label}
+            projectId={decodeURIComponent(projectNavItem?.label || '')}
             projectColor={currentProject?.projectColor}
             open={open}
             selectedItem={projectView.type}
