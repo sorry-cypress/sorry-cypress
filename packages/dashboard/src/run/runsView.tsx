@@ -14,8 +14,12 @@ import { useParams } from 'react-router-dom';
 import { useAutoRefresh } from '../hooks';
 import { RunsFeed } from './runsFeed/runsFeed';
 
+type RouteParams = {
+  projectId: string;
+};
+
 export const RunsView: RunsViewComponent = () => {
-  const { projectId } = useParams();
+  const { projectId } = useParams<RouteParams>();
 
   const [search, setSearch] = useState('');
   const [showActions, setShowActions] = useState(false);

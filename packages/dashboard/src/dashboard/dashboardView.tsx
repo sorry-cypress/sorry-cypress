@@ -4,12 +4,12 @@ import { Toolbar } from '@sorry-cypress/dashboard/components';
 import { setNav } from '@sorry-cypress/dashboard/lib/navigation';
 import ProjectsList from '@sorry-cypress/dashboard/project/projectList';
 import React, { useLayoutEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { useAutoRefresh } from '../hooks';
 
 export function DashboardView() {
   const [search, setSearch] = useState('');
-  const navigate = useNavigate();
+  const history = useHistory();
   const [shouldAutoRefresh, setShouldAutoRefresh] = useAutoRefresh();
   useLayoutEffect(() => {
     setNav([]);
@@ -24,7 +24,7 @@ export function DashboardView() {
             text: 'Add New Project',
             icon: AddIcon,
             onClick: () => {
-              navigate('/--create-new-project--/edit');
+              history.push('/--create-new-project--/edit');
             },
           },
           {

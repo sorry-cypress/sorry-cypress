@@ -21,8 +21,14 @@ import { Paper, Toolbar } from '../components';
 import { InstanceDetails } from './instanceDetails';
 import { InstanceSummary } from './instanceSummary';
 
+type RouteParams = {
+  id: string;
+  itemId: string;
+  testId: string;
+};
+
 export const InstanceDetailsView: InstanceDetailsViewComponent = () => {
-  const { id, itemId, testId } = useParams();
+  const { id, itemId, testId } = useParams<RouteParams>();
 
   const [shouldAutoRefresh, setShouldAutoRefresh] = useAutoRefresh();
   const autoRefreshRate = useAutoRefreshRate();

@@ -6,7 +6,7 @@ import {
   setNav,
 } from '@sorry-cypress/dashboard/lib/navigation';
 import React, { useLayoutEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { DeleteProject } from './deleteProject';
 import { WithHooksForm } from './hook/hookFormReducer';
 import { useCurrentProjectId } from './hook/useCurrentProjectId';
@@ -15,7 +15,7 @@ import { ProjectEditForm } from './projectEditForm';
 
 export function ProjectEditView() {
   const projectId = useCurrentProjectId();
-  const navigate = useNavigate();
+  const history = useHistory();
   const isNewProject = projectId === '--create-new-project--';
 
   useLayoutEffect(() => {
@@ -42,7 +42,7 @@ export function ProjectEditView() {
   }, [isNewProject]);
 
   function onProjectCreated({ projectId }: { projectId: string }) {
-    navigate(`/${projectId}/edit`);
+    history.push(`/${projectId}/edit`);
   }
 
   return (

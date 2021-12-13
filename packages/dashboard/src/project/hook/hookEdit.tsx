@@ -36,6 +36,10 @@ import { HookFormAction } from './hookFormReducer';
 import { SlackHook } from './slackHook';
 import { TeamsHook } from './teamsHook';
 
+type RouteParams = {
+  projectId: string;
+};
+
 const Toggler = ({ toggleExpanded, isExpanded, title }: any) => {
   return (
     <Box
@@ -59,7 +63,7 @@ export const HookEdit = ({
   dispatch: React.Dispatch<HookFormAction>;
   disabled?: boolean;
 }) => {
-  const { projectId } = useParams();
+  const { projectId } = useParams<RouteParams>();
   const [isExpanded, toggleExpanded] = useSwitch();
   const [isModalActive, setModal] = useState(false);
   const [deleting, setDeleting] = useState(false);

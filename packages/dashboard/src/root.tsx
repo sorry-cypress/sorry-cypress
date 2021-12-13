@@ -1,7 +1,7 @@
 import { ApolloProvider } from '@apollo/client';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Layout } from './components';
 import { DashboardView } from './dashboard/dashboardView';
 import { InstanceDetailsView } from './instance/instanceDetailsView';
@@ -58,28 +58,23 @@ export const Root = () => {
         <Router>
           <ErrorBoundary>
             <Layout>
-              <Routes>
-                <Route path="/" element={<DashboardView />} />
-                <Route
-                  path="/:projectId/runs/:buildId"
-                  element={<RunRedirect />}
-                />
-                <Route path="/:projectId/runs" element={<RunsView />} />
-                <Route path="/:projectId/edit" element={<ProjectEditView />} />
-                <Route path="/run/:id" element={<RunDetailsView />} />
-                <Route
-                  path={'/instance/:id'}
-                  element={<InstanceDetailsView />}
-                />
-                <Route
-                  path={'/instance/:id/test/:testId'}
-                  element={<InstanceDetailsView />}
-                />
-                <Route
-                  path={'/instance/:id/others/:itemId'}
-                  element={<InstanceDetailsView />}
-                />
-              </Routes>
+              <Route path="/" element={<DashboardView />} />
+              <Route
+                path="/:projectId/runs/:buildId"
+                element={<RunRedirect />}
+              />
+              <Route path="/:projectId/runs" element={<RunsView />} />
+              <Route path="/:projectId/edit" element={<ProjectEditView />} />
+              <Route path="/run/:id" element={<RunDetailsView />} />
+              <Route path={'/instance/:id'} element={<InstanceDetailsView />} />
+              <Route
+                path={'/instance/:id/test/:testId'}
+                element={<InstanceDetailsView />}
+              />
+              <Route
+                path={'/instance/:id/others/:itemId'}
+                element={<InstanceDetailsView />}
+              />
             </Layout>
           </ErrorBoundary>
         </Router>
