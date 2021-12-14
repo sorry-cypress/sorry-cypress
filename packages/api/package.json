@@ -54,7 +54,7 @@
     "@sorry-cypress/common": "1.0.0",
     "@sorry-cypress/logger": "1.0.0",
     "@sorry-cypress/mongo": "1.0.0",
-    "apollo-server": "^2.18.1",
+    "apollo-server": "^2.25.3",
     "dotenv": "^8.1.0",
     "graphql": "^15.3.0",
     "graphql-iso-date": "^3.6.1",
