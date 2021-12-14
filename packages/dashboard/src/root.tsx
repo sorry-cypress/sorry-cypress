@@ -58,15 +58,15 @@ export const Root = () => {
         <Router>
           <ErrorBoundary>
             <Layout>
-              <Route path="/" element={<DashboardView />} />
+              <Route path="/" exact component={DashboardView} />
               <Route
-                path="/:projectId/runs/:buildId"
-                element={<RunRedirect />}
+                path="/:projectId+/runs/:buildId"
+                component={RunRedirect}
               />
-              <Route path="/:projectId/runs" element={<RunsView />} />
-              <Route path="/:projectId/edit" element={<ProjectEditView />} />
-              <Route path="/run/:id" element={<RunDetailsView />} />
-              <Route path={'/instance/:id'} element={<InstanceDetailsView />} />
+              <Route path="/:projectId+/runs" component={RunsView} />
+              <Route path="/:projectId+/edit" component={ProjectEditView} />
+              <Route path="/run/:id" component={RunDetailsView} />
+              <Route path={'/instance/:id'} component={InstanceDetailsView} />
               <Route
                 path={'/instance/:id/test/:testId'}
                 element={<InstanceDetailsView />}
