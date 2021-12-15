@@ -24,7 +24,7 @@ export function ProjectListItem({ project }: ProjectListItemProps) {
   return (
     <Link
       component={RouterLink}
-      to={`/${project.projectId}/runs`}
+      to={`/${encodeURIComponent(project.projectId)}/runs`}
       underline="none"
     >
       <Card
