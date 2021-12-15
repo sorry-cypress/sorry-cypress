@@ -162,7 +162,7 @@ export const ProjectListMenu: ProjectListMenuType = ({
               key={decodeURIComponent(project.projectId)}
               sx={{ pl: 4 }}
               component={RouterLink}
-              to={`/${project.projectId}/runs`}
+              to={`/${encodeURIComponent(project.projectId)}/runs`}
               onClick={onItemClick}
             >
               <ListItemIcon
@@ -194,7 +194,7 @@ export const ProjectListMenu: ProjectListMenuType = ({
                 aria-label={decodeURIComponent(project.projectId)}
                 sx={{ opacity: 0.6, padding: 1.5, color: project.projectColor }}
                 component={RouterLink}
-                to={`/${project.projectId}/runs`}
+                to={`/${encodeURIComponent(project.projectId)}/runs`}
                 onClick={onItemClick}
                 size="large"
               >
@@ -218,13 +218,13 @@ export const ProjectDetailsMenu: ProjectDetailsMenuType = ({
   const projectMenuItems = [
     {
       label: 'Latest runs',
-      link: `/${projectId}/runs`,
+      link: `/${encodeURIComponent(projectId)}/runs`,
       iconComponent: PlayLessonIcon,
       type: NavItemType.latestRuns,
     },
     {
       label: 'Project settings',
-      link: `/${projectId}/edit`,
+      link: `/${encodeURIComponent(projectId)}/edit`,
       iconComponent: SettingsIcon,
       type: NavItemType.projectSettings,
     },

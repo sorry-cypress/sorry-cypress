@@ -42,7 +42,7 @@ export function ProjectEditView() {
   }, [isNewProject]);
 
   function onProjectCreated({ projectId }: { projectId: string }) {
-    navigate(`/${projectId}/edit`);
+    navigate(`/${encodeURIComponent(projectId)}/edit`);
   }
 
   return (

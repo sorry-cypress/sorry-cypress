@@ -33,7 +33,7 @@ const detectBadPath = (fn: (value: string) => string) => (value: unknown) => {
 };
 
 export const getProjectPath = detectBadPath(
-  (projectId: string) => `${projectId}/runs`
+  (projectId: string) => `${encodeURIComponent(projectId)}/runs`
 );
 export const getRunPath = detectBadPath((id: string) => `run/${id}`);
 export const getInstancePath = detectBadPath((id: string) => `instance/${id}`);
