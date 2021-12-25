@@ -11,7 +11,7 @@ import {
 import { keyframes } from '@mui/system';
 import { Paper } from '@sorry-cypress/dashboard/components';
 import circleCypress from '@sorry-cypress/dashboard/resources/circle-cypress.svg';
-import logoLight from '@sorry-cypress/dashboard/resources/logo-light.svg';
+import logo from '@sorry-cypress/dashboard/resources/logo-dark.svg';
 import React, { FunctionComponent } from 'react';
 import packageJson from '../../package.json';
 import { WithHooksForm } from './hook/hookFormReducer';
@@ -123,7 +123,7 @@ const NoProjects: NoProjectsComponent = () => {
                 justifyContent="center"
                 sx={{
                   display: { xs: 'none', md: 'flex' },
-                  backgroundColor: '#183C21',
+                  backgroundColor: '#111928',
                 }}
               >
                 <Grid item p={2} position="relative" width={400} height={500}>
@@ -195,7 +195,7 @@ const NoProjects: NoProjectsComponent = () => {
                       }}
                     />
                   </Zoom>
-                  <Logo src={logoLight} width={140} />
+                  <Logo src={logo} width={140} />
                 </Grid>
               </Grid>
             </Grid>
