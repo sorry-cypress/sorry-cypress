@@ -143,7 +143,7 @@ export async function reportToSlack(
           ],
         },
       ],
-      icon_url: 'https://sorry-cypress.s3.amazonaws.com/images/icon-bg.png',
+      icon_url: 'https://sorry-cypress.s3.amazonaws.com/images/logo-bg.png',
     },
   }).catch((error) => {
     getLogger().error(
