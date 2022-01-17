@@ -14,19 +14,18 @@ RUN yarn workspace @sorry-cypress/mongo build
 RUN yarn workspace @sorry-cypress/logger build
 RUN yarn workspace @sorry-cypress/director build
 
+RUN yarn install --production --frozen-lockfile
+RUN apk --no-cache add curl && \
+    curl -sf https://gobinaries.com/tj/node-prune | sh && \
+    node-prune
+
 FROM node:14-alpine
 WORKDIR /app
-COPY --from=build /app/packages/common/dist packages/common/dist
-COPY --from=build /app/packages/mongo/dist packages/mongo/dist
-COPY --from=build /app/packages/logger/dist packages/logger/dist
-COPY --from=build /app/packages/director/dist packages/director/dist
-COPY packages/director/package.json /app/packages/director/package.json
-COPY packages/common/package.json /app/packages/common/package.json
-COPY packages/mongo/package.json /app/packages/mongo/package.json
-COPY packages/logger/package.json /app/packages/logger/package.json
-COPY package.json ./
-COPY yarn.lock ./
-RUN yarn install --production --frozen-lockfile
+COPY --chown=node:node --from=build /app/packages/ packages/
+COPY --chown=node:node --from=build /app/node_modules/ node_modules/
+RUN apk add --no-cache tini
 ENV NODE_ENV=production
+USER node
 EXPOSE 1234
+ENTRYPOINT ["/sbin/tini", "--"]
 CMD ["./node_modules/.bin/pm2-runtime", "packages/director/dist"]
