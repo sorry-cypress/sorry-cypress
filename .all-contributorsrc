@@ -304,6 +304,15 @@
       "contributions": [
         "infra"
       ]
+    },
+    {
+      "login": "nijine",
+      "name": "Dmitriy Loshakov",
+      "avatar_url": "https://avatars.githubusercontent.com/u/37587636?v=4",
+      "profile": "https://github.com/nijine",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
