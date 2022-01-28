@@ -16,7 +16,8 @@
   ],
   "resolutions": {
     "@types/express": "4.17.12",
-    "@types/serve-static": "1.13.10"
+    "@types/serve-static": "1.13.10",
+    "pac-resolver": "^5.0.0"
   },
   "scripts": {
     "killall": "ps -ef | egrep \"webpack|node|nodemon\" | grep sorry | awk '{ print $2 }' | xargs kill",
