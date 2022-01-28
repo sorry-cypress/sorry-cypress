@@ -16,23 +16,7 @@ query getInstance($instanceId: ID!) {
         ...AllInstanceStats
       }
       tests {
-        ... on InstanceTest {
-          testId
-          title
-          state
-          body
-          displayError
-          attempts {
-            state
-            wallClockDuration
-            wallClockStartedAt
-            error {
-              name
-              message
-              stack
-            }
-          }
-        }
+        ...GetInstanceTest
       }
       screenshots {
         testId

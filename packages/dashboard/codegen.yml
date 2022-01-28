@@ -18,3 +18,4 @@ generates:
       avoidOptionals: true
       preResolveTypes: true
       apolloClientVersion: 3
+      maybeValue: 'T | null'

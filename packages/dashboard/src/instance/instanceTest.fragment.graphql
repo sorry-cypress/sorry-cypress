@@ -1,0 +1,17 @@
+fragment GetInstanceTest on InstanceTest {
+  testId
+  title
+  state
+  body
+  displayError
+  attempts {
+    state
+    wallClockDuration
+    wallClockStartedAt
+    error {
+      name
+      message
+      stack
+    }
+  }
+}

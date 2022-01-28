@@ -20,7 +20,7 @@ import { blueGrey, pink } from '@mui/material/colors';
 import { getTestRetries } from '@sorry-cypress/common';
 import {
   GetInstanceQuery,
-  InstanceTest,
+  GetInstanceTestFragment,
 } from '@sorry-cypress/dashboard/generated/graphql';
 import { getDurationMs } from '@sorry-cypress/dashboard/lib/time';
 import { TestError } from '@sorry-cypress/dashboard/testItem/details/common';
@@ -397,7 +397,7 @@ type NavigationItem = {
   isFolder?: boolean;
   isVideo?: boolean;
   videoUrl?: string;
-  test?: InstanceTest;
+  test?: GetInstanceTestFragment;
   children?: Map<string, NavigationItem>;
 };
 
