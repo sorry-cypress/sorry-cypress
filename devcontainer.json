@@ -1,8 +1,0 @@
-{
-  "$schema": "https://raw.githubusercontent.com/facebookexperimental/fb-vscode/master/extensions/configuration-editing/schemas/devContainer.schema.json",
-  "name": "Alpine",
-  "dockerFile": "Dockerfile.dev",
-  "settings": {},
-  "extensions": [],
-  "remoteUser": "vscode"
-}
