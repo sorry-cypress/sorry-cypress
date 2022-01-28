@@ -24,8 +24,7 @@
     "test": "jest --passWithNoTests"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.20",
-    "jest": "^26.6.3"
+    "jest": "^27.4.7"
   },
   "dependencies": {
     "date-fns": "^2.21.3",
