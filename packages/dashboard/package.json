@@ -1,6 +1,6 @@
 {
   "name": "@sorry-cypress/dashboard",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "author": {
     "name": "Andrew Goldis",
     "email": "agoldis@gmail.com"
@@ -67,9 +67,9 @@
     "@babel/preset-react": "^7.16.0",
     "@babel/preset-typescript": "^7.16.0",
     "@graphql-codegen/cli": "^2.4.0",
-    "@graphql-codegen/typescript": "^2.4.2",
     "@graphql-codegen/fragment-matcher": "^3.2.1",
     "@graphql-codegen/introspection": "^2.1.1",
+    "@graphql-codegen/typescript": "^2.4.2",
     "@graphql-codegen/typescript-operations": "^2.2.2",
     "@graphql-codegen/typescript-react-apollo": "^3.2.4",
     "@types/lodash": "^4.14.176",
