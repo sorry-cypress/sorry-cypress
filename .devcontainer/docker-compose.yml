@@ -7,7 +7,7 @@ services:
     volumes:
       - mongo_data:/data/db
   
-  storage:
+  minio:
     image: minio/minio
     hostname: 'storage'
     environment:
