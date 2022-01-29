@@ -1,6 +1,7 @@
 ![Update Dockerhub Images](https://github.com/agoldis/sorry-cypress/workflows/Update%20Dockerhub%20Images/badge.svg?event=push)
 ![Update Dockerhub Images](https://github.com/agoldis/sorry-cypress/workflows/Lint%20and%20test/badge.svg)
 <a href="https://join.slack.com/t/sorry-cypress/shared_invite/zt-eis1h6jl-tJELaD7q9UGEhMP8WHJOaw" target="_blank">![Join slack](https://img.shields.io/badge/join-slack-orange?logo=slack)<a/>
+[![VScodespaces](https://img.shields.io/endpoint?url=https%3A%2F%2Faka.ms%2Fvso-badge)](https://docs.sorry-cypress.dev/development/development-guide#github-codespaces)
 
   
 <div align="center">
@@ -29,6 +30,7 @@
 - [Quickstart](#quickstart)
 - [FAQ](#faq)
 - [Changelog](#changelog)
+- [Developers](#developers)
 - [License](#license)
 - [Donate](#donate)
 - [Contributors](#contributors)
@@ -69,9 +71,13 @@ Thanks, here are our [Support Options](https://docs.sorry-cypress.dev/support)
 
 Awesome, head to [Contribution Options](https://docs.sorry-cypress.dev/contributions)
 
-### Changelog
+## Changelog
 
 [Changelog](https://docs.sorry-cypress.dev/development/changelog)
+  
+## Developers
+
+The easiest way to start contributing is using [GitHub Codespaces](https://docs.sorry-cypress.dev/development/development-guide#github-codespaces)
 
 ## License
 
