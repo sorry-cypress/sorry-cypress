@@ -22,7 +22,7 @@ services:
   createbuckets:
     image: minio/mc
     depends_on:
-      - storage
+      - minio
     entrypoint: >
       /bin/sh -c "
       sleep 3;
