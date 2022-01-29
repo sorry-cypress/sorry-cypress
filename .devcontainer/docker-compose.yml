@@ -1,0 +1,60 @@
+version: '3.6'
+
+services:
+  mongo:
+    image: mongo:4.4
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+  
+  minio:
+    image: minio/minio
+    hostname: 'storage'
+    environment:
+      MINIO_ACCESS_KEY: 'MW32h3gd6HvjBEgTRx'
+      MINIO_SECRET_KEY: 't6NgQWUcEyG2AzaDCVkN6sbWcvDCVkN6sGiZ7'
+    volumes:
+      - minio_data:/data
+    command: server /data
+    ports:
+      - 9000:9000
+
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      sleep 3;
+      /usr/bin/mc config host add myminio http://storage:9000 MW32h3gd6HvjBEgTRx t6NgQWUcEyG2AzaDCVkN6sbWcvDCVkN6sGiZ7;
+      /usr/bin/mc rm -r --dangerous --force myminio/sorry-cypress;
+      /usr/bin/mc mb myminio/sorry-cypress;
+      /usr/bin/mc policy set download myminio/sorry-cypress;
+      /usr/bin/mc policy set public myminio/sorry-cypress;
+      exit 0;
+      "
+  
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+      args:
+        # These set the ARG values in your Dockerfile
+        USER_UID: 1000
+        USER_GID: 1000
+
+    volumes:
+      - ..:/workspace:cached
+    # Overrides default command so things don't shut down after the process ends.
+    command: sleep infinity
+    # Runs app on the same network as the database container, allows "forwardPorts" in devcontainer.json function.
+    network_mode: service:mongo
+    depends_on:
+      - mongo
+      - minio
+      - createbuckets
+
+volumes:
+  mongo_data:
+  minio_data:
