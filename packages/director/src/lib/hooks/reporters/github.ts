@@ -82,7 +82,7 @@ export async function reportStatusToGithub(
     '[github-reporter] Sending HTTP request to GitHub'
   );
   try {
-    axios({
+    await axios({
       method: 'post',
       url: fullStatusPostUrl,
       auth: {
@@ -96,7 +96,12 @@ export async function reportStatusToGithub(
     });
   } catch (error) {
     getLogger().error(
-      { error, fullStatusPostUrl, eventType, ...data },
+      {
+        fullStatusPostUrl,
+        runId: run.runId,
+        error: error.toJSON ? error.toJSON() : error,
+        resonse: error.response?.data ? error.response.data : null,
+      },
       `[github-reporter] Hook post to ${fullStatusPostUrl} responded with error`
     );
   }

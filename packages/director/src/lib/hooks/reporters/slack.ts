@@ -148,7 +148,7 @@ export async function reportToSlack(
   }).catch((error) => {
     getLogger().error(
       { error, ...hook },
-      `Error while posting hook to ${hook.url}`
+      `Error while posting Slack message to ${hook.url}`
     );
   });
 }

@@ -168,7 +168,7 @@ export async function reportToTeams(
   }).catch((error) => {
     getLogger().error(
       { error, ...hook },
-      `Error while posting hook to ${hook.url}`
+      `Error while posting MSTeams message to ${hook.url}`
     );
   });
 }
