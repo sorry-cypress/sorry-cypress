@@ -50,7 +50,7 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
 
   const runId = generateRunIdHash(
     ciBuildId,
-    params.commit.sha,
+    params.commit.message ?? params.commit.sha,
     params.projectId
   );
 

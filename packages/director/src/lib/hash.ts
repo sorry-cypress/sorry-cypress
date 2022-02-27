@@ -4,10 +4,10 @@ import uuid from 'uuid/v4';
 
 export const generateRunIdHash = (
   ciBuildId: string,
-  sha: string,
+  message: string,
   projectId: string
 ) => {
-  return md5(ciBuildId + sha + projectId);
+  return md5(ciBuildId + message + projectId);
 };
 
 // not sure how specific that should be

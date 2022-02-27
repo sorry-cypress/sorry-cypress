@@ -53,7 +53,7 @@ const createRun: ExecutionDriver['createRun'] = async (
 
   const runId = generateRunIdHash(
     ciBuildId,
-    params.commit.sha,
+    params.commit.message ?? params.commit.sha,
     params.projectId
   );
 
