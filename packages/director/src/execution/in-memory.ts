@@ -51,11 +51,7 @@ const createRun: ExecutionDriver['createRun'] = async (
 ): Promise<CreateRunResponse> => {
   const ciBuildId = getRunCiBuildId(params);
 
-  const runId = generateRunIdHash(
-    ciBuildId,
-    params.commit.message ?? params.commit.sha,
-    params.projectId
-  );
+  const runId = generateRunIdHash(ciBuildId, params.projectId);
 
   const machineId = generateUUID();
 
