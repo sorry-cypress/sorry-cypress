@@ -4,6 +4,7 @@ import { sanitizeS3KeyPrefix } from '../utils/';
 import {
   S3_ACL,
   S3_BUCKET,
+  S3_ENDPOINT_URL,
   S3_IMAGE_KEY_PREFIX,
   S3_READ_URL_PREFIX,
   S3_REGION,
@@ -15,10 +16,16 @@ const BUCKET_URL = `https://${S3_BUCKET}.s3.amazonaws.com`;
 const ImageContentType = 'image/png';
 const VideoContentType = 'video/mp4';
 
-const s3 = new aws.S3({
+const s3Config: aws.S3.Types.ClientConfiguration = {
   region: S3_REGION,
   signatureVersion: 'v4',
-});
+};
+
+if (S3_ENDPOINT_URL) {
+  s3Config.endpoint = new aws.Endpoint(S3_ENDPOINT_URL);
+}
+
+const s3 = new aws.S3(s3Config);
 
 interface GetUploadURLParams {
   key: string;
