@@ -32,7 +32,7 @@
 
 [![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://vshymanskyy.github.io/StandWithUkraine/)
   
-### 🇷🇺 [Обращение к гражданам России](/docs/ToRussianPeople.md)
+### 🇷🇺 [Обращение к гражданам России](https://github.com/vshymanskyy/StandWithUkraine/blob/main/docs/ToRussianPeople.md)
   
 ---
   
