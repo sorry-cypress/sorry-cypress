@@ -94,17 +94,13 @@ export async function reportToSlack(
         length: 100,
       }
     )}`;
-  
-  hook.proxyUrl = process.env.PROXY_URL
-  hook.proxyUsername = process.env.PROXY_USERNAME
-  hook.proxyPassword = process.env.PROXY_PASSWORD
 
-  if (hook.proxyUrl && hook.proxyUsername && hook.proxyPassword) {
+  if (process.env.PROXY_URL && process.env.PROXY_PORT && process.env.PROXY_USERNAME && process.env.PROXY_PASSWORD) {
     axios.defaults.httpsAgent = tunnel.httpsOverHttp({
       proxy: {
-        host: hook.proxyUrl,
-        port: 8080,
-        proxyAuth: hook.proxyUsername + ':' + hook.proxyPassword
+        host: process.env.PROXY_URL,
+        port: process.env.PROXY_PORT,
+        proxyAuth: process.env.PROXY_USERNAME + ':' + process.env.PROXY_PASSWORD
       }
     })
   }
