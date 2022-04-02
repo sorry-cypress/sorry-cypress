@@ -27,9 +27,6 @@ export enum ResultFilter {
 type BaseHook = {
   hookId: string;
   url: string;
-  proxyUrl;
-  proxyUsername;
-  proxyPassword;
 };
 
 export type SlackHook = BaseHook & {
