@@ -22,7 +22,7 @@
 </p>
 
   
-**Sorry-cypress** is an open-source, free cypress tests dashboard that unlocks unlimited parallelization, test recordings, integration with Github, Slack and more.
+**Sorry-cypress** is an open-source, free cypress tests dashboard that unlocks unlimited parallelization, test recordings, integration with GitHub, Slack and more.
 
 **Currents.dev** - is a paid version of sorry-cypress with additional [features](https://currents.notion.site/Features-Comparison-83229899965147eab011aba2a2fcd421), enhanced security and performance.
 
