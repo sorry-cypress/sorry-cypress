@@ -10,7 +10,6 @@ import { getDashboardRunURL } from '@sorry-cypress/director/lib/urls';
 import { getLogger } from '@sorry-cypress/logger';
 import axios from 'axios';
 import { truncate } from 'lodash';
-import * as tunnel from 'tunnel';
 
 interface SlackReporterEventPayload {
   eventType: HookEvent;
@@ -94,16 +93,6 @@ export async function reportToSlack(
         length: 100,
       }
     )}`;
-
-  if (process.env.PROXY_URL && process.env.PROXY_PORT && process.env.PROXY_USERNAME && process.env.PROXY_PASSWORD) {
-    axios.defaults.httpsAgent = tunnel.httpsOverHttp({
-      proxy: {
-        host: process.env.PROXY_URL,
-        port: process.env.PROXY_PORT,
-        proxyAuth: process.env.PROXY_USERNAME + ':' + process.env.PROXY_PASSWORD
-      }
-    })
-  }
 
   axios({
     method: 'post',
