@@ -16,6 +16,8 @@ import { reportToGenericWebHook } from './generic';
 import { reportStatusToGithub } from './github';
 import { reportToSlack } from './slack';
 import { reportToTeams } from './teams';
+import axios from "axios";
+import * as tunnel from 'tunnel';
 
 interface ReportHooksParams {
   eventType: HookEvent;
