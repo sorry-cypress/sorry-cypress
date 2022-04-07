@@ -84,6 +84,18 @@ const runSingleReporter = async ({
   eventType,
   spec,
 }: RunSingleReporterParams) => {
+  if (process.env.PROXY_URL && process.env.PROXY_PORT && process.env.PROXY_USERNAME && process.env.PROXY_PASSWORD) {
+    axios.create({
+      httpsAgent: tunnel.httpsOverHttp({
+        proxy: {
+          host: process.env.PROXY_URL,
+          port: process.env.PROXY_PORT,
+          proxyAuth: process.env.PROXY_USERNAME + ':' + process.env.PROXY_PASSWORD
+        }
+      })
+    })
+  }
+  
   if (isGithubHook(hook)) {
     return reportStatusToGithub(hook, {
       run,
