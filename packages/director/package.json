@@ -44,6 +44,7 @@
     "pm2": "^5.1.2",
     "semver": "^7.3.5",
     "source-map-support": "^0.5.20",
+    "tunnel": "^0.0.6"
     "uuid": "^3.3.2"
   },
   "devDependencies": {
