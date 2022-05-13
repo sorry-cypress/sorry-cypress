@@ -44,7 +44,10 @@ export const useGetRunsFeed = ({
             __typename: prev.runFeed.__typename,
             hasMore: fetchMoreResult?.runFeed.hasMore,
             cursor: fetchMoreResult?.runFeed.cursor,
-            runs: [...prev.runFeed.runs, ...fetchMoreResult?.runFeed.runs],
+            runs: [
+              ...prev.runFeed.runs,
+              ...(fetchMoreResult?.runFeed.runs ?? {}),
+            ],
           },
         };
       },
