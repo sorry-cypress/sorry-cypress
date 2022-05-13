@@ -21,7 +21,7 @@ import {
 import { ResetInstanceButton } from '@sorry-cypress/dashboard/run/runDetails/resetInstance/resetInstanceButton';
 import { differenceInSeconds, parseISO } from 'date-fns';
 import { isNumber } from 'lodash';
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useMemo } from 'react';
 import { generatePath } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
 import stringHash from 'string-hash';
@@ -35,19 +35,10 @@ export const RunDetails: RunDetailsComponent = (props) => {
     return null;
   }
 
-  const rows: GridRowsProp = run.specs
-    .filter((spec) => !!spec)
-    .filter((spec) => {
-      if (!hidePassedSpecs) {
-        return true;
-      }
-      const state = getInstanceState({
-        claimedAt: spec.claimedAt,
-        stats: spec.results?.stats,
-        retries: spec.results?.retries ?? 0,
-      });
-      return ['failed', 'pending', 'running'].includes(state);
-    });
+  const rows = useMemo(
+    () => convertToRows(run, hidePassedSpecs),
+    [run, hidePassedSpecs]
+  );
 
   return (
     <Paper sx={{ p: 0 }}>
@@ -62,25 +53,19 @@ export const RunDetails: RunDetailsComponent = (props) => {
           {
             field: 'status',
             headerName: 'Status',
-            sortable: false,
             renderCell: getItemStatusCell,
           },
           {
             field: 'machine',
             headerName: 'Machine #',
-            sortable: false,
-            renderCell: getMachineCell,
           },
           {
-            field: 'group',
+            field: 'groupId',
             headerName: 'Group',
-            sortable: false,
-            renderCell: getGroupIdCell,
           },
           {
             field: 'specName',
             headerName: 'Spec Name',
-            sortable: false,
             renderCell: getSpecNameCell,
             flex: 1,
             minWidth: 150,
@@ -88,9 +73,9 @@ export const RunDetails: RunDetailsComponent = (props) => {
           {
             field: 'duration',
             headerName: 'Duration',
-            sortable: false,
             renderCell: getDurationCell,
             width: 90,
+            type: 'number',
           },
           // {
           //   field: 'average-duration',
@@ -103,6 +88,7 @@ export const RunDetails: RunDetailsComponent = (props) => {
             field: 'stats',
             headerName: 'Tests stats',
             sortable: false,
+            filterable: false,
             renderCell: getTestStatsCell,
             minWidth: 280,
           },
@@ -110,6 +96,7 @@ export const RunDetails: RunDetailsComponent = (props) => {
             field: 'actions',
             headerName: 'Actions',
             sortable: false,
+            filterable: false,
             width: 80,
             align: 'center',
             renderCell: getActionsCell(run),
@@ -120,11 +107,49 @@ export const RunDetails: RunDetailsComponent = (props) => {
   );
 };
 
+function convertToRows(
+  run: NonNullable<GetRunQuery['run']>,
+  hidePassedSpecs: boolean
+): GridRowsProp {
+  return run.specs
+    .filter((spec) => !!spec)
+    .filter((spec) => {
+      if (!hidePassedSpecs) {
+        return true;
+      }
+      const state = getInstanceState({
+        claimedAt: spec.claimedAt,
+        stats: spec.results?.stats,
+        retries: spec.results?.retries ?? 0,
+      });
+      return ['failed', 'pending', 'running'].includes(state);
+    })
+    .map((spec) => {
+      return {
+        instanceId: spec.instanceId,
+        claimedAt: spec.claimedAt,
+        status: getInstanceState({
+          claimedAt: spec.claimedAt,
+          stats: spec.results?.stats,
+          retries: spec.results?.retries ?? 0,
+        }),
+        machine: spec.machineId ? getMachineName(spec.machineId) : null,
+        groupId: spec.groupId,
+        instanceLink: generatePath(`/instance/${spec.instanceId}`),
+        specName: getBase(spec.spec),
+        specFullName: spec.spec,
+        startedAt: spec.results?.stats.wallClockStartedAt,
+        duration: spec.results?.stats.wallClockDuration,
+        results: spec.results,
+      };
+    });
+}
+
 const getActionsCell = (run: NonNullable<GetRunQuery['run']>) => {
   const getAction = (params: GridRenderCellParams) => {
     return params.row.claimedAt ? (
       <ResetInstanceButton
-        spec={params.row.spec}
+        spec={params.row.specName}
         instanceId={params.row.instanceId ?? 0}
         runId={run.runId}
       />
@@ -153,45 +178,28 @@ const getTestStatsCell = (params: GridRenderCellParams) => {
 };
 
 const getItemStatusCell = (params: GridRenderCellParams) => (
-  <SpecStateChip
-    state={getInstanceState({
-      claimedAt: params.row.claimedAt,
-      stats: params.row.results?.stats,
-      retries: params.row.results?.retries ?? 0,
-    })}
-  />
+  <SpecStateChip state={params.row.status} />
 );
 
-const getMachineCell = (params: GridRenderCellParams) => {
-  if (params.row.machineId) {
-    return getMachineName(params.row.machineId);
-  }
-  return null;
-};
-const getGroupIdCell = (params: GridRenderCellParams) => params.row.groupId;
 const getSpecNameCell = (params: GridRenderCellParams) => (
-  <Tooltip title={params.row.spec}>
-    <Link
-      component={RouterLink}
-      to={generatePath(`/instance/${params.row.instanceId}`)}
-      sx={{ width: '100%' }}
-      underline="hover"
-      noWrap
-    >
-      {getBase(params.row.spec)}
-    </Link>
-  </Tooltip>
+  <Link
+    component={RouterLink}
+    to={params.row.instanceLink}
+    sx={{ width: '100%' }}
+    underline="hover"
+    noWrap
+  >
+    <Tooltip title={params.row.specFullName}>
+      <span>{params.row.specName}</span>
+    </Tooltip>
+  </Link>
 );
 
 const getDurationCell = (params: GridRenderCellParams) => {
-  if (isNumber(params.row.results?.stats?.wallClockDuration)) {
+  if (isNumber(params.row.duration)) {
     return (
-      <Tooltip
-        title={`Started at ${params.row.results?.stats.wallClockStartedAt}`}
-      >
-        <span>
-          {getDurationMs(params.row.results?.stats.wallClockDuration ?? 0)}
-        </span>
+      <Tooltip title={`Started at ${params.row.startedAt}`}>
+        <span>{getDurationMs(params.row.duration ?? 0)}</span>
       </Tooltip>
     );
   }
