@@ -10,7 +10,7 @@ RUN yarn install --frozen-lockfile
 RUN yarn workspace @sorry-cypress/common build
 RUN yarn workspace @sorry-cypress/dashboard build
 
-FROM nginx:1-alpine
+FROM nginx:1.20-alpine
 WORKDIR /usr/share/nginx/html
 COPY packages/dashboard/nginx/default.conf.template /etc/nginx/templates/default.conf.template
 COPY packages/dashboard/server/static .
