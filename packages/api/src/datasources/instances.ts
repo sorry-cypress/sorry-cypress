@@ -22,9 +22,9 @@ export class InstancesAPI extends DataSource {
       },
     });
     return {
-      success: result.result.ok === 1,
+      success: result.acknowledged === true,
       message: `Deleted ${result?.deletedCount ?? 0} item(s)`,
-      runIds: result.result.ok === 1 ? runIds : [],
+      runIds: result.acknowledged === true ? runIds : [],
     };
   }
 
@@ -104,9 +104,9 @@ export class InstancesAPI extends DataSource {
     });
 
     return {
-      success: result.result.ok === 1,
+      success: result.acknowledged === true,
       message: `Modifies ${result?.deletedCount ?? 0} item(s)`,
-      instanceId: result.result.ok === 1 ? instanceId : undefined,
+      instanceId: result.acknowledged === true ? instanceId : undefined,
     };
   }
 }

@@ -20,7 +20,6 @@
     "test": "jest --passWithNoTests"
   },
   "devDependencies": {
-    "@types/mongodb": "^3.6.16",
     "esbuild": "^0.11.14",
     "esbuild-node-externals": "^1.2.0",
     "jest": "^27.4.7"
@@ -28,6 +27,6 @@
   "dependencies": {
     "@sorry-cypress/common": "1.0.0",
     "date-fns": "^2.21.3",
-    "mongodb": "^3.6.5"
+    "mongodb": "^4.6.0"
   }
 }

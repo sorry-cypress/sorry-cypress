@@ -38,7 +38,6 @@
     "@graphql-codegen/typescript-resolvers": "^2.4.3",
     "@types/graphql-iso-date": "^3.4.0",
     "@types/lodash": "^4.14.161",
-    "@types/mongodb": "^3.5.32",
     "@types/node": "^14.11.2",
     "@types/serve-static": "^1.13.10",
     "@types/uuid": "^8.3.0",
@@ -60,6 +59,7 @@
     "graphql": "^15.3.0",
     "graphql-iso-date": "^3.6.1",
     "lodash": "^4.17.21",
+    "mongodb": "^4.6.0",
     "plur": "^4.0.0",
     "source-map-support": "^0.5.20",
     "uuid": "^3.3.2"

@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb';
 import { Hook } from '../hook';
 
 export interface Project {
@@ -6,4 +7,8 @@ export interface Project {
   hooks?: Hook[] | null;
   inactivityTimeoutSeconds?: number;
   projectColor?: string | null;
+}
+
+export interface ProjectWithId extends Project {
+  _id: ObjectId;
 }

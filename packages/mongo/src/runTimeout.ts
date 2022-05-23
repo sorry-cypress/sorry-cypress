@@ -1,5 +1,5 @@
 import { RunTimeout } from '@sorry-cypress/common';
-import { Cursor, ObjectID, WithId } from 'mongodb';
+import { FindCursor, ObjectId, WithId } from 'mongodb';
 import { Collection } from './db';
 
 interface CreateRunTimeoutParams {
@@ -17,10 +17,10 @@ export const getUncheckedRunTimeouts = async () => {
       $lt: new Date(),
     },
     checkedOn: null,
-  }) as Cursor<WithId<RunTimeout>>;
+  }) as FindCursor<WithId<RunTimeout>>;
 };
 
-export const setRunTimeoutChecked = async (_id: ObjectID) => {
+export const setRunTimeoutChecked = async (_id: ObjectId) => {
   Collection.runTimeout().updateOne(
     { _id, checkedOn: null },
     {

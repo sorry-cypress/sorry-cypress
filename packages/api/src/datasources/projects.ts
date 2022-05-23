@@ -133,39 +133,41 @@ export class ProjectsAPI extends DataSource {
       },
     });
     return {
-      success: projectResult.result.ok === 1,
+      success: projectResult.acknowledged === true,
       message: `Deleted ${projectResult.deletedCount ?? 0} item(s)`,
-      projectIds: projectResult.result.ok === 1 ? projectIds : [],
+      projectIds: projectResult.acknowledged === true ? projectIds : [],
     };
   }
 }
 
-const getCreateHook = <T extends { projectId: string }>(
-  hookType: HookType,
-  defaults: Record<string, any> = {}
-) => async (input: T) => {
-  const hook = {
-    ...input,
-    hookType,
-    url: '',
-    ...defaults,
-    hookId: uuid(),
-  };
-  await Collection.project().updateOne(
-    { projectId: input.projectId },
-    {
-      $addToSet: {
-        // @ts-ignore 😤
-        hooks: hook,
+const getCreateHook =
+  <T extends { projectId: string }>(
+    hookType: HookType,
+    defaults: Record<string, any> = {}
+  ) =>
+  async (input: T) => {
+    const hook = {
+      ...input,
+      hookType,
+      url: '',
+      ...defaults,
+      hookId: uuid(),
+    };
+    await Collection.project().updateOne(
+      { projectId: input.projectId },
+      {
+        $addToSet: {
+          // @ts-ignore 😤
+          hooks: hook,
+        },
       },
-    },
-    {
-      upsert: false,
-    }
-  );
+      {
+        upsert: false,
+      }
+    );
 
-  return removeSecrets(hook);
-};
+    return removeSecrets(hook);
+  };
 
 const getUpdateHook = <T extends { projectId: string; hookId: string }>(
   hookType: HookType

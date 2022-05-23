@@ -1,4 +1,4 @@
-import { Project } from '@sorry-cypress/common';
+import { ProjectWithId } from '@sorry-cypress/common';
 import {
   AppError,
   PROJECT_CREATE_FAILED,
@@ -8,7 +8,7 @@ import { Collection } from '@sorry-cypress/mongo';
 export const getProjectById = (id: string) =>
   Collection.project().findOne({ projectId: id });
 
-export const createProject = async (project: Project) => {
+export const createProject = async (project: ProjectWithId) => {
   try {
     await Collection.project().insertOne(project);
     return project;

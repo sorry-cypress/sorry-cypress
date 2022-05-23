@@ -66,17 +66,17 @@ export const checkRunTimeouts = async () => {
   getLogger().debug('[run-timeout] Checking run timeouts...');
   const runTimeouts = await runTimeoutModel.getUncheckedRunTimeouts();
 
-  runTimeouts.forEach(async (timeoutTask) => {
+  runTimeouts.forEach((timeoutTask) => {
     try {
       getLogger().debug(
         timeoutTask,
         `[run-timeout] Checking run timeout for runId...`
       );
-      await checkRunCompletionOnTimeout(
+      checkRunCompletionOnTimeout(
         timeoutTask.runId,
         timeoutTask.timeoutSeconds
       );
-      await runTimeoutModel.setRunTimeoutChecked(timeoutTask._id);
+      runTimeoutModel.setRunTimeoutChecked(timeoutTask._id);
     } catch (error) {
       getLogger().error(
         { ...timeoutTask, error },

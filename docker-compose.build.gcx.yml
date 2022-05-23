@@ -1,0 +1,46 @@
+version: '3.9'
+
+services:
+  director:
+    build:
+      dockerfile: packages/director/Dockerfile
+      context: .
+
+    image: gcx/sorry-cypress-director:${VERSION:-latest}
+    environment:
+      DASHBOARD_URL: http://localhost:8080
+      MONGODB_URI: 'mongodb+srv://cypress:vszR7je1gJpsRDXa@development.e52l0.mongodb.net/cypress'
+      MONGODB_DATABASE: 'cypress'
+      EXECUTION_DRIVER: '../execution/mongo/driver'
+      SCREENSHOTS_DRIVER: '../screenshots/s3.driver'
+      AWS_ACCESS_KEY_ID: 'key'
+      AWS_SECRET_ACCESS_KEY: 'secret'
+      S3_BUCKET: sorry-cypress
+    ports:
+      - 1234:1234
+
+  api:
+    build:
+      dockerfile: packages/api/Dockerfile
+      context: .
+    image: gcx/sorry-cypress-api:${VERSION:-latest}
+    environment:
+      MONGODB_URI: 'mongodb+srv://cypress:vszR7je1gJpsRDXa@development.e52l0.mongodb.net/cypress'
+      MONGODB_DATABASE: 'cypress'
+    ports:
+      - 4000:4000
+
+  dashboard:
+    build:
+      dockerfile: packages/dashboard/Dockerfile
+      context: .
+    image: gcx/sorry-cypress-dashboard:${VERSION:-latest}
+    environment:
+      GRAPHQL_SCHEMA_URL: http://localhost:4000
+      GRAPHQL_CLIENT_CREDENTIALS: ''
+      PORT: 8080
+      CI_URL: ''
+    ports:
+      - 8080:8080
+    depends_on:
+      - api

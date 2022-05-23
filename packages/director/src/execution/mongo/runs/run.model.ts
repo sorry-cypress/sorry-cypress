@@ -15,16 +15,17 @@ import { ExecutionDriver } from '@sorry-cypress/director/types';
 import { getLogger } from '@sorry-cypress/logger';
 import { Collection } from '@sorry-cypress/mongo';
 import { omit, pick } from 'lodash';
+import { InsertOneResult } from 'mongodb';
 
 export const getRunById = (id: string) =>
   Collection.run().findOne<Run>({ runId: id });
 
-export const createRun = async (run: Run): Promise<Run> => {
+export const createRun = async (run: Run): Promise<InsertOneResult> => {
   try {
     const result = await Collection.run().insertOne(
       getSanitizedMongoObject(omit(run, 'meta.platform.osCpus'))
     );
-    return result.ops[0];
+    return result;
   } catch (error) {
     if (error.code && error.code === 11000) {
       throw new AppError(RUN_EXISTS);
@@ -135,27 +136,25 @@ export const setRunCompleted: ExecutionDriver['setRunCompleted'] = async (
   );
 };
 
-export const setRunCompletedWithTimeout: ExecutionDriver['setRunCompletedWithTimeout'] = async ({
-  runId,
-  timeoutMs,
-}) => {
-  Collection.run().updateOne(
-    {
-      runId,
-      completion: {
-        completed: false,
-      },
-    },
-    {
-      $set: {
+export const setRunCompletedWithTimeout: ExecutionDriver['setRunCompletedWithTimeout'] =
+  async ({ runId, timeoutMs }) => {
+    Collection.run().updateOne(
+      {
+        runId,
         completion: {
-          completed: true,
-          inactivityTimeoutMs: timeoutMs,
+          completed: false,
         },
       },
-    }
-  );
-};
+      {
+        $set: {
+          completion: {
+            completed: true,
+            inactivityTimeoutMs: timeoutMs,
+          },
+        },
+      }
+    );
+  };
 
 // atomic operation to avoid concurrency issues
 // filter document prevents concurrent writes
