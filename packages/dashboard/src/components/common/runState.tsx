@@ -1,4 +1,5 @@
 import {
+  AccessTime,
   CheckCircleOutline as CheckCircleOutlineIcon,
   ErrorOutline as ErrorOutlineIcon,
   Flaky as FlakyIcon,
@@ -19,6 +20,21 @@ export const TestSuccessChip: TestChipComponent = (props) => {
         shade={!value ? 300 : undefined}
         label={<Pad number={value} />}
         icon={CheckCircleOutlineIcon}
+      />
+    </Tooltip>
+  );
+};
+
+export const TestPendingChip: TestChipComponent = (props) => {
+  const { value } = props;
+
+  return (
+    <Tooltip title="Pending Tests" arrow>
+      <Chip
+        color={value ? 'cyan' : 'grey'}
+        shade={!value ? 300 : undefined}
+        label={<Pad number={value} />}
+        icon={AccessTime}
       />
     </Tooltip>
   );

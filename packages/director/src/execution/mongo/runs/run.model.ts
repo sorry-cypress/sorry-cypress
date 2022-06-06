@@ -45,6 +45,7 @@ export const addSpecsToRun = async (runId: string, specs: RunSpec[]) => {
 export const incProgressOverallTests = async (
   runId: string,
   groupId: string,
+  instanceId: string,
   inc: number
 ) => {
   await Collection.run().updateOne(
@@ -58,6 +59,20 @@ export const incProgressOverallTests = async (
     },
     {
       arrayFilters: [{ 'group.groupId': groupId }],
+    }
+  );
+  // store the number of tests indicated when testing starts
+  await Collection.run().updateOne(
+    {
+      runId,
+    },
+    {
+      $set: {
+        'specs.$[specs].tests': inc,
+      },
+    },
+    {
+      arrayFilters: [{ 'specs.instanceId': instanceId }],
     }
   );
 };

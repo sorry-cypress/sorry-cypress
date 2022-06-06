@@ -4,6 +4,7 @@ import {
   Paper,
   RenderOnInterval,
   TestFailureChip,
+  TestOverallChip,
   TestRetriesChip,
   TestSkippedChip,
   TestSuccessChip,
@@ -35,10 +36,10 @@ export const RunDetails: RunDetailsComponent = (props) => {
     return null;
   }
 
-  const rows = useMemo(
-    () => convertToRows(run, hidePassedSpecs),
-    [run, hidePassedSpecs]
-  );
+  const rows = useMemo(() => convertToRows(run, hidePassedSpecs), [
+    run,
+    hidePassedSpecs,
+  ]);
 
   return (
     <Paper sx={{ p: 0 }}>
@@ -90,7 +91,7 @@ export const RunDetails: RunDetailsComponent = (props) => {
             sortable: false,
             filterable: false,
             renderCell: getTestStatsCell,
-            minWidth: 280,
+            minWidth: 360,
           },
           {
             field: 'actions',
@@ -162,6 +163,9 @@ const getTestStatsCell = (params: GridRenderCellParams) => {
   return (
     <Grid container spacing={1}>
       <Grid item>
+        <TestOverallChip value={params.row.results?.stats?.tests ?? 0} />
+      </Grid>
+      <Grid item>
         <TestSuccessChip value={params.row.results?.stats?.passes ?? 0} />
       </Grid>
       <Grid item>
@@ -171,8 +175,11 @@ const getTestStatsCell = (params: GridRenderCellParams) => {
         <TestRetriesChip value={params.row.results?.retries ?? 0} />
       </Grid>
       <Grid item>
-        <TestSkippedChip value={params.row.results?.stats?.pending ?? 0} />
+        <TestSkippedChip value={params.row.results?.stats?.skipped ?? 0} />
       </Grid>
+      {/*<Grid item>*/}
+      {/*    <TestPendingChip value={params.row.results?.stats?.pending ?? 0} />*/}
+      {/*</Grid>*/}
     </Grid>
   );
 };

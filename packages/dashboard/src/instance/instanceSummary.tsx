@@ -1,4 +1,5 @@
 import {
+  AccessTime,
   CheckCircleOutline,
   ErrorOutline,
   Flaky,
@@ -105,10 +106,20 @@ export const InstanceSummary: InstanceSummaryComponent = (props) => {
           <Grid item>
             <Tooltip title="Skipped Tests" arrow>
               <Chip
-                color={stats['pending'] ? 'orange' : 'grey'}
+                color={stats['skipped'] ? 'orange' : 'grey'}
+                shade={!stats['skipped'] ? 300 : undefined}
+                label={<Pad number={stats['skipped']} />}
+                icon={NextPlanOutlined}
+              />
+            </Tooltip>
+          </Grid>
+          <Grid item>
+            <Tooltip title="Pending Tests" arrow>
+              <Chip
+                color={stats['pending'] ? 'cyan' : 'grey'}
                 shade={!stats['pending'] ? 300 : undefined}
                 label={<Pad number={stats['pending']} />}
-                icon={NextPlanOutlined}
+                icon={AccessTime}
               />
             </Tooltip>
           </Grid>

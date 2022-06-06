@@ -29,8 +29,9 @@ export const getInstanceState: GetInstanceState = (data) => {
     return 'pending';
   }
 
-  // Keep before "no tests"
-  if (stats.failures > 0 || stats.skipped > 0) {
+  // Keep before "no tests" need to have actual failures to qualify as failed
+  // mocha allows you to skip tests on purpose, and cypress (and sorry cypress) should respect this
+  if (stats.failures > 0) {
     return 'failed';
   }
 

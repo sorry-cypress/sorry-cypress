@@ -23,6 +23,17 @@ import { RunStartTime } from '../runStartTime';
 import { RunSummaryTestResults } from '../runSummaryTestResults';
 import { RunTimeoutChip } from '../runTimeoutChip';
 
+function getTotalFromSpecResults(specs?: any[]) {
+  if (!specs) return undefined;
+  let total = 0;
+
+  specs.forEach((spec) => {
+    total += spec.results?.stats?.tests ?? 0;
+  });
+
+  return total;
+}
+
 export const RunSummary: RunSummaryComponent = (props) => {
   const {
     run,
