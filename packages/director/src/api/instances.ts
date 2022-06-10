@@ -104,7 +104,7 @@ export const setInstanceTests: RequestHandler<
   const { instanceId } = req.params;
   const executionDriver = await getExecutionDriver();
 
-  getLogger().log({ instanceId }, 'Received instance tests');
+  getLogger().log({ instanceId, ...req.body }, 'Received instance tests');
   await executionDriver.setInstanceTests(instanceId, instanceTests);
   res.json({});
 };

@@ -2,6 +2,7 @@ import { Grid } from '@mui/material';
 import {
   TestFailureChip,
   TestOverallChip,
+  TestPendingChip,
   TestRetriesChip,
   TestSkippedChip,
   TestSuccessChip,
@@ -28,7 +29,10 @@ export const RunSummaryTestResults: RunSummaryTestResultsComponent = (
         <TestRetriesChip value={testsStats.retries} />
       </Grid>
       <Grid item>
-        <TestSkippedChip value={testsStats.pending} />
+        <TestSkippedChip value={testsStats.skipped} />
+      </Grid>
+      <Grid item>
+        <TestPendingChip value={testsStats.pending} />
       </Grid>
     </Grid>
   );
@@ -44,6 +48,7 @@ type TestStats = {
 };
 type RunSummaryTestResultsProps = {
   testsStats: TestStats;
+  totalCount?: number;
 };
 type RunSummaryTestResultsComponent = FunctionComponent<
   RunSummaryTestResultsProps

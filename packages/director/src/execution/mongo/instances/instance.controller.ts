@@ -1,4 +1,4 @@
-import { SetInstanceTestsPayload } from '@sorry-cypress/common';
+import { SetInstanceTestsPayload, TestState } from '@sorry-cypress/common';
 import {
   AppError,
   INSTANCE_NOT_EXIST,
@@ -62,9 +62,11 @@ export const setInstanceTests = async (
     { instanceId, runId: instance.runId, groupId: instance.groupId },
     'Updating group progress'
   );
+
   await incProgressOverallTests(
     instance.runId,
     instance.groupId,
+    instance.instanceId,
     payload.tests.length
   );
 };
@@ -82,6 +84,21 @@ export const updateInstanceResults: ExecutionDriver['updateInstanceResults'] = a
     );
     throw new AppError(INSTANCE_NOT_EXIST);
   }
+
+  // Correct for Mocha madness, where tests which are deliberately skipped are marked as 'pending'.
+  // Since the test is finished when we get this result, it should be safe to say that no test should actually be pending at this point.
+  update.stats.failures += update.stats.skipped; // things that cypress reports as skipped are things skipped after a failure
+  update.stats.skipped = update.stats.pending; // things that cypress reports as pending are skipped by mocha
+  update.stats.pending = 0; // things can never be pending after execution is complete
+
+  update.tests.forEach((test) => {
+    if (test.state === TestState.Skipped) {
+      test.state = TestState.Failed;
+    }
+    if (test.state === TestState.Pending) {
+      test.state = TestState.Skipped;
+    }
+  });
 
   const instanceResult = mergeInstanceResults(
     instance._createTestsPayload,
