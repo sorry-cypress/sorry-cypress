@@ -26,9 +26,10 @@ import React, { FunctionComponent, useMemo } from 'react';
 import { generatePath } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
 import stringHash from 'string-hash';
+import { ReadableSpecNamesKind } from '@sorry-cypress/dashboard/hooks/useReadableSpecNames';
 
 export const RunDetails: RunDetailsComponent = (props) => {
-  const { run, hidePassedSpecs } = props;
+  const { run, hidePassedSpecs, readableSpecNames } = props;
 
   const { specs } = run;
 
@@ -36,10 +37,10 @@ export const RunDetails: RunDetailsComponent = (props) => {
     return null;
   }
 
-  const rows = useMemo(() => convertToRows(run, hidePassedSpecs), [
-    run,
-    hidePassedSpecs,
-  ]);
+  const rows = useMemo(
+    () => convertToRows(run, hidePassedSpecs, readableSpecNames),
+    [run, hidePassedSpecs]
+  );
 
   return (
     <Paper sx={{ p: 0 }}>
@@ -110,7 +111,8 @@ export const RunDetails: RunDetailsComponent = (props) => {
 
 function convertToRows(
   run: NonNullable<GetRunQuery['run']>,
-  hidePassedSpecs: boolean
+  hidePassedSpecs: boolean,
+  readableSpecNames: ReadableSpecNamesKind
 ): GridRowsProp {
   return run.specs
     .filter((spec) => !!spec)
@@ -137,7 +139,11 @@ function convertToRows(
         machine: spec.machineId ? getMachineName(spec.machineId) : null,
         groupId: spec.groupId,
         instanceLink: generatePath(`/instance/${spec.instanceId}`),
-        specName: getBase(spec.spec),
+        specName:
+          (readableSpecNames === ReadableSpecNamesKind.FullPath && spec.spec) ||
+          (readableSpecNames === ReadableSpecNamesKind.ReadableName &&
+            getBase(spec.spec)) ||
+          getBase(spec.spec, { easyToRead: false, removeExtension: false }),
         specFullName: spec.spec,
         startedAt: spec.results?.stats.wallClockStartedAt,
         duration: spec.results?.stats.wallClockDuration,
@@ -262,5 +268,6 @@ function getMachineName(machineId: string) {
 type RunDetailsProps = {
   run: NonNullable<GetRunQuery['run']>;
   hidePassedSpecs: boolean;
+  readableSpecNames: ReadableSpecNamesKind;
 };
 type RunDetailsComponent = FunctionComponent<RunDetailsProps>;
