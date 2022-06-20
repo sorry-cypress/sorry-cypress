@@ -1,0 +1,77 @@
+version: '3.6'
+# https://docs.microsoft.com/en-us/azure/storage/common/storage-use-azurite?tabs=visual-studio
+services:
+  mongo:
+    image: mongo:4.2
+    volumes:
+      - ./data/data-mongo-cypress:/data/db
+    ports:
+      - 27017:27017
+
+  director:
+    image: agoldis/sorry-cypress-director:latest
+    hostname: director
+    environment:
+      DASHBOARD_URL: http://localhost:8080
+      EXECUTION_DRIVER: '../execution/mongo/driver'
+      MONGODB_URI: 'mongodb://mongo:27017'
+      MONGODB_DATABASE: 'sorry-cypress'
+      SCREENSHOTS_DRIVER: '../screenshots/azure-blob-storage.driver'
+      AZURE_CONNEXION_STRING: 'DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;QueueEndpoint=http://127.0.0.1:10001/devstoreaccount1;TableEndpoint=http://127.0.0.1:10001/devstoreaccount1;'
+      AZURE_CONTAINER_NAME: 'sorry-cypress'
+      AZURE_UPLOAD_URL_EXPIRY_IN_HOURS: 24
+    ports:
+      - "10000:10000"
+      - "10001:10001"
+      - "1234:1234"
+    depends_on:
+      - mongo
+      - storage
+
+  api:
+    image: agoldis/sorry-cypress-api:latest
+    environment:
+      MONGODB_URI: 'mongodb://mongo:27017'
+      MONGODB_DATABASE: 'sorry-cypress'
+    ports:
+      - 4000:4000
+    depends_on:
+      - mongo
+
+  dashboard:
+    image: agoldis/sorry-cypress-dashboard:latest
+    environment:
+      GRAPHQL_SCHEMA_URL: http://localhost:4000
+      GRAPHQL_CLIENT_CREDENTIALS: ''
+      PORT: 8080
+      CI_URL: ''
+    ports:
+      - 8080:8080
+    depends_on:
+      - mongo
+      - api
+
+  storage:
+    image: mcr.microsoft.com/azure-storage/azurite
+    # network_mode is needed for signed url to work correctly. It allows the director to call the storage using localhost and to generate signed url with the hostname "localhost"
+    # If you try with said "hostname: storage" here, the director will sign an url with the hostname "storage" which will be impossible to use for the runner
+    # Please note that in this case if you try to replace the hostname in the signed url it doesn't work because the hostname is part of the signed content
+    network_mode: service:director
+    restart: always
+    command: "azurite --blobHost 0.0.0.0 --blobPort 10000 --queueHost 0.0.0.0 --queuePort 10001"
+
+  createbuckets:
+    image: mcr.microsoft.com/azure-cli:latest
+    network_mode: service:director
+    depends_on:
+      - storage
+    environment:
+      AZURE_STORAGE_CONNECTION_STRING: 'DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;QueueEndpoint=http://127.0.0.1:10001/devstoreaccount1;TableEndpoint=http://127.0.0.1:10001/devstoreaccount1;'
+    entrypoint: >
+      /bin/sh -c "
+      sleep 3;
+      echo Creating containers;
+      az storage container create -n sorry-cypress;
+      az storage container show -n sorry-cypress;
+      exit 0;
+      "
