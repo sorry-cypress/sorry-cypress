@@ -41,6 +41,7 @@ interface SetRunCompletedWithTimeout {
 }
 
 export interface ExecutionDriver extends Driver {
+  isDBHealthy: () => Promise<boolean>;
   maybeSetRunCompleted: (runId: string) => Promise<boolean>;
   allGroupSpecsCompleted: (runId: string, groupId: string) => Promise<boolean>;
   getProjectById: (projectId: string) => Promise<Project | null>;
