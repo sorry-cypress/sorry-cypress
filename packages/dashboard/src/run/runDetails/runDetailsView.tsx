@@ -1,5 +1,6 @@
 import {
   Loop as LoopIcon,
+  MenuBook as MenuBookIcon,
   VisibilityOff as VisibilityOffIcon,
 } from '@mui/icons-material';
 import { Alert, Grid, Skeleton, Typography } from '@mui/material';
@@ -13,6 +14,10 @@ import {
   useAutoRefresh,
   useAutoRefreshRate,
 } from '@sorry-cypress/dashboard/hooks/useAutoRefresh';
+import {
+  ReadableSpecNamesKind,
+  useReadableSpecNames,
+} from '@sorry-cypress/dashboard/hooks/useReadableSpecNames';
 import {
   getProjectPath,
   getRunPath,
@@ -28,6 +33,8 @@ export const RunDetailsView: RunDetailsViewComponent = () => {
   const { id } = useParams();
   const autoRefreshRate = useAutoRefreshRate();
   const [hidePassedSpecs, setHidePassedSpecs] = useHideSuccessfulSpecs();
+  const [readableSpecNames, { switchReadableSpecNames }] =
+    useReadableSpecNames();
   const [shouldAutoRefresh, setShouldAutoRefresh] = useAutoRefresh();
 
   const { loading, error, data } = useGetRunQuery({
@@ -119,6 +126,17 @@ export const RunDetailsView: RunDetailsViewComponent = () => {
               window.location.reload();
             },
           },
+          {
+            key: 'readableSpecNames',
+            text: 'Readable Spec Names',
+            icon: MenuBookIcon,
+            showInMenuBreakpoint: ['xs'],
+            selected: readableSpecNames === ReadableSpecNamesKind.ReadableName,
+            toggleButton: true,
+            onClick: () => {
+              switchReadableSpecNames();
+            },
+          },
         ]}
       />
       <RunSummary run={data.run} />
@@ -130,7 +148,12 @@ export const RunDetailsView: RunDetailsViewComponent = () => {
       >
         Spec Files
       </Typography>
-      <RunDetails run={data.run} hidePassedSpecs={hidePassedSpecs} />
+      <RunDetails
+        key={readableSpecNames}
+        run={data.run}
+        hidePassedSpecs={hidePassedSpecs}
+        readableSpecNames={readableSpecNames}
+      />
     </>
   );
 };

@@ -112,7 +112,7 @@ export const Toolbar: ToolbarComponent = (props) => {
           })}
         </Grid>
         {moreActions.length > 0 && (
-          <Grid item xs="auto" sx={{ display: { lg: 'none' } }}>
+          <Grid item xs="auto">
             <IconButton
               aria-label="More Actions"
               aria-controls="more-actions-menu"

@@ -4,7 +4,7 @@ export function getBase(
 ) {
   let base = path.replace(/^.*[\\/]/, '') || path || '';
   if (options.removeExtension) {
-    base = base.replace(/\..*$/, '');
+    base = base.replace(/(?!.*\.).*$/, '');
   }
   if (options.easyToRead) {
     base = base.replace(/[^a-zA-Z0-9]/g, ' ');
