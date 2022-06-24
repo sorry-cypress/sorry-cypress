@@ -56,12 +56,15 @@
     "@sorry-cypress/logger": "1.0.0",
     "@sorry-cypress/mongo": "1.0.0",
     "apollo-server": "^3.0.0",
+    "apollo-server-express": "^2.25.3",
     "dotenv": "^8.1.0",
+    "express": "^4.18.1",
     "graphql": "^15.3.0",
     "graphql-iso-date": "^3.6.1",
     "lodash": "^4.17.21",
     "plur": "^4.0.0",
     "source-map-support": "^0.5.20",
+    "stoppable": "^1.1.0",
     "uuid": "^3.3.2"
   },
   "jest": {

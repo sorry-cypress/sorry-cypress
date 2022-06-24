@@ -1,3 +1,4 @@
+import { getExecutionDriver } from '@sorry-cypress/director/drivers';
 import { getLogger, setLoggerMiddleware } from '@sorry-cypress/logger';
 import express from 'express';
 import expressPino from 'express-pino-logger';
@@ -72,6 +73,16 @@ app.put('/instances/:instanceId/stdout', (req, res) => {
 app.get('/ping', (_, res) => {
   res.send(`${Date.now()}: sorry-cypress-director is live`);
 });
+
+app.get(
+  '/health-check-db',
+  catchRequestHandlerErrors(async (_, res) => {
+    const executionDriver = await getExecutionDriver();
+    (await executionDriver.isDBHealthy())
+      ? res.sendStatus(200)
+      : res.sendStatus(503);
+  })
+);
 
 app.use((error, req, res, _next) => {
   res

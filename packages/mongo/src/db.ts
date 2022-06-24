@@ -81,3 +81,13 @@ async function createIndexes() {
     Collection.runTimeout().createIndex({ timeoutAfter: 1 }, { unique: false }),
   ]);
 }
+
+export const isMongoDBHealthy = async (): Promise<boolean> => {
+  try {
+    const mongoResponse = await getMongoDB().command({ ping: 1 });
+    return mongoResponse.ok === 1;
+  } catch (e) {
+    console.error(`Error while pinging MongoDB : ${e}`);
+    return false;
+  }
+};

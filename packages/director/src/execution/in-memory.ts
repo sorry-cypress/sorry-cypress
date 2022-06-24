@@ -209,6 +209,7 @@ const updateInstanceResults = async (
 export const driver: ExecutionDriver = {
   id: 'in-memory',
   init: () => Promise.resolve(),
+  isDBHealthy: () => Promise.resolve(true),
   getProjectById: (projectId: string) => Promise.resolve(projects[projectId]),
   getRunById: (runId: string) => Promise.resolve(runs[runId]),
   maybeSetRunCompleted: async (_runId: string) => true,
