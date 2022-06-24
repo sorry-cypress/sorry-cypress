@@ -313,6 +313,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Hackatosh",
+      "name": "Edouard Benauw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/37976573?v=4",
+      "profile": "https://github.com/Hackatosh",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
