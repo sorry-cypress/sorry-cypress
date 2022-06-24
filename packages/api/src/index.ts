@@ -32,7 +32,6 @@ async function start() {
     typeDefs,
     resolvers,
     dataSources: () => dataSources,
-    playground: true,
     introspection: true,
   });
 
@@ -42,11 +41,12 @@ async function start() {
 
   app.disable('x-powered-by');
 
-  app.get('/health-check-db', catchRequestHandlerErrors(async (_, res) => {
-    (await isMongoDBHealthy()) ?
-    res.sendStatus(200) :
-    res.sendStatus(503);
-  }));
+  app.get(
+    '/health-check-db',
+    catchRequestHandlerErrors(async (_, res) => {
+      (await isMongoDBHealthy()) ? res.sendStatus(200) : res.sendStatus(503);
+    })
+  );
 
   apolloServer.applyMiddleware({
     app,
