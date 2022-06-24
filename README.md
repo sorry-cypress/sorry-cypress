@@ -3,9 +3,6 @@
 <a href="https://join.slack.com/t/sorry-cypress/shared_invite/zt-eis1h6jl-tJELaD7q9UGEhMP8WHJOaw" target="_blank">![Join slack](https://img.shields.io/badge/join-slack-orange?logo=slack)<a/>
 [![VScodespaces](https://img.shields.io/endpoint?url=https%3A%2F%2Faka.ms%2Fvso-badge)](https://docs.sorry-cypress.dev/development/development-guide#github-codespaces)
 
-
-
-  
 <div align="center">
 <p align="center">
   <img width="830" alt="banner dark" src="https://user-images.githubusercontent.com/1637928/147379205-2fe4fb9d-49e6-4a2b-917b-2a28973d2a3a.png">
@@ -21,21 +18,20 @@
   <a href="https://currents.dev?utm_source=github_readme">https://currents.dev</a>
 </p>
 
-  
 **Sorry-cypress** is an open-source, free cypress tests dashboard that unlocks unlimited parallelization, test recordings, integration with GitHub, Slack and more.
 
 **Currents.dev** - is a paid version of sorry-cypress with additional [features](https://currents.notion.site/Features-Comparison-83229899965147eab011aba2a2fcd421), enhanced security and performance.
 
----  
+---
 
 [![StandWithUkraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg)](https://github.com/vshymanskyy/StandWithUkraine/blob/main/docs/README.md)
 
 [![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://vshymanskyy.github.io/StandWithUkraine/)
-  
+
 ### 🇷🇺 [Обращение к гражданам России](https://github.com/vshymanskyy/StandWithUkraine/blob/main/docs/ToRussianPeople.md)
-  
+
 ---
-  
+
 ## Table of contents
 
 - [Features](#features)
@@ -86,7 +82,7 @@ Awesome, head to [Contribution Options](https://docs.sorry-cypress.dev/contribut
 ## Changelog
 
 [Changelog](https://docs.sorry-cypress.dev/development/changelog)
-  
+
 ## Developers
 
 The easiest way to start contributing is using [GitHub Codespaces](https://docs.sorry-cypress.dev/development/development-guide#github-codespaces)

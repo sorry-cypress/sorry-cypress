@@ -82,7 +82,6 @@ async function createIndexes() {
   ]);
 }
 
-
 export const isMongoDBHealthy = async (): Promise<boolean> => {
   try {
     const mongoResponse = await getMongoDB().command({ ping: 1 });
@@ -91,4 +90,4 @@ export const isMongoDBHealthy = async (): Promise<boolean> => {
     console.error(`Error while pinging MongoDB : ${e}`);
     return false;
   }
-}
+};
