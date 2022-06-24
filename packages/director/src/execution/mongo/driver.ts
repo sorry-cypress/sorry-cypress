@@ -1,5 +1,5 @@
 import { ExecutionDriver } from '@sorry-cypress/director/types';
-import { initMongo } from '@sorry-cypress/mongo';
+import { initMongo, isMongoDBHealthy } from '@sorry-cypress/mongo';
 import * as mongoInstanceController from './instances/instance.controller';
 import * as mongoInstanceModel from './instances/instance.model';
 import * as mongoProjectModel from './projects/project.model';
@@ -13,6 +13,7 @@ export const driver: ExecutionDriver = {
     await initMongo();
     initRunCompletion();
   },
+  isDBHealthy: isMongoDBHealthy,
   maybeSetRunCompleted: mongoRunController.maybeSetRunCompleted,
   allGroupSpecsCompleted: mongoRunController.allGroupSpecsCompleted,
   getProjectById: mongoProjectModel.getProjectById,
