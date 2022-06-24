@@ -32,7 +32,6 @@ async function start() {
     typeDefs,
     resolvers,
     dataSources: () => dataSources,
-    playground: true,
     introspection: true,
   });
 
