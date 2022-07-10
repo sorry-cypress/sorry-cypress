@@ -6,6 +6,7 @@ import { format } from 'url';
 import { initMongoNoIndexes, isMongoDBHealthy } from '@sorry-cypress/mongo';
 import stoppable from 'stoppable';
 import { ApolloServer } from 'apollo-server-express';
+import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core';
 import express from 'express';
 import { HOST, PORT } from './config';
 import { InstancesAPI } from './datasources/instances';
@@ -33,6 +34,7 @@ async function start() {
     resolvers,
     dataSources: () => dataSources,
     introspection: true,
+    plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
   });
 
   await apolloServer.start();
