@@ -78,10 +78,10 @@ export async function reportToSlack(
       passes > 0 ? ':large_green_circle:' : ':white_circle:'
     } *Passed:* ${passes}\n\n\n` +
     `${
-      pending > 0 ? ':large_yellow_circle:' : ':white_circle:'
-    } *Skipped:* ${pending}\n\n\n` +
-    `${failures + skipped > 0 ? ':red_circle:' : ':white_circle:'} *Failed*: ${
-      failures + skipped
+      pending + skipped > 0 ? ':large_yellow_circle:' : ':white_circle:'
+    } *Skipped:* ${pending + skipped}\n\n\n` +
+    `${failures > 0 ? ':red_circle:' : ':white_circle:'} *Failed*: ${
+      failures
     }` +
     `${retries > 0 ? `\n\n\n:large_yellow_circle: *Retries*: ${retries}` : ''}`;
 
