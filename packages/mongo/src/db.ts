@@ -75,6 +75,19 @@ async function createIndexes() {
     Collection.run().createIndex({ 'meta.commit.message': 1 }),
     Collection.run().createIndex({ 'meta.ciBuildId': 1 }),
 
+    // for aggregations on runs (/[projectId]/runs)
+    Collection.run().createIndex({
+      'meta.projectId': 1,
+      _id: 1,
+    }),
+
+    // for aggregations on runs (/[projectId]/runs/[ciBuildId])
+    Collection.run().createIndex({
+      'meta.projectId': 1,
+      'meta.ciBuildId': 1,
+      _id: 1,
+    }),
+
     Collection.instance().createIndex({ instanceId: 1 }, { unique: true }),
     Collection.instance().createIndex({ runId: 1 }),
     Collection.project().createIndex({ projectId: 1 }, { unique: true }),
