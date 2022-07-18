@@ -1,6 +1,7 @@
 import * as Apollo from '@apollo/client';
 import { gql } from '@apollo/client';
 export type Maybe<T> = T | null;
+export type InputMaybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = {
   [K in keyof T]: T[K];
 };
@@ -8,6 +9,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
   { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
   { [SubKey in K]: Maybe<T[SubKey]> };
+const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -15,18 +17,226 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  BitbucketHookType: any;
+  DateTime: string;
+  GChatHookType: any;
   GenericHookType: any;
+  GithubHookType: any;
   SlackHookType: any;
   SlackResultFilter: any;
-  GithubHookType: any;
-  BitbucketHookType: any;
   TeamsHookType: any;
-  DateTime: string;
+};
+
+export type BitbucketHook = {
+  __typename?: 'BitbucketHook';
+  bitbucketBuildName: Maybe<Scalars['String']>;
+  bitbucketToken: Maybe<Scalars['String']>;
+  bitbucketUsername: Maybe<Scalars['String']>;
+  hookId: Scalars['ID'];
+  hookType: Scalars['BitbucketHookType'];
+  projectId: Scalars['ID'];
+  url: Scalars['String'];
+};
+
+export type Commit = {
+  __typename?: 'Commit';
+  authorEmail: Maybe<Scalars['String']>;
+  authorName: Maybe<Scalars['String']>;
+  branch: Maybe<Scalars['String']>;
+  message: Maybe<Scalars['String']>;
+  remoteOrigin: Maybe<Scalars['String']>;
+  sha: Maybe<Scalars['String']>;
+};
+
+export type CreateBitbucketHookInput = {
+  projectId: Scalars['ID'];
+};
+
+export type CreateGChatHookInput = {
+  projectId: Scalars['ID'];
+};
+
+export type CreateGenericHookInput = {
+  projectId: Scalars['ID'];
+};
+
+export type CreateGithubHookInput = {
+  projectId: Scalars['ID'];
+};
+
+export type CreateProjectInput = {
+  inactivityTimeoutSeconds: Scalars['Int'];
+  projectColor: InputMaybe<Scalars['String']>;
+  projectId: Scalars['ID'];
+};
+
+export type CreateSlackHookInput = {
+  projectId: Scalars['ID'];
+  slackResultFilter: InputMaybe<Scalars['SlackResultFilter']>;
+};
+
+export type CreateTeamsHookInput = {
+  projectId: Scalars['ID'];
+};
+
+export type CypressConfig = {
+  __typename?: 'CypressConfig';
+  video: Scalars['Boolean'];
+  videoUploadOnPasses: Scalars['Boolean'];
+};
+
+export type DeleteHookInput = {
+  hookId: Scalars['ID'];
+  projectId: Scalars['String'];
+};
+
+export type DeleteHookResponse = {
+  __typename?: 'DeleteHookResponse';
+  hookId: Scalars['ID'];
+  projectId: Scalars['String'];
+};
+
+export type DeleteProjectResponse = {
+  __typename?: 'DeleteProjectResponse';
+  message: Scalars['String'];
+  projectIds: Array<Maybe<Scalars['ID']>>;
+  success: Scalars['Boolean'];
+};
+
+export type DeleteRunResponse = {
+  __typename?: 'DeleteRunResponse';
+  message: Scalars['String'];
+  runIds: Array<Maybe<Scalars['ID']>>;
+  success: Scalars['Boolean'];
+};
+
+export type Filters = {
+  key: InputMaybe<Scalars['String']>;
+  like: InputMaybe<Scalars['String']>;
+  value: InputMaybe<Scalars['String']>;
+};
+
+export type GChatHook = {
+  __typename?: 'GChatHook';
+  hookEvents: Array<Scalars['String']>;
+  hookId: Scalars['ID'];
+  hookType: Scalars['GChatHookType'];
+  projectId: Scalars['ID'];
+  url: Scalars['String'];
+};
+
+export type GenericHook = {
+  __typename?: 'GenericHook';
+  headers: Maybe<Scalars['String']>;
+  hookEvents: Array<Scalars['String']>;
+  hookId: Scalars['ID'];
+  hookType: Scalars['GenericHookType'];
+  projectId: Scalars['ID'];
+  url: Scalars['String'];
+};
+
+export type GithubHook = {
+  __typename?: 'GithubHook';
+  githubContext: Maybe<Scalars['String']>;
+  githubToken: Maybe<Scalars['String']>;
+  hookId: Scalars['ID'];
+  hookType: Scalars['GithubHookType'];
+  projectId: Scalars['ID'];
+  url: Scalars['String'];
+};
+
+export type Hook = {
+  __typename?: 'Hook';
+  bitbucketBuildName: Maybe<Scalars['String']>;
+  bitbucketToken: Maybe<Scalars['String']>;
+  bitbucketUsername: Maybe<Scalars['String']>;
+  githubContext: Maybe<Scalars['String']>;
+  githubToken: Maybe<Scalars['String']>;
+  headers: Maybe<Scalars['String']>;
+  hookEvents: Maybe<Array<Maybe<Scalars['String']>>>;
+  hookId: Maybe<Scalars['String']>;
+  hookType: Maybe<Scalars['String']>;
+  slackBranchFilter: Maybe<Array<Maybe<Scalars['String']>>>;
+  slackResultFilter: Maybe<Scalars['String']>;
+  url: Maybe<Scalars['String']>;
+};
+
+export type HookInput = {
+  bitbucketBuildName: InputMaybe<Scalars['String']>;
+  bitbucketToken: InputMaybe<Scalars['String']>;
+  bitbucketUsername: InputMaybe<Scalars['String']>;
+  githubContext: InputMaybe<Scalars['String']>;
+  githubToken: InputMaybe<Scalars['String']>;
+  headers: InputMaybe<Scalars['String']>;
+  hookEvents: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  hookId: InputMaybe<Scalars['String']>;
+  hookType: InputMaybe<Scalars['String']>;
+  slackBranchFilter: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  slackResultFilter: InputMaybe<Scalars['String']>;
+  url: Scalars['String'];
+};
+
+export type Instance = {
+  __typename?: 'Instance';
+  groupId: Scalars['String'];
+  instanceId: Scalars['ID'];
+  projectId: Scalars['String'];
+  results: Maybe<InstanceResults>;
+  run: Run;
+  runId: Scalars['ID'];
+  spec: Scalars['String'];
+};
+
+export type InstanceResults = {
+  __typename?: 'InstanceResults';
+  cypressConfig: Maybe<CypressConfig>;
+  error: Maybe<Scalars['String']>;
+  reporterStats: Maybe<ReporterStats>;
+  screenshots: Array<InstanceScreeshot>;
+  stats: InstanceStats;
+  stdout: Maybe<Scalars['String']>;
+  tests: Maybe<Array<InstanceTest>>;
+  videoUrl: Maybe<Scalars['String']>;
+};
+
+export type InstanceScreeshot = {
+  __typename?: 'InstanceScreeshot';
+  height: Scalars['Int'];
+  name: Maybe<Scalars['String']>;
+  screenshotId: Scalars['String'];
+  screenshotURL: Maybe<Scalars['String']>;
+  takenAt: Scalars['String'];
+  testId: Scalars['String'];
+  width: Scalars['Int'];
+};
+
+export type InstanceStats = {
+  __typename?: 'InstanceStats';
+  failures: Scalars['Int'];
+  passes: Scalars['Int'];
+  pending: Scalars['Int'];
+  skipped: Scalars['Int'];
+  suites: Scalars['Int'];
+  tests: Scalars['Int'];
+  wallClockDuration: Scalars['Int'];
+  wallClockEndedAt: Scalars['String'];
+  wallClockStartedAt: Scalars['String'];
+};
+
+export type InstanceTest = {
+  __typename?: 'InstanceTest';
+  attempts: Array<TestAttempt>;
+  body: Maybe<Scalars['String']>;
+  displayError: Maybe<Scalars['String']>;
+  state: TestState;
+  testId: Scalars['String'];
+  title: Array<Scalars['String']>;
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
   createBitbucketHook: BitbucketHook;
+  createGChatHook: GChatHook;
   createGenericHook: GenericHook;
   createGithubHook: GithubHook;
   createProject: Project;
@@ -39,6 +249,7 @@ export type Mutation = {
   deleteRunsInDateRange: DeleteRunResponse;
   resetInstance: ResetInstanceResponse;
   updateBitbucketHook: BitbucketHook;
+  updateGChatHook: GChatHook;
   updateGenericHook: GenericHook;
   updateGithubHook: GithubHook;
   updateProject: Project;
@@ -48,6 +259,10 @@ export type Mutation = {
 
 export type MutationCreateBitbucketHookArgs = {
   input: CreateBitbucketHookInput;
+};
+
+export type MutationCreateGChatHookArgs = {
+  input: CreateGChatHookInput;
 };
 
 export type MutationCreateGenericHookArgs = {
@@ -83,12 +298,12 @@ export type MutationDeleteRunArgs = {
 };
 
 export type MutationDeleteRunsArgs = {
-  runIds: Array<Maybe<Scalars['ID']>>;
+  runIds: Array<InputMaybe<Scalars['ID']>>;
 };
 
 export type MutationDeleteRunsInDateRangeArgs = {
-  startDate: Scalars['DateTime'];
   endDate: Scalars['DateTime'];
+  startDate: Scalars['DateTime'];
 };
 
 export type MutationResetInstanceArgs = {
@@ -97,6 +312,10 @@ export type MutationResetInstanceArgs = {
 
 export type MutationUpdateBitbucketHookArgs = {
   input: UpdateBitbucketHookInput;
+};
+
+export type MutationUpdateGChatHookArgs = {
+  input: UpdateGChatHookInput;
 };
 
 export type MutationUpdateGenericHookArgs = {
@@ -119,261 +338,97 @@ export type MutationUpdateTeamsHookArgs = {
   input: UpdateTeamsHookInput;
 };
 
-export type DeleteHookInput = {
+export enum OrderingOptions {
+  Asc = 'ASC',
+  Desc = 'DESC',
+}
+
+export type Project = {
+  __typename?: 'Project';
+  hooks: Array<Hook>;
+  inactivityTimeoutSeconds: Maybe<Scalars['Int']>;
+  projectColor: Maybe<Scalars['String']>;
+  projectId: Scalars['ID'];
+};
+
+export type ProjectInput = {
+  hooks: InputMaybe<Array<InputMaybe<HookInput>>>;
+  inactivityTimeoutSeconds: InputMaybe<Scalars['Int']>;
+  projectColor: InputMaybe<Scalars['String']>;
   projectId: Scalars['String'];
-  hookId: Scalars['ID'];
-};
-
-export type DeleteHookResponse = {
-  __typename?: 'DeleteHookResponse';
-  projectId: Scalars['String'];
-  hookId: Scalars['ID'];
-};
-
-export type SlackHook = {
-  __typename?: 'SlackHook';
-  projectId: Scalars['ID'];
-  hookId: Scalars['ID'];
-  url: Scalars['String'];
-  hookType: Scalars['SlackHookType'];
-  hookEvents: Array<Scalars['String']>;
-  slackResultFilter: Maybe<Scalars['SlackResultFilter']>;
-  slackBranchFilter: Maybe<Array<Scalars['String']>>;
-};
-
-export type CreateSlackHookInput = {
-  projectId: Scalars['ID'];
-  slackResultFilter: Maybe<Scalars['SlackResultFilter']>;
-};
-
-export type UpdateSlackHookInput = {
-  projectId: Scalars['ID'];
-  hookId: Scalars['ID'];
-  url: Scalars['String'];
-  hookEvents: Array<Scalars['String']>;
-  slackResultFilter: Maybe<Scalars['SlackResultFilter']>;
-  slackBranchFilter: Maybe<Array<Scalars['String']>>;
-};
-
-export type GithubHook = {
-  __typename?: 'GithubHook';
-  projectId: Scalars['ID'];
-  hookId: Scalars['ID'];
-  url: Scalars['String'];
-  hookType: Scalars['GithubHookType'];
-  githubToken: Maybe<Scalars['String']>;
-  githubContext: Maybe<Scalars['String']>;
-};
-
-export type CreateGithubHookInput = {
-  projectId: Scalars['ID'];
-};
-
-export type UpdateGithubHookInput = {
-  projectId: Scalars['ID'];
-  hookId: Scalars['ID'];
-  url: Scalars['String'];
-  githubToken: Maybe<Scalars['String']>;
-  githubContext: Maybe<Scalars['String']>;
-};
-
-export type BitbucketHook = {
-  __typename?: 'BitbucketHook';
-  projectId: Scalars['ID'];
-  hookId: Scalars['ID'];
-  url: Scalars['String'];
-  hookType: Scalars['BitbucketHookType'];
-  bitbucketUsername: Maybe<Scalars['String']>;
-  bitbucketToken: Maybe<Scalars['String']>;
-  bitbucketBuildName: Maybe<Scalars['String']>;
-};
-
-export type CreateBitbucketHookInput = {
-  projectId: Scalars['ID'];
-};
-
-export type UpdateBitbucketHookInput = {
-  projectId: Scalars['ID'];
-  hookId: Scalars['ID'];
-  url: Maybe<Scalars['String']>;
-  bitbucketUsername: Scalars['String'];
-  bitbucketToken: Maybe<Scalars['String']>;
-  bitbucketBuildName: Maybe<Scalars['String']>;
-};
-
-export type TeamsHook = {
-  __typename?: 'TeamsHook';
-  projectId: Scalars['ID'];
-  hookId: Scalars['ID'];
-  url: Scalars['String'];
-  hookType: Scalars['TeamsHookType'];
-  hookEvents: Array<Scalars['String']>;
-};
-
-export type CreateTeamsHookInput = {
-  projectId: Scalars['ID'];
-};
-
-export type UpdateTeamsHookInput = {
-  projectId: Scalars['ID'];
-  hookId: Scalars['ID'];
-  url: Scalars['String'];
-  hookEvents: Array<Scalars['String']>;
-};
-
-export type GenericHook = {
-  __typename?: 'GenericHook';
-  projectId: Scalars['ID'];
-  hookId: Scalars['ID'];
-  url: Scalars['String'];
-  headers: Maybe<Scalars['String']>;
-  hookType: Scalars['GenericHookType'];
-  hookEvents: Array<Scalars['String']>;
-};
-
-export type CreateGenericHookInput = {
-  projectId: Scalars['ID'];
-};
-
-export type UpdateGenericHookInput = {
-  projectId: Scalars['ID'];
-  hookId: Scalars['ID'];
-  url: Scalars['String'];
-  headers: Maybe<Scalars['String']>;
-  hookEvents: Array<Scalars['String']>;
-};
-
-export type Hook = {
-  __typename?: 'Hook';
-  hookId: Maybe<Scalars['String']>;
-  url: Maybe<Scalars['String']>;
-  headers: Maybe<Scalars['String']>;
-  hookEvents: Maybe<Array<Maybe<Scalars['String']>>>;
-  hookType: Maybe<Scalars['String']>;
-  githubToken: Maybe<Scalars['String']>;
-  githubContext: Maybe<Scalars['String']>;
-  bitbucketUsername: Maybe<Scalars['String']>;
-  bitbucketToken: Maybe<Scalars['String']>;
-  bitbucketBuildName: Maybe<Scalars['String']>;
-  slackResultFilter: Maybe<Scalars['String']>;
-  slackBranchFilter: Maybe<Array<Maybe<Scalars['String']>>>;
-};
-
-export type HookInput = {
-  hookId: Maybe<Scalars['String']>;
-  url: Scalars['String'];
-  headers: Maybe<Scalars['String']>;
-  hookEvents: Maybe<Array<Maybe<Scalars['String']>>>;
-  hookType: Maybe<Scalars['String']>;
-  githubToken: Maybe<Scalars['String']>;
-  githubContext: Maybe<Scalars['String']>;
-  bitbucketUsername: Maybe<Scalars['String']>;
-  bitbucketToken: Maybe<Scalars['String']>;
-  bitbucketBuildName: Maybe<Scalars['String']>;
-  slackResultFilter: Maybe<Scalars['String']>;
-  slackBranchFilter: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
 export type Query = {
   __typename?: 'Query';
-  projects: Array<Project>;
-  project: Maybe<Project>;
-  runs: Array<Maybe<Run>>;
-  runFeed: RunFeed;
-  run: Maybe<Run>;
   instance: Maybe<Instance>;
+  project: Maybe<Project>;
+  projects: Array<Project>;
+  run: Maybe<Run>;
+  runFeed: RunFeed;
+  runs: Array<Maybe<Run>>;
   specStats: Maybe<SpecStats>;
-};
-
-export type QueryProjectsArgs = {
-  orderDirection?: Maybe<OrderingOptions>;
-  filters?: Maybe<Array<Maybe<Filters>>>;
-};
-
-export type QueryProjectArgs = {
-  id: Scalars['ID'];
-};
-
-export type QueryRunsArgs = {
-  orderDirection?: Maybe<OrderingOptions>;
-  cursor?: Maybe<Scalars['String']>;
-  filters?: Maybe<Array<Maybe<Filters>>>;
-};
-
-export type QueryRunFeedArgs = {
-  cursor: Maybe<Scalars['String']>;
-  filters?: Maybe<Array<Maybe<Filters>>>;
-};
-
-export type QueryRunArgs = {
-  id: Scalars['ID'];
 };
 
 export type QueryInstanceArgs = {
   id: Scalars['ID'];
 };
 
+export type QueryProjectArgs = {
+  id: Scalars['ID'];
+};
+
+export type QueryProjectsArgs = {
+  filters?: InputMaybe<Array<InputMaybe<Filters>>>;
+  orderDirection?: InputMaybe<OrderingOptions>;
+};
+
+export type QueryRunArgs = {
+  id: Scalars['ID'];
+};
+
+export type QueryRunFeedArgs = {
+  cursor: InputMaybe<Scalars['String']>;
+  filters?: InputMaybe<Array<InputMaybe<Filters>>>;
+};
+
+export type QueryRunsArgs = {
+  cursor?: InputMaybe<Scalars['String']>;
+  filters?: InputMaybe<Array<InputMaybe<Filters>>>;
+  orderDirection?: InputMaybe<OrderingOptions>;
+};
+
 export type QuerySpecStatsArgs = {
+  filters?: InputMaybe<Array<InputMaybe<Filters>>>;
   spec: Scalars['String'];
-  filters?: Maybe<Array<Maybe<Filters>>>;
 };
 
-export type DeleteRunResponse = {
-  __typename?: 'DeleteRunResponse';
-  success: Scalars['Boolean'];
+export type ReporterStats = {
+  __typename?: 'ReporterStats';
+  duration: Maybe<Scalars['Int']>;
+  end: Maybe<Scalars['String']>;
+  failures: Maybe<Scalars['Int']>;
+  passes: Maybe<Scalars['Int']>;
+  pending: Maybe<Scalars['Int']>;
+  start: Maybe<Scalars['String']>;
+  suites: Maybe<Scalars['Int']>;
+  tests: Maybe<Scalars['Int']>;
+};
+
+export type ResetInstanceResponse = {
+  __typename?: 'ResetInstanceResponse';
+  instanceId: Scalars['ID'];
   message: Scalars['String'];
-  runIds: Array<Maybe<Scalars['ID']>>;
-};
-
-export type SpecStats = {
-  __typename?: 'SpecStats';
-  spec: Scalars['String'];
-  avgWallClockDuration: Scalars['Int'];
-  count: Scalars['Int'];
-};
-
-export type Project = {
-  __typename?: 'Project';
-  projectId: Scalars['ID'];
-  hooks: Array<Hook>;
-  inactivityTimeoutSeconds: Maybe<Scalars['Int']>;
-  projectColor: Maybe<Scalars['String']>;
-};
-
-export type CreateProjectInput = {
-  projectId: Scalars['ID'];
-  inactivityTimeoutSeconds: Scalars['Int'];
-  projectColor: Maybe<Scalars['String']>;
-};
-
-export type UpdateProjectInput = {
-  projectId: Scalars['ID'];
-  inactivityTimeoutSeconds: Scalars['Int'];
-  projectColor: Maybe<Scalars['String']>;
-};
-
-export type ProjectInput = {
-  projectId: Scalars['String'];
-  inactivityTimeoutSeconds: Maybe<Scalars['Int']>;
-  projectColor: Maybe<Scalars['String']>;
-  hooks: Maybe<Array<Maybe<HookInput>>>;
-};
-
-export type DeleteProjectResponse = {
-  __typename?: 'DeleteProjectResponse';
-  success: Scalars['Boolean'];
-  message: Scalars['String'];
-  projectIds: Array<Maybe<Scalars['ID']>>;
+  success: Maybe<Scalars['Boolean']>;
 };
 
 export type Run = {
   __typename?: 'Run';
-  runId: Scalars['ID'];
+  completion: Maybe<RunCompletion>;
   createdAt: Scalars['DateTime'];
   meta: RunMeta;
-  specs: Array<RunSpec>;
-  completion: Maybe<RunCompletion>;
   progress: Maybe<RunProgress>;
+  runId: Scalars['ID'];
+  specs: Array<RunSpec>;
 };
 
 export type RunCompletion = {
@@ -382,29 +437,11 @@ export type RunCompletion = {
   inactivityTimeoutMs: Maybe<Scalars['Int']>;
 };
 
-export type RunSpec = {
-  __typename?: 'RunSpec';
-  spec: Scalars['String'];
-  instanceId: Scalars['String'];
-  claimedAt: Maybe<Scalars['String']>;
-  completedAt: Maybe<Scalars['String']>;
-  machineId: Maybe<Scalars['String']>;
-  tests: Maybe<Scalars['Int']>;
-  groupId: Maybe<Scalars['String']>;
-  results: Maybe<RunSpecResults>;
-};
-
-export type RunSpecResults = {
-  __typename?: 'RunSpecResults';
-  error: Maybe<Scalars['String']>;
-  retries: Maybe<Scalars['Int']>;
-  stats: InstanceStats;
-};
-
-export type RunProgress = {
-  __typename?: 'RunProgress';
-  updatedAt: Maybe<Scalars['DateTime']>;
-  groups: Array<RunGroupProgress>;
+export type RunFeed = {
+  __typename?: 'RunFeed';
+  cursor: Scalars['String'];
+  hasMore: Scalars['Boolean'];
+  runs: Array<Run>;
 };
 
 export type RunGroupProgress = {
@@ -416,117 +453,94 @@ export type RunGroupProgress = {
 
 export type RunGroupProgressInstances = {
   __typename?: 'RunGroupProgressInstances';
-  overall: Scalars['Int'];
   claimed: Scalars['Int'];
   complete: Scalars['Int'];
-  passes: Scalars['Int'];
   failures: Scalars['Int'];
+  overall: Scalars['Int'];
+  passes: Scalars['Int'];
 };
 
 export type RunGroupProgressTests = {
   __typename?: 'RunGroupProgressTests';
+  failures: Scalars['Int'];
   overall: Scalars['Int'];
   passes: Scalars['Int'];
-  failures: Scalars['Int'];
-  skipped: Scalars['Int'];
   pending: Scalars['Int'];
   retries: Scalars['Int'];
-};
-
-export type Commit = {
-  __typename?: 'Commit';
-  sha: Maybe<Scalars['String']>;
-  branch: Maybe<Scalars['String']>;
-  authorName: Maybe<Scalars['String']>;
-  authorEmail: Maybe<Scalars['String']>;
-  message: Maybe<Scalars['String']>;
-  remoteOrigin: Maybe<Scalars['String']>;
+  skipped: Scalars['Int'];
 };
 
 export type RunMeta = {
   __typename?: 'RunMeta';
   ciBuildId: Scalars['String'];
-  projectId: Scalars['String'];
   commit: Maybe<Commit>;
-};
-
-export type ResetInstanceResponse = {
-  __typename?: 'ResetInstanceResponse';
-  instanceId: Scalars['ID'];
-  message: Scalars['String'];
-  success: Maybe<Scalars['Boolean']>;
-};
-
-export type RunFeed = {
-  __typename?: 'RunFeed';
-  cursor: Scalars['String'];
-  hasMore: Scalars['Boolean'];
-  runs: Array<Run>;
-};
-
-export type Instance = {
-  __typename?: 'Instance';
-  runId: Scalars['ID'];
-  run: Run;
-  spec: Scalars['String'];
-  groupId: Scalars['String'];
   projectId: Scalars['String'];
-  instanceId: Scalars['ID'];
-  results: Maybe<InstanceResults>;
 };
 
-export type InstanceResults = {
-  __typename?: 'InstanceResults';
-  stats: InstanceStats;
-  tests: Maybe<Array<InstanceTest>>;
+export type RunProgress = {
+  __typename?: 'RunProgress';
+  groups: Array<RunGroupProgress>;
+  updatedAt: Maybe<Scalars['DateTime']>;
+};
+
+export type RunSpec = {
+  __typename?: 'RunSpec';
+  claimedAt: Maybe<Scalars['String']>;
+  completedAt: Maybe<Scalars['String']>;
+  groupId: Maybe<Scalars['String']>;
+  instanceId: Scalars['String'];
+  machineId: Maybe<Scalars['String']>;
+  results: Maybe<RunSpecResults>;
+  spec: Scalars['String'];
+};
+
+export type RunSpecResults = {
+  __typename?: 'RunSpecResults';
   error: Maybe<Scalars['String']>;
-  stdout: Maybe<Scalars['String']>;
-  screenshots: Array<InstanceScreeshot>;
-  cypressConfig: Maybe<CypressConfig>;
-  reporterStats: Maybe<ReporterStats>;
-  videoUrl: Maybe<Scalars['String']>;
+  retries: Maybe<Scalars['Int']>;
+  stats: InstanceStats;
 };
 
-export type InstanceStats = {
-  __typename?: 'InstanceStats';
-  suites: Scalars['Int'];
-  tests: Scalars['Int'];
-  passes: Scalars['Int'];
-  pending: Scalars['Int'];
-  skipped: Scalars['Int'];
-  failures: Scalars['Int'];
-  wallClockStartedAt: Scalars['String'];
-  wallClockEndedAt: Scalars['String'];
-  wallClockDuration: Scalars['Int'];
+export type SlackHook = {
+  __typename?: 'SlackHook';
+  hookEvents: Array<Scalars['String']>;
+  hookId: Scalars['ID'];
+  hookType: Scalars['SlackHookType'];
+  projectId: Scalars['ID'];
+  slackBranchFilter: Maybe<Array<Scalars['String']>>;
+  slackResultFilter: Maybe<Scalars['SlackResultFilter']>;
+  url: Scalars['String'];
 };
 
-export type CypressConfig = {
-  __typename?: 'CypressConfig';
-  video: Scalars['Boolean'];
-  videoUploadOnPasses: Scalars['Boolean'];
+export type SpecStats = {
+  __typename?: 'SpecStats';
+  avgWallClockDuration: Scalars['Int'];
+  count: Scalars['Int'];
+  spec: Scalars['String'];
 };
 
-export type InstanceScreeshot = {
-  __typename?: 'InstanceScreeshot';
-  screenshotId: Scalars['String'];
-  name: Maybe<Scalars['String']>;
-  testId: Scalars['String'];
-  takenAt: Scalars['String'];
-  height: Scalars['Int'];
-  width: Scalars['Int'];
-  screenshotURL: Maybe<Scalars['String']>;
+export type TeamsHook = {
+  __typename?: 'TeamsHook';
+  hookEvents: Array<Scalars['String']>;
+  hookId: Scalars['ID'];
+  hookType: Scalars['TeamsHookType'];
+  projectId: Scalars['ID'];
+  url: Scalars['String'];
 };
 
-export type ReporterStats = {
-  __typename?: 'ReporterStats';
-  suites: Maybe<Scalars['Int']>;
-  tests: Maybe<Scalars['Int']>;
-  passes: Maybe<Scalars['Int']>;
-  pending: Maybe<Scalars['Int']>;
-  failures: Maybe<Scalars['Int']>;
-  start: Maybe<Scalars['String']>;
-  end: Maybe<Scalars['String']>;
-  duration: Maybe<Scalars['Int']>;
+export type TestAttempt = {
+  __typename?: 'TestAttempt';
+  error: Maybe<TestError>;
+  state: Maybe<Scalars['String']>;
+  wallClockDuration: Maybe<Scalars['Int']>;
+  wallClockStartedAt: Maybe<Scalars['String']>;
+};
+
+export type TestError = {
+  __typename?: 'TestError';
+  message: Scalars['String'];
+  name: Scalars['String'];
+  stack: Scalars['String'];
 };
 
 export enum TestState {
@@ -536,40 +550,58 @@ export enum TestState {
   Skipped = 'skipped',
 }
 
-export type InstanceTest = {
-  __typename?: 'InstanceTest';
-  testId: Scalars['String'];
-  title: Array<Scalars['String']>;
-  state: TestState;
-  body: Maybe<Scalars['String']>;
-  displayError: Maybe<Scalars['String']>;
-  attempts: Array<TestAttempt>;
+export type UpdateBitbucketHookInput = {
+  bitbucketBuildName: InputMaybe<Scalars['String']>;
+  bitbucketToken: InputMaybe<Scalars['String']>;
+  bitbucketUsername: Scalars['String'];
+  hookId: Scalars['ID'];
+  projectId: Scalars['ID'];
+  url: InputMaybe<Scalars['String']>;
 };
 
-export type TestError = {
-  __typename?: 'TestError';
-  name: Scalars['String'];
-  message: Scalars['String'];
-  stack: Scalars['String'];
+export type UpdateGChatHookInput = {
+  hookEvents: Array<Scalars['String']>;
+  hookId: Scalars['ID'];
+  projectId: Scalars['ID'];
+  url: Scalars['String'];
 };
 
-export type TestAttempt = {
-  __typename?: 'TestAttempt';
-  state: Maybe<Scalars['String']>;
-  error: Maybe<TestError>;
-  wallClockStartedAt: Maybe<Scalars['String']>;
-  wallClockDuration: Maybe<Scalars['Int']>;
+export type UpdateGenericHookInput = {
+  headers: InputMaybe<Scalars['String']>;
+  hookEvents: Array<Scalars['String']>;
+  hookId: Scalars['ID'];
+  projectId: Scalars['ID'];
+  url: Scalars['String'];
 };
 
-export enum OrderingOptions {
-  Desc = 'DESC',
-  Asc = 'ASC',
-}
+export type UpdateGithubHookInput = {
+  githubContext: InputMaybe<Scalars['String']>;
+  githubToken: InputMaybe<Scalars['String']>;
+  hookId: Scalars['ID'];
+  projectId: Scalars['ID'];
+  url: Scalars['String'];
+};
 
-export type Filters = {
-  key: Maybe<Scalars['String']>;
-  value: Maybe<Scalars['String']>;
-  like: Maybe<Scalars['String']>;
+export type UpdateProjectInput = {
+  inactivityTimeoutSeconds: Scalars['Int'];
+  projectColor: InputMaybe<Scalars['String']>;
+  projectId: Scalars['ID'];
+};
+
+export type UpdateSlackHookInput = {
+  hookEvents: Array<Scalars['String']>;
+  hookId: Scalars['ID'];
+  projectId: Scalars['ID'];
+  slackBranchFilter: InputMaybe<Array<Scalars['String']>>;
+  slackResultFilter: InputMaybe<Scalars['SlackResultFilter']>;
+  url: Scalars['String'];
+};
+
+export type UpdateTeamsHookInput = {
+  hookEvents: Array<Scalars['String']>;
+  hookId: Scalars['ID'];
+  projectId: Scalars['ID'];
+  url: Scalars['String'];
 };
 
 export type GetInstanceQueryVariables = Exact<{
@@ -578,7 +610,7 @@ export type GetInstanceQueryVariables = Exact<{
 
 export type GetInstanceQuery = {
   __typename?: 'Query';
-  instance: Maybe<{
+  instance: {
     __typename?: 'Instance';
     instanceId: string;
     runId: string;
@@ -589,29 +621,57 @@ export type GetInstanceQuery = {
       runId: string;
       meta: { __typename?: 'RunMeta'; ciBuildId: string };
     };
-    results: Maybe<{
+    results: {
       __typename?: 'InstanceResults';
-      error: Maybe<string>;
-      videoUrl: Maybe<string>;
-      stats: { __typename?: 'InstanceStats' } & AllInstanceStatsFragment;
-      tests: Maybe<
-        Array<{ __typename?: 'InstanceTest' } & GetInstanceTestFragment>
-      >;
+      error: string | null;
+      videoUrl: string | null;
+      stats: {
+        __typename?: 'InstanceStats';
+        suites: number;
+        tests: number;
+        pending: number;
+        passes: number;
+        failures: number;
+        skipped: number;
+        wallClockDuration: number;
+        wallClockStartedAt: string;
+        wallClockEndedAt: string;
+      };
+      tests: Array<{
+        __typename?: 'InstanceTest';
+        testId: string;
+        title: Array<string>;
+        state: TestState;
+        body: string | null;
+        displayError: string | null;
+        attempts: Array<{
+          __typename?: 'TestAttempt';
+          state: string | null;
+          wallClockDuration: number | null;
+          wallClockStartedAt: string | null;
+          error: {
+            __typename?: 'TestError';
+            name: string;
+            message: string;
+            stack: string;
+          } | null;
+        }>;
+      }> | null;
       screenshots: Array<{
         __typename?: 'InstanceScreeshot';
         testId: string;
         screenshotId: string;
         height: number;
         width: number;
-        screenshotURL: Maybe<string>;
+        screenshotURL: string | null;
       }>;
-      cypressConfig: Maybe<{
+      cypressConfig: {
         __typename?: 'CypressConfig';
         video: boolean;
         videoUploadOnPasses: boolean;
-      }>;
-    }>;
-  }>;
+      } | null;
+    } | null;
+  } | null;
 };
 
 export type GetInstanceTestFragment = {
@@ -619,19 +679,19 @@ export type GetInstanceTestFragment = {
   testId: string;
   title: Array<string>;
   state: TestState;
-  body: Maybe<string>;
-  displayError: Maybe<string>;
+  body: string | null;
+  displayError: string | null;
   attempts: Array<{
     __typename?: 'TestAttempt';
-    state: Maybe<string>;
-    wallClockDuration: Maybe<number>;
-    wallClockStartedAt: Maybe<string>;
-    error: Maybe<{
+    state: string | null;
+    wallClockDuration: number | null;
+    wallClockStartedAt: string | null;
+    error: {
       __typename?: 'TestError';
       name: string;
       message: string;
       stack: string;
-    }>;
+    } | null;
   }>;
 };
 
@@ -644,8 +704,8 @@ export type CreateProjectMutation = {
   createProject: {
     __typename?: 'Project';
     projectId: string;
-    inactivityTimeoutSeconds: Maybe<number>;
-    projectColor: Maybe<string>;
+    inactivityTimeoutSeconds: number | null;
+    projectColor: string | null;
   };
 };
 
@@ -659,7 +719,7 @@ export type DeleteProjectMutation = {
     __typename?: 'DeleteProjectResponse';
     success: boolean;
     message: string;
-    projectIds: Array<Maybe<string>>;
+    projectIds: Array<string | null>;
   };
 };
 
@@ -669,31 +729,31 @@ export type GetProjectQueryVariables = Exact<{
 
 export type GetProjectQuery = {
   __typename?: 'Query';
-  project: Maybe<{
+  project: {
     __typename?: 'Project';
     projectId: string;
-    inactivityTimeoutSeconds: Maybe<number>;
-    projectColor: Maybe<string>;
+    inactivityTimeoutSeconds: number | null;
+    projectColor: string | null;
     hooks: Array<{
       __typename?: 'Hook';
-      hookId: Maybe<string>;
-      url: Maybe<string>;
-      headers: Maybe<string>;
-      hookEvents: Maybe<Array<Maybe<string>>>;
-      hookType: Maybe<string>;
-      slackResultFilter: Maybe<string>;
-      slackBranchFilter: Maybe<Array<Maybe<string>>>;
-      githubContext: Maybe<string>;
-      githubToken: Maybe<string>;
-      bitbucketUsername: Maybe<string>;
-      bitbucketToken: Maybe<string>;
-      bitbucketBuildName: Maybe<string>;
+      hookId: string | null;
+      url: string | null;
+      headers: string | null;
+      hookEvents: Array<string | null> | null;
+      hookType: string | null;
+      slackResultFilter: string | null;
+      slackBranchFilter: Array<string | null> | null;
+      githubContext: string | null;
+      githubToken: string | null;
+      bitbucketUsername: string | null;
+      bitbucketToken: string | null;
+      bitbucketBuildName: string | null;
     }>;
-  }>;
+  } | null;
 };
 
 export type GetProjectsQueryVariables = Exact<{
-  orderDirection: Maybe<OrderingOptions>;
+  orderDirection: InputMaybe<OrderingOptions>;
   filters: Array<Filters> | Filters;
 }>;
 
@@ -702,7 +762,7 @@ export type GetProjectsQuery = {
   projects: Array<{
     __typename?: 'Project';
     projectId: string;
-    projectColor: Maybe<string>;
+    projectColor: string | null;
   }>;
 };
 
@@ -718,8 +778,23 @@ export type CreateBitbucketHookMutation = {
     hookId: string;
     hookType: any;
     url: string;
-    bitbucketUsername: Maybe<string>;
-    bitbucketBuildName: Maybe<string>;
+    bitbucketUsername: string | null;
+    bitbucketBuildName: string | null;
+  };
+};
+
+export type CreateGChatHookMutationVariables = Exact<{
+  input: CreateGChatHookInput;
+}>;
+
+export type CreateGChatHookMutation = {
+  __typename?: 'Mutation';
+  createGChatHook: {
+    __typename?: 'GChatHook';
+    hookId: string;
+    hookType: any;
+    url: string;
+    hookEvents: Array<string>;
   };
 };
 
@@ -735,7 +810,7 @@ export type CreateGenericHookMutation = {
     hookType: any;
     url: string;
     hookEvents: Array<string>;
-    headers: Maybe<string>;
+    headers: string | null;
   };
 };
 
@@ -751,8 +826,8 @@ export type CreateGithubHookMutation = {
     hookId: string;
     hookType: any;
     url: string;
-    githubToken: Maybe<string>;
-    githubContext: Maybe<string>;
+    githubToken: string | null;
+    githubContext: string | null;
   };
 };
 
@@ -768,8 +843,8 @@ export type CreateSlackHookMutation = {
     hookType: any;
     url: string;
     hookEvents: Array<string>;
-    slackResultFilter: Maybe<any>;
-    slackBranchFilter: Maybe<Array<string>>;
+    slackResultFilter: any | null;
+    slackBranchFilter: Array<string> | null;
   };
 };
 
@@ -808,6 +883,15 @@ export type UpdateBitbucketHookMutationVariables = Exact<{
 export type UpdateBitbucketHookMutation = {
   __typename?: 'Mutation';
   updateBitbucketHook: { __typename?: 'BitbucketHook'; hookId: string };
+};
+
+export type UpdateGChatHookMutationVariables = Exact<{
+  input: UpdateGChatHookInput;
+}>;
+
+export type UpdateGChatHookMutation = {
+  __typename?: 'Mutation';
+  updateGChatHook: { __typename?: 'GChatHook'; hookId: string };
 };
 
 export type UpdateGenericHookMutationVariables = Exact<{
@@ -855,8 +939,8 @@ export type UpdateProjectMutation = {
   updateProject: {
     __typename?: 'Project';
     projectId: string;
-    inactivityTimeoutSeconds: Maybe<number>;
-    projectColor: Maybe<string>;
+    inactivityTimeoutSeconds: number | null;
+    projectColor: string | null;
   };
 };
 
@@ -870,7 +954,7 @@ export type DeleteRunMutation = {
     __typename?: 'DeleteRunResponse';
     success: boolean;
     message: string;
-    runIds: Array<Maybe<string>>;
+    runIds: Array<string | null>;
   };
 };
 
@@ -880,12 +964,12 @@ export type GetSpecStatsQueryVariables = Exact<{
 
 export type GetSpecStatsQuery = {
   __typename?: 'Query';
-  specStats: Maybe<{
+  specStats: {
     __typename?: 'SpecStats';
     spec: string;
     count: number;
     avgWallClockDuration: number;
-  }>;
+  } | null;
 };
 
 export type GetRunQueryVariables = Exact<{
@@ -894,17 +978,80 @@ export type GetRunQueryVariables = Exact<{
 
 export type GetRunQuery = {
   __typename?: 'Query';
-  run: Maybe<{
+  run: {
     __typename?: 'Run';
     runId: string;
     createdAt: string;
-    completion: Maybe<
-      { __typename?: 'RunCompletion' } & RunSummaryCompletionFragment
-    >;
-    meta: { __typename?: 'RunMeta' } & RunSummaryMetaFragment;
-    specs: Array<{ __typename?: 'RunSpec' } & RunDetailSpecFragment>;
-    progress: Maybe<{ __typename?: 'RunProgress' } & RunProgressFragment>;
-  }>;
+    completion: {
+      __typename?: 'RunCompletion';
+      completed: boolean;
+      inactivityTimeoutMs: number | null;
+    } | null;
+    meta: {
+      __typename?: 'RunMeta';
+      ciBuildId: string;
+      projectId: string;
+      commit: {
+        __typename?: 'Commit';
+        sha: string | null;
+        branch: string | null;
+        remoteOrigin: string | null;
+        message: string | null;
+        authorEmail: string | null;
+        authorName: string | null;
+      } | null;
+    };
+    specs: Array<{
+      __typename?: 'RunSpec';
+      instanceId: string;
+      spec: string;
+      claimedAt: string | null;
+      machineId: string | null;
+      groupId: string | null;
+      results: {
+        __typename?: 'RunSpecResults';
+        error: string | null;
+        retries: number | null;
+        stats: {
+          __typename?: 'InstanceStats';
+          suites: number;
+          tests: number;
+          pending: number;
+          passes: number;
+          failures: number;
+          skipped: number;
+          wallClockDuration: number;
+          wallClockStartedAt: string;
+          wallClockEndedAt: string;
+        };
+      } | null;
+    }>;
+    progress: {
+      __typename?: 'RunProgress';
+      updatedAt: string | null;
+      groups: Array<{
+        __typename?: 'RunGroupProgress';
+        groupId: string;
+        instances: {
+          __typename?: 'RunGroupProgressInstances';
+          overall: number;
+          claimed: number;
+          complete: number;
+          failures: number;
+          passes: number;
+        };
+        tests: {
+          __typename?: 'RunGroupProgressTests';
+          overall: number;
+          passes: number;
+          failures: number;
+          pending: number;
+          skipped: number;
+          retries: number;
+        };
+      }>;
+    } | null;
+  } | null;
 };
 
 export type ResetInstanceMutationVariables = Exact<{
@@ -915,7 +1062,7 @@ export type ResetInstanceMutation = {
   __typename?: 'Mutation';
   resetInstance: {
     __typename?: 'ResetInstanceResponse';
-    success: Maybe<boolean>;
+    success: boolean | null;
     message: string;
     instanceId: string;
   };
@@ -925,15 +1072,26 @@ export type RunDetailSpecFragment = {
   __typename?: 'RunSpec';
   instanceId: string;
   spec: string;
-  claimedAt: Maybe<string>;
-  machineId: Maybe<string>;
-  groupId: Maybe<string>;
-  results: Maybe<{
+  claimedAt: string | null;
+  machineId: string | null;
+  groupId: string | null;
+  results: {
     __typename?: 'RunSpecResults';
-    error: Maybe<string>;
-    retries: Maybe<number>;
-    stats: { __typename?: 'InstanceStats' } & AllInstanceStatsFragment;
-  }>;
+    error: string | null;
+    retries: number | null;
+    stats: {
+      __typename?: 'InstanceStats';
+      suites: number;
+      tests: number;
+      pending: number;
+      passes: number;
+      failures: number;
+      skipped: number;
+      wallClockDuration: number;
+      wallClockStartedAt: string;
+      wallClockEndedAt: string;
+    };
+  } | null;
 };
 
 export type AllInstanceStatsFragment = {
@@ -952,35 +1110,46 @@ export type AllInstanceStatsFragment = {
 export type RunSummaryCompletionFragment = {
   __typename?: 'RunCompletion';
   completed: boolean;
-  inactivityTimeoutMs: Maybe<number>;
+  inactivityTimeoutMs: number | null;
 };
 
 export type RunSummaryMetaFragment = {
   __typename?: 'RunMeta';
   ciBuildId: string;
   projectId: string;
-  commit: Maybe<{
+  commit: {
     __typename?: 'Commit';
-    sha: Maybe<string>;
-    branch: Maybe<string>;
-    remoteOrigin: Maybe<string>;
-    message: Maybe<string>;
-    authorEmail: Maybe<string>;
-    authorName: Maybe<string>;
-  }>;
+    sha: string | null;
+    branch: string | null;
+    remoteOrigin: string | null;
+    message: string | null;
+    authorEmail: string | null;
+    authorName: string | null;
+  } | null;
 };
 
 export type RunSummarySpecFragment = {
   __typename?: 'RunSpec';
-  claimedAt: Maybe<string>;
-  results: Maybe<{
+  claimedAt: string | null;
+  results: {
     __typename?: 'RunSpecResults';
-    stats: { __typename?: 'InstanceStats' } & AllInstanceStatsFragment;
-  }>;
+    stats: {
+      __typename?: 'InstanceStats';
+      suites: number;
+      tests: number;
+      pending: number;
+      passes: number;
+      failures: number;
+      skipped: number;
+      wallClockDuration: number;
+      wallClockStartedAt: string;
+      wallClockEndedAt: string;
+    };
+  } | null;
 };
 
 export type GetRunsFeedQueryVariables = Exact<{
-  cursor: Maybe<Scalars['String']>;
+  cursor: InputMaybe<Scalars['String']>;
   filters: Array<Filters> | Filters;
 }>;
 
@@ -994,27 +1163,77 @@ export type GetRunsFeedQuery = {
       __typename?: 'Run';
       runId: string;
       createdAt: string;
-      completion: Maybe<
-        { __typename?: 'RunCompletion' } & RunSummaryCompletionFragment
-      >;
-      meta: { __typename?: 'RunMeta' } & RunSummaryMetaFragment;
-      progress: Maybe<{ __typename?: 'RunProgress' } & RunProgressFragment>;
+      completion: {
+        __typename?: 'RunCompletion';
+        completed: boolean;
+        inactivityTimeoutMs: number | null;
+      } | null;
+      meta: {
+        __typename?: 'RunMeta';
+        ciBuildId: string;
+        projectId: string;
+        commit: {
+          __typename?: 'Commit';
+          sha: string | null;
+          branch: string | null;
+          remoteOrigin: string | null;
+          message: string | null;
+          authorEmail: string | null;
+          authorName: string | null;
+        } | null;
+      };
+      progress: {
+        __typename?: 'RunProgress';
+        updatedAt: string | null;
+        groups: Array<{
+          __typename?: 'RunGroupProgress';
+          groupId: string;
+          instances: {
+            __typename?: 'RunGroupProgressInstances';
+            overall: number;
+            claimed: number;
+            complete: number;
+            failures: number;
+            passes: number;
+          };
+          tests: {
+            __typename?: 'RunGroupProgressTests';
+            overall: number;
+            passes: number;
+            failures: number;
+            pending: number;
+            skipped: number;
+            retries: number;
+          };
+        }>;
+      } | null;
     }>;
   };
 };
 
 export type RunProgressFragment = {
   __typename?: 'RunProgress';
-  updatedAt: Maybe<string>;
+  updatedAt: string | null;
   groups: Array<{
     __typename?: 'RunGroupProgress';
     groupId: string;
     instances: {
       __typename?: 'RunGroupProgressInstances';
-    } & RunGroupProgressInstancesFragment;
+      overall: number;
+      claimed: number;
+      complete: number;
+      failures: number;
+      passes: number;
+    };
     tests: {
       __typename?: 'RunGroupProgressTests';
-    } & RunGroupProgressTestsFragment;
+      overall: number;
+      passes: number;
+      failures: number;
+      pending: number;
+      skipped: number;
+      retries: number;
+    };
   }>;
 };
 
@@ -1215,9 +1434,10 @@ export function useGetInstanceQuery(
     GetInstanceQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<GetInstanceQuery, GetInstanceQueryVariables>(
     GetInstanceDocument,
-    baseOptions
+    options
   );
 }
 export function useGetInstanceLazyQuery(
@@ -1226,9 +1446,10 @@ export function useGetInstanceLazyQuery(
     GetInstanceQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<GetInstanceQuery, GetInstanceQueryVariables>(
     GetInstanceDocument,
-    baseOptions
+    options
   );
 }
 export type GetInstanceQueryHookResult = ReturnType<typeof useGetInstanceQuery>;
@@ -1276,10 +1497,11 @@ export function useCreateProjectMutation(
     CreateProjectMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
     CreateProjectMutation,
     CreateProjectMutationVariables
-  >(CreateProjectDocument, baseOptions);
+  >(CreateProjectDocument, options);
 }
 export type CreateProjectMutationHookResult = ReturnType<
   typeof useCreateProjectMutation
@@ -1328,10 +1550,11 @@ export function useDeleteProjectMutation(
     DeleteProjectMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
     DeleteProjectMutation,
     DeleteProjectMutationVariables
-  >(DeleteProjectDocument, baseOptions);
+  >(DeleteProjectDocument, options);
 }
 export type DeleteProjectMutationHookResult = ReturnType<
   typeof useDeleteProjectMutation
@@ -1389,9 +1612,10 @@ export function useGetProjectQuery(
     GetProjectQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<GetProjectQuery, GetProjectQueryVariables>(
     GetProjectDocument,
-    baseOptions
+    options
   );
 }
 export function useGetProjectLazyQuery(
@@ -1400,9 +1624,10 @@ export function useGetProjectLazyQuery(
     GetProjectQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<GetProjectQuery, GetProjectQueryVariables>(
     GetProjectDocument,
-    baseOptions
+    options
   );
 }
 export type GetProjectQueryHookResult = ReturnType<typeof useGetProjectQuery>;
@@ -1445,9 +1670,10 @@ export function useGetProjectsQuery(
     GetProjectsQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<GetProjectsQuery, GetProjectsQueryVariables>(
     GetProjectsDocument,
-    baseOptions
+    options
   );
 }
 export function useGetProjectsLazyQuery(
@@ -1456,9 +1682,10 @@ export function useGetProjectsLazyQuery(
     GetProjectsQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<GetProjectsQuery, GetProjectsQueryVariables>(
     GetProjectsDocument,
-    baseOptions
+    options
   );
 }
 export type GetProjectsQueryHookResult = ReturnType<typeof useGetProjectsQuery>;
@@ -1509,10 +1736,11 @@ export function useCreateBitbucketHookMutation(
     CreateBitbucketHookMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
     CreateBitbucketHookMutation,
     CreateBitbucketHookMutationVariables
-  >(CreateBitbucketHookDocument, baseOptions);
+  >(CreateBitbucketHookDocument, options);
 }
 export type CreateBitbucketHookMutationHookResult = ReturnType<
   typeof useCreateBitbucketHookMutation
@@ -1523,6 +1751,60 @@ export type CreateBitbucketHookMutationResult = Apollo.MutationResult<
 export type CreateBitbucketHookMutationOptions = Apollo.BaseMutationOptions<
   CreateBitbucketHookMutation,
   CreateBitbucketHookMutationVariables
+>;
+export const CreateGChatHookDocument = gql`
+  mutation createGChatHook($input: CreateGChatHookInput!) {
+    createGChatHook(input: $input) {
+      hookId
+      hookType
+      url
+      hookEvents
+    }
+  }
+`;
+export type CreateGChatHookMutationFn = Apollo.MutationFunction<
+  CreateGChatHookMutation,
+  CreateGChatHookMutationVariables
+>;
+
+/**
+ * __useCreateGChatHookMutation__
+ *
+ * To run a mutation, you first call `useCreateGChatHookMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateGChatHookMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createGChatHookMutation, { data, loading, error }] = useCreateGChatHookMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateGChatHookMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateGChatHookMutation,
+    CreateGChatHookMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    CreateGChatHookMutation,
+    CreateGChatHookMutationVariables
+  >(CreateGChatHookDocument, options);
+}
+export type CreateGChatHookMutationHookResult = ReturnType<
+  typeof useCreateGChatHookMutation
+>;
+export type CreateGChatHookMutationResult = Apollo.MutationResult<
+  CreateGChatHookMutation
+>;
+export type CreateGChatHookMutationOptions = Apollo.BaseMutationOptions<
+  CreateGChatHookMutation,
+  CreateGChatHookMutationVariables
 >;
 export const CreateGenericHookDocument = gql`
   mutation createGenericHook($input: CreateGenericHookInput!) {
@@ -1563,10 +1845,11 @@ export function useCreateGenericHookMutation(
     CreateGenericHookMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
     CreateGenericHookMutation,
     CreateGenericHookMutationVariables
-  >(CreateGenericHookDocument, baseOptions);
+  >(CreateGenericHookDocument, options);
 }
 export type CreateGenericHookMutationHookResult = ReturnType<
   typeof useCreateGenericHookMutation
@@ -1618,10 +1901,11 @@ export function useCreateGithubHookMutation(
     CreateGithubHookMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
     CreateGithubHookMutation,
     CreateGithubHookMutationVariables
-  >(CreateGithubHookDocument, baseOptions);
+  >(CreateGithubHookDocument, options);
 }
 export type CreateGithubHookMutationHookResult = ReturnType<
   typeof useCreateGithubHookMutation
@@ -1673,10 +1957,11 @@ export function useCreateSlackHookMutation(
     CreateSlackHookMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
     CreateSlackHookMutation,
     CreateSlackHookMutationVariables
-  >(CreateSlackHookDocument, baseOptions);
+  >(CreateSlackHookDocument, options);
 }
 export type CreateSlackHookMutationHookResult = ReturnType<
   typeof useCreateSlackHookMutation
@@ -1726,10 +2011,11 @@ export function useCreateTeamsHookMutation(
     CreateTeamsHookMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
     CreateTeamsHookMutation,
     CreateTeamsHookMutationVariables
-  >(CreateTeamsHookDocument, baseOptions);
+  >(CreateTeamsHookDocument, options);
 }
 export type CreateTeamsHookMutationHookResult = ReturnType<
   typeof useCreateTeamsHookMutation
@@ -1777,9 +2063,10 @@ export function useDeleteHookMutation(
     DeleteHookMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<DeleteHookMutation, DeleteHookMutationVariables>(
     DeleteHookDocument,
-    baseOptions
+    options
   );
 }
 export type DeleteHookMutationHookResult = ReturnType<
@@ -1827,10 +2114,11 @@ export function useUpdateBitbucketHookMutation(
     UpdateBitbucketHookMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
     UpdateBitbucketHookMutation,
     UpdateBitbucketHookMutationVariables
-  >(UpdateBitbucketHookDocument, baseOptions);
+  >(UpdateBitbucketHookDocument, options);
 }
 export type UpdateBitbucketHookMutationHookResult = ReturnType<
   typeof useUpdateBitbucketHookMutation
@@ -1841,6 +2129,57 @@ export type UpdateBitbucketHookMutationResult = Apollo.MutationResult<
 export type UpdateBitbucketHookMutationOptions = Apollo.BaseMutationOptions<
   UpdateBitbucketHookMutation,
   UpdateBitbucketHookMutationVariables
+>;
+export const UpdateGChatHookDocument = gql`
+  mutation updateGChatHook($input: UpdateGChatHookInput!) {
+    updateGChatHook(input: $input) {
+      hookId
+    }
+  }
+`;
+export type UpdateGChatHookMutationFn = Apollo.MutationFunction<
+  UpdateGChatHookMutation,
+  UpdateGChatHookMutationVariables
+>;
+
+/**
+ * __useUpdateGChatHookMutation__
+ *
+ * To run a mutation, you first call `useUpdateGChatHookMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateGChatHookMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateGChatHookMutation, { data, loading, error }] = useUpdateGChatHookMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateGChatHookMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateGChatHookMutation,
+    UpdateGChatHookMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    UpdateGChatHookMutation,
+    UpdateGChatHookMutationVariables
+  >(UpdateGChatHookDocument, options);
+}
+export type UpdateGChatHookMutationHookResult = ReturnType<
+  typeof useUpdateGChatHookMutation
+>;
+export type UpdateGChatHookMutationResult = Apollo.MutationResult<
+  UpdateGChatHookMutation
+>;
+export type UpdateGChatHookMutationOptions = Apollo.BaseMutationOptions<
+  UpdateGChatHookMutation,
+  UpdateGChatHookMutationVariables
 >;
 export const UpdateGenericHookDocument = gql`
   mutation updateGenericHook($input: UpdateGenericHookInput!) {
@@ -1877,10 +2216,11 @@ export function useUpdateGenericHookMutation(
     UpdateGenericHookMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
     UpdateGenericHookMutation,
     UpdateGenericHookMutationVariables
-  >(UpdateGenericHookDocument, baseOptions);
+  >(UpdateGenericHookDocument, options);
 }
 export type UpdateGenericHookMutationHookResult = ReturnType<
   typeof useUpdateGenericHookMutation
@@ -1927,10 +2267,11 @@ export function useUpdateGithubHookMutation(
     UpdateGithubHookMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
     UpdateGithubHookMutation,
     UpdateGithubHookMutationVariables
-  >(UpdateGithubHookDocument, baseOptions);
+  >(UpdateGithubHookDocument, options);
 }
 export type UpdateGithubHookMutationHookResult = ReturnType<
   typeof useUpdateGithubHookMutation
@@ -1977,10 +2318,11 @@ export function useUpdateSlackHookMutation(
     UpdateSlackHookMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
     UpdateSlackHookMutation,
     UpdateSlackHookMutationVariables
-  >(UpdateSlackHookDocument, baseOptions);
+  >(UpdateSlackHookDocument, options);
 }
 export type UpdateSlackHookMutationHookResult = ReturnType<
   typeof useUpdateSlackHookMutation
@@ -2027,10 +2369,11 @@ export function useUpdateTeamsHookMutation(
     UpdateTeamsHookMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
     UpdateTeamsHookMutation,
     UpdateTeamsHookMutationVariables
-  >(UpdateTeamsHookDocument, baseOptions);
+  >(UpdateTeamsHookDocument, options);
 }
 export type UpdateTeamsHookMutationHookResult = ReturnType<
   typeof useUpdateTeamsHookMutation
@@ -2079,10 +2422,11 @@ export function useUpdateProjectMutation(
     UpdateProjectMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
     UpdateProjectMutation,
     UpdateProjectMutationVariables
-  >(UpdateProjectDocument, baseOptions);
+  >(UpdateProjectDocument, options);
 }
 export type UpdateProjectMutationHookResult = ReturnType<
   typeof useUpdateProjectMutation
@@ -2131,9 +2475,10 @@ export function useDeleteRunMutation(
     DeleteRunMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<DeleteRunMutation, DeleteRunMutationVariables>(
     DeleteRunDocument,
-    baseOptions
+    options
   );
 }
 export type DeleteRunMutationHookResult = ReturnType<
@@ -2176,9 +2521,10 @@ export function useGetSpecStatsQuery(
     GetSpecStatsQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<GetSpecStatsQuery, GetSpecStatsQueryVariables>(
     GetSpecStatsDocument,
-    baseOptions
+    options
   );
 }
 export function useGetSpecStatsLazyQuery(
@@ -2187,9 +2533,10 @@ export function useGetSpecStatsLazyQuery(
     GetSpecStatsQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<GetSpecStatsQuery, GetSpecStatsQueryVariables>(
     GetSpecStatsDocument,
-    baseOptions
+    options
   );
 }
 export type GetSpecStatsQueryHookResult = ReturnType<
@@ -2246,17 +2593,19 @@ export const GetRunDocument = gql`
 export function useGetRunQuery(
   baseOptions: Apollo.QueryHookOptions<GetRunQuery, GetRunQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<GetRunQuery, GetRunQueryVariables>(
     GetRunDocument,
-    baseOptions
+    options
   );
 }
 export function useGetRunLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<GetRunQuery, GetRunQueryVariables>
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<GetRunQuery, GetRunQueryVariables>(
     GetRunDocument,
-    baseOptions
+    options
   );
 }
 export type GetRunQueryHookResult = ReturnType<typeof useGetRunQuery>;
@@ -2302,10 +2651,11 @@ export function useResetInstanceMutation(
     ResetInstanceMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
     ResetInstanceMutation,
     ResetInstanceMutationVariables
-  >(ResetInstanceDocument, baseOptions);
+  >(ResetInstanceDocument, options);
 }
 export type ResetInstanceMutationHookResult = ReturnType<
   typeof useResetInstanceMutation
@@ -2365,9 +2715,10 @@ export function useGetRunsFeedQuery(
     GetRunsFeedQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<GetRunsFeedQuery, GetRunsFeedQueryVariables>(
     GetRunsFeedDocument,
-    baseOptions
+    options
   );
 }
 export function useGetRunsFeedLazyQuery(
@@ -2376,9 +2727,10 @@ export function useGetRunsFeedLazyQuery(
     GetRunsFeedQueryVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<GetRunsFeedQuery, GetRunsFeedQueryVariables>(
     GetRunsFeedDocument,
-    baseOptions
+    options
   );
 }
 export type GetRunsFeedQueryHookResult = ReturnType<typeof useGetRunsFeedQuery>;

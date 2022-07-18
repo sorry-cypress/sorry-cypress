@@ -4,6 +4,7 @@ import { SpecsAPI } from '@sorry-cypress/api/datasources/specs';
 import { AppDatasources } from '@sorry-cypress/api/datasources/types';
 import {
   CreateBitbucketHookInput,
+  CreateGChatHookInput,
   CreateGenericHookInput,
   CreateGithubHookInput,
   CreateProjectInput,
@@ -13,6 +14,7 @@ import {
   OrderingOptions,
   RunSpec,
   UpdateBitbucketHookInput,
+  UpdateGChatHookInput,
   UpdateGenericHookInput,
   UpdateGithubHookInput,
   UpdateProjectInput,
@@ -51,6 +53,7 @@ export const resolvers = {
   GithubHookType: getStringLiteral('GithubHookType'),
   BitbucketHookType: getStringLiteral('BitbucketHookType'),
   TeamsHookType: getStringLiteral('TeamsHookType'),
+  GChatHookType: getStringLiteral('GChatHookType'),
 
   RunSpec: {
     results: async (
@@ -263,6 +266,12 @@ export const resolvers = {
     ),
     updateTeamsHook: getDatasourceWithInput<UpdateTeamsHookInput>(
       'projectsAPI.updateTeamsHook'
+    ),
+    createGChatHook: getDatasourceWithInput<CreateGChatHookInput>(
+      'projectsAPI.createGChatHook'
+    ),
+    updateGChatHook: getDatasourceWithInput<UpdateGChatHookInput>(
+      'projectsAPI.updateGChatHook'
     ),
     deleteHook: getDatasourceWithInput<DeleteHookInput>(
       'projectsAPI.deleteHook'

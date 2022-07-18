@@ -15,6 +15,7 @@ import {
 import { Hook, HookType } from '@sorry-cypress/common';
 import {
   useCreateBitbucketHookMutation,
+  useCreateGChatHookMutation,
   useCreateGenericHookMutation,
   useCreateGithubHookMutation,
   useCreateSlackHookMutation,
@@ -45,6 +46,7 @@ export const HooksEditor = () => {
   const [createGithubHook] = useCreateGithubHookMutation();
   const [createSlackHook] = useCreateSlackHookMutation();
   const [createTeamsHook] = useCreateTeamsHookMutation();
+  const [createGChatHook] = useCreateGChatHookMutation();
 
   async function createNewHook() {
     const input = {
@@ -56,6 +58,7 @@ export const HooksEditor = () => {
       | typeof createGithubHook
       | typeof createSlackHook
       | typeof createTeamsHook
+      | typeof createGChatHook
       | null = null;
     let field = '';
     switch (currentHookType) {
@@ -84,6 +87,11 @@ export const HooksEditor = () => {
       case HookType.GENERIC_HOOK:
         fn = createGenericHook;
         field = 'createGenericHook';
+        setCurrentHookType(undefined);
+        break;
+      case HookType.GCHAT_HOOK:
+        fn = createGChatHook;
+        field = 'createGChatHook';
         setCurrentHookType(undefined);
         break;
       default:

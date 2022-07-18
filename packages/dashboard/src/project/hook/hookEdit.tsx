@@ -19,6 +19,7 @@ import { Box } from '@mui/system';
 import {
   Hook,
   isBitbucketHook,
+  isGChatHook,
   isGenericHook,
   isGithubHook,
   isSlackHook,
@@ -29,6 +30,7 @@ import { useSwitch } from '@sorry-cypress/dashboard/hooks/useSwitch';
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { BitbucketHook } from './bitbucketHook';
+import { GChatHook } from './gChatHook';
 import { GenericHook } from './genericHook';
 import { GithubHook } from './githubHook';
 import { enumToString } from './hook.utils';
@@ -142,6 +144,7 @@ const HookDetails = ({ hook }: { hook: Hook }) => {
         {isSlackHook(hook) && <SlackHook hook={hook} />}
         {isBitbucketHook(hook) && <BitbucketHook hook={hook} />}
         {isTeamsHook(hook) && <TeamsHook hook={hook} />}
+        {isGChatHook(hook) && <GChatHook hook={hook} />}
       </Grid>
     </Grid>
   );

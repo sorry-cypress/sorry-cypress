@@ -1,5 +1,6 @@
 import {
   BitBucketHook,
+  GChatHook,
   GenericHook,
   GithubHook,
   Hook,
@@ -25,4 +26,8 @@ export function isBitbucketHook(hook: Hook): hook is BitBucketHook {
 
 export function isTeamsHook(hook: Hook): hook is TeamsHook {
   return hook.hookType === 'TEAMS_HOOK';
+}
+
+export function isGChatHook(hook: Hook): hook is GChatHook {
+  return hook.hookType === 'GCHAT_HOOK';
 }

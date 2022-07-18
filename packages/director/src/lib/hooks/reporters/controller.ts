@@ -2,6 +2,7 @@ import {
   Hook,
   HookEvent,
   isBitbucketHook,
+  isGChatHook,
   isGenericHook,
   isGithubHook,
   isSlackHook,
@@ -12,6 +13,7 @@ import {
 } from '@sorry-cypress/common';
 import { getLogger } from '@sorry-cypress/logger';
 import { reportStatusToBitbucket } from './bitbucket';
+import { reportToGChat } from './gchat';
 import { reportToGenericWebHook } from './generic';
 import { reportStatusToGithub } from './github';
 import { reportToSlack } from './slack';
@@ -128,5 +130,14 @@ const runSingleReporter = async ({
     });
   }
 
+  if (isGChatHook(hook)) {
+    return reportToGChat(hook, {
+      eventType,
+      run,
+      groupId,
+      groupProgress,
+      spec: spec ?? '',
+    });
+  }
   // throw new AppError(UNKNOWN_HOOK_TYPE);
 };
