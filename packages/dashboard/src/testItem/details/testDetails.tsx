@@ -1,5 +1,4 @@
 import { Box, Grid, Typography } from '@mui/material';
-import { getTestRetries } from '@sorry-cypress/common';
 import {
   FlakyTestBadge,
   TestAttemptsState,
@@ -24,10 +23,7 @@ export const TestDetails: TestDetailsComponent = (props) => {
       </Typography>
       <Grid container spacing={1}>
         <Grid item>
-          <VisualTestState
-            state={test.state}
-            retries={getTestRetries(test.state, test.attempts.length)}
-          />
+          <VisualTestState state={test.state} />
         </Grid>
         {test.state === 'passed' && test.attempts.length > 1 && (
           <Grid item>

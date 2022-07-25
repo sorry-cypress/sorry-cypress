@@ -1,4 +1,3 @@
-import { getTestRetries } from '@sorry-cypress/common';
 import { VisualTestState } from '@sorry-cypress/dashboard/components/common';
 import { InstanceTest } from '@sorry-cypress/dashboard/generated/graphql';
 import React from 'react';
@@ -23,10 +22,7 @@ export function Test({ instanceId, test }: TestProps) {
   return (
     <div>
       <strong>
-        <VisualTestState
-          state={test.state}
-          retries={getTestRetries(test.state, test.attempts.length)}
-        />
+        <VisualTestState state={test.state} />
       </strong>{' '}
       <Link to={`/instance/${instanceId}/test/${test.testId}`}>
         {test.title.join(' > ')}

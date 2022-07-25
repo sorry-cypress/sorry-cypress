@@ -1,6 +1,3 @@
-import { Flaky } from '@mui/icons-material';
-import { Tooltip } from '@mui/material';
-import { pink } from '@mui/material/colors';
 import { isIdle } from '@sorry-cypress/dashboard/lib/time';
 import React, { FunctionComponent } from 'react';
 import { Chip } from '..';
@@ -15,7 +12,7 @@ export const INSTANCE_STATE_COLORS = {
 };
 
 export const getInstanceState: GetInstanceState = (data) => {
-  const { claimedAt, retries, stats } = data;
+  const { claimedAt, stats } = data;
 
   if (claimedAt && !stats && isIdle(claimedAt)) {
     return 'idle';
@@ -31,16 +28,12 @@ export const getInstanceState: GetInstanceState = (data) => {
 
   // Keep before "no tests" need to have actual failures to qualify as failed
   // mocha allows you to skip tests on purpose, and cypress (and sorry cypress) should respect this
-  if (stats.failures > 0) {
+  if (stats.failures > 0 || stats.skipped > 0) {
     return 'failed';
   }
 
   if (!stats.tests) {
     return 'noTests';
-  }
-
-  if (retries > 0) {
-    return 'flaky';
   }
 
   return 'passed';
@@ -52,20 +45,6 @@ export const SpecStateChip: SpecStateChipComponent = (props) => {
   switch (state) {
     case 'failed':
       return <Chip label="Failed" color="red" />;
-
-    case 'flaky':
-      return (
-        <Tooltip title="Flaky">
-          <Chip
-            endIcon={{
-              icon: <Flaky />,
-              color: pink[400],
-            }}
-            label="Passed"
-            color="lime"
-          />
-        </Tooltip>
-      );
 
     case 'passed':
       return <Chip label="Passed" color="green" />;
@@ -90,12 +69,10 @@ export type InstanceState =
   | 'pending'
   | 'running'
   | 'noTests'
-  | 'flaky'
   | 'idle';
 
 type InstanceData = {
   claimedAt: string | null;
-  retries: number;
   stats?: {
     failures: number;
     tests: number;

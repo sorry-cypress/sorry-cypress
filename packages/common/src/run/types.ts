@@ -61,7 +61,6 @@ export interface RunSpec {
   machineId?: string;
   results?: {
     error?: string;
-    retries?: number;
     stats: InstanceResultStats;
   };
 }
@@ -103,7 +102,7 @@ export interface RunGroupProgress {
     failures: number;
     skipped: number;
     pending: number;
-    retries: number;
+    flaky: number;
   };
 }
 
@@ -120,6 +119,5 @@ export interface RunSummary {
   skipped: number;
   tests: number;
   pending: number;
-  retries: number;
   wallClockDurationSeconds: number;
 }

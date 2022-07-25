@@ -4,8 +4,9 @@ import {
   Paper,
   RenderOnInterval,
   TestFailureChip,
+  TestFlakyChip,
   TestOverallChip,
-  TestRetriesChip,
+  TestPendingChip,
   TestSkippedChip,
   TestSuccessChip,
 } from '@sorry-cypress/dashboard/components/';
@@ -14,6 +15,7 @@ import {
   SpecStateChip,
 } from '@sorry-cypress/dashboard/components/common/specState';
 import { GetRunQuery } from '@sorry-cypress/dashboard/generated/graphql';
+import { ReadableSpecNamesKind } from '@sorry-cypress/dashboard/hooks/useReadableSpecNames';
 import { getBase } from '@sorry-cypress/dashboard/lib/path';
 import {
   getDurationMs,
@@ -26,7 +28,6 @@ import React, { FunctionComponent, useMemo } from 'react';
 import { generatePath } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
 import stringHash from 'string-hash';
-import { ReadableSpecNamesKind } from '@sorry-cypress/dashboard/hooks/useReadableSpecNames';
 
 export const RunDetails: RunDetailsComponent = (props) => {
   const { run, hidePassedSpecs, readableSpecNames } = props;
@@ -92,7 +93,7 @@ export const RunDetails: RunDetailsComponent = (props) => {
             sortable: false,
             filterable: false,
             renderCell: getTestStatsCell,
-            minWidth: 360,
+            minWidth: 400,
           },
           {
             field: 'actions',
@@ -123,7 +124,6 @@ function convertToRows(
       const state = getInstanceState({
         claimedAt: spec.claimedAt,
         stats: spec.results?.stats,
-        retries: spec.results?.retries ?? 0,
       });
       return ['failed', 'pending', 'running'].includes(state);
     })
@@ -134,7 +134,6 @@ function convertToRows(
         status: getInstanceState({
           claimedAt: spec.claimedAt,
           stats: spec.results?.stats,
-          retries: spec.results?.retries ?? 0,
         }),
         machine: spec.machineId ? getMachineName(spec.machineId) : null,
         groupId: spec.groupId,
@@ -178,14 +177,14 @@ const getTestStatsCell = (params: GridRenderCellParams) => {
         <TestFailureChip value={params.row.results?.stats?.failures ?? 0} />
       </Grid>
       <Grid item>
-        <TestRetriesChip value={params.row.results?.retries ?? 0} />
+        <TestFlakyChip value={params.row.results?.flaky ?? 0} />
       </Grid>
       <Grid item>
         <TestSkippedChip value={params.row.results?.stats?.skipped ?? 0} />
       </Grid>
-      {/*<Grid item>*/}
-      {/*    <TestPendingChip value={params.row.results?.stats?.pending ?? 0} />*/}
-      {/*</Grid>*/}
+      <Grid item>
+        <TestPendingChip value={params.row.results?.stats?.pending ?? 0} />
+      </Grid>
     </Grid>
   );
 };

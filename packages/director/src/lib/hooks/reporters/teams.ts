@@ -63,7 +63,7 @@ export async function reportToTeams(
     pending,
     skipped,
     failures,
-    retries,
+    flaky,
   } = event.groupProgress.tests;
 
   const commitDescription =
@@ -138,12 +138,20 @@ export async function reportToTeams(
                     value: `${passes}`,
                   },
                   {
-                    title: 'Fails',
-                    value: `${failures + skipped}`,
+                    title: 'Failures',
+                    value: `${failures}`,
                   },
                   {
-                    title: 'Retries',
-                    value: `${retries}`,
+                    title: 'Skipped',
+                    value: `${skipped}`,
+                  },
+                  {
+                    title: 'Ignored',
+                    value: `${pending}`,
+                  },
+                  {
+                    title: 'Flaky',
+                    value: `${flaky}`,
                   },
                 ],
               },
