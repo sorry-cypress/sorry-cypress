@@ -1,12 +1,13 @@
 import { Grid } from '@mui/material';
 import {
   TestFailureChip,
+  TestFlakyChip,
   TestOverallChip,
   TestPendingChip,
-  TestRetriesChip,
   TestSkippedChip,
   TestSuccessChip,
 } from '@sorry-cypress/dashboard/components';
+import { RunGroupProgressTests } from '@sorry-cypress/dashboard/generated/graphql';
 import React, { FunctionComponent } from 'react';
 
 export const RunSummaryTestResults: RunSummaryTestResultsComponent = (
@@ -26,7 +27,7 @@ export const RunSummaryTestResults: RunSummaryTestResultsComponent = (
         <TestFailureChip value={testsStats.failures} />
       </Grid>
       <Grid item>
-        <TestRetriesChip value={testsStats.retries} />
+        <TestFlakyChip value={testsStats.flaky} />
       </Grid>
       <Grid item>
         <TestSkippedChip value={testsStats.skipped} />
@@ -38,16 +39,8 @@ export const RunSummaryTestResults: RunSummaryTestResultsComponent = (
   );
 };
 
-type TestStats = {
-  overall: number;
-  passes: number;
-  failures: number;
-  pending: number;
-  skipped: number;
-  retries: number;
-};
 type RunSummaryTestResultsProps = {
-  testsStats: TestStats;
+  testsStats: RunGroupProgressTests;
   totalCount?: number;
 };
 type RunSummaryTestResultsComponent = FunctionComponent<

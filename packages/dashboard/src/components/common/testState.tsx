@@ -67,7 +67,7 @@ export const VisualTestState: VisualTestStateComponent = (props) => {
       return (
         <Chip
           icon={NextPlanOutlinedIcon}
-          label="Pending test"
+          label="Ignored test"
           color="blueGrey"
         ></Chip>
       );
@@ -91,7 +91,6 @@ type TestAttemptsStateComponent = FunctionComponent<TestAttemptsStateProps>;
 
 type TestStateProps = {
   state?: TestState | 'unknown';
-  retries?: number;
 };
 type VisualTestStateComponent = FunctionComponent<TestStateProps>;
 

@@ -29,7 +29,7 @@ export const TestPendingChip: TestChipComponent = (props) => {
   const { value } = props;
 
   return (
-    <Tooltip title="Pending Tests" arrow>
+    <Tooltip title="Ignored Tests" arrow>
       <Chip
         color={value ? 'cyan' : 'grey'}
         shade={!value ? 300 : undefined}
@@ -70,7 +70,7 @@ export const TestSkippedChip: TestChipComponent = (props) => {
   );
 };
 
-export const TestRetriesChip: TestChipComponent = (props) => {
+export const TestFlakyChip: TestChipComponent = (props) => {
   const { value } = props;
 
   return (

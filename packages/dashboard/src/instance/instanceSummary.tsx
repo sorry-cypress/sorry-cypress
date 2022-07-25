@@ -1,15 +1,17 @@
-import {
-  AccessTime,
-  CheckCircleOutline,
-  ErrorOutline,
-  Flaky,
-  GroupWorkOutlined,
-  NextPlanOutlined,
-  RadioButtonUnchecked,
-} from '@mui/icons-material';
+import { GroupWorkOutlined } from '@mui/icons-material';
 import { Alert, Grid, Tooltip, Typography } from '@mui/material';
-import { getTestListRetries } from '@sorry-cypress/common';
-import { Chip, Pad, Paper } from '@sorry-cypress/dashboard/components';
+import { isTestFlaky } from '@sorry-cypress/common';
+import {
+  Chip,
+  Pad,
+  Paper,
+  TestFailureChip,
+  TestFlakyChip,
+  TestOverallChip,
+  TestPendingChip,
+  TestSkippedChip,
+  TestSuccessChip,
+} from '@sorry-cypress/dashboard/components';
 import {
   getInstanceState,
   SpecStateChip,
@@ -28,7 +30,7 @@ export const InstanceSummary: InstanceSummaryComponent = (props) => {
     return <Alert severity="info">No results for the instance</Alert>;
   }
   const stats: InstanceStats = instance.results.stats;
-  const retries = getTestListRetries(instance.results.tests ?? []);
+  const flaky = instance.results.tests?.filter(isTestFlaky).length ?? 0;
 
   return (
     <Paper>
@@ -49,7 +51,6 @@ export const InstanceSummary: InstanceSummaryComponent = (props) => {
               state={getInstanceState({
                 claimedAt: null,
                 stats: instance.results.stats,
-                retries,
               })}
             />
           </Grid>
@@ -64,64 +65,22 @@ export const InstanceSummary: InstanceSummaryComponent = (props) => {
             </Tooltip>
           </Grid>
           <Grid item>
-            <Tooltip title="Total Tests" arrow>
-              <Chip
-                color={stats['tests'] ? 'cyan' : 'grey'}
-                shade={!stats['tests'] ? 300 : undefined}
-                label={<Pad number={stats['tests']} />}
-                icon={RadioButtonUnchecked}
-              />
-            </Tooltip>
+            <TestOverallChip value={stats['tests']} />
           </Grid>
           <Grid item>
-            <Tooltip title="Passed Tests" arrow>
-              <Chip
-                color={stats['passes'] ? 'green' : 'grey'}
-                shade={!stats['passes'] ? 300 : undefined}
-                label={<Pad number={stats['passes']} />}
-                icon={CheckCircleOutline}
-              />
-            </Tooltip>
+            <TestSuccessChip value={stats['passes']} />
           </Grid>
           <Grid item>
-            <Tooltip title="Failed Tests" arrow>
-              <Chip
-                color={stats['failures'] ? 'red' : 'grey'}
-                shade={!stats['failures'] ? 300 : undefined}
-                label={<Pad number={stats['failures']} />}
-                icon={ErrorOutline}
-              />
-            </Tooltip>
+            <TestFailureChip value={stats['failures']} />
           </Grid>
           <Grid item>
-            <Tooltip title="Flaky Tests" arrow>
-              <Chip
-                color={retries ? 'pink' : 'grey'}
-                shade={!retries ? 300 : undefined}
-                label={<Pad number={retries} />}
-                icon={Flaky}
-              />
-            </Tooltip>
+            <TestFlakyChip value={flaky} />
           </Grid>
           <Grid item>
-            <Tooltip title="Skipped Tests" arrow>
-              <Chip
-                color={stats['skipped'] ? 'orange' : 'grey'}
-                shade={!stats['skipped'] ? 300 : undefined}
-                label={<Pad number={stats['skipped']} />}
-                icon={NextPlanOutlined}
-              />
-            </Tooltip>
+            <TestSkippedChip value={stats['skipped']} />
           </Grid>
           <Grid item>
-            <Tooltip title="Pending Tests" arrow>
-              <Chip
-                color={stats['pending'] ? 'cyan' : 'grey'}
-                shade={!stats['pending'] ? 300 : undefined}
-                label={<Pad number={stats['pending']} />}
-                icon={AccessTime}
-              />
-            </Tooltip>
+            <TestPendingChip value={stats['pending']} />
           </Grid>
         </Grid>
       </Grid>

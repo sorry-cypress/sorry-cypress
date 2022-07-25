@@ -17,7 +17,7 @@ import {
   useTheme,
 } from '@mui/material';
 import { blueGrey, pink } from '@mui/material/colors';
-import { getTestRetries } from '@sorry-cypress/common';
+import { isTestFlaky } from '@sorry-cypress/common';
 import {
   GetInstanceQuery,
   GetInstanceTestFragment,
@@ -121,35 +121,33 @@ export const InstanceDetails: InstanceDetailsComponent = (props) => {
 
   const renderTree = (nodes: Map<string, NavigationItem>) => {
     const render = [];
-    for (const node of nodes.entries()) {
+    for (const [key, entry] of nodes.entries()) {
       render.push(
         <TreeItem
-          key={node[1].id}
-          nodeId={node[1].id}
+          key={entry.id}
+          nodeId={entry.id}
           label={
             <Grid container alignItems="center" py={0.75}>
               <Grid
                 item
                 component={
-                  node[1].isFolder
+                  entry.isFolder
                     ? Topic
-                    : node[1].isVideo
+                    : entry.isVideo
                     ? Videocam
-                    : TEST_STATE_ICONS[node[1].test?.state || 'unknown']
+                    : TEST_STATE_ICONS[entry.test?.state || 'unknown']
                 }
                 color="inherit"
                 sx={{
                   mr: 0.5,
 
                   fontSize:
-                    node[1].isFolder || node[1].isVideo ? undefined : '1.2rem',
+                    entry.isFolder || entry.isVideo ? undefined : '1.2rem',
                   color:
-                    node[1].isFolder || node[1].isVideo
+                    entry.isFolder || entry.isVideo
                       ? blueGrey[400]
                       : get(colors, [
-                          INSTANCE_STATE_COLORS[
-                            node[1].test?.state || 'unknown'
-                          ],
+                          INSTANCE_STATE_COLORS[entry.test?.state || 'unknown'],
                           400,
                         ]),
                 }}
@@ -157,38 +155,32 @@ export const InstanceDetails: InstanceDetailsComponent = (props) => {
               <Grid item flex={1}>
                 <Typography
                   variant={
-                    node[1].isFolder || node[1].isVideo ? 'body2' : 'caption'
+                    entry.isFolder || entry.isVideo ? 'body2' : 'caption'
                   }
                   sx={{ fontWeight: 'inherit', flexGrow: 1 }}
                 >
-                  {node[1].isVideo ? 'Recorded video' : node[0]}
+                  {entry.isVideo ? 'Recorded video' : key}
                 </Typography>
               </Grid>
-              {node[1].test &&
-                getTestRetries(
-                  node[1].test.state,
-                  node[1].test.attempts.length
-                ) > 0 && (
-                  <Tooltip title="Flaky test">
-                    <Flaky
-                      fontSize="inherit"
-                      sx={{
-                        fontSize: 'inherit',
-                        color: pink[400],
-                        mr: 0.5,
-                      }}
-                    />
-                  </Tooltip>
-                )}
+              {entry.test && isTestFlaky(entry.test) && (
+                <Tooltip title="Flaky test">
+                  <Flaky
+                    fontSize="inherit"
+                    sx={{
+                      fontSize: 'inherit',
+                      color: pink[400],
+                      mr: 0.5,
+                    }}
+                  />
+                </Tooltip>
+              )}
               <Grid item pr={2}>
                 <Typography variant="caption" color="inherit">
-                  {node[1].test && (
+                  {entry.test && (
                     <Tooltip
-                      title={`Started at ${getTestStartedAt(node[1].test)}`}
+                      title={`Started at ${getTestStartedAt(entry.test)}`}
                     >
-                      <span>
-                        {getDurationMs(getTestDuration(node[1].test))}
-                      </span>
+                      <span>{getDurationMs(getTestDuration(entry.test))}</span>
                     </Tooltip>
                   )}
                 </Typography>
@@ -196,7 +188,7 @@ export const InstanceDetails: InstanceDetailsComponent = (props) => {
             </Grid>
           }
         >
-          {node[1].children ? renderTree(node[1].children) : null}
+          {entry.children ? renderTree(entry.children) : null}
         </TreeItem>
       );
     }
