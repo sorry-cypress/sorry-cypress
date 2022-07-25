@@ -52,7 +52,7 @@ export function ProjectListItem({ project }: ProjectListItemProps) {
                 primary={decodeURIComponent(project.projectId)}
                 primaryTypographyProps={{
                   variant: 'body1',
-                  style: { wordBreak: 'break-all' },
+                  style: { wordBreak: 'break-word' },
                 }}
               />
             </ListItem>
