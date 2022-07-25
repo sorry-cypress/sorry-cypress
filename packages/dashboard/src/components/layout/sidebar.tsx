@@ -174,6 +174,7 @@ export const ProjectListMenu: ProjectListMenuType = ({
                   fontSize: 16,
                   color: 'text.primary',
                   sx: { opacity: 0.6 },
+                  style: { wordBreak: 'break-all' },
                 }}
               />
             </ListItemButton>
