@@ -33,9 +33,6 @@ export async function reportToGChat(
   }
 
   let title = '';
-  let color = isRunGroupSuccessful(event.groupProgress)
-    ? successColor
-    : failureColor;
 
   switch (event.eventType) {
     case HookEvent.RUN_START:
@@ -54,17 +51,10 @@ export async function reportToGChat(
       break;
     case HookEvent.RUN_TIMEOUT:
       title = `:hourglass_flowing_sand: *Run timedout* (${ciBuildId})`;
-      color = failureColor;
       break;
   }
 
-  const {
-    passes,
-    pending,
-    skipped,
-    failures,
-    retries,
-  } = event.groupProgress.tests;
+  const { passes, skipped, failures, retries } = event.groupProgress.tests;
 
   const commitDescription =
     (event.run.meta.commit?.branch || event.run.meta.commit?.message) &&
@@ -165,6 +155,3 @@ export function isGChatEventFilterPassed(event: HookEvent, hook: GChatHook) {
 
   return hook.hookEvents.includes(event);
 }
-
-const successColor = '#0E8A16';
-const failureColor = '#AB1616';
