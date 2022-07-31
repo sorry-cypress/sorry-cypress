@@ -36,21 +36,21 @@ export async function reportToGChat(
 
   switch (event.eventType) {
     case HookEvent.RUN_START:
-      title = `:rocket: *Run started* (${ciBuildId}${groupLabel})`;
+      title = `🚀 Run started (${ciBuildId}${groupLabel})`;
       break;
     case HookEvent.INSTANCE_START:
-      title = `*Instance started* ${event.spec} (${ciBuildId}${groupLabel})`;
+      title = `Instance started - ${event.spec} (${ciBuildId}${groupLabel})`;
       break;
     case HookEvent.INSTANCE_FINISH:
-      title = `*Instance finished* ${event.spec} (${ciBuildId}${groupLabel})`;
+      title = `Instance finished - ${event.spec} (${ciBuildId}${groupLabel})`;
       break;
     case HookEvent.RUN_FINISH:
       title = `${
         isRunGroupSuccessful(event.groupProgress) ? '&#x2705;' : '&#x274C;'
-      } *Run finished* (${ciBuildId}${groupLabel})`;
+      } Run finished (${ciBuildId}${groupLabel})`;
       break;
     case HookEvent.RUN_TIMEOUT:
-      title = `:hourglass_flowing_sand: *Run timedout* (${ciBuildId})`;
+      title = `⏳ Run timedout (${ciBuildId})`;
       break;
   }
 
@@ -58,7 +58,7 @@ export async function reportToGChat(
 
   const commitDescription =
     (event.run.meta.commit?.branch || event.run.meta.commit?.message) &&
-    `*Branch:*\n${event.run.meta.commit.branch}\n\n*Commit:*\n${truncate(
+    `Branch:\n${event.run.meta.commit.branch}\n\nCommit:\n${truncate(
       event.run.meta.commit.message,
       {
         length: 100,
@@ -69,72 +69,73 @@ export async function reportToGChat(
     method: 'post',
     url: hook.url,
     data: {
-      sections: [
+      cards: [
         {
-          header: 'Title',
-          widgets: [
+          sections: [
             {
-              textParagraph: {
-                text: `${title}`,
-              },
-            },
-          ],
-        },
-        {
-          header: 'Commit Description',
-          widgets: [
-            {
-              textParagraph: {
-                text: `${commitDescription}`,
-              },
-            },
-          ],
-        },
-        {
-          header: 'Test Results',
-          widgets: [
-            {
-              keyValue: {
-                topLabel: 'Passes',
-                content: `${passes}`,
-              },
-            },
-            {
-              keyValue: {
-                topLabel: 'Failures',
-                content: `${failures + skipped}`,
-              },
-            },
-            {
-              keyValue: {
-                topLabel: 'Retries',
-                content: `${retries}`,
-              },
-            },
-            {
-              buttons: [
+              widgets: [
                 {
-                  textButton: {
-                    text: 'View in Sorry Cypress',
-                    onClick: {
-                      openLink: {
-                        url: `${getDashboardRunURL(event.run.runId)}`,
-                      },
-                    },
+                  textParagraph: {
+                    text: `${title}`,
                   },
                 },
               ],
             },
+            {
+              widgets: [
+                {
+                  textParagraph: {
+                    text: `${commitDescription}`,
+                  },
+                },
+              ],
+            },
+            {
+              widgets: [
+                {
+                  keyValue: {
+                    topLabel: 'Passes',
+                    content: `${passes}`,
+                  },
+                },
+                {
+                  keyValue: {
+                    topLabel: 'Failures',
+                    content: `${failures + skipped}`,
+                  },
+                },
+                {
+                  keyValue: {
+                    topLabel: 'Retries',
+                    content: `${retries}`,
+                  },
+                },
+                {
+                  buttons: [
+                    {
+                      textButton: {
+                        text: 'View in Sorry Cypress',
+                        onClick: {
+                          openLink: {
+                            url: `${getDashboardRunURL(event.run.runId)}`,
+                          },
+                        },
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
           ],
+          header: {
+            title: 'Sorry Cypress',
+            subtitle: '',
+            imageUrl:
+              'https://gblobscdn.gitbook.com/spaces%2F-MS6gDAYECuzpKjjzrdc%2Favatar-1611996755562.png?alt=media',
+            imageStyle: 'AVATAR',
+          },
         },
       ],
-      header: {
-        title: 'Sorry Cypress',
-        subtitle: '',
-        imageUrl:
-          'https://gblobscdn.gitbook.com/spaces%2F-MS6gDAYECuzpKjjzrdc%2Favatar-1611996755562.png?alt=media',
-        imageStyle: 'AVATAR',
-      },
     },
   }).catch((error) => {
     getLogger().error(
