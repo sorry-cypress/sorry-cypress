@@ -26,7 +26,6 @@ services:
       - "1234:1234"
     depends_on:
       - mongo
-      - storage
 
   api:
     image: agoldis/sorry-cypress-api:latest
