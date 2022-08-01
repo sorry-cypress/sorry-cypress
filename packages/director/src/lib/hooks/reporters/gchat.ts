@@ -56,14 +56,12 @@ export async function reportToGChat(
 
   const { passes, skipped, failures, retries } = event.groupProgress.tests;
 
-  const commitDescription =
-    (event.run.meta.commit?.branch || event.run.meta.commit?.message) &&
-    `Branch:\n${event.run.meta.commit.branch}\n\nCommit:\n${truncate(
-      event.run.meta.commit.message,
-      {
-        length: 100,
-      }
-    )}`;
+  const commitDescription = {
+    branch: event.run.meta.commit.branch,
+    commit: truncate(event.run.meta.commit.message, {
+      length: 100,
+    }),
+  };
 
   axios({
     method: 'post',
@@ -84,8 +82,15 @@ export async function reportToGChat(
             {
               widgets: [
                 {
-                  textParagraph: {
-                    text: `${commitDescription}`,
+                  keyValue: {
+                    topLabel: 'Branch',
+                    content: `${commitDescription.branch}`,
+                  },
+                },
+                {
+                  keyValue: {
+                    topLabel: 'Commit',
+                    content: `${commitDescription.commit}`,
                   },
                 },
               ],

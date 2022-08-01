@@ -17,8 +17,15 @@
           {
             "widgets": [
               {
-                "textParagraph": {
-                  "text": "Branch:\ntestBranch\n\nCommit:\ntestMessage"
+                "keyValue": {
+                  "topLabel": "Branch",
+                  "content": "testBranch"
+                }
+              },
+              {
+                "keyValue": {
+                  "topLabel": "Commit",
+                  "content": "testMessage"
                 }
               }
             ]
