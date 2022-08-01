@@ -17,6 +17,7 @@ import bitbucketHook from './fixtures/bitbucketHook.json';
 import bitbucketReportStatusRequest from './fixtures/bitbucketReportStatusRequest.json';
 import gchatHook from './fixtures/gchatHook.json';
 import gchatReportStatusRequest from './fixtures/gchatReportStatusRequest.json';
+import gchatReportStatusRequestWithoutCommitDescription from './fixtures/gchatReportStatusRequestWithoutCommitDescription.json';
 import githubHook from './fixtures/githubHooks.json';
 import githubReportStatusRequest from './fixtures/githubReportStatusRequest.json';
 import groupProgress from './fixtures/groupProgress.json';
@@ -45,6 +46,18 @@ const run = {
       sha: 'testCommitSha',
       branch: 'testBranch',
       message: 'testMessage',
+    },
+  },
+} as RunWithSpecs;
+
+const runWithoutCommitDescription = {
+  runId: 'testRunId',
+  meta: {
+    ciBuildId: 'testCiBuildId',
+    commit: {
+      sha: '',
+      branch: '',
+      message: '',
     },
   },
 } as RunWithSpecs;
@@ -210,6 +223,22 @@ describe('Report status to GChat', () => {
 
     expect(axios).toBeCalledWith({
       ...gchatReportStatusRequest,
+      url:
+        'https://xyz123.webhok.office.com/webhook/abc987/IncomingWebhook/123/456',
+    });
+  });
+
+  it('should send correct request (without commit description) to GChat when run is finished', async () => {
+    await reportToGChat(gcHook, {
+      run: runWithoutCommitDescription,
+      groupProgress,
+      eventType: HookEvent.RUN_FINISH,
+      spec: 'spec',
+      groupId: 'groupId',
+    });
+
+    expect(axios).toBeCalledWith({
+      ...gchatReportStatusRequestWithoutCommitDescription,
       url:
         'https://xyz123.webhok.office.com/webhook/abc987/IncomingWebhook/123/456',
     });
