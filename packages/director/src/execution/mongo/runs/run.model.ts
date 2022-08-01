@@ -1,6 +1,6 @@
 import {
-  getTestListRetries,
   InstanceResult,
+  isTestFlaky,
   Run,
   RunSpec,
 } from '@sorry-cypress/common';
@@ -182,7 +182,8 @@ export const setSpecCompleted = async (
 ) => {
   const stats = instanceResult.stats;
   const hasFailures = stats.failures > 0 || stats.skipped > 0;
-  const retries = getTestListRetries(instanceResult.tests);
+  const flakyTests = instanceResult.tests.filter(isTestFlaky);
+
   const { matchedCount, modifiedCount } = await Collection.run().updateOne(
     {
       runId,
@@ -207,12 +208,12 @@ export const setSpecCompleted = async (
         'progress.groups.$[group].tests.failures': stats.failures,
         'progress.groups.$[group].tests.skipped': stats.skipped,
         'progress.groups.$[group].tests.pending': stats.pending,
-        'progress.groups.$[group].tests.retries': retries,
+        'progress.groups.$[group].tests.flaky': flakyTests.length,
       },
       $set: {
         'specs.$[spec].results': {
           ...pick(instanceResult, 'stats', 'error'),
-          retries,
+          flaky: flakyTests.length,
         },
       },
     },
@@ -266,6 +267,6 @@ export const getNewGroupTemplate = (
     failures: 0,
     skipped: 0,
     pending: 0,
-    retries: 0,
+    flaky: 0,
   },
 });

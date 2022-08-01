@@ -18,7 +18,7 @@ type Group = {
     failures: number;
     pending: number;
     skipped: number;
-    retries: number;
+    flaky: number;
   };
 };
 export const getRunOverallSpecsCount = (progress: { groups: Group[] }) =>
@@ -59,7 +59,7 @@ export const getRunTestsProgress = (progress: { groups: Group[] }) =>
           'failures',
           'pending',
           'skipped',
-          'retries',
+          'flaky',
         ] as const).forEach((key) => (r[key] += i[key] ?? 0));
         return r;
       },
@@ -68,7 +68,7 @@ export const getRunTestsProgress = (progress: { groups: Group[] }) =>
         passes: 0,
         failures: 0,
         pending: 0,
-        retries: 0,
+        flaky: 0,
         skipped: 0,
       }
     );

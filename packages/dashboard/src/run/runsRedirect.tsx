@@ -1,17 +1,13 @@
+import { useGetCiBuildId } from '@sorry-cypress/dashboard/run/runsFeed/useGetCiBuildId';
 import React from 'react';
 import { Navigate, useParams } from 'react-router-dom';
-import { useGetRunsFeed } from './runsFeed/useGetRunFeed';
-
-type RunRedirectProps = {
-  // nothing yet
-};
 
 export function RunRedirect() {
   const { projectId, buildId } = useParams();
 
-  const [runsFeed, , loading] = useGetRunsFeed({
+  const [runsFeed, , loading] = useGetCiBuildId({
     projectId: projectId!,
-    search: buildId,
+    ciBuildId: buildId!,
   });
 
   return !loading && runsFeed && runsFeed.runs.length > 0 ? (

@@ -47,7 +47,7 @@ export const getInstanceById = (instanceId: string) =>
 
 export const setInstanceResults = async (
   instanceId: string,
-  results: InstanceResult | SetInstanceTestsPayload
+  results: InstanceResult
 ) => {
   const { matchedCount, modifiedCount } = await Collection.instance().updateOne(
     {
@@ -55,7 +55,9 @@ export const setInstanceResults = async (
     },
     {
       $set: {
-        results: getSanitizedMongoObject(results),
+        results: {
+          ...getSanitizedMongoObject(results),
+        },
       },
     }
   );

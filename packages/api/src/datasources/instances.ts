@@ -70,7 +70,7 @@ export class InstancesAPI extends DataSource {
     const groupIndex = findIndex(run.progress.groups, { groupId });
     const groupPath = `progress.groups.${groupIndex}`;
     const stats = runSpec!.results?.stats;
-    const retries = runSpec!.results?.retries;
+    const flaky = runSpec!.results?.flaky ?? 0;
     const specFailed = stats?.failures && stats.failures > 0;
 
     await Collection.run().updateOne(
@@ -94,7 +94,7 @@ export class InstancesAPI extends DataSource {
           [`${groupPath}.tests.failures`]: -(stats?.failures || 0),
           [`${groupPath}.tests.skipped`]: -(stats?.skipped || 0),
           [`${groupPath}.tests.pending`]: -(stats?.pending || 0),
-          [`${groupPath}.tests.retries`]: -(retries || 0),
+          [`${groupPath}.tests.flaky`]: -(flaky || 0),
         },
       }
     );

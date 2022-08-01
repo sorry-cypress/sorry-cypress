@@ -54,7 +54,7 @@ export async function reportToGChat(
       break;
   }
 
-  const { passes, skipped, failures, retries } = event.groupProgress.tests;
+  const { passes, skipped, failures, flaky } = event.groupProgress.tests;
 
   axios({
     method: 'post',
@@ -108,8 +108,8 @@ export async function reportToGChat(
                 },
                 {
                   keyValue: {
-                    topLabel: 'Retries',
-                    content: `${retries}`,
+                    topLabel: 'Flaky',
+                    content: `${flaky}`,
                   },
                 },
                 {

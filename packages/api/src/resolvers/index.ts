@@ -12,6 +12,7 @@ import {
   CreateTeamsHookInput,
   DeleteHookInput,
   OrderingOptions,
+  RunGroupProgressTests,
   RunSpec,
   UpdateBitbucketHookInput,
   UpdateGChatHookInput,
@@ -21,7 +22,7 @@ import {
   UpdateSlackHookInput,
   UpdateTeamsHookInput,
 } from '@sorry-cypress/api/generated/graphql';
-import { getTestListRetries, Project } from '@sorry-cypress/common';
+import { Project } from '@sorry-cypress/common';
 import { GraphQLScalarType } from 'graphql';
 import { GraphQLDateTime } from 'graphql-iso-date';
 import { get, identity } from 'lodash';
@@ -72,9 +73,11 @@ export const resolvers = {
       }
       return {
         ...response.results,
-        retries: getTestListRetries(response.results?.tests ?? []),
       };
     },
+  },
+  RunGroupProgressTests: {
+    flaky: (parent: RunGroupProgressTests) => parent.flaky ?? 0,
   },
   Query: {
     projects: (

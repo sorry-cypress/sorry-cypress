@@ -463,10 +463,10 @@ export type RunGroupProgressInstances = {
 export type RunGroupProgressTests = {
   __typename?: 'RunGroupProgressTests';
   failures: Scalars['Int'];
+  flaky: Scalars['Int'];
   overall: Scalars['Int'];
   passes: Scalars['Int'];
   pending: Scalars['Int'];
-  retries: Scalars['Int'];
   skipped: Scalars['Int'];
 };
 
@@ -497,7 +497,7 @@ export type RunSpec = {
 export type RunSpecResults = {
   __typename?: 'RunSpecResults';
   error: Maybe<Scalars['String']>;
-  retries: Maybe<Scalars['Int']>;
+  flaky: Maybe<Scalars['Int']>;
   stats: InstanceStats;
 };
 
@@ -1011,7 +1011,7 @@ export type GetRunQuery = {
       results: {
         __typename?: 'RunSpecResults';
         error: string | null;
-        retries: number | null;
+        flaky: number | null;
         stats: {
           __typename?: 'InstanceStats';
           suites: number;
@@ -1047,7 +1047,7 @@ export type GetRunQuery = {
           failures: number;
           pending: number;
           skipped: number;
-          retries: number;
+          flaky: number;
         };
       }>;
     } | null;
@@ -1078,7 +1078,7 @@ export type RunDetailSpecFragment = {
   results: {
     __typename?: 'RunSpecResults';
     error: string | null;
-    retries: number | null;
+    flaky: number | null;
     stats: {
       __typename?: 'InstanceStats';
       suites: number;
@@ -1203,7 +1203,7 @@ export type GetRunsFeedQuery = {
             failures: number;
             pending: number;
             skipped: number;
-            retries: number;
+            flaky: number;
           };
         }>;
       } | null;
@@ -1232,7 +1232,7 @@ export type RunProgressFragment = {
       failures: number;
       pending: number;
       skipped: number;
-      retries: number;
+      flaky: number;
     };
   }>;
 };
@@ -1253,7 +1253,7 @@ export type RunGroupProgressTestsFragment = {
   failures: number;
   pending: number;
   skipped: number;
-  retries: number;
+  flaky: number;
 };
 
 export const GetInstanceTestFragmentDoc = gql`
@@ -1298,7 +1298,7 @@ export const RunDetailSpecFragmentDoc = gql`
     groupId
     results {
       error
-      retries
+      flaky
       stats {
         ...AllInstanceStats
       }
@@ -1353,7 +1353,7 @@ export const RunGroupProgressTestsFragmentDoc = gql`
     failures
     pending
     skipped
-    retries
+    flaky
   }
 `;
 export const RunProgressFragmentDoc = gql`

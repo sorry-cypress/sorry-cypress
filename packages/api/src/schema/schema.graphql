@@ -104,7 +104,7 @@ type RunSpec {
 
 type RunSpecResults {
   error: String
-  retries: Int
+  flaky: Int
   stats: InstanceStats!
 }
 
@@ -132,7 +132,7 @@ type RunGroupProgressTests {
   failures: Int!
   skipped: Int!
   pending: Int!
-  retries: Int!
+  flaky: Int!
 }
 
 type Commit {

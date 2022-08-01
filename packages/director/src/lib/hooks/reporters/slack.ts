@@ -71,19 +71,20 @@ export async function reportToSlack(
     pending,
     skipped,
     failures,
-    retries,
+    flaky,
   } = event.groupProgress.tests;
   const resultsDescription =
     `${
       passes > 0 ? ':large_green_circle:' : ':white_circle:'
     } *Passed:* ${passes}\n\n\n` +
     `${
+      failures > 0 ? ':red_circle:' : ':white_circle:'
+    } *Failed*: ${failures}` +
+    `${skipped > 0 ? ':red_circle:' : ':white_circle:'} *Skipped*: ${skipped}` +
+    `${
       pending > 0 ? ':large_yellow_circle:' : ':white_circle:'
-    } *Skipped:* ${pending}\n\n\n` +
-    `${failures + skipped > 0 ? ':red_circle:' : ':white_circle:'} *Failed*: ${
-      failures + skipped
-    }` +
-    `${retries > 0 ? `\n\n\n:large_yellow_circle: *Retries*: ${retries}` : ''}`;
+    } *Ignored:* ${pending}\n\n\n` +
+    `${flaky > 0 ? `\n\n\n:large_yellow_circle: *Flaky*: ${flaky}` : ''}`;
 
   const commitDescription =
     (event.run.meta.commit?.branch || event.run.meta.commit?.message) &&

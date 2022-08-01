@@ -126,7 +126,6 @@ const Drawer = styled(MuiDrawer, {
   return {
     width: DRAWER_WIDTH,
     flexShrink: 0,
-    whiteSpace: 'nowrap',
     boxSizing: 'border-box',
     ...(open && {
       ...openedMixin(theme),
@@ -160,7 +159,6 @@ export const ProjectListMenu: ProjectListMenuType = ({
           return (
             <ListItemButton
               key={decodeURIComponent(project.projectId)}
-              sx={{ pl: 4 }}
               component={RouterLink}
               to={`/${encodeURIComponent(project.projectId)}/runs`}
               onClick={onItemClick}
@@ -173,9 +171,10 @@ export const ProjectListMenu: ProjectListMenuType = ({
               <ListItemText
                 primary={decodeURIComponent(project.projectId)}
                 primaryTypographyProps={{
-                  fontSize: 18,
+                  fontSize: 16,
                   color: 'text.primary',
                   sx: { opacity: 0.6 },
+                  style: { wordBreak: 'break-word' },
                 }}
               />
             </ListItemButton>
@@ -265,7 +264,7 @@ export const ProjectDetailsMenu: ProjectDetailsMenuType = ({
               <ListItemText
                 primary={item.label}
                 primaryTypographyProps={{
-                  fontSize: 18,
+                  fontSize: 16,
                   color: selected ? 'primary' : 'text.primary',
                   sx: { opacity: selected ? 1 : 0.6 },
                 }}
@@ -421,7 +420,7 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
         <ListItem component="div">
           {open && (
             <ListItemText
-              sx={{ mt: 4, mb: 2 }}
+              sx={{ mt: 0, mb: 0 }}
               primary={
                 isHome
                   ? 'Projects'

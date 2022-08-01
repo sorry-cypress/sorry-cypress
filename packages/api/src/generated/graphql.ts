@@ -469,10 +469,10 @@ export type RunGroupProgressInstances = {
 export type RunGroupProgressTests = {
   __typename?: 'RunGroupProgressTests';
   failures: Scalars['Int'];
+  flaky: Scalars['Int'];
   overall: Scalars['Int'];
   passes: Scalars['Int'];
   pending: Scalars['Int'];
-  retries: Scalars['Int'];
   skipped: Scalars['Int'];
 };
 
@@ -503,7 +503,7 @@ export type RunSpec = {
 export type RunSpecResults = {
   __typename?: 'RunSpecResults';
   error?: Maybe<Scalars['String']>;
-  retries?: Maybe<Scalars['Int']>;
+  flaky?: Maybe<Scalars['Int']>;
   stats: InstanceStats;
 };
 
@@ -1507,10 +1507,10 @@ export type RunGroupProgressTestsResolvers<
   ParentType extends ResolversParentTypes['RunGroupProgressTests'] = ResolversParentTypes['RunGroupProgressTests']
 > = {
   failures?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  flaky?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   overall?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   passes?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   pending?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  retries?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   skipped?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1577,7 +1577,7 @@ export type RunSpecResultsResolvers<
   ParentType extends ResolversParentTypes['RunSpecResults'] = ResolversParentTypes['RunSpecResults']
 > = {
   error?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  retries?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  flaky?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   stats?: Resolver<ResolversTypes['InstanceStats'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

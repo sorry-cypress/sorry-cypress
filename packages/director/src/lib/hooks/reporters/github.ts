@@ -31,11 +31,7 @@ export async function reportStatusToGithub(
 
   const { eventType, groupId, groupProgress, run } = eventData;
 
-  const description = `failed:${
-    groupProgress.tests.failures + groupProgress.tests.skipped
-  } passed:${groupProgress.tests.passes} skipped:${
-    groupProgress.tests.pending
-  }`;
+  const description = `failed:${groupProgress.tests.failures} skipped:${groupProgress.tests.skipped} passed:${groupProgress.tests.passes} pending:${groupProgress.tests.pending} flaky:${groupProgress.tests.flaky}`;
 
   // don't append group name if groupId is non-explicit
   // otherwise rerunning would create a new status context in GH

@@ -51,11 +51,7 @@ export async function reportStatusToBitbucket(
   if (run.meta.ciBuildId !== groupId) {
     context = `${context}: ${groupId}`;
   }
-  const description = `failed:${
-    groupProgress.tests.failures + groupProgress.tests.skipped
-  } passed:${groupProgress.tests.passes} skipped:${
-    groupProgress.tests.pending
-  }`;
+  const description = `failed:${groupProgress.tests.failures} skipped:${groupProgress.tests.skipped} passed:${groupProgress.tests.passes} ignored:${groupProgress.tests.pending} flaky:${groupProgress.tests.flaky}`;
 
   const data = {
     state: 'INPROGRESS',
