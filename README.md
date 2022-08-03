@@ -15,12 +15,12 @@
 <p align="center">
   <a href="https://sorry-cypress.dev">https://sorry-cypress.dev</a> 
  | 
-  <a href="https://currents.dev?utm_source=github_readme">https://currents.dev</a>
+  <a href="https://currents.dev/?utm_source=github_readme">https://currents.dev</a>
 </p>
 
 **[Sorry Cypress](https://sorry-cypress.dev)** is an open-source, free alternative to cypress dashboard that unlocks unlimited parallelization, test recordings, integration with GitHub, Slack and more.
 
-**[Currents.dev](https://currents.dev/utm_source=sc_github)** - is a hosted cloud service the companies around the globe use to scale up their Cypress tests suite without breaking the bank. This is an enhanced version of Sorry Cypress with a better security, performance and integrations support.
+**[Currents.dev](https://currents.dev/?utm_source=github_readme)** - is a hosted cloud service the companies around the globe use to scale up their Cypress tests suite without breaking the bank. This is an enhanced version of Sorry Cypress with a better security, performance and integrations support.
 
 
 
