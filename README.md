@@ -8,7 +8,7 @@
   <img width="830" alt="banner dark" src="https://user-images.githubusercontent.com/1637928/147379205-2fe4fb9d-49e6-4a2b-917b-2a28973d2a3a.png">
 </p>
 
-<div>An open-source cypress dashboard</div>
+<div>An open-source alternative to cypress dashboard</div>
 </div>
 
 <br />
@@ -18,19 +18,11 @@
   <a href="https://currents.dev?utm_source=github_readme">https://currents.dev</a>
 </p>
 
-**Sorry-cypress** is an open-source, free cypress tests dashboard that unlocks unlimited parallelization, test recordings, integration with GitHub, Slack and more.
+**[Sorry Cypress](https://sorry-cypress.dev)** is an open-source, free alternative to cypress dashboard that unlocks unlimited parallelization, test recordings, integration with GitHub, Slack and more.
 
-**Currents.dev** - is a paid version of sorry-cypress with additional [features](https://currents.notion.site/Features-Comparison-83229899965147eab011aba2a2fcd421), enhanced security and performance.
+**[Currents.dev](https://currents.dev/utm_source=sc_github)** - is a hosted cloud service the companies around the globe use to scale up their Cypress tests suite without breaking the bank. This is an enhanced version of Sorry Cypress with a better security, performance and integrations support.
 
----
 
-[![StandWithUkraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg)](https://github.com/vshymanskyy/StandWithUkraine/blob/main/docs/README.md)
-
-[![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://vshymanskyy.github.io/StandWithUkraine/)
-
-### 🇷🇺 [Обращение к гражданам России](https://github.com/vshymanskyy/StandWithUkraine/blob/main/docs/ToRussianPeople.md)
-
----
 
 ## Table of contents
 
