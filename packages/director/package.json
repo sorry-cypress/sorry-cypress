@@ -57,7 +57,6 @@
     "@sorry-cypress/common": "1.0.0",
     "@types/clone-deep": "^4.0.1",
     "@types/express": "^4.17.12",
-    "@types/jest": "^28.1.6",
     "@types/lodash": "^4.14.149",
     "@types/md5": "^2.1.33",
     "@types/minio": "^7.0.13",
