@@ -60,11 +60,19 @@
                   "value": "1"
                 },
                 {
-                  "title": "Fails",
+                  "title": "Failures",
                   "value": "0"
                 },
                 {
-                  "title": "Retries",
+                  "title": "Skipped",
+                  "value": "0"
+                },
+                {
+                  "title": "Ignored",
+                  "value": "0"
+                },
+                {
+                  "title": "Flaky",
                   "value": "undefined"
                 }
               ]

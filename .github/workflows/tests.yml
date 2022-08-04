@@ -32,5 +32,8 @@ jobs:
       - name: Build common package
         run: yarn workspace @sorry-cypress/common build
 
+      - name: Build logger package
+        run: yarn workspace @sorry-cypress/logger build
+
       - name: Run unit tests
         run: yarn test

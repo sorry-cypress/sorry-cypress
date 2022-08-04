@@ -32,7 +32,7 @@
             "fields": [
               {
                 "type": "mrkdwn",
-                "text": ":large_green_circle: *Passed:* 1\n\n\n:white_circle: *Skipped:* 0\n\n\n:white_circle: *Failed*: 0"
+                "text": ":large_green_circle: *Passed:* 1\n\n\n:white_circle: *Failed*: 0:white_circle: *Skipped*: 0:white_circle: *Ignored:* 0\n\n\n"
               },
               {
                 "type": "mrkdwn",

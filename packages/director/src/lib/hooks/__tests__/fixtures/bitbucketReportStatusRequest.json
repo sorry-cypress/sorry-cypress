@@ -9,7 +9,7 @@
     "Accept": "application/json"
   },
   "data": {
-    "description": "failed:0 passed:1 skipped:0",
+    "description": "failed:0 skipped:0 passed:1 ignored:0 flaky:undefined",
     "key": "f305778e838a5aba424b941a4452dab4",
     "name": "cypress-build: ciBuildId",
     "state": "INPROGRESS",
