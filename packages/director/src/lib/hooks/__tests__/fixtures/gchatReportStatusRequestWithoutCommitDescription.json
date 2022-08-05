@@ -31,7 +31,7 @@
               },
               {
                 "keyValue": {
-                  "topLabel": "Retries",
+                  "topLabel": "Flaky",
                   "content": "undefined"
                 }
               },
