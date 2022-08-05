@@ -1,5 +1,6 @@
 import {
   CreateBitbucketHookInput,
+  CreateGChatHookInput,
   CreateGenericHookInput,
   CreateGithubHookInput,
   CreateProjectInput,
@@ -10,6 +11,7 @@ import {
   OrderingOptions,
   Project,
   UpdateBitbucketHookInput,
+  UpdateGChatHookInput,
   UpdateGenericHookInput,
   UpdateGithubHookInput,
   UpdateProjectInput,
@@ -46,11 +48,15 @@ export class ProjectsAPI extends DataSource {
   createTeamsHook = getCreateHook<CreateTeamsHookInput>(HookType.TEAMS_HOOK, {
     hookEvents: [],
   });
+  createGChatHook = getCreateHook<CreateGChatHookInput>(HookType.GCHAT_HOOK, {
+    hookEvents: [],
+  });
   updateGenericHook = getUpdateHook<UpdateGenericHookInput>(
     HookType.GENERIC_HOOK
   );
   updateSlackHook = getUpdateHook<UpdateSlackHookInput>(HookType.SLACK_HOOK);
   updateTeamsHook = getUpdateHook<UpdateTeamsHookInput>(HookType.TEAMS_HOOK);
+  updateGChatHook = getUpdateHook<UpdateGChatHookInput>(HookType.GCHAT_HOOK);
   updateGithubHook = updateGithubHook;
   updateBitbucketHook = updateBitbucketHook;
   deleteHook = deleteHook;

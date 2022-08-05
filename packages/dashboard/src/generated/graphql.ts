@@ -19,6 +19,7 @@ export type Scalars = {
   Float: number;
   BitbucketHookType: any;
   DateTime: string;
+  GChatHookType: any;
   GenericHookType: any;
   GithubHookType: any;
   SlackHookType: any;
@@ -48,6 +49,10 @@ export type Commit = {
 };
 
 export type CreateBitbucketHookInput = {
+  projectId: Scalars['ID'];
+};
+
+export type CreateGChatHookInput = {
   projectId: Scalars['ID'];
 };
 
@@ -109,6 +114,15 @@ export type Filters = {
   key: InputMaybe<Scalars['String']>;
   like: InputMaybe<Scalars['String']>;
   value: InputMaybe<Scalars['String']>;
+};
+
+export type GChatHook = {
+  __typename?: 'GChatHook';
+  hookEvents: Array<Scalars['String']>;
+  hookId: Scalars['ID'];
+  hookType: Scalars['GChatHookType'];
+  projectId: Scalars['ID'];
+  url: Scalars['String'];
 };
 
 export type GenericHook = {
@@ -222,6 +236,7 @@ export type InstanceTest = {
 export type Mutation = {
   __typename?: 'Mutation';
   createBitbucketHook: BitbucketHook;
+  createGChatHook: GChatHook;
   createGenericHook: GenericHook;
   createGithubHook: GithubHook;
   createProject: Project;
@@ -234,6 +249,7 @@ export type Mutation = {
   deleteRunsInDateRange: DeleteRunResponse;
   resetInstance: ResetInstanceResponse;
   updateBitbucketHook: BitbucketHook;
+  updateGChatHook: GChatHook;
   updateGenericHook: GenericHook;
   updateGithubHook: GithubHook;
   updateProject: Project;
@@ -243,6 +259,10 @@ export type Mutation = {
 
 export type MutationCreateBitbucketHookArgs = {
   input: CreateBitbucketHookInput;
+};
+
+export type MutationCreateGChatHookArgs = {
+  input: CreateGChatHookInput;
 };
 
 export type MutationCreateGenericHookArgs = {
@@ -292,6 +312,10 @@ export type MutationResetInstanceArgs = {
 
 export type MutationUpdateBitbucketHookArgs = {
   input: UpdateBitbucketHookInput;
+};
+
+export type MutationUpdateGChatHookArgs = {
+  input: UpdateGChatHookInput;
 };
 
 export type MutationUpdateGenericHookArgs = {
@@ -535,6 +559,13 @@ export type UpdateBitbucketHookInput = {
   url: InputMaybe<Scalars['String']>;
 };
 
+export type UpdateGChatHookInput = {
+  hookEvents: Array<Scalars['String']>;
+  hookId: Scalars['ID'];
+  projectId: Scalars['ID'];
+  url: Scalars['String'];
+};
+
 export type UpdateGenericHookInput = {
   headers: InputMaybe<Scalars['String']>;
   hookEvents: Array<Scalars['String']>;
@@ -752,6 +783,21 @@ export type CreateBitbucketHookMutation = {
   };
 };
 
+export type CreateGChatHookMutationVariables = Exact<{
+  input: CreateGChatHookInput;
+}>;
+
+export type CreateGChatHookMutation = {
+  __typename?: 'Mutation';
+  createGChatHook: {
+    __typename?: 'GChatHook';
+    hookId: string;
+    hookType: any;
+    url: string;
+    hookEvents: Array<string>;
+  };
+};
+
 export type CreateGenericHookMutationVariables = Exact<{
   input: CreateGenericHookInput;
 }>;
@@ -837,6 +883,15 @@ export type UpdateBitbucketHookMutationVariables = Exact<{
 export type UpdateBitbucketHookMutation = {
   __typename?: 'Mutation';
   updateBitbucketHook: { __typename?: 'BitbucketHook'; hookId: string };
+};
+
+export type UpdateGChatHookMutationVariables = Exact<{
+  input: UpdateGChatHookInput;
+}>;
+
+export type UpdateGChatHookMutation = {
+  __typename?: 'Mutation';
+  updateGChatHook: { __typename?: 'GChatHook'; hookId: string };
 };
 
 export type UpdateGenericHookMutationVariables = Exact<{
@@ -1697,6 +1752,60 @@ export type CreateBitbucketHookMutationOptions = Apollo.BaseMutationOptions<
   CreateBitbucketHookMutation,
   CreateBitbucketHookMutationVariables
 >;
+export const CreateGChatHookDocument = gql`
+  mutation createGChatHook($input: CreateGChatHookInput!) {
+    createGChatHook(input: $input) {
+      hookId
+      hookType
+      url
+      hookEvents
+    }
+  }
+`;
+export type CreateGChatHookMutationFn = Apollo.MutationFunction<
+  CreateGChatHookMutation,
+  CreateGChatHookMutationVariables
+>;
+
+/**
+ * __useCreateGChatHookMutation__
+ *
+ * To run a mutation, you first call `useCreateGChatHookMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateGChatHookMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createGChatHookMutation, { data, loading, error }] = useCreateGChatHookMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateGChatHookMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateGChatHookMutation,
+    CreateGChatHookMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    CreateGChatHookMutation,
+    CreateGChatHookMutationVariables
+  >(CreateGChatHookDocument, options);
+}
+export type CreateGChatHookMutationHookResult = ReturnType<
+  typeof useCreateGChatHookMutation
+>;
+export type CreateGChatHookMutationResult = Apollo.MutationResult<
+  CreateGChatHookMutation
+>;
+export type CreateGChatHookMutationOptions = Apollo.BaseMutationOptions<
+  CreateGChatHookMutation,
+  CreateGChatHookMutationVariables
+>;
 export const CreateGenericHookDocument = gql`
   mutation createGenericHook($input: CreateGenericHookInput!) {
     createGenericHook(input: $input) {
@@ -2020,6 +2129,57 @@ export type UpdateBitbucketHookMutationResult = Apollo.MutationResult<
 export type UpdateBitbucketHookMutationOptions = Apollo.BaseMutationOptions<
   UpdateBitbucketHookMutation,
   UpdateBitbucketHookMutationVariables
+>;
+export const UpdateGChatHookDocument = gql`
+  mutation updateGChatHook($input: UpdateGChatHookInput!) {
+    updateGChatHook(input: $input) {
+      hookId
+    }
+  }
+`;
+export type UpdateGChatHookMutationFn = Apollo.MutationFunction<
+  UpdateGChatHookMutation,
+  UpdateGChatHookMutationVariables
+>;
+
+/**
+ * __useUpdateGChatHookMutation__
+ *
+ * To run a mutation, you first call `useUpdateGChatHookMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateGChatHookMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateGChatHookMutation, { data, loading, error }] = useUpdateGChatHookMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateGChatHookMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateGChatHookMutation,
+    UpdateGChatHookMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    UpdateGChatHookMutation,
+    UpdateGChatHookMutationVariables
+  >(UpdateGChatHookDocument, options);
+}
+export type UpdateGChatHookMutationHookResult = ReturnType<
+  typeof useUpdateGChatHookMutation
+>;
+export type UpdateGChatHookMutationResult = Apollo.MutationResult<
+  UpdateGChatHookMutation
+>;
+export type UpdateGChatHookMutationOptions = Apollo.BaseMutationOptions<
+  UpdateGChatHookMutation,
+  UpdateGChatHookMutationVariables
 >;
 export const UpdateGenericHookDocument = gql`
   mutation updateGenericHook($input: UpdateGenericHookInput!) {

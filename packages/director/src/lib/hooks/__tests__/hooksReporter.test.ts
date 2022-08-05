@@ -1,11 +1,13 @@
 import {
   BitBucketHook,
+  GChatHook,
   GithubHook,
   HookEvent,
   RunWithSpecs,
   SlackHook,
   TeamsHook,
 } from '@sorry-cypress/common';
+import { reportToGChat } from '@sorry-cypress/director/lib/hooks/reporters/gchat';
 import axios from 'axios';
 import { reportStatusToBitbucket } from '../reporters/bitbucket';
 import { reportStatusToGithub } from '../reporters/github';
@@ -13,6 +15,9 @@ import { reportToSlack } from '../reporters/slack';
 import { reportToTeams } from '../reporters/teams';
 import bitbucketHook from './fixtures/bitbucketHook.json';
 import bitbucketReportStatusRequest from './fixtures/bitbucketReportStatusRequest.json';
+import gchatHook from './fixtures/gchatHook.json';
+import gchatReportStatusRequest from './fixtures/gchatReportStatusRequest.json';
+import gchatReportStatusRequestWithoutCommitDescription from './fixtures/gchatReportStatusRequestWithoutCommitDescription.json';
 import githubHook from './fixtures/githubHooks.json';
 import githubReportStatusRequest from './fixtures/githubReportStatusRequest.json';
 import groupProgress from './fixtures/groupProgress.json';
@@ -41,6 +46,18 @@ const run = {
       sha: 'testCommitSha',
       branch: 'testBranch',
       message: 'testMessage',
+    },
+  },
+} as RunWithSpecs;
+
+const runWithoutCommitDescription = {
+  runId: 'testRunId',
+  meta: {
+    ciBuildId: 'testCiBuildId',
+    commit: {
+      sha: '',
+      branch: '',
+      message: '',
     },
   },
 } as RunWithSpecs;
@@ -181,6 +198,47 @@ describe('Report status to Teams', () => {
 
     expect(axios).toBeCalledWith({
       ...teamsReportStatusRequest,
+      url:
+        'https://xyz123.webhok.office.com/webhook/abc987/IncomingWebhook/123/456',
+    });
+  });
+});
+
+describe('Report status to GChat', () => {
+  const gcHook = ({
+    ...gchatHook,
+    url:
+      'https://xyz123.webhok.office.com/webhook/abc987/IncomingWebhook/123/456',
+    hookEvents: ['RUN_FINISH'],
+  } as unknown) as GChatHook;
+
+  it('should send correct request to GChat when run is finished', async () => {
+    await reportToGChat(gcHook, {
+      run,
+      groupProgress,
+      eventType: HookEvent.RUN_FINISH,
+      spec: 'spec',
+      groupId: 'groupId',
+    });
+
+    expect(axios).toBeCalledWith({
+      ...gchatReportStatusRequest,
+      url:
+        'https://xyz123.webhok.office.com/webhook/abc987/IncomingWebhook/123/456',
+    });
+  });
+
+  it('should send correct request (without commit description) to GChat when run is finished', async () => {
+    await reportToGChat(gcHook, {
+      run: runWithoutCommitDescription,
+      groupProgress,
+      eventType: HookEvent.RUN_FINISH,
+      spec: 'spec',
+      groupId: 'groupId',
+    });
+
+    expect(axios).toBeCalledWith({
+      ...gchatReportStatusRequestWithoutCommitDescription,
       url:
         'https://xyz123.webhok.office.com/webhook/abc987/IncomingWebhook/123/456',
     });

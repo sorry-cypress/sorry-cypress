@@ -1,0 +1,8 @@
+mutation createGChatHook($input: CreateGChatHookInput!) {
+  createGChatHook(input: $input) {
+    hookId
+    hookType
+    url
+    hookEvents
+  }
+}

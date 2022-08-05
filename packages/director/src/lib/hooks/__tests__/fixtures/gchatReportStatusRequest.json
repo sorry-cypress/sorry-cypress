@@ -1,0 +1,79 @@
+{
+  "method": "post",
+  "url": null,
+  "data": {
+    "cards": [
+      {
+        "sections": [
+          {
+            "widgets": [
+              {
+                "textParagraph": {
+                  "text": "&#x2705; Run finished (testCiBuildId, group groupId)"
+                }
+              }
+            ]
+          },
+          {
+            "widgets": [
+              {
+                "keyValue": {
+                  "topLabel": "Branch",
+                  "content": "testBranch"
+                }
+              },
+              {
+                "keyValue": {
+                  "topLabel": "Commit",
+                  "content": "testMessage"
+                }
+              }
+            ]
+          },
+          {
+            "widgets": [
+              {
+                "keyValue": {
+                  "topLabel": "Passes",
+                  "content": "1"
+                }
+              },
+              {
+                "keyValue": {
+                  "topLabel": "Failures",
+                  "content": "0"
+                }
+              },
+              {
+                "keyValue": {
+                  "topLabel": "Retries",
+                  "content": "undefined"
+                }
+              },
+              {
+                "buttons": [
+                  {
+                    "textButton": {
+                      "text": "View in Sorry Cypress",
+                      "onClick": {
+                        "openLink": {
+                          "url": "http://localhost:8080/run/testRunId"
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "header": {
+          "title": "Sorry Cypress",
+          "subtitle": "",
+          "imageUrl": "https://gblobscdn.gitbook.com/spaces%2F-MS6gDAYECuzpKjjzrdc%2Favatar-1611996755562.png?alt=media",
+          "imageStyle": "AVATAR"
+        }
+      }
+    ]
+  }
+}

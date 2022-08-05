@@ -1,0 +1,5 @@
+mutation updateGChatHook($input: UpdateGChatHookInput!) {
+  updateGChatHook(input: $input) {
+    hookId
+  }
+}

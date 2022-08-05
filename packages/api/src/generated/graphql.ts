@@ -25,6 +25,7 @@ export type Scalars = {
   Float: number;
   BitbucketHookType: any;
   DateTime: any;
+  GChatHookType: any;
   GenericHookType: any;
   GithubHookType: any;
   SlackHookType: any;
@@ -54,6 +55,10 @@ export type Commit = {
 };
 
 export type CreateBitbucketHookInput = {
+  projectId: Scalars['ID'];
+};
+
+export type CreateGChatHookInput = {
   projectId: Scalars['ID'];
 };
 
@@ -115,6 +120,15 @@ export type Filters = {
   key?: InputMaybe<Scalars['String']>;
   like?: InputMaybe<Scalars['String']>;
   value?: InputMaybe<Scalars['String']>;
+};
+
+export type GChatHook = {
+  __typename?: 'GChatHook';
+  hookEvents: Array<Scalars['String']>;
+  hookId: Scalars['ID'];
+  hookType: Scalars['GChatHookType'];
+  projectId: Scalars['ID'];
+  url: Scalars['String'];
 };
 
 export type GenericHook = {
@@ -228,6 +242,7 @@ export type InstanceTest = {
 export type Mutation = {
   __typename?: 'Mutation';
   createBitbucketHook: BitbucketHook;
+  createGChatHook: GChatHook;
   createGenericHook: GenericHook;
   createGithubHook: GithubHook;
   createProject: Project;
@@ -240,6 +255,7 @@ export type Mutation = {
   deleteRunsInDateRange: DeleteRunResponse;
   resetInstance: ResetInstanceResponse;
   updateBitbucketHook: BitbucketHook;
+  updateGChatHook: GChatHook;
   updateGenericHook: GenericHook;
   updateGithubHook: GithubHook;
   updateProject: Project;
@@ -249,6 +265,10 @@ export type Mutation = {
 
 export type MutationCreateBitbucketHookArgs = {
   input: CreateBitbucketHookInput;
+};
+
+export type MutationCreateGChatHookArgs = {
+  input: CreateGChatHookInput;
 };
 
 export type MutationCreateGenericHookArgs = {
@@ -298,6 +318,10 @@ export type MutationResetInstanceArgs = {
 
 export type MutationUpdateBitbucketHookArgs = {
   input: UpdateBitbucketHookInput;
+};
+
+export type MutationUpdateGChatHookArgs = {
+  input: UpdateGChatHookInput;
 };
 
 export type MutationUpdateGenericHookArgs = {
@@ -541,6 +565,13 @@ export type UpdateBitbucketHookInput = {
   url?: InputMaybe<Scalars['String']>;
 };
 
+export type UpdateGChatHookInput = {
+  hookEvents: Array<Scalars['String']>;
+  hookId: Scalars['ID'];
+  projectId: Scalars['ID'];
+  url: Scalars['String'];
+};
+
 export type UpdateGenericHookInput = {
   headers?: InputMaybe<Scalars['String']>;
   hookEvents: Array<Scalars['String']>;
@@ -691,6 +722,7 @@ export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Commit: ResolverTypeWrapper<Commit>;
   CreateBitbucketHookInput: CreateBitbucketHookInput;
+  CreateGChatHookInput: CreateGChatHookInput;
   CreateGenericHookInput: CreateGenericHookInput;
   CreateGithubHookInput: CreateGithubHookInput;
   CreateProjectInput: CreateProjectInput;
@@ -703,6 +735,8 @@ export type ResolversTypes = {
   DeleteProjectResponse: ResolverTypeWrapper<DeleteProjectResponse>;
   DeleteRunResponse: ResolverTypeWrapper<DeleteRunResponse>;
   Filters: Filters;
+  GChatHook: ResolverTypeWrapper<GChatHook>;
+  GChatHookType: ResolverTypeWrapper<Scalars['GChatHookType']>;
   GenericHook: ResolverTypeWrapper<GenericHook>;
   GenericHookType: ResolverTypeWrapper<Scalars['GenericHookType']>;
   GithubHook: ResolverTypeWrapper<GithubHook>;
@@ -744,6 +778,7 @@ export type ResolversTypes = {
   TestError: ResolverTypeWrapper<TestError>;
   TestState: TestState;
   UpdateBitbucketHookInput: UpdateBitbucketHookInput;
+  UpdateGChatHookInput: UpdateGChatHookInput;
   UpdateGenericHookInput: UpdateGenericHookInput;
   UpdateGithubHookInput: UpdateGithubHookInput;
   UpdateProjectInput: UpdateProjectInput;
@@ -758,6 +793,7 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
   Commit: Commit;
   CreateBitbucketHookInput: CreateBitbucketHookInput;
+  CreateGChatHookInput: CreateGChatHookInput;
   CreateGenericHookInput: CreateGenericHookInput;
   CreateGithubHookInput: CreateGithubHookInput;
   CreateProjectInput: CreateProjectInput;
@@ -770,6 +806,8 @@ export type ResolversParentTypes = {
   DeleteProjectResponse: DeleteProjectResponse;
   DeleteRunResponse: DeleteRunResponse;
   Filters: Filters;
+  GChatHook: GChatHook;
+  GChatHookType: Scalars['GChatHookType'];
   GenericHook: GenericHook;
   GenericHookType: Scalars['GenericHookType'];
   GithubHook: GithubHook;
@@ -809,6 +847,7 @@ export type ResolversParentTypes = {
   TestAttempt: TestAttempt;
   TestError: TestError;
   UpdateBitbucketHookInput: UpdateBitbucketHookInput;
+  UpdateGChatHookInput: UpdateGChatHookInput;
   UpdateGenericHookInput: UpdateGenericHookInput;
   UpdateGithubHookInput: UpdateGithubHookInput;
   UpdateProjectInput: UpdateProjectInput;
@@ -930,6 +969,27 @@ export type DeleteRunResponseResolvers<
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
+
+export type GChatHookResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['GChatHook'] = ResolversParentTypes['GChatHook']
+> = {
+  hookEvents?: Resolver<
+    Array<ResolversTypes['String']>,
+    ParentType,
+    ContextType
+  >;
+  hookId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  hookType?: Resolver<ResolversTypes['GChatHookType'], ParentType, ContextType>;
+  projectId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export interface GChatHookTypeScalarConfig
+  extends GraphQLScalarTypeConfig<ResolversTypes['GChatHookType'], any> {
+  name: 'GChatHookType';
+}
 
 export type GenericHookResolvers<
   ContextType = any,
@@ -1160,6 +1220,12 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationCreateBitbucketHookArgs, 'input'>
   >;
+  createGChatHook?: Resolver<
+    ResolversTypes['GChatHook'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationCreateGChatHookArgs, 'input'>
+  >;
   createGenericHook?: Resolver<
     ResolversTypes['GenericHook'],
     ParentType,
@@ -1231,6 +1297,12 @@ export type MutationResolvers<
     ParentType,
     ContextType,
     RequireFields<MutationUpdateBitbucketHookArgs, 'input'>
+  >;
+  updateGChatHook?: Resolver<
+    ResolversTypes['GChatHook'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationUpdateGChatHookArgs, 'input'>
   >;
   updateGenericHook?: Resolver<
     ResolversTypes['GenericHook'],
@@ -1619,6 +1691,8 @@ export type Resolvers<ContextType = any> = {
   DeleteHookResponse?: DeleteHookResponseResolvers<ContextType>;
   DeleteProjectResponse?: DeleteProjectResponseResolvers<ContextType>;
   DeleteRunResponse?: DeleteRunResponseResolvers<ContextType>;
+  GChatHook?: GChatHookResolvers<ContextType>;
+  GChatHookType?: GraphQLScalarType;
   GenericHook?: GenericHookResolvers<ContextType>;
   GenericHookType?: GraphQLScalarType;
   GithubHook?: GithubHookResolvers<ContextType>;

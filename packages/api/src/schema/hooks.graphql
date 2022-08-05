@@ -9,6 +9,8 @@ type Mutation {
   updateSlackHook(input: UpdateSlackHookInput!): SlackHook!
   createTeamsHook(input: CreateTeamsHookInput!): TeamsHook!
   updateTeamsHook(input: UpdateTeamsHookInput!): TeamsHook!
+  createGChatHook(input: CreateGChatHookInput!): GChatHook!
+  updateGChatHook(input: UpdateGChatHookInput!): GChatHook!
   deleteHook(input: DeleteHookInput!): DeleteHookResponse!
 }
 
@@ -129,6 +131,25 @@ input UpdateGenericHookInput {
   hookEvents: [String!]!
 }
 
+type GChatHook {
+  projectId: ID!
+  hookId: ID!
+  url: String!
+  hookType: GChatHookType!
+  hookEvents: [String!]!
+}
+
+input CreateGChatHookInput {
+  projectId: ID!
+}
+
+input UpdateGChatHookInput {
+  projectId: ID!
+  hookId: ID!
+  url: String!
+  hookEvents: [String!]!
+}
+
 type Hook {
   hookId: String
   url: String
@@ -165,3 +186,4 @@ scalar SlackResultFilter
 scalar GithubHookType
 scalar BitbucketHookType
 scalar TeamsHookType
+scalar GChatHookType
