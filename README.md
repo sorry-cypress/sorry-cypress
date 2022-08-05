@@ -141,6 +141,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/Hackatosh"><img src="https://avatars.githubusercontent.com/u/37976573?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Edouard Benauw</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=Hackatosh" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/joaoduartepinto"><img src="https://avatars.githubusercontent.com/u/82733395?v=4?s=100" width="100px;" alt=""/><br /><sub><b>joaoduartepinto</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=joaoduartepinto" title="Code">💻</a></td>
   </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/alyssa-glean"><img src="https://avatars.githubusercontent.com/u/57534485?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Alyssa</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=alyssa-glean" title="Code">💻</a></td>
+  </tr>
 </table>
 
 <!-- markdownlint-restore -->
