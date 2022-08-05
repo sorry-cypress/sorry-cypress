@@ -322,6 +322,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "alyssa-glean",
+      "name": "Alyssa",
+      "avatar_url": "https://avatars.githubusercontent.com/u/57534485?v=4",
+      "profile": "https://github.com/alyssa-glean",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
