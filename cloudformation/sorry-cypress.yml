@@ -454,6 +454,8 @@ Resources:
               Value: sorry-cypress
             - Name: MONGODB_URI
               Value: mongodb://sorry-cypress:sorry-cypress@127.0.0.1:27017
+            - Name: APOLLO_PLAYGROUND
+              Value: false
           DependsOn:
             - ContainerName: director
               Condition: START
