@@ -17,6 +17,7 @@ services:
       AWS_ACCESS_KEY_ID: 'key'
       AWS_SECRET_ACCESS_KEY: 'secret'
       S3_BUCKET: sorry-cypress
+      PROBE_LOGGER: "false"
     ports:
       - 1234:1234
     depends_on:

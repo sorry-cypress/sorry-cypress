@@ -28,3 +28,5 @@ export const INACTIVITY_TIMEOUT_SECONDS = Number(
 );
 
 export const REDIS_URI = process.env.REDIS_URI;
+
+export const PROBE_LOGGER = process.env.PROBE_LOGGER || 'false';

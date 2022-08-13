@@ -18,6 +18,7 @@ services:
       COS_SECRETKEY: 'cos_hmac_secret_key'
       COS_REGION: 'cos_region'
       COS_BUCKET: 'cos_bucket_name'
+      PROBE_LOGGER: "false"
     ports:
       - 1234:1234
     depends_on:

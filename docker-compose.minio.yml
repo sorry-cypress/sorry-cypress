@@ -23,7 +23,7 @@ services:
       MINIO_PORT: '9000'
       MINIO_USESSL: 'false'
       MINIO_BUCKET: sorry-cypress
-
+      PROBE_LOGGER: "false"
     ports:
       - 1234:1234
       - 9000:9000
