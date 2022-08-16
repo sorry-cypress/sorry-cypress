@@ -143,6 +143,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/alyssa-glean"><img src="https://avatars.githubusercontent.com/u/57534485?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Alyssa</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=alyssa-glean" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/bjartur20"><img src="https://avatars.githubusercontent.com/u/1508187?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Bjartur Þórhallsson</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=bjartur20" title="Code">💻</a></td>
   </tr>
 </table>
 
