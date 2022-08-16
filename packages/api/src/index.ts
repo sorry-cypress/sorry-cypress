@@ -6,9 +6,12 @@ import { format } from 'url';
 import { initMongoNoIndexes, isMongoDBHealthy } from '@sorry-cypress/mongo';
 import stoppable from 'stoppable';
 import { ApolloServer } from 'apollo-server-express';
-import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core';
+import {
+  ApolloServerPluginLandingPageGraphQLPlayground,
+  ApolloServerPluginLandingPageDisabled,
+} from 'apollo-server-core';
 import express from 'express';
-import { HOST, PORT } from './config';
+import { HOST, PORT, APOLLO_PLAYGROUND } from './config';
 import { InstancesAPI } from './datasources/instances';
 import { ProjectsAPI } from './datasources/projects';
 import { RunsAPI } from './datasources/runs';
@@ -34,7 +37,11 @@ async function start() {
     resolvers,
     dataSources: () => dataSources,
     introspection: true,
-    plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
+    plugins: [
+      APOLLO_PLAYGROUND === 'false'
+        ? ApolloServerPluginLandingPageDisabled()
+        : ApolloServerPluginLandingPageGraphQLPlayground(),
+    ],
   });
 
   await apolloServer.start();
