@@ -102,6 +102,8 @@ const createRun: ExecutionDriver['createRun'] = async (
     );
   }
 
+  params.commit.remoteOrigin = params.commit.remoteOrigin?.split('@')[1];
+
   // @ts-ignore
   runs[runId] = {
     runId,

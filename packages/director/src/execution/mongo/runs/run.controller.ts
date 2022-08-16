@@ -73,6 +73,8 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
     }
     const specs = params.specs.map(enhaceSpecForThisRun);
 
+    params.commit.remoteOrigin = params.commit.remoteOrigin?.split('@')[0];
+
     await storageCreateRun({
       runId,
       cypressVersion: params.cypressVersion,
