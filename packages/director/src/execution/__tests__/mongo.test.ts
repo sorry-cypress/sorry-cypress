@@ -12,26 +12,30 @@ const mockInsertOneRun = jest.fn(() => {
   };
 });
 
-jest.mock('@sorry-cypress/mongo', () => {
-  return {
-    Collection: {
-      project: jest.fn(() => {
-        return {
-          findOne: jest.fn(),
-          insertOne: jest.fn(),
-        };
-      }),
-      run: jest.fn(() => {
-        return {
-          insertOne: mockInsertOneRun,
-        };
-      }),
-    },
-    runTimeoutModel: {
-      createRunTimeout: () => {},
-    },
-  };
-});
+jest.mock(
+  '@sorry-cypress/mongo',
+  () => {
+    return {
+      Collection: {
+        project: jest.fn(() => {
+          return {
+            findOne: jest.fn(),
+            insertOne: jest.fn(),
+          };
+        }),
+        run: jest.fn(() => {
+          return {
+            insertOne: mockInsertOneRun,
+          };
+        }),
+      },
+      runTimeoutModel: {
+        createRunTimeout: () => {},
+      },
+    };
+  },
+  { virtual: true }
+);
 
 describe('runs', () => {
   it('removes gitlab_ci_token from remoteOrigin', async () => {
