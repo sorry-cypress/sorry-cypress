@@ -30,7 +30,7 @@ const mockInsertOneRun = jest.fn(() => {
   };
 });
 
-jest.mock('@sorry-cypress/mongo', () => {
+jest.mock('@sorry-cypress/mongo/dist', () => {
   return {
     Collection: {
       project: jest.fn(() => {
