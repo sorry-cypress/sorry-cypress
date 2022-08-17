@@ -73,7 +73,7 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
     }
     const specs = params.specs.map(enhaceSpecForThisRun);
 
-    params.commit.remoteOrigin = params.commit.remoteOrigin?.split('@')[0];
+    params.commit.remoteOrigin = params.commit.remoteOrigin?.split('@')[1];
 
     await storageCreateRun({
       runId,
