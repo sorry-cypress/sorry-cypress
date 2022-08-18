@@ -31,3 +31,9 @@ export const enhanceSpec = (groupId: string) => (spec: string): RunSpec => ({
   completedAt: null,
   groupId,
 });
+
+export const getRemoteOrigin = (
+  remoteOrigin: string | undefined
+): string | undefined => {
+  if (remoteOrigin) return new URL(remoteOrigin).origin;
+};
