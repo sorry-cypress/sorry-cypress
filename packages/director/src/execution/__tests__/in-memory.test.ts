@@ -55,5 +55,5 @@ it('should remove gitlab_ci_token from remoteOrigin', async () => {
 
   const run = await driver.getRunById(runId);
 
-  expect(run?.meta.commit.remoteOrigin).toEqual('gitlab.com');
+  expect(run?.meta.commit.remoteOrigin).toEqual('https://gitlab.com');
 });

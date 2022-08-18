@@ -59,6 +59,6 @@ describe('runs', () => {
 
     expect(
       (mockInsertOneRun.mock.calls[0][0] as Run).meta.commit.remoteOrigin
-    ).toBe('gitlab.com');
+    ).toBe('https://gitlab.com');
   });
 });

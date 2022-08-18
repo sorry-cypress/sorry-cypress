@@ -32,6 +32,7 @@ import {
   getClaimedSpecs,
   getFirstUnclaimedSpec,
   getNewSpecsInGroup,
+  getRemoteOrigin,
   getSpecsForGroup,
 } from './utils';
 
@@ -102,7 +103,7 @@ const createRun: ExecutionDriver['createRun'] = async (
     );
   }
 
-  params.commit.remoteOrigin = params.commit.remoteOrigin?.split('@')[1];
+  params.commit.remoteOrigin = getRemoteOrigin(params.commit.remoteOrigin);
 
   // @ts-ignore
   runs[runId] = {
