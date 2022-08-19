@@ -138,7 +138,7 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
       await addNewGroupToRun(
         runId,
         groupId,
-        newSpecs.map(enhaceSpecForThisRun)
+        newSpecs.map(enhanceSpecForThisRun)
       );
 
       return response;
