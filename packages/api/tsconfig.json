@@ -3,6 +3,7 @@
   "include": ["./src/**/*"],
   "exclude": ["./src/**/__tests__/*", "node_modules", "dist"],
   "compilerOptions": {
-    "outDir": "dist"
+    "outDir": "dist",
+    "typeRoots": ["./src/", "./node_modules/@types"]
   }
 }
