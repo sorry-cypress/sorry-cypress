@@ -35,5 +35,7 @@ export const enhanceSpec = (groupId: string) => (spec: string): RunSpec => ({
 export const getRemoteOrigin = (
   remoteOrigin: string | undefined
 ): string | undefined => {
-  if (remoteOrigin) return new URL(remoteOrigin).origin;
+  if (!remoteOrigin) return;
+
+  return 'https://' + remoteOrigin.split('@')[1].replace(':', '/');
 };

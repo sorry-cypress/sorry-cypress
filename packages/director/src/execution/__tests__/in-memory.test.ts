@@ -34,26 +34,61 @@ it('should report the correct number of claimed specs as they are picked up', as
   expect(thirdResponse.claimedInstances).toBe(3);
 });
 
-it('should remove gitlab_ci_token from remoteOrigin', async () => {
-  const { runId } = await driver.createRun({
-    ciBuildId: '1',
-    commit: {
-      sha: '1234',
-      remoteOrigin: 'https://gitlab-ci-token:token-to-remove@gitlab.com',
-    },
-    projectId: 'myProject',
-    specs: ['one.spec.ts'],
-    ci: {
-      params: { ciBuildId: 'buildId' },
-      provider: 'provider',
-    },
-    platform: {
-      osName: 'ubuntu',
-      osVersion: '20.04',
-    },
+[
+  {
+    originType: 'GitLab CI',
+    remoteOrigin:
+      'https://gitlab-ci-token:token-to-remove@gitlab.com:group/project.git',
+    expected: 'https://gitlab.com/group/project.git',
+  },
+  {
+    originType: 'GitLab CI subdomain',
+    remoteOrigin:
+      'https://gitlab-ci-token:token-to-remove@gitlab.company.com:group/project.git',
+    expected: 'https://gitlab.company.com/group/project.git',
+  },
+  {
+    originType: 'GitLab',
+    remoteOrigin: 'git@gitlab.com:group/project.git',
+    expected: 'https://gitlab.com/group/project.git',
+  },
+  {
+    originType: 'GitLab subdomain',
+    remoteOrigin: 'git@gitlab.company.com:group/project.git',
+    expected: 'https://gitlab.company.com/group/project.git',
+  },
+  {
+    originType: 'GitHub',
+    remoteOrigin: 'git@github.com:group/project.git',
+    expected: 'https://github.com/group/project.git',
+  },
+  {
+    originType: 'BitBucket',
+    remoteOrigin: 'git@bitbucket.org:group/project.git',
+    expected: 'https://bitbucket.org/group/project.git',
+  },
+].forEach(({ originType, remoteOrigin, expected }) => {
+  it(`sets the correct remoteOrigin for ${originType}`, async () => {
+    const { runId } = await driver.createRun({
+      ciBuildId: originType,
+      commit: {
+        sha: '1234',
+        remoteOrigin,
+      },
+      projectId: 'myProject',
+      specs: ['one.spec.ts'],
+      ci: {
+        params: { ciBuildId: 'buildId' },
+        provider: 'provider',
+      },
+      platform: {
+        osName: 'ubuntu',
+        osVersion: '20.04',
+      },
+    });
+
+    const run = await driver.getRunById(runId);
+
+    expect(run?.meta.commit.remoteOrigin).toEqual(expected);
   });
-
-  const run = await driver.getRunById(runId);
-
-  expect(run?.meta.commit.remoteOrigin).toEqual('https://gitlab.com');
 });
