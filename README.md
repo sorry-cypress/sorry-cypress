@@ -8,7 +8,7 @@
   <img width="830" alt="banner dark" src="https://user-images.githubusercontent.com/1637928/147379205-2fe4fb9d-49e6-4a2b-917b-2a28973d2a3a.png">
 </p>
 
-<div>An open-source alternative to cypress dashboard</div>
+<div>An open-source alternative, drop-in replacement of Cypress Dashboard</div>
 </div>
 
 <br />
@@ -18,10 +18,9 @@
   <a href="https://currents.dev/?utm_source=github_readme">https://currents.dev</a>
 </p>
 
-**[Sorry Cypress](https://sorry-cypress.dev)** is an open-source, free alternative to cypress dashboard that unlocks unlimited parallelization, test recordings, integration with GitHub, Slack and more.
+**[Currents.dev](https://currents.dev/?utm_source=github_readme)** - is a hosted cloud service that hundreds of companies around the globe use to run **millions** of Cypress tests without breaking the bank. This is an enhanced version of Sorry Cypress with a better security, performance, analytics, integrations and support.
 
-**[Currents.dev](https://currents.dev/?utm_source=github_readme)** - is a hosted cloud service the companies around the globe use to scale up their Cypress tests suite without breaking the bank. This is an enhanced version of Sorry Cypress with a better security, performance and integrations support.
-
+**[Sorry Cypress](https://sorry-cypress.dev)** is an open-source, free alternative to Cypress Dashboard that unlocks unlimited parallelization, test recordings, integration with GitHub, Slack and more.
 
 
 ## Table of contents
