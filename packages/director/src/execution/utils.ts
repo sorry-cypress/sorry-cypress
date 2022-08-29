@@ -37,5 +37,8 @@ export const getRemoteOrigin = (
 ): string | undefined => {
   if (!remoteOrigin) return;
 
-  return 'https://' + remoteOrigin.split('@')[1].replace(':', '/');
+  if (remoteOrigin.includes('@')) {
+    return 'https://' + remoteOrigin.split('@')[1].replace(':', '/');
+  }
+  return remoteOrigin;
 };
