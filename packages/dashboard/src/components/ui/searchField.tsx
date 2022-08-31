@@ -15,22 +15,33 @@ type SearchFieldProps = {
 const SearchField = ({ placeholder, onSearch, disabled }: SearchFieldProps) => {
   const debounce = useDebounce();
   const [searchParams, setSearchParams] = useSearchParams();
+  const value = searchParams.get('search') || '';
+  if (value) {
+    debounce(() => onSearch(value));
+  }
+
   const setValue = (value: string) => {
-    setSearchParams({ search: value });
-    debounce(() => {
-      onSearch(value);
-    });
+    updateQueryParam(value);
+    debounce(() => onSearch(value));
   };
-  const clearSearch = () => {
+
+  const clearValue = () => {
+    deleteQueryParam();
     setValue('');
   };
 
-  const value = searchParams.get('search') || '';
-  if (value) {
-    debounce(() => {
-      onSearch(value);
-    });
-  }
+  const updateQueryParam = (value: string) => {
+    if (value) {
+      setSearchParams({ search: value });
+    } else {
+      deleteQueryParam();
+    }
+  };
+
+  const deleteQueryParam = () => {
+    searchParams.delete('search');
+    setSearchParams(searchParams);
+  };
 
   const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -51,7 +62,7 @@ const SearchField = ({ placeholder, onSearch, disabled }: SearchFieldProps) => {
           <InputAdornment
             position="end"
             style={value ? {} : { display: 'none' }}
-            onClick={clearSearch}
+            onClick={clearValue}
           >
             <IconButton>
               <Clear />

@@ -33,8 +33,10 @@ export const RunDetailsView: RunDetailsViewComponent = () => {
   const { id } = useParams();
   const autoRefreshRate = useAutoRefreshRate();
   const [hidePassedSpecs, setHidePassedSpecs] = useHideSuccessfulSpecs();
-  const [readableSpecNames, { switchReadableSpecNames }] =
-    useReadableSpecNames();
+  const [
+    readableSpecNames,
+    { switchReadableSpecNames },
+  ] = useReadableSpecNames();
   const [shouldAutoRefresh, setShouldAutoRefresh] = useAutoRefresh();
 
   const { loading, error, data } = useGetRunQuery({
@@ -166,6 +168,12 @@ const updateNav = (data?: GetRunQuery) =>
     }
 
     setNav([
+      {
+        type: NavItemType.projects,
+        label: 'Projects',
+        link: './projects',
+      },
+
       {
         type: NavItemType.project,
         label: data.run.meta.projectId,

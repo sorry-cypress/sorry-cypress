@@ -82,6 +82,10 @@ export interface Run {
   progress: RunProgress;
 }
 
+export interface Build {
+  runs: Run[];
+}
+
 export interface RunProgress {
   updatedAt: Date | null;
   groups: RunGroupProgress[];

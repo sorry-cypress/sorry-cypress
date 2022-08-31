@@ -25,6 +25,11 @@ export const RunsView: RunsViewComponent = () => {
   useLayoutEffect(() => {
     setNav([
       {
+        type: NavItemType.projects,
+        label: 'Projects',
+        link: './projects',
+      },
+      {
         type: NavItemType.project,
         label: projectId,
         link: getProjectPath(projectId),

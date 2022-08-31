@@ -26,7 +26,7 @@
     "build": "wsrun -t build",
     "test": "yarn workspaces run test",
     "lint": "yarn workspaces run lint",
-    "dev": "wsrun dev"
+    "dev": "APOLLO_PLAYGROUND=true wsrun dev"
   },
   "husky": {
     "hooks": {
@@ -47,6 +47,7 @@
     "pretty-quick": "^3.0.2",
     "rimraf": "^3.0.2",
     "semver": "^7.3.2",
+    "tsconfig-paths": "^4.1.0",
     "typescript": "^4.0.3",
     "wsrun": "^5.2.4"
   }

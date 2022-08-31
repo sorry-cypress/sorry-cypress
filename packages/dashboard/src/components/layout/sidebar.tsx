@@ -1,18 +1,14 @@
 import { useReactiveVar } from '@apollo/client';
 import {
-  Book as BookIcon,
   Close as CloseIcon,
   Favorite as FavoriteIcon,
   FavoriteBorder as FavoriteBorderIcon,
   GitHub as GitHubIcon,
   Help as HelpIcon,
-  PlayLesson as PlayLessonIcon,
-  Settings as SettingsIcon,
 } from '@mui/icons-material';
 import {
   Alert,
   AlertTitle,
-  alpha,
   Avatar,
   Button,
   Drawer as MuiDrawer,
@@ -36,12 +32,17 @@ import {
   ThemeProvider,
   useTheme,
 } from '@mui/material/styles';
+import { CiBuildsListMenu } from '@sorry-cypress/dashboard/components/layout/sidebar/ciBuildsListMenu';
+import { HomeListMenu } from '@sorry-cypress/dashboard/components/layout/sidebar/homeListMenu';
+import { ProjectDetailsMenu } from '@sorry-cypress/dashboard/components/layout/sidebar/projectDetailsMenu';
+import { ProjectListMenu } from '@sorry-cypress/dashboard/components/layout/sidebar/projectListMenu';
 import { useGetProjectsQuery } from '@sorry-cypress/dashboard/generated/graphql';
 import {
   NavItemType,
   navStructure,
 } from '@sorry-cypress/dashboard/lib/navigation';
 import logoDark from '@sorry-cypress/dashboard/resources/logo-dark.svg';
+import { isEmpty } from 'lodash';
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import packageJson from '../../../package.json';
@@ -147,165 +148,11 @@ const DrawerContentContainer = styled('div', {
   overflowX: 'hidden',
 }));
 
-export const ProjectListMenu: ProjectListMenuType = ({
-  projects,
-  open,
-  onItemClick,
-}) => {
-  return (
-    <div>
-      {projects?.map((project) => {
-        if (open) {
-          return (
-            <ListItemButton
-              key={decodeURIComponent(project.projectId)}
-              component={RouterLink}
-              to={`/${encodeURIComponent(project.projectId)}/runs`}
-              onClick={onItemClick}
-            >
-              <ListItemIcon
-                sx={{ opacity: 0.6, minWidth: 28, color: project.projectColor }}
-              >
-                <BookIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary={decodeURIComponent(project.projectId)}
-                primaryTypographyProps={{
-                  fontSize: 16,
-                  color: 'text.primary',
-                  sx: { opacity: 0.6 },
-                  style: { wordBreak: 'break-word' },
-                }}
-              />
-            </ListItemButton>
-          );
-        }
-
-        return (
-          <Tooltip
-            key={decodeURIComponent(project.projectId)}
-            title={decodeURIComponent(project.projectId)}
-            placement="right"
-            arrow
-          >
-            <div style={{ paddingBottom: '8px' }}>
-              <IconButton
-                aria-label={decodeURIComponent(project.projectId)}
-                sx={{ opacity: 0.6, padding: 1.5, color: project.projectColor }}
-                component={RouterLink}
-                to={`/${encodeURIComponent(project.projectId)}/runs`}
-                onClick={onItemClick}
-                size="large"
-              >
-                <BookIcon />
-              </IconButton>
-            </div>
-          </Tooltip>
-        );
-      })}
-    </div>
-  );
-};
-
-export const ProjectDetailsMenu: ProjectDetailsMenuType = ({
-  projectId,
-  projectColor,
-  open,
-  onItemClick,
-  selectedItem,
-}) => {
-  const projectMenuItems = [
-    {
-      label: 'Latest runs',
-      link: `/${encodeURIComponent(projectId)}/runs`,
-      iconComponent: PlayLessonIcon,
-      type: NavItemType.latestRuns,
-    },
-    {
-      label: 'Project settings',
-      link: `/${encodeURIComponent(projectId)}/edit`,
-      iconComponent: SettingsIcon,
-      type: NavItemType.projectSettings,
-    },
-  ];
-  return (
-    <>
-      {projectMenuItems.map((item) => {
-        const selected = selectedItem === item.type;
-        if (open) {
-          return (
-            <ListItemButton
-              key={item.label}
-              color={selected ? 'primary' : undefined}
-              sx={{
-                ml: 2,
-                mb: 1,
-                mr: { md: 0, xs: 2 },
-                pl: 2,
-                '&.Mui-selected': {
-                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                },
-                backgroundColor: selected
-                  ? 'rgba(255, 255, 255, 0.1)'
-                  : undefined,
-                borderTopLeftRadius: 8,
-                borderTopRightRadius: { md: 0, xs: 8 },
-                borderBottomRightRadius: { md: 0, xs: 8 },
-                borderBottomLeftRadius: 8,
-              }}
-              component={RouterLink}
-              to={item.link}
-              selected={selected}
-              onClick={onItemClick}
-            >
-              <ListItemIcon sx={{ opacity: selected ? 1 : 0.6, minWidth: 28 }}>
-                <item.iconComponent color={selected ? 'primary' : undefined} />
-              </ListItemIcon>
-              <ListItemText
-                primary={item.label}
-                primaryTypographyProps={{
-                  fontSize: 16,
-                  color: selected ? 'primary' : 'text.primary',
-                  sx: { opacity: selected ? 1 : 0.6 },
-                }}
-              />
-            </ListItemButton>
-          );
-        }
-
-        return (
-          <Tooltip key={item.label} title={item.label} placement="right" arrow>
-            <div style={{ paddingBottom: '8px' }}>
-              <IconButton
-                aria-label={item.label}
-                color={selected ? 'primary' : undefined}
-                sx={{
-                  opacity: selected ? 1 : 0.6,
-                  padding: 1.5,
-                  backgroundColor: selected
-                    ? alpha(projectColor || '#3486E3', 0.1)
-                    : undefined,
-                  color: selected ? projectColor || '#3486E3' : undefined,
-                }}
-                component={RouterLink}
-                to={item.link}
-                onClick={onItemClick}
-                size="large"
-              >
-                <item.iconComponent />
-              </IconButton>
-            </div>
-          </Tooltip>
-        );
-      })}
-    </>
-  );
-};
-
 export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
   const nav = useReactiveVar(navStructure);
   const projectNavItem = nav.find((item) => item.type === NavItemType.project);
-  const projectView = projectNavItem && nav?.[1];
+  const projectView = projectNavItem && nav?.[2];
+  const ciBuildsView = nav.find((item) => item.type === NavItemType.ciBuilds);
   const theme = useTheme();
   const smallScreen = !useMediaQuery(theme.breakpoints.up('md'), {
     noSsr: true,
@@ -317,7 +164,7 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
       filters: [],
     },
   });
-  const isHome = !loading && !error && !projectNavItem;
+  const isHome = !loading && !error && isEmpty(nav);
   const { projects } = (data || {}) as {
     projects: Array<{ projectId: string; projectColor: string }>;
   };
@@ -340,7 +187,7 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
           }}
         >
           <ListItemAvatar sx={{ minWidth: '42px' }}>
-            <RouterLink to="/">
+            <RouterLink to="/?redirect=false">
               <Avatar
                 alt="Sorry Cypress Dashboard Home"
                 src={logoDark}
@@ -371,7 +218,7 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
               textAlign: smallScreen ? 'left' : 'right',
               color: 'text.primary',
               component: RouterLink,
-              to: '/',
+              to: '/?redirect=false',
             }}
             secondary={`v${packageJson.version}`}
             secondaryTypographyProps={{
@@ -423,7 +270,7 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
               sx={{ mt: 0, mb: 0 }}
               primary={
                 isHome
-                  ? 'Projects'
+                  ? 'Home'
                   : decodeURIComponent(projectNavItem?.label || '')
               }
               primaryTypographyProps={{
@@ -444,13 +291,16 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
             />
           ))}
         {!loading && isHome && (
+          <HomeListMenu open={open} onItemClick={handleMenuItemClick} />
+        )}
+        {!loading && projectNavItem && !projectView && (
           <ProjectListMenu
             projects={projects}
             open={open}
             onItemClick={handleMenuItemClick}
           />
         )}
-        {!loading && !isHome && projectNavItem?.label && projectView?.type && (
+        {!loading && projectNavItem?.label && projectView?.type && (
           <ProjectDetailsMenu
             projectId={decodeURIComponent(projectNavItem?.label || '')}
             projectColor={currentProject?.projectColor}
@@ -458,6 +308,13 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
             selectedItem={projectView.type}
             onItemClick={handleMenuItemClick}
           />
+        )}
+        {!loading && ciBuildsView && ciBuildsView.type && (
+          <CiBuildsListMenu
+            open={open}
+            selectedItem={ciBuildsView.type}
+            onItemClick={handleMenuItemClick}
+          ></CiBuildsListMenu>
         )}
         {error && (
           <Alert
@@ -642,19 +499,3 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
 
 type SidebarProps = { open: boolean; onToggleSidebar?: () => void };
 type SidebarType = React.FC<SidebarProps>;
-
-type ProjectDetailsMenuProps = {
-  projectId: string;
-  projectColor?: string;
-  open: boolean;
-  onItemClick: () => void;
-  selectedItem: NavItemType;
-};
-type ProjectDetailsMenuType = React.FC<ProjectDetailsMenuProps>;
-
-type ProjectListMenuProps = {
-  projects: Array<{ projectId: string; projectColor: string }>;
-  open: boolean;
-  onItemClick: () => void;
-};
-type ProjectListMenuType = React.FC<ProjectListMenuProps>;

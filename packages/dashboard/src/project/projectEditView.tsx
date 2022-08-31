@@ -29,6 +29,11 @@ export function ProjectEditView() {
     } else {
       setNav([
         {
+          type: NavItemType.projects,
+          label: 'Projects',
+          link: './projects',
+        },
+        {
           label: projectId,
           type: NavItemType.project,
           link: getProjectPath(projectId),

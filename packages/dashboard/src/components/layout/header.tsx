@@ -100,7 +100,7 @@ export const Header: HeaderComponent = ({ open, onMenuClick }) => {
             color="inherit"
             component={RouterLink}
             underline="hover"
-            to="/"
+            to="/?redirect=false"
           >
             <HomeOutlinedIcon
               sx={{
