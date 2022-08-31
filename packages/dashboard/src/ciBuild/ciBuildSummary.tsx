@@ -1,11 +1,4 @@
-import { BookOutlined } from '@mui/icons-material';
-import {
-  CardContent,
-  Collapse,
-  Grid,
-  Tooltip,
-  Typography,
-} from '@mui/material';
+import { CardContent, Collapse, Grid, Typography } from '@mui/material';
 import {
   getRunClaimedSpecsCount,
   getRunDurationSeconds,
@@ -13,12 +6,8 @@ import {
   getRunTestsProgress,
   getRunTestsProgressReducer,
 } from '@sorry-cypress/common';
-import {
-  Card,
-  Chip,
-  CiUrl,
-  getCiData,
-} from '@sorry-cypress/dashboard/components/';
+import { CiBuildSummaryProject } from '@sorry-cypress/dashboard/ciBuild/ciBuildSummaryProject';
+import { Card, CiUrl, getCiData } from '@sorry-cypress/dashboard/components/';
 import {
   CiBuild,
   RunProgress,
@@ -26,7 +15,6 @@ import {
 import { parseISO } from 'date-fns';
 import { every, isEmpty, property, sortBy, sum } from 'lodash';
 import React, { FunctionComponent } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Commit } from '../run/commit';
 import { RunDuration } from '../run/runDuration';
 import { RunningStatus } from '../run/runningStatus';
@@ -37,7 +25,6 @@ import { RunTimeoutChip } from '../run/runTimeoutChip';
 
 export const CiBuildSummary: CiBuildSummaryComponent = (props) => {
   const { ciBuild, brief = false, compact = false } = props;
-  const navigate = useNavigate();
 
   const getInactivityTimeoutMs = () => {
     const inactivityTimeoutMs = sum(
@@ -94,7 +81,7 @@ export const CiBuildSummary: CiBuildSummaryComponent = (props) => {
     projectId: runMeta?.projectId,
   });
 
-  const runsSortedByProjectId = sortBy(ciBuild.runs, (x) => x.meta.projectId);
+  const runsSortedByProject = sortBy(ciBuild.runs, (x) => x.meta.projectId);
 
   return (
     <Card>
@@ -154,23 +141,8 @@ export const CiBuildSummary: CiBuildSummaryComponent = (props) => {
         </Grid>
         <Collapse in={!compact}>
           <Grid item container spacing={1}>
-            {runsSortedByProjectId.map((run) => (
-              <Tooltip
-                key={run.meta.projectId}
-                title={<>Project: {run.meta.projectId}</>}
-                arrow
-              >
-                <Grid item>
-                  <Chip
-                    size="small"
-                    color="grey"
-                    shade={600}
-                    label={run.meta.projectId}
-                    icon={BookOutlined}
-                    onClick={() => navigate(`/run/${run.runId}`)}
-                  />
-                </Grid>
-              </Tooltip>
+            {runsSortedByProject.map((run) => (
+              <CiBuildSummaryProject key={run.runId} run={run} />
             ))}
           </Grid>
           <Grid container>

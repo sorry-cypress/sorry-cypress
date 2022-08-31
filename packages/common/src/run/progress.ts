@@ -12,10 +12,10 @@ type Group = {
     claimed: number;
     complete: number;
   };
-  tests: GroupTests;
+  tests: TestResults;
 };
 
-type GroupTests = {
+type TestResults = {
   overall: number;
   passes: number;
   failures: number;
@@ -51,7 +51,7 @@ export const getRunDurationSeconds = (
   return updatedAt ? differenceInSeconds(updatedAt, createdAt) : 0;
 };
 
-export const getRunTestsProgressReducer = (r: GroupTests, i: GroupTests) => {
+export const getRunTestsProgressReducer = (r: TestResults, i: TestResults) => {
   ([
     'overall',
     'passes',
