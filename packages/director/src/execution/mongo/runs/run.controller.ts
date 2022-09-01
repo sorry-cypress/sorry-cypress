@@ -30,6 +30,7 @@ import {
   getClaimedSpecs,
   getFirstUnclaimedSpec,
   getNewSpecsInGroup,
+  getRemoteOrigin,
   getSpecsForGroup,
 } from '../../utils';
 import { createInstance } from '../instances/instance.controller';
@@ -53,7 +54,7 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
   const groupId = params.group ?? generateGroupId(params.platform, ciBuildId);
 
   const machineId = generateUUID();
-  const enhaceSpecForThisRun = enhanceSpec(groupId);
+  const enhanceSpecForThisRun = enhanceSpec(groupId);
 
   const response: CreateRunResponse = {
     groupId,
@@ -71,7 +72,9 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
         getCreateProjectValue(params.projectId, INACTIVITY_TIMEOUT_SECONDS)
       );
     }
-    const specs = params.specs.map(enhaceSpecForThisRun);
+    const specs = params.specs.map(enhanceSpecForThisRun);
+
+    params.commit.remoteOrigin = getRemoteOrigin(params.commit.remoteOrigin);
 
     await storageCreateRun({
       runId,
@@ -135,7 +138,7 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
       await addNewGroupToRun(
         runId,
         groupId,
-        newSpecs.map(enhaceSpecForThisRun)
+        newSpecs.map(enhanceSpecForThisRun)
       );
 
       return response;

@@ -31,3 +31,14 @@ export const enhanceSpec = (groupId: string) => (spec: string): RunSpec => ({
   completedAt: null,
   groupId,
 });
+
+export const getRemoteOrigin = (
+  remoteOrigin: string | undefined
+): string | undefined => {
+  if (!remoteOrigin) return;
+
+  if (remoteOrigin.includes('@')) {
+    return 'https://' + remoteOrigin.split('@')[1].replace(':', '/');
+  }
+  return remoteOrigin;
+};
