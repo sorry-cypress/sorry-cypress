@@ -4,7 +4,7 @@ import {
   getCreateProjectValue,
   isRunCompleted,
   Run,
-  Task,
+  Task
 } from '@sorry-cypress/common';
 import { INACTIVITY_TIMEOUT_SECONDS } from '@sorry-cypress/director/config';
 import { getRunCiBuildId } from '@sorry-cypress/director/lib/ciBuildId';
@@ -12,12 +12,12 @@ import {
   AppError,
   CLAIM_FAILED,
   RUN_EXISTS,
-  RUN_NOT_EXIST,
+  RUN_NOT_EXIST
 } from '@sorry-cypress/director/lib/errors';
 import {
   generateGroupId,
   generateRunIdHash,
-  generateUUID,
+  generateUUID
 } from '@sorry-cypress/director/lib/hash';
 import { getDashboardRunURL } from '@sorry-cypress/director/lib/urls';
 import { ExecutionDriver } from '@sorry-cypress/director/types';
@@ -28,10 +28,11 @@ import { curry, property, uniq } from 'lodash';
 import {
   enhanceSpec,
   getClaimedSpecs,
+  getFailedSpecs,
   getFirstUnclaimedSpec,
   getNewSpecsInGroup,
   getRemoteOrigin,
-  getSpecsForGroup,
+  getSpecsForGroup
 } from '../../utils';
 import { createInstance } from '../instances/instance.controller';
 import { createProject, getProjectById } from './../projects/project.model';
@@ -41,9 +42,10 @@ import {
   createRun as storageCreateRun,
   getNewGroupTemplate,
   getRunById,
+  resetSpecs,
   setRunCompleted,
   setSpecClaimed,
-  setSpecCompleted,
+  setSpecCompleted
 } from './run.model';
 export const getById = getRunById;
 
@@ -129,11 +131,18 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
         throw new Error('No run found');
       }
 
-      if (
-        isProviderGitlab &&
-        !run.meta.ci.params?.ciJobName.includes(params.ci.params?.ciJobName)
-      )
-        addNewJobToRun(run.runId, params.ci.params?.ciJobName);
+      if (isProviderGitlab) {
+        if (
+          !run.meta.ci.params?.ciJobName.includes(params.ci.params?.ciJobName)
+        ) {
+          // New ci job joining the pool
+          addNewJobToRun(run.runId, params.ci.params?.ciJobName);
+        } else {
+          // Retry job
+          const failedSpecs = getFailedSpecs(run, groupId);
+          await resetSpecs(run, groupId, failedSpecs);
+        }
+      }
 
       const newSpecs = getNewSpecsInGroup({
         run,
