@@ -37,6 +37,7 @@ import { createInstance } from '../instances/instance.controller';
 import { createProject, getProjectById } from './../projects/project.model';
 import {
   addNewGroupToRun,
+  addNewJobToRun,
   createRun as storageCreateRun,
   getNewGroupTemplate,
   getRunById,
@@ -55,6 +56,8 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
 
   const machineId = generateUUID();
   const enhanceSpecForThisRun = enhanceSpec(groupId);
+
+  const isProviderGitlab = params.ci.provider === 'gitlab';
 
   const response: CreateRunResponse = {
     groupId,
@@ -76,7 +79,7 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
 
     params.commit.remoteOrigin = getRemoteOrigin(params.commit.remoteOrigin);
 
-    await storageCreateRun({
+    const newRun: Run = {
       runId,
       cypressVersion: params.cypressVersion,
       createdAt: new Date().toISOString(),
@@ -95,7 +98,18 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
         groups: [getNewGroupTemplate(groupId, specs.length)],
       },
       specs,
-    });
+    };
+    if (isProviderGitlab) {
+      newRun.meta.ci = {
+        params: {
+          ...params.ci.params,
+          ciBuildId: params.ci.params?.ciBuildId,
+          ciJobName: [params.ci.params?.ciJobName],
+        },
+        provider: params.ci.provider,
+      };
+    }
+    await storageCreateRun(newRun);
     const timeoutSeconds =
       project?.inactivityTimeoutSeconds ?? INACTIVITY_TIMEOUT_SECONDS;
     await runTimeoutModel.createRunTimeout({
@@ -114,6 +128,13 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
       if (!run) {
         throw new Error('No run found');
       }
+
+      if (
+        isProviderGitlab &&
+        !run.meta.ci.params?.ciJobName.includes(params.ci.params?.ciJobName)
+      )
+        addNewJobToRun(run.runId, params.ci.params?.ciJobName);
+
       const newSpecs = getNewSpecsInGroup({
         run,
         groupId,

@@ -33,6 +33,15 @@ export const createRun = async (run: Run): Promise<Run> => {
   }
 };
 
+export const addNewJobToRun = async (runId: string, newJobName: string) => {
+  await Collection.run().updateOne(
+    { runId },
+    {
+      $push: { 'meta.ci.params.ciJobName': newJobName },
+    }
+  );
+};
+
 export const addSpecsToRun = async (runId: string, specs: RunSpec[]) => {
   await Collection.run().updateOne(
     { runId },
