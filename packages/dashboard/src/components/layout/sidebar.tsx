@@ -1,8 +1,6 @@
 import { useReactiveVar } from '@apollo/client';
 import {
   Close as CloseIcon,
-  Favorite as FavoriteIcon,
-  FavoriteBorder as FavoriteBorderIcon,
   GitHub as GitHubIcon,
   Help as HelpIcon,
 } from '@mui/icons-material';
@@ -241,7 +239,7 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
         {open && (
           <IconButton
             color="default"
-            aria-label=" Close Menu"
+            aria-label="Close Menu"
             component="span"
             size="medium"
             onClick={onToggleSidebar}
@@ -428,36 +426,6 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
               />
             </ListItemButton>
           )}
-        </div>
-
-        <div>
-          <Tooltip title="Become a sponsor" placement="right" arrow>
-            <IconButton
-              aria-label="Become a sponsor"
-              sx={{
-                padding: open ? 1 : 1.5,
-                flex: open ? 1 : undefined,
-                textAlign: 'right',
-              }}
-              component={Link}
-              href="https://github.com/sponsors/agoldis"
-              target="_blank"
-              rel="noreferrer"
-              size="large"
-            >
-              <FavoriteIcon
-                {...(open ? { component: FavoriteBorderIcon } : {})}
-                sx={{
-                  fontSize: open ? 20 : undefined,
-                  '&:hover': {
-                    color: red[700],
-                  },
-                  transition: 'all 0.5s',
-                  color: red[300],
-                }}
-              />
-            </IconButton>
-          </Tooltip>
         </div>
       </DrawerFooter>
     </DrawerContentContainer>

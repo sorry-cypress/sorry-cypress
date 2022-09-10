@@ -72,7 +72,7 @@ export const HomeListMenu: HomeListMenuType = ({ open, onItemClick }) => {
                 onClick={onItemClick}
                 size="large"
               >
-                <BookIcon />
+                <item.iconComponent />
               </IconButton>
             </div>
           </Tooltip>
