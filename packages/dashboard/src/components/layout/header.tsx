@@ -57,12 +57,14 @@ const AppBar = styled(MuiAppBar, {
 
 const ICONS = {
   [NavItemType.project]: BookOutlined,
+  [NavItemType.projects]: BookOutlined,
   [NavItemType.newProject]: PlaylistAdd,
   [NavItemType.projectSettings]: SettingsOutlined,
   [NavItemType.run]: RuleFolderOutlined,
   [NavItemType.latestRuns]: PlayLessonOutlined,
   [NavItemType.spec]: RuleOutlined,
   [NavItemType.test]: ScienceOutlined,
+  [NavItemType.ciBuilds]: PlayLessonOutlined,
 } as { [key in NavItemType]: typeof BookOutlined };
 
 export const Header: HeaderComponent = ({ open, onMenuClick }) => {

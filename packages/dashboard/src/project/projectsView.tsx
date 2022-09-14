@@ -15,7 +15,7 @@ export function ProjectsView() {
   useLayoutEffect(() => {
     setNav([
       {
-        type: NavItemType.project,
+        type: NavItemType.projects,
         label: 'Projects',
       },
     ]);

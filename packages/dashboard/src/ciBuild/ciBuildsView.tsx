@@ -18,7 +18,7 @@ export function CiBuildsView() {
     setNav([
       {
         type: NavItemType.ciBuilds,
-        label: 'CI Builds',
+        label: 'Builds',
       },
     ]);
   }, []);
@@ -59,7 +59,7 @@ export function CiBuildsView() {
         color="text.primary"
         sx={{ mb: 5 }}
       >
-        CI Builds
+        Builds
       </Typography>
       <CiBuildsFeed compact={compactView} search={search}></CiBuildsFeed>
     </>

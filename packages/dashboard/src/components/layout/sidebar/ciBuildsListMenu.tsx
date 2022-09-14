@@ -10,7 +10,7 @@ export const CiBuildsListMenu: CiBuildsListMenuType = ({
 }) => {
   const menuItems = [
     {
-      label: 'Latest CI builds',
+      label: 'Recent Builds',
       link: `/ci-builds`,
       iconComponent: PlayLessonIcon,
       type: NavItemType.ciBuilds,

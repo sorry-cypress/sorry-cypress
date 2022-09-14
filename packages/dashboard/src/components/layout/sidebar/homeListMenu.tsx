@@ -16,7 +16,7 @@ import { Link as RouterLink } from 'react-router-dom';
 export const HomeListMenu: HomeListMenuType = ({ open, onItemClick }) => {
   const menuItems = [
     {
-      label: 'CI Builds',
+      label: 'Builds',
       link: `/ci-builds`,
       iconComponent: PlayLessonIcon,
       type: NavItemType.ciBuilds,

@@ -148,6 +148,7 @@ const DrawerContentContainer = styled('div', {
 
 export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
   const nav = useReactiveVar(navStructure);
+  const projectsView = nav.find((item) => item.type === NavItemType.projects);
   const projectNavItem = nav.find((item) => item.type === NavItemType.project);
   const projectView = projectNavItem && nav?.[2];
   const ciBuildsView = nav.find((item) => item.type === NavItemType.ciBuilds);
@@ -173,6 +174,16 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
   const handleMenuItemClick = () => {
     smallScreen && onToggleSidebar?.();
   };
+
+  const getMenuTitle = (): string => {
+    if (isHome) return 'Home';
+    if (ciBuildsView) return 'Builds';
+    if (projectNavItem?.label) return decodeURIComponent(projectNavItem?.label);
+    if (projectsView) return 'Projects';
+    return '';
+  };
+
+  const menuTitle = getMenuTitle();
 
   const drawerContent = (
     <DrawerContentContainer open={open}>
@@ -266,11 +277,7 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
           {open && (
             <ListItemText
               sx={{ mt: 0, mb: 0 }}
-              primary={
-                isHome
-                  ? 'Home'
-                  : decodeURIComponent(projectNavItem?.label || '')
-              }
+              primary={menuTitle}
               primaryTypographyProps={{
                 fontSize: 22,
                 letterSpacing: 0,
@@ -291,7 +298,7 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
         {!loading && isHome && (
           <HomeListMenu open={open} onItemClick={handleMenuItemClick} />
         )}
-        {!loading && projectNavItem && !projectView && (
+        {!loading && projectsView && !projectView && (
           <ProjectListMenu
             projects={projects}
             open={open}
