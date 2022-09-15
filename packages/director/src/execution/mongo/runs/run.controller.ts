@@ -4,20 +4,23 @@ import {
   getCreateProjectValue,
   isRunCompleted,
   Run,
-  Task
+  Task,
 } from '@sorry-cypress/common';
-import { INACTIVITY_TIMEOUT_SECONDS } from '@sorry-cypress/director/config';
+import {
+  GITLAB_JOB_RETRIES,
+  INACTIVITY_TIMEOUT_SECONDS,
+} from '@sorry-cypress/director/config';
 import { getRunCiBuildId } from '@sorry-cypress/director/lib/ciBuildId';
 import {
   AppError,
   CLAIM_FAILED,
   RUN_EXISTS,
-  RUN_NOT_EXIST
+  RUN_NOT_EXIST,
 } from '@sorry-cypress/director/lib/errors';
 import {
   generateGroupId,
   generateRunIdHash,
-  generateUUID
+  generateUUID,
 } from '@sorry-cypress/director/lib/hash';
 import { getDashboardRunURL } from '@sorry-cypress/director/lib/urls';
 import { ExecutionDriver } from '@sorry-cypress/director/types';
@@ -32,7 +35,7 @@ import {
   getFirstUnclaimedSpec,
   getNewSpecsInGroup,
   getRemoteOrigin,
-  getSpecsForGroup
+  getSpecsForGroup,
 } from '../../utils';
 import { createInstance } from '../instances/instance.controller';
 import { createProject, getProjectById } from './../projects/project.model';
@@ -45,7 +48,7 @@ import {
   resetSpecs,
   setRunCompleted,
   setSpecClaimed,
-  setSpecCompleted
+  setSpecCompleted,
 } from './run.model';
 export const getById = getRunById;
 
@@ -101,7 +104,7 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
       },
       specs,
     };
-    if (isProviderGitlab) {
+    if (isProviderGitlab && GITLAB_JOB_RETRIES == 'true') {
       newRun.meta.ci = {
         params: {
           ...params.ci.params,
@@ -131,7 +134,7 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
         throw new Error('No run found');
       }
 
-      if (isProviderGitlab) {
+      if (isProviderGitlab && GITLAB_JOB_RETRIES == 'true') {
         if (
           !run.meta.ci.params?.ciJobName.includes(params.ci.params?.ciJobName)
         ) {
