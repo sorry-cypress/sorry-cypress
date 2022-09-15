@@ -46,7 +46,7 @@ function getTagsArg() {
 function dockerBuild() {
   echo 🔨 Building ${2} from ${1}: docker build --file ${1}/Dockerfile $(getTagsArg ${2})
   echo ========================
-  docker build --file ${1}/Dockerfile --tag latest .
+  docker build --file ${1}/Dockerfile $(getTagsArg ${2}) .
   echo ========================
   echo ✅ Build completed ${2} from ${1} 
 }
@@ -56,7 +56,7 @@ function dockerPush() {
   do
     echo 💾 Pushing to remote: docker push ${1}:${TAG}
     echo ========================
-    docker push "${1}:latest"
+    docker push "${1}:${TAG}"
     echo ========================
     echo ✅ Pushed "${1}:${TAG}"
   done
@@ -88,16 +88,13 @@ fi
 echo 🚀 Releasing tags: $TAGS
 echo ========================
 
-# dockerBuild "packages/${service}" "agoldis/sorry-cypress-${service}"
+dockerBuild "packages/${service}" "agoldis/sorry-cypress-${service}"
 # dockerBuild "packages/api" "agoldis/sorry-cypress-api"
 # dockerBuild "packages/dashboard" "agoldis/sorry-cypress-dashboard"
-dockerBuild "packages/director" "registry.controlant.com/qa/qaet/sorry-cypress/director"
 
-
-# dockerPush "agoldis/sorry-cypress-${service}"
+dockerPush "agoldis/sorry-cypress-${service}"
 # dockerPush "agoldis/sorry-cypress-api"
 # dockerPush "agoldis/sorry-cypress-dashboard"
-dockerPush "registry.controlant.com/qa/qaet/sorry-cypress/director"
 
 echo ========================
 echo 🎉 Released to Dockerhub: $TAGS
