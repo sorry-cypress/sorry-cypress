@@ -28,3 +28,5 @@ export const INACTIVITY_TIMEOUT_SECONDS = Number(
 );
 
 export const REDIS_URI = process.env.REDIS_URI;
+
+export const GITLAB_JOB_RETRIES = process.env.GITLAB_JOB_RETRIES || 'false';

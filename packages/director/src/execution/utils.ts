@@ -8,6 +8,8 @@ export const getClaimedSpecs = (run: Run, groupId: string) =>
   getSpecsForGroup(run, groupId).filter((s) => s.claimedAt);
 export const getFirstUnclaimedSpec = (run: Run, groupId: string) =>
   getSpecsForGroup(run, groupId).find((s) => !s.claimedAt);
+export const getFailedSpecs = (run: Run, groupId: string) =>
+  getSpecsForGroup(run, groupId).filter((s) => s.results!.stats.failures > 0);
 
 interface GetNewSpecsForGroupParams {
   run: Run;
