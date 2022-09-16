@@ -107,7 +107,7 @@ export class RunsAPI extends DataSource {
       {
         $addFields: {
           ciBuildId: '$_id',
-          createdAt: { $min: '$runs.createdAt' },
+          createdAt: { $arrayElemAt: ['$runs.createdAt', -1] }, // last run (first created)
           updatedAt: { $max: '$runs.progress.updatedAt' },
         },
       },

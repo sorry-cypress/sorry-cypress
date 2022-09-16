@@ -13,7 +13,7 @@ import {
   RunProgress,
 } from '@sorry-cypress/dashboard/generated/graphql';
 import { parseISO } from 'date-fns';
-import { every, isEmpty, property, sortBy, sum } from 'lodash';
+import { every, isEmpty, property, size, sortBy, sum } from 'lodash';
 import React, { FunctionComponent } from 'react';
 import { Commit } from '../run/commit';
 import { RunDuration } from '../run/runDuration';
@@ -37,9 +37,12 @@ export const CiBuildSummary: CiBuildSummaryComponent = (props) => {
     return null;
   }
 
-  const run = ciBuild.runs[0];
+  const firstRun = ciBuild.runs[0];
+  const firstRunMeta = firstRun.meta;
 
-  const runMeta = run.meta;
+  const runsCount = size(ciBuild.runs);
+  const linkToRun = runsCount === 1 ? `/run/${firstRun.runId}` : undefined;
+
   const runCreatedAt = ciBuild.createdAt;
   const hasCompletion = every(ciBuild.runs, (run) => !!run.completion);
   const completed = every(ciBuild.runs, (run) => !!run.completion?.completed);
@@ -57,7 +60,7 @@ export const CiBuildSummary: CiBuildSummaryComponent = (props) => {
   const durationSeconds = getRunDurationSeconds(
     parseISO(ciBuild.createdAt),
     ciBuild.updatedAt ? parseISO(ciBuild.updatedAt) : null,
-    run.completion?.inactivityTimeoutMs ?? null
+    inactivityTimeoutMs ?? null
   );
 
   const testsProgress = ciBuild.runs.reduce(
@@ -77,14 +80,14 @@ export const CiBuildSummary: CiBuildSummaryComponent = (props) => {
   );
 
   const ciData = getCiData({
-    ciBuildId: runMeta?.ciBuildId,
-    projectId: runMeta?.projectId,
+    ciBuildId: firstRunMeta?.ciBuildId,
+    projectId: firstRunMeta?.projectId,
   });
 
   const runsSortedByProject = sortBy(ciBuild.runs, (x) => x.meta.projectId);
 
   return (
-    <Card>
+    <Card linkTo={linkToRun}>
       <CardContent sx={{ py: '8px !important' }}>
         <Grid
           container
@@ -103,7 +106,7 @@ export const CiBuildSummary: CiBuildSummaryComponent = (props) => {
                   noWrap
                   color="text.secondary"
                 >
-                  {runMeta.ciBuildId}
+                  {firstRunMeta.ciBuildId}
                 </Typography>
               </Grid>
             </Grid>
@@ -114,7 +117,7 @@ export const CiBuildSummary: CiBuildSummaryComponent = (props) => {
                 </Grid>
                 <Grid item>
                   <RunDuration
-                    completed={run.completion?.completed}
+                    completed={firstRun.completion?.completed}
                     createdAtISO={runCreatedAt}
                     wallClockDurationSeconds={durationSeconds}
                   />
@@ -134,16 +137,17 @@ export const CiBuildSummary: CiBuildSummaryComponent = (props) => {
             )}
           </Grid>
           <Grid item my={1}>
-            {run.progress && (
+            {firstRun.progress && (
               <RunSummaryTestResults testsStats={testsProgress} />
             )}
           </Grid>
         </Grid>
         <Collapse in={!compact}>
           <Grid item container spacing={1}>
-            {runsSortedByProject.map((run) => (
-              <CiBuildSummaryProject key={run.runId} run={run} />
-            ))}
+            {!linkToRun &&
+              runsSortedByProject.map((run) => (
+                <CiBuildSummaryProject key={run.runId} run={run} />
+              ))}
           </Grid>
           <Grid container>
             {ciData && (
@@ -151,7 +155,11 @@ export const CiBuildSummary: CiBuildSummaryComponent = (props) => {
                 <CiUrl {...ciData} disableLink={true} />
               </Grid>
             )}
-            <Commit brief={brief} noLinks={true} commit={runMeta?.commit} />
+            <Commit
+              brief={brief}
+              noLinks={true}
+              commit={firstRunMeta?.commit}
+            />
           </Grid>
         </Collapse>
       </CardContent>
