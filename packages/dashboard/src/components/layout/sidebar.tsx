@@ -10,6 +10,7 @@ import {
   Avatar,
   Button,
   Drawer as MuiDrawer,
+  Grid,
   IconButton,
   Link,
   List,
@@ -30,7 +31,6 @@ import {
   ThemeProvider,
   useTheme,
 } from '@mui/material/styles';
-import { CiBuildsListMenu } from '@sorry-cypress/dashboard/components/layout/sidebar/ciBuildsListMenu';
 import { HomeListMenu } from '@sorry-cypress/dashboard/components/layout/sidebar/homeListMenu';
 import { ProjectDetailsMenu } from '@sorry-cypress/dashboard/components/layout/sidebar/projectDetailsMenu';
 import { ProjectListMenu } from '@sorry-cypress/dashboard/components/layout/sidebar/projectListMenu';
@@ -40,7 +40,6 @@ import {
   navStructure,
 } from '@sorry-cypress/dashboard/lib/navigation';
 import logoDark from '@sorry-cypress/dashboard/resources/logo-dark.svg';
-import { isEmpty } from 'lodash';
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import packageJson from '../../../package.json';
@@ -148,10 +147,8 @@ const DrawerContentContainer = styled('div', {
 
 export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
   const nav = useReactiveVar(navStructure);
-  const projectsView = nav.find((item) => item.type === NavItemType.projects);
   const projectNavItem = nav.find((item) => item.type === NavItemType.project);
   const projectView = projectNavItem && nav?.[2];
-  const ciBuildsView = nav.find((item) => item.type === NavItemType.ciBuilds);
   const theme = useTheme();
   const smallScreen = !useMediaQuery(theme.breakpoints.up('md'), {
     noSsr: true,
@@ -163,7 +160,6 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
       filters: [],
     },
   });
-  const isHome = !loading && !error && isEmpty(nav);
   const { projects } = (data || {}) as {
     projects: Array<{ projectId: string; projectColor: string }>;
   };
@@ -175,26 +171,10 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
     smallScreen && onToggleSidebar?.();
   };
 
-  const getMenuTitle = (): string => {
-    if (isHome) return 'Home';
-    if (ciBuildsView) return 'Builds';
-    if (projectNavItem?.label) return decodeURIComponent(projectNavItem?.label);
-    if (projectsView) return 'Projects';
-    return '';
-  };
-
-  const menuTitle = getMenuTitle();
-
   const drawerContent = (
     <DrawerContentContainer open={open}>
       <DrawerHeader>
-        <ListItem
-          component="div"
-          sx={{
-            justifyContent: 'center',
-            maxWidth: 275,
-          }}
-        >
+        <ListItem component="div">
           <ListItemAvatar sx={{ minWidth: '42px' }}>
             <RouterLink to="/?redirect=false">
               <Avatar
@@ -210,42 +190,6 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
               />
             </RouterLink>
           </ListItemAvatar>
-          <ListItemText
-            sx={{
-              m: smallScreen ? 1 : 0,
-            }}
-            primary={<span>Sorry Cypress</span>}
-            primaryTypographyProps={{
-              sx: {
-                transition: 'all 0.3s',
-                textDecoration: 'none',
-                opacity: open ? 1 : 0,
-              },
-              fontSize: open ? 28 : 0,
-              width: open ? undefined : 0,
-              letterSpacing: 0,
-              textAlign: smallScreen ? 'left' : 'right',
-              color: 'text.primary',
-              component: RouterLink,
-              to: '/?redirect=false',
-            }}
-            secondary={`v${packageJson.version}`}
-            secondaryTypographyProps={{
-              sx: {
-                transition: 'all 0.3s',
-                opacity: open ? 1 : 0,
-              },
-              fontSize: open ? 14 : 0,
-              width: open ? undefined : 0,
-              letterSpacing: 0,
-              textAlign: smallScreen ? 'left' : 'right',
-              component: Link,
-              underline: 'none',
-              target: '_blank',
-              href: `https://github.com/sorry-cypress/sorry-cypress/releases/tag/v${packageJson.version}`,
-              rel: 'noopener noreferrer',
-            }}
-          />
         </ListItem>
         {open && (
           <IconButton
@@ -273,19 +217,6 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
           overflow: 'auto',
         }}
       >
-        <ListItem component="div">
-          {open && (
-            <ListItemText
-              sx={{ mt: 0, mb: 0 }}
-              primary={menuTitle}
-              primaryTypographyProps={{
-                fontSize: 22,
-                letterSpacing: 0,
-                color: 'text.primary',
-              }}
-            />
-          )}
-        </ListItem>
         {loading &&
           ['loading1', 'loading2', 'loading3'].map((key) => (
             <Skeleton
@@ -295,10 +226,10 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
               sx={{ my: 3, ml: 4, mr: 2 }}
             />
           ))}
-        {!loading && isHome && (
+        {!loading && (
           <HomeListMenu open={open} onItemClick={handleMenuItemClick} />
         )}
-        {!loading && projectsView && !projectView && (
+        {!loading && !projectView && (
           <ProjectListMenu
             projects={projects}
             open={open}
@@ -314,13 +245,7 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
             onItemClick={handleMenuItemClick}
           />
         )}
-        {!loading && ciBuildsView && ciBuildsView.type && (
-          <CiBuildsListMenu
-            open={open}
-            selectedItem={ciBuildsView.type}
-            onItemClick={handleMenuItemClick}
-          ></CiBuildsListMenu>
-        )}
+
         {error && (
           <Alert
             severity="error"
@@ -343,7 +268,13 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
         )}
       </List>
       <DrawerFooter open={open}>
-        <div>
+        <Grid container direction={'column'} alignItems="stretch" p={[2, 1]}>
+          <Link
+            href={`https://github.com/sorry-cypress/sorry-cypress/releases/tag/v${packageJson.version}`}
+          >
+            v{packageJson.version}
+          </Link>
+
           {!open && (
             <Tooltip title="Source" placement="right" arrow>
               <IconButton
@@ -387,9 +318,7 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
               />
             </ListItemButton>
           )}
-        </div>
 
-        <div>
           {!open && (
             <Tooltip title="Documentation" placement="right" arrow>
               <IconButton
@@ -433,14 +362,13 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
               />
             </ListItemButton>
           )}
-        </div>
+        </Grid>
       </DrawerFooter>
     </DrawerContentContainer>
   );
 
   const DrawerComponent = smallScreen ? MuiDrawer : Drawer;
   return (
-    // <StyledEngineProvider injectFirst>
     <ThemeProvider theme={sidebarTheme}>
       <DrawerComponent
         variant={smallScreen ? 'temporary' : 'permanent'}
@@ -468,7 +396,6 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
         {drawerContent}
       </DrawerComponent>
     </ThemeProvider>
-    // </StyledEngineProvider>
   );
 };
 

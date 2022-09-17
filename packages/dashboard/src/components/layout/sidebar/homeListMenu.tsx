@@ -1,5 +1,6 @@
+import { useReactiveVar } from '@apollo/client';
 import {
-  Book as BookIcon,
+  LibraryBooks,
   PlayLesson as PlayLessonIcon,
 } from '@mui/icons-material';
 import {
@@ -9,23 +10,36 @@ import {
   ListItemText,
   Tooltip,
 } from '@mui/material';
-import { NavItemType } from '@sorry-cypress/dashboard/lib/navigation';
+import {
+  NavItemType,
+  navStructure,
+} from '@sorry-cypress/dashboard/lib/navigation';
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
 export const HomeListMenu: HomeListMenuType = ({ open, onItemClick }) => {
+  const nav = useReactiveVar(navStructure);
+  const isCIBuildsView = !!nav.find(
+    (item) => item.type === NavItemType.ciBuilds
+  );
+  const isProjectsView = !!nav.find(
+    (item) => item.type === NavItemType.projects
+  );
+
   const menuItems = [
     {
-      label: 'Builds',
+      label: 'Recent Builds',
       link: `/ci-builds`,
       iconComponent: PlayLessonIcon,
       type: NavItemType.ciBuilds,
+      isActive: isCIBuildsView,
     },
     {
       label: 'Projects',
       link: `/projects`,
-      iconComponent: BookIcon,
+      iconComponent: LibraryBooks,
       type: NavItemType.projects,
+      isActive: isProjectsView,
     },
   ];
 
@@ -39,6 +53,7 @@ export const HomeListMenu: HomeListMenuType = ({ open, onItemClick }) => {
               component={RouterLink}
               to={item.link}
               onClick={onItemClick}
+              selected={item.isActive}
             >
               <ListItemIcon sx={{ opacity: 0.6, minWidth: 28 }}>
                 <item.iconComponent />

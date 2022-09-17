@@ -18,7 +18,7 @@ export function CiBuildsView() {
     setNav([
       {
         type: NavItemType.ciBuilds,
-        label: 'Builds',
+        label: 'Recent Builds',
       },
     ]);
   }, []);

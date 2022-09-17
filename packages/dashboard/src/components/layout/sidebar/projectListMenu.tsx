@@ -1,5 +1,7 @@
 import { Book as BookIcon } from '@mui/icons-material';
 import {
+  Divider,
+  Grid,
   IconButton,
   ListItemButton,
   ListItemIcon,
@@ -15,7 +17,8 @@ export const ProjectListMenu: ProjectListMenuType = ({
   onItemClick,
 }) => {
   return (
-    <div>
+    <Grid mt={1}>
+      <Divider />
       {projects?.map((project) => {
         if (open) {
           return (
@@ -65,7 +68,7 @@ export const ProjectListMenu: ProjectListMenuType = ({
           </Tooltip>
         );
       })}
-    </div>
+    </Grid>
   );
 };
 
