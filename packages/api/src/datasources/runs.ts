@@ -1,4 +1,7 @@
-import { PAGE_ITEMS_LIMIT } from '@sorry-cypress/api/config';
+import {
+  CI_BUILD_BATCH_SIZE,
+  PAGE_ITEMS_LIMIT,
+} from '@sorry-cypress/api/config';
 import { OrderingOptions } from '@sorry-cypress/api/generated/graphql';
 import {
   AggregationFilter,
@@ -82,9 +85,38 @@ export class RunsAPI extends DataSource {
         .toArray()) as Run[];
       return results;
     } catch (error) {
-      getLogger().error({ error }, 'Error wihle getting all runs...');
+      getLogger().error({ error }, 'Error while getting all runs...');
       throw error;
     }
+  }
+
+  async getAllCiBuilds({ filters }: { filters: AggregationFilter[] }) {
+    const aggregationPipeline = [
+      ...filtersToAggregations(filters),
+      { $sort: { _id: -1 } }, // order by most recent runs
+      { $limit: CI_BUILD_BATCH_SIZE }, // performance improvement since group doesn't leverage indexes
+      {
+        $group: {
+          _id: '$meta.ciBuildId',
+          runs: { $push: '$$ROOT' },
+          runId: { $min: '$_id' }, // oldest run
+        },
+      },
+      { $sort: { runId: -1 } }, // sort groups by most recent runs
+      { $limit: PAGE_ITEMS_LIMIT },
+      {
+        $addFields: {
+          ciBuildId: '$_id',
+          createdAt: { $arrayElemAt: ['$runs.createdAt', -1] }, // last run (first created)
+          updatedAt: { $max: '$runs.progress.updatedAt' },
+        },
+      },
+    ];
+
+    getLogger().log({ aggregationPipeline }, 'Getting all ci builds...');
+
+    const results = await Collection.run().aggregate(aggregationPipeline);
+    return results.toArray();
   }
 
   getRunById(id: string) {

@@ -1,56 +1,55 @@
-import { Add as AddIcon, Loop as LoopIcon } from '@mui/icons-material';
-import { Typography } from '@mui/material';
-import { Toolbar } from '@sorry-cypress/dashboard/components';
+import { Box, Link, Typography } from '@mui/material';
 import { setNav } from '@sorry-cypress/dashboard/lib/navigation';
-import ProjectsList from '@sorry-cypress/dashboard/project/projectList';
-import React, { useLayoutEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAutoRefresh } from '../hooks';
+import React, { FunctionComponent, useLayoutEffect } from 'react';
+import { Navigate, useSearchParams } from 'react-router-dom';
+import packageJson from '../../../../package.json';
 
-export function DashboardView() {
-  const [search, setSearch] = useState('');
-  const navigate = useNavigate();
-  const [shouldAutoRefresh, setShouldAutoRefresh] = useAutoRefresh();
+export const DashboardView: DashboardComponent = () => {
+  const [searchParams] = useSearchParams();
+  const redirect = searchParams.get('redirect') === 'false' ? false : true;
+
   useLayoutEffect(() => {
     setNav([]);
   }, []);
 
   return (
     <>
-      <Toolbar
-        actions={[
-          {
-            key: 'newProject',
-            text: 'Add New Project',
-            icon: AddIcon,
-            onClick: () => {
-              navigate('/--create-new-project--/edit');
-            },
-          },
-          {
-            key: 'autoRefresh',
-            text: 'Auto Refresh',
-            icon: LoopIcon,
-            toggleButton: true,
-            selected: !!shouldAutoRefresh,
-            onClick: () => {
-              setShouldAutoRefresh(!shouldAutoRefresh);
-              window.location.reload();
-            },
-          },
-        ]}
-        searchPlaceholder="Enter project id"
-        onSearch={setSearch}
-      />
-      <Typography
-        component="h1"
-        variant="h6"
-        color="text.primary"
-        sx={{ mb: 5 }}
-      >
-        Projects
-      </Typography>
-      <ProjectsList search={search} />
+      <Box textAlign="center">
+        <Typography
+          component="h1"
+          variant="h5"
+          color="text.primary"
+          sx={{ mb: 5 }}
+        >
+          Welcome to Sorry-Cypress! Please choose a project from the sidebar to
+          get started.
+        </Typography>
+
+        <Box textAlign="center" my={3}>
+          <img src="./og-card.png" alt="Sorry Cypress" height="360px" />
+        </Box>
+
+        <Box display={'flex'} flexDirection={'column'}>
+          <Link
+            href={`https://github.com/sorry-cypress/sorry-cypress/releases/tag/v${packageJson.version}`}
+          >
+            v{packageJson.version}
+          </Link>
+
+          <Link href="https://github.com/sorry-cypress/sorry-cypress/">
+            GitHub
+          </Link>
+
+          <Link href="https://sorry-cypress.dev">Documentation</Link>
+        </Box>
+      </Box>
+
+      {redirect && <Navigate to="/projects" />}
     </>
   );
-}
+};
+
+type DashboardProps = {
+  // empty
+};
+type DashboardComponent = FunctionComponent<DashboardProps>;
