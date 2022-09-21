@@ -144,10 +144,9 @@ export const CiBuildSummary: CiBuildSummaryComponent = (props) => {
         </Grid>
         <Collapse in={!compact}>
           <Grid item container spacing={1}>
-            {!linkToRun &&
-              runsSortedByProject.map((run) => (
-                <CiBuildSummaryProject key={run.runId} run={run} />
-              ))}
+            {runsSortedByProject.map((run) => (
+              <CiBuildSummaryProject key={run.runId} run={run} />
+            ))}
           </Grid>
           <Grid container>
             {ciData && (
