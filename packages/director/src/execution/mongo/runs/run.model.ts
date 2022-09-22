@@ -279,26 +279,26 @@ export const resetSpecs = async (
         [`${groupPath}.instances.claimed`]: -1,
         [`${groupPath}.instances.complete`]: -1,
         [`${groupPath}.instances.failures`]: -1,
-        [`${groupPath}.tests.overall`]: -specs.reduce(
-          (t, s) => t + s.results!.stats.tests,
-          0
-        ),
-        [`${groupPath}.tests.passes`]: -specs.reduce(
-          (t, s) => t + s.results!.stats.passes,
-          0
-        ),
-        [`${groupPath}.tests.failures`]: -specs.reduce(
-          (t, s) => t + s.results!.stats.failures,
-          0
-        ),
-        [`${groupPath}.tests.skipped`]: -specs.reduce(
-          (t, s) => t + s.results!.stats.skipped,
-          0
-        ),
-        [`${groupPath}.tests.pending`]: -specs.reduce(
-          (t, s) => t + s.results!.stats.pending,
-          0
-        ),
+        [`${groupPath}.tests.overall`]: -specs.reduce((t, s) => {
+          if (!s.results) return t + 0;
+          return t + s.results.stats.tests;
+        }, 0),
+        [`${groupPath}.tests.passes`]: -specs.reduce((t, s) => {
+          if (!s.results) return t + 0;
+          return t + s.results.stats.passes;
+        }, 0),
+        [`${groupPath}.tests.failures`]: -specs.reduce((t, s) => {
+          if (!s.results) return t + 0;
+          return t + s.results.stats.failures;
+        }, 0),
+        [`${groupPath}.tests.skipped`]: -specs.reduce((t, s) => {
+          if (!s.results) return t + 0;
+          return t + s.results.stats.skipped;
+        }, 0),
+        [`${groupPath}.tests.pending`]: -specs.reduce((t, s) => {
+          if (!s.results) return t + 0;
+          return t + s.results.stats.pending;
+        }, 0),
       },
     }
   );
