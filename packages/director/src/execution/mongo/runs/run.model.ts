@@ -241,7 +241,7 @@ export const setSpecCompleted = async (
   }
 };
 
-export const resetSpecs = async (
+export const resetFailedSpecs = async (
   run: Run,
   groupId: string,
   specs: RunSpec[]
@@ -280,23 +280,23 @@ export const resetSpecs = async (
         [`${groupPath}.instances.complete`]: -1,
         [`${groupPath}.instances.failures`]: -1,
         [`${groupPath}.tests.overall`]: -specs.reduce(
-          (t, s) => t + s.results!.stats.tests,
+          (t, s) => t + (s.results?.stats.tests ?? 0),
           0
         ),
         [`${groupPath}.tests.passes`]: -specs.reduce(
-          (t, s) => t + s.results!.stats.passes,
+          (t, s) => t + (s.results?.stats.passes ?? 0),
           0
         ),
         [`${groupPath}.tests.failures`]: -specs.reduce(
-          (t, s) => t + s.results!.stats.failures,
+          (t, s) => t + (s.results?.stats.failures ?? 0),
           0
         ),
         [`${groupPath}.tests.skipped`]: -specs.reduce(
-          (t, s) => t + s.results!.stats.skipped,
+          (t, s) => t + (s.results?.stats.skipped ?? 0),
           0
         ),
         [`${groupPath}.tests.pending`]: -specs.reduce(
-          (t, s) => t + s.results!.stats.pending,
+          (t, s) => t + (s.results?.stats.pending ?? 0),
           0
         ),
       },
