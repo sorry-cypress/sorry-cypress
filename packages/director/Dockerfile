@@ -20,12 +20,13 @@ RUN apk --no-cache add curl && \
     node-prune
 
 FROM node:14-alpine
+ARG USER=node
 WORKDIR /app
 COPY --chown=node:node --from=build /app/packages/ packages/
 COPY --chown=node:node --from=build /app/node_modules/ node_modules/
 RUN apk add --no-cache tini
 ENV NODE_ENV=production
-USER node
+USER ${USER}
 EXPOSE 1234
 ENTRYPOINT ["/sbin/tini", "--"]
 CMD ["./node_modules/.bin/pm2-runtime", "packages/director/dist"]
