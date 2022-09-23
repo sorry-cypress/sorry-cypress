@@ -10,7 +10,7 @@ export const getFirstUnclaimedSpec = (run: Run, groupId: string) =>
   getSpecsForGroup(run, groupId).find((s) => !s.claimedAt);
 export const getFailedSpecs = (run: Run, groupId: string) =>
   getSpecsForGroup(run, groupId).filter((s) =>
-    s.results ? s.results?.stats.failures + s.results.stats.skipped > 0 : false
+    s.results ? s.results.stats.failures + s.results.stats.skipped > 0 : false
   );
 
 interface GetNewSpecsForGroupParams {

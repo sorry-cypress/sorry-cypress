@@ -45,7 +45,7 @@ import {
   createRun as storageCreateRun,
   getNewGroupTemplate,
   getRunById,
-  resetSpecs,
+  resetFailedSpecs,
   setRunCompleted,
   setSpecClaimed,
   setSpecCompleted,
@@ -143,7 +143,7 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
         } else {
           // Retry job
           const failedSpecs = getFailedSpecs(run, groupId);
-          await resetSpecs(run, groupId, failedSpecs);
+          await resetFailedSpecs(run, groupId, failedSpecs);
         }
       }
 
