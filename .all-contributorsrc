@@ -368,6 +368,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "solidnerd",
+      "name": "Niclas Mietz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/886383?v=4",
+      "profile": "https://solidnerd.dev",
+      "contributions": [
+        "infra"
+      ]
     }
   ],
   "contributorsPerLine": 7,
