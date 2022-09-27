@@ -19,14 +19,13 @@ RUN apk --no-cache add curl && \
     curl -sf https://gobinaries.com/tj/node-prune | sh && \
     node-prune
 
-FROM node:16-alpine
-ARG USER=node
+FROM node:16-alpine as production
+
 WORKDIR /app
 COPY --chown=node:node --from=build /app/packages/ packages/
 COPY --chown=node:node --from=build /app/node_modules/ node_modules/
-RUN apk add --no-cache tini
 ENV NODE_ENV=production
-USER ${USER}
+USER node
 EXPOSE 1234
 ENTRYPOINT ["/sbin/tini", "--"]
-CMD ["./node_modules/.bin/pm2-runtime", "packages/director/dist"]
+CMD ["node", "packages/director/dist"]
