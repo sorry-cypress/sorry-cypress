@@ -147,6 +147,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center"><a href="https://github.com/bjartur20"><img src="https://avatars.githubusercontent.com/u/1508187?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Bjartur Þórhallsson</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=bjartur20" title="Code">💻</a></td>
       <td align="center"><a href="http://matteovivona.it"><img src="https://avatars.githubusercontent.com/u/6388707?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Matteo Vivona</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=tehKapa" title="Code">💻</a></td>
       <td align="center"><a href="https://github.com/rrauenza"><img src="https://avatars.githubusercontent.com/u/1376251?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Rich Rauenzahn</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=rrauenza" title="Code">💻</a></td>
+      <td align="center"><a href="https://solidnerd.dev"><img src="https://avatars.githubusercontent.com/u/886383?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Niclas Mietz</b></sub></a><br /><a href="#infra-solidnerd" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
     </tr>
   </tbody>
 </table>
