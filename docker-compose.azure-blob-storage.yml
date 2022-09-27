@@ -2,7 +2,7 @@ version: '3.6'
 # https://docs.microsoft.com/en-us/azure/storage/common/storage-use-azurite?tabs=visual-studio
 services:
   mongo:
-    image: mongo:4.2
+    image: mongo:4.4
     volumes:
       - ./data/data-mongo-cypress:/data/db
     ports:

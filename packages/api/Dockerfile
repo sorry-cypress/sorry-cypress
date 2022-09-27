@@ -1,4 +1,4 @@
-FROM node:14-alpine AS build
+FROM node:16-alpine AS build
 WORKDIR /app
 COPY packages/api/ ./packages/api
 COPY packages/common/ ./packages/common
@@ -17,7 +17,7 @@ RUN apk --no-cache add curl && \
     curl -sf https://gobinaries.com/tj/node-prune | sh && \
     node-prune
 
-FROM node:14-alpine
+FROM node:16-alpine
 ARG USER=node
 WORKDIR /app
 COPY  --chown=node:node --from=build /app/packages/ packages/
