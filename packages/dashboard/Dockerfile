@@ -1,4 +1,4 @@
-FROM node:14-alpine AS build
+FROM node:16-alpine AS build
 WORKDIR /app
 COPY packages/api/src/schema ./packages/api/src/schema
 COPY packages/dashboard/ ./packages/dashboard
@@ -10,7 +10,7 @@ RUN yarn install --frozen-lockfile
 RUN yarn workspace @sorry-cypress/common build
 RUN yarn workspace @sorry-cypress/dashboard build
 
-FROM nginx:1.22.0-alpine
+FROM nginx:1.22-alpine
 WORKDIR /usr/share/nginx/html
 COPY packages/dashboard/nginx/default.conf.template /etc/nginx/templates/default.conf.template
 COPY packages/dashboard/server/static .
