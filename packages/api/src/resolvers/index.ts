@@ -99,6 +99,13 @@ export const resolvers = {
     ) => {
       return dataSources.runsAPI.getAllRuns({ orderDirection, filters });
     },
+    ciBuilds: (
+      _: any,
+      { filters }: Parameters<RunsAPI['getAllCiBuilds']>[0],
+      { dataSources }: { dataSources: AppDatasources }
+    ) => {
+      return dataSources.runsAPI.getAllCiBuilds({ filters });
+    },
     runFeed: (
       _: any,
       { cursor, filters }: Parameters<RunsAPI['getRunFeed']>[0],

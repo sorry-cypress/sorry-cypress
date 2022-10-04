@@ -2,7 +2,7 @@ version: '3.6'
 
 services:
   mongo:
-    image: mongo:4.2
+    image: mongo:4.4
     volumes:
       - ./data/data-mongo-cypress:/data/db
 
@@ -14,6 +14,7 @@ services:
       MONGODB_DATABASE: 'sorry-cypress'
       EXECUTION_DRIVER: '../execution/mongo/driver'
       SCREENSHOTS_DRIVER: '../screenshots/cos.driver'
+      GITLAB_JOB_RETRIES: 'false'
       COS_ACCESSKEY: 'cos_hmac_access_key'
       COS_SECRETKEY: 'cos_hmac_secret_key'
       COS_REGION: 'cos_region'

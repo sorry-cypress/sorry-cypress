@@ -427,6 +427,8 @@ Resources:
               Value: ../execution/mongo/driver
             - Name: SCREENSHOTS_DRIVER
               Value: ../screenshots/s3.driver
+            - Name: GITLAB_JOB_RETRIES
+              Value: false
             - Name: MONGODB_DATABASE
               Value: sorry-cypress
             - Name: MONGODB_URI

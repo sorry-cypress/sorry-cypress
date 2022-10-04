@@ -101,6 +101,11 @@ function updateNav(data: GetInstanceQuery | undefined) {
     }
     setNav([
       {
+        type: NavItemType.projects,
+        label: 'Projects',
+        link: './projects',
+      },
+      {
         type: NavItemType.project,
         label: data.instance?.projectId,
         link: getProjectPath(data.instance?.projectId),

@@ -1,0 +1,20 @@
+query getCiBuilds($filters: [Filters!]!) {
+  ciBuilds(filters: $filters) {
+    ciBuildId
+    runs {
+      runId
+      createdAt
+      completion {
+        ...RunSummaryCompletion
+      }
+      meta {
+        ...RunSummaryMeta
+      }
+      progress {
+        ...RunProgress
+      }
+    }
+    createdAt
+    updatedAt
+  }
+}

@@ -1,21 +1,16 @@
 import { useReactiveVar } from '@apollo/client';
 import {
-  Book as BookIcon,
   Close as CloseIcon,
-  Favorite as FavoriteIcon,
-  FavoriteBorder as FavoriteBorderIcon,
   GitHub as GitHubIcon,
   Help as HelpIcon,
-  PlayLesson as PlayLessonIcon,
-  Settings as SettingsIcon,
 } from '@mui/icons-material';
 import {
   Alert,
   AlertTitle,
-  alpha,
   Avatar,
   Button,
   Drawer as MuiDrawer,
+  Grid,
   IconButton,
   Link,
   List,
@@ -36,6 +31,9 @@ import {
   ThemeProvider,
   useTheme,
 } from '@mui/material/styles';
+import { HomeListMenu } from '@sorry-cypress/dashboard/components/layout/sidebar/homeListMenu';
+import { ProjectDetailsMenu } from '@sorry-cypress/dashboard/components/layout/sidebar/projectDetailsMenu';
+import { ProjectListMenu } from '@sorry-cypress/dashboard/components/layout/sidebar/projectListMenu';
 import { useGetProjectsQuery } from '@sorry-cypress/dashboard/generated/graphql';
 import {
   NavItemType,
@@ -147,165 +145,10 @@ const DrawerContentContainer = styled('div', {
   overflowX: 'hidden',
 }));
 
-export const ProjectListMenu: ProjectListMenuType = ({
-  projects,
-  open,
-  onItemClick,
-}) => {
-  return (
-    <div>
-      {projects?.map((project) => {
-        if (open) {
-          return (
-            <ListItemButton
-              key={decodeURIComponent(project.projectId)}
-              component={RouterLink}
-              to={`/${encodeURIComponent(project.projectId)}/runs`}
-              onClick={onItemClick}
-            >
-              <ListItemIcon
-                sx={{ opacity: 0.6, minWidth: 28, color: project.projectColor }}
-              >
-                <BookIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary={decodeURIComponent(project.projectId)}
-                primaryTypographyProps={{
-                  fontSize: 16,
-                  color: 'text.primary',
-                  sx: { opacity: 0.6 },
-                  style: { wordBreak: 'break-word' },
-                }}
-              />
-            </ListItemButton>
-          );
-        }
-
-        return (
-          <Tooltip
-            key={decodeURIComponent(project.projectId)}
-            title={decodeURIComponent(project.projectId)}
-            placement="right"
-            arrow
-          >
-            <div style={{ paddingBottom: '8px' }}>
-              <IconButton
-                aria-label={decodeURIComponent(project.projectId)}
-                sx={{ opacity: 0.6, padding: 1.5, color: project.projectColor }}
-                component={RouterLink}
-                to={`/${encodeURIComponent(project.projectId)}/runs`}
-                onClick={onItemClick}
-                size="large"
-              >
-                <BookIcon />
-              </IconButton>
-            </div>
-          </Tooltip>
-        );
-      })}
-    </div>
-  );
-};
-
-export const ProjectDetailsMenu: ProjectDetailsMenuType = ({
-  projectId,
-  projectColor,
-  open,
-  onItemClick,
-  selectedItem,
-}) => {
-  const projectMenuItems = [
-    {
-      label: 'Latest runs',
-      link: `/${encodeURIComponent(projectId)}/runs`,
-      iconComponent: PlayLessonIcon,
-      type: NavItemType.latestRuns,
-    },
-    {
-      label: 'Project settings',
-      link: `/${encodeURIComponent(projectId)}/edit`,
-      iconComponent: SettingsIcon,
-      type: NavItemType.projectSettings,
-    },
-  ];
-  return (
-    <>
-      {projectMenuItems.map((item) => {
-        const selected = selectedItem === item.type;
-        if (open) {
-          return (
-            <ListItemButton
-              key={item.label}
-              color={selected ? 'primary' : undefined}
-              sx={{
-                ml: 2,
-                mb: 1,
-                mr: { md: 0, xs: 2 },
-                pl: 2,
-                '&.Mui-selected': {
-                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                },
-                backgroundColor: selected
-                  ? 'rgba(255, 255, 255, 0.1)'
-                  : undefined,
-                borderTopLeftRadius: 8,
-                borderTopRightRadius: { md: 0, xs: 8 },
-                borderBottomRightRadius: { md: 0, xs: 8 },
-                borderBottomLeftRadius: 8,
-              }}
-              component={RouterLink}
-              to={item.link}
-              selected={selected}
-              onClick={onItemClick}
-            >
-              <ListItemIcon sx={{ opacity: selected ? 1 : 0.6, minWidth: 28 }}>
-                <item.iconComponent color={selected ? 'primary' : undefined} />
-              </ListItemIcon>
-              <ListItemText
-                primary={item.label}
-                primaryTypographyProps={{
-                  fontSize: 16,
-                  color: selected ? 'primary' : 'text.primary',
-                  sx: { opacity: selected ? 1 : 0.6 },
-                }}
-              />
-            </ListItemButton>
-          );
-        }
-
-        return (
-          <Tooltip key={item.label} title={item.label} placement="right" arrow>
-            <div style={{ paddingBottom: '8px' }}>
-              <IconButton
-                aria-label={item.label}
-                color={selected ? 'primary' : undefined}
-                sx={{
-                  opacity: selected ? 1 : 0.6,
-                  padding: 1.5,
-                  backgroundColor: selected
-                    ? alpha(projectColor || '#3486E3', 0.1)
-                    : undefined,
-                  color: selected ? projectColor || '#3486E3' : undefined,
-                }}
-                component={RouterLink}
-                to={item.link}
-                onClick={onItemClick}
-                size="large"
-              >
-                <item.iconComponent />
-              </IconButton>
-            </div>
-          </Tooltip>
-        );
-      })}
-    </>
-  );
-};
-
 export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
   const nav = useReactiveVar(navStructure);
   const projectNavItem = nav.find((item) => item.type === NavItemType.project);
-  const projectView = projectNavItem && nav?.[1];
+  const projectView = projectNavItem && nav?.[2];
   const theme = useTheme();
   const smallScreen = !useMediaQuery(theme.breakpoints.up('md'), {
     noSsr: true,
@@ -317,7 +160,6 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
       filters: [],
     },
   });
-  const isHome = !loading && !error && !projectNavItem;
   const { projects } = (data || {}) as {
     projects: Array<{ projectId: string; projectColor: string }>;
   };
@@ -332,15 +174,9 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
   const drawerContent = (
     <DrawerContentContainer open={open}>
       <DrawerHeader>
-        <ListItem
-          component="div"
-          sx={{
-            justifyContent: 'center',
-            maxWidth: 275,
-          }}
-        >
+        <ListItem component="div">
           <ListItemAvatar sx={{ minWidth: '42px' }}>
-            <RouterLink to="/">
+            <RouterLink to="/?redirect=false">
               <Avatar
                 alt="Sorry Cypress Dashboard Home"
                 src={logoDark}
@@ -354,47 +190,11 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
               />
             </RouterLink>
           </ListItemAvatar>
-          <ListItemText
-            sx={{
-              m: smallScreen ? 1 : 0,
-            }}
-            primary={<span>Sorry Cypress</span>}
-            primaryTypographyProps={{
-              sx: {
-                transition: 'all 0.3s',
-                textDecoration: 'none',
-                opacity: open ? 1 : 0,
-              },
-              fontSize: open ? 28 : 0,
-              width: open ? undefined : 0,
-              letterSpacing: 0,
-              textAlign: smallScreen ? 'left' : 'right',
-              color: 'text.primary',
-              component: RouterLink,
-              to: '/',
-            }}
-            secondary={`v${packageJson.version}`}
-            secondaryTypographyProps={{
-              sx: {
-                transition: 'all 0.3s',
-                opacity: open ? 1 : 0,
-              },
-              fontSize: open ? 14 : 0,
-              width: open ? undefined : 0,
-              letterSpacing: 0,
-              textAlign: smallScreen ? 'left' : 'right',
-              component: Link,
-              underline: 'none',
-              target: '_blank',
-              href: `https://github.com/sorry-cypress/sorry-cypress/releases/tag/v${packageJson.version}`,
-              rel: 'noopener noreferrer',
-            }}
-          />
         </ListItem>
         {open && (
           <IconButton
             color="default"
-            aria-label=" Close Menu"
+            aria-label="Close Menu"
             component="span"
             size="medium"
             onClick={onToggleSidebar}
@@ -417,23 +217,6 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
           overflow: 'auto',
         }}
       >
-        <ListItem component="div">
-          {open && (
-            <ListItemText
-              sx={{ mt: 0, mb: 0 }}
-              primary={
-                isHome
-                  ? 'Projects'
-                  : decodeURIComponent(projectNavItem?.label || '')
-              }
-              primaryTypographyProps={{
-                fontSize: 22,
-                letterSpacing: 0,
-                color: 'text.primary',
-              }}
-            />
-          )}
-        </ListItem>
         {loading &&
           ['loading1', 'loading2', 'loading3'].map((key) => (
             <Skeleton
@@ -443,14 +226,17 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
               sx={{ my: 3, ml: 4, mr: 2 }}
             />
           ))}
-        {!loading && isHome && (
+        {!loading && (
+          <HomeListMenu open={open} onItemClick={handleMenuItemClick} />
+        )}
+        {!loading && !projectView && (
           <ProjectListMenu
             projects={projects}
             open={open}
             onItemClick={handleMenuItemClick}
           />
         )}
-        {!loading && !isHome && projectNavItem?.label && projectView?.type && (
+        {!loading && projectNavItem?.label && projectView?.type && (
           <ProjectDetailsMenu
             projectId={decodeURIComponent(projectNavItem?.label || '')}
             projectColor={currentProject?.projectColor}
@@ -459,6 +245,7 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
             onItemClick={handleMenuItemClick}
           />
         )}
+
         {error && (
           <Alert
             severity="error"
@@ -481,7 +268,13 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
         )}
       </List>
       <DrawerFooter open={open}>
-        <div>
+        <Grid container direction={'column'} alignItems="stretch" p={[2, 1]}>
+          <Link
+            href={`https://github.com/sorry-cypress/sorry-cypress/releases/tag/v${packageJson.version}`}
+          >
+            v{packageJson.version}
+          </Link>
+
           {!open && (
             <Tooltip title="Source" placement="right" arrow>
               <IconButton
@@ -525,9 +318,7 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
               />
             </ListItemButton>
           )}
-        </div>
 
-        <div>
           {!open && (
             <Tooltip title="Documentation" placement="right" arrow>
               <IconButton
@@ -571,44 +362,13 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
               />
             </ListItemButton>
           )}
-        </div>
-
-        <div>
-          <Tooltip title="Become a sponsor" placement="right" arrow>
-            <IconButton
-              aria-label="Become a sponsor"
-              sx={{
-                padding: open ? 1 : 1.5,
-                flex: open ? 1 : undefined,
-                textAlign: 'right',
-              }}
-              component={Link}
-              href="https://github.com/sponsors/agoldis"
-              target="_blank"
-              rel="noreferrer"
-              size="large"
-            >
-              <FavoriteIcon
-                {...(open ? { component: FavoriteBorderIcon } : {})}
-                sx={{
-                  fontSize: open ? 20 : undefined,
-                  '&:hover': {
-                    color: red[700],
-                  },
-                  transition: 'all 0.5s',
-                  color: red[300],
-                }}
-              />
-            </IconButton>
-          </Tooltip>
-        </div>
+        </Grid>
       </DrawerFooter>
     </DrawerContentContainer>
   );
 
   const DrawerComponent = smallScreen ? MuiDrawer : Drawer;
   return (
-    // <StyledEngineProvider injectFirst>
     <ThemeProvider theme={sidebarTheme}>
       <DrawerComponent
         variant={smallScreen ? 'temporary' : 'permanent'}
@@ -636,25 +396,8 @@ export const Sidebar: SidebarType = ({ open, onToggleSidebar }) => {
         {drawerContent}
       </DrawerComponent>
     </ThemeProvider>
-    // </StyledEngineProvider>
   );
 };
 
 type SidebarProps = { open: boolean; onToggleSidebar?: () => void };
 type SidebarType = React.FC<SidebarProps>;
-
-type ProjectDetailsMenuProps = {
-  projectId: string;
-  projectColor?: string;
-  open: boolean;
-  onItemClick: () => void;
-  selectedItem: NavItemType;
-};
-type ProjectDetailsMenuType = React.FC<ProjectDetailsMenuProps>;
-
-type ProjectListMenuProps = {
-  projects: Array<{ projectId: string; projectColor: string }>;
-  open: boolean;
-  onItemClick: () => void;
-};
-type ProjectListMenuType = React.FC<ProjectListMenuProps>;

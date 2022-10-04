@@ -2,7 +2,7 @@ version: '3.6'
 # https://docs.microsoft.com/en-us/azure/storage/common/storage-use-azurite?tabs=visual-studio
 services:
   mongo:
-    image: mongo:4.2
+    image: mongo:4.4
     volumes:
       - ./data/data-mongo-cypress:/data/db
     ports:
@@ -14,6 +14,7 @@ services:
     environment:
       DASHBOARD_URL: http://localhost:8080
       EXECUTION_DRIVER: '../execution/mongo/driver'
+      GITLAB_JOB_RETRIES: 'false'
       MONGODB_URI: 'mongodb://mongo:27017'
       MONGODB_DATABASE: 'sorry-cypress'
       SCREENSHOTS_DRIVER: '../screenshots/azure-blob-storage.driver'
@@ -22,9 +23,9 @@ services:
       AZURE_UPLOAD_URL_EXPIRY_IN_HOURS: 24
       PROBE_LOGGER: "false"
     ports:
-      - "10000:10000"
-      - "10001:10001"
-      - "1234:1234"
+      - '10000:10000'
+      - '10001:10001'
+      - '1234:1234'
     depends_on:
       - mongo
 
@@ -59,7 +60,7 @@ services:
     # Please note that in this case if you try to replace the hostname in the signed url it doesn't work because the hostname is part of the signed content
     network_mode: service:director
     restart: always
-    command: "azurite --blobHost 0.0.0.0 --blobPort 10000 --queueHost 0.0.0.0 --queuePort 10001"
+    command: 'azurite --blobHost 0.0.0.0 --blobPort 10000 --queueHost 0.0.0.0 --queuePort 10001'
 
   createbuckets:
     image: mcr.microsoft.com/azure-cli:latest

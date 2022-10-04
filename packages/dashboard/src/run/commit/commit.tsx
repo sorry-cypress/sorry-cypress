@@ -56,6 +56,7 @@ export const Commit: CommitComponent = (props) => {
           </Grid>
         </Grid>
       )}
+
       {commit.branch && (
         <Grid
           item
@@ -93,9 +94,10 @@ export const Commit: CommitComponent = (props) => {
           </Grid>
         </Grid>
       )}
+
       <Grid item container sm={12} md={6} lg={6} xl={4} alignItems="flex-start">
         <Grid item mt={0.4} mr={1}>
-          <Tooltip title="Author of latest commit">
+          <Tooltip title="Commit Author">
             <PersonOutline fontSize="small" />
           </Tooltip>
         </Grid>
@@ -103,7 +105,7 @@ export const Commit: CommitComponent = (props) => {
           <Tooltip
             title={
               <>
-                Author of latest commit{' '}
+                Commit Author{' '}
                 {commit.authorName && commit.authorEmail && (
                   <Typography component="span" variant="caption">
                     {commit.authorEmail}
@@ -123,16 +125,17 @@ export const Commit: CommitComponent = (props) => {
           </Tooltip>
         </Grid>
       </Grid>
+
       <Grid item container sm={12} md={6} lg={6} xl={4} alignItems="flex-start">
         <Grid item mt={0.4} mr={1}>
-          <Tooltip title="Message of latest commit">
+          <Tooltip title="Commit Message ">
             <Code fontSize="small" />
           </Tooltip>
         </Grid>
         <Grid item flex={1}>
           <Typography component="p" variant="subtitle1">
             {!noLinks && commit.remoteOrigin && (
-              <Tooltip title="Message of latest commit">
+              <Tooltip title="Commit Message">
                 <Link
                   target="_blank"
                   rel="noopener noreferrer"

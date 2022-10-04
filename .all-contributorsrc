@@ -239,6 +239,7 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/4358455?v=4",
       "profile": "https://www.linkedin.com/in/mathpaquette/",
       "contributions": [
+        "code",
         "doc"
       ]
     },
@@ -357,6 +358,24 @@
       "profile": "http://matteovivona.it",
       "contributions": [
         "code"
+      ]
+    },
+    {
+      "login": "rrauenza",
+      "name": "Rich Rauenzahn",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1376251?v=4",
+      "profile": "https://github.com/rrauenza",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "solidnerd",
+      "name": "Niclas Mietz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/886383?v=4",
+      "profile": "https://solidnerd.dev",
+      "contributions": [
+        "infra"
       ]
     }
   ],
