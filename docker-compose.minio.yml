@@ -16,7 +16,7 @@ services:
       MONGODB_DATABASE: 'sorry-cypress'
 
       SCREENSHOTS_DRIVER: '../screenshots/minio.driver'
-      GITLAB_JOB_RETRIES: 'false'
+      TEST_RETRIES: 'false'
       MINIO_ACCESS_KEY: 'MW32h3gd6HvjBEgTRx'
       MINIO_SECRET_KEY: 't6NgQWUcEyG2AzaDCVkN6sbWcvDCVkN6sGiZ7'
       MINIO_ENDPOINT: 'localhost'
