@@ -3,6 +3,7 @@ import {
   FastRewindRounded,
   PauseRounded,
   PlayArrowRounded,
+  Fullscreen,
 } from '@mui/icons-material';
 import {
   alpha,
@@ -151,40 +152,60 @@ export const Player: PlayerComponent = (props) => {
         sx={{
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center',
+          justifyContent: 'space-between',
           mt: -1,
         }}
       >
-        <IconButton
-          aria-label="fast rewind"
-          onClick={() =>
-            playerRef.current &&
-            playerRef.current.seekTo(
-              playedSeconds - 2 < 0 ? 0 : playedSeconds - 2
-            )
-          }
-        >
-          <FastRewindRounded fontSize="large" />
-        </IconButton>
-        <IconButton
-          aria-label={playing ? 'play' : 'pause'}
-          onClick={() => setPlaying(!playing)}
-        >
-          {playing ? (
-            <PauseRounded sx={{ fontSize: '3rem' }} />
-          ) : (
-            <PlayArrowRounded sx={{ fontSize: '3rem' }} />
-          )}
-        </IconButton>
-        <IconButton
-          aria-label="fast forward"
-          onClick={() => {
-            playerRef.current &&
-              playedSeconds + 2 < duration &&
-              playerRef.current.seekTo(playedSeconds + 2);
+        <div></div>
+
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
         >
-          <FastForwardRounded fontSize="large" />
+          <IconButton
+            aria-label="fast rewind"
+            onClick={() =>
+              playerRef.current &&
+              playerRef.current.seekTo(
+                playedSeconds - 2 < 0 ? 0 : playedSeconds - 2
+              )
+            }
+          >
+            <FastRewindRounded fontSize="large" />
+          </IconButton>
+          <IconButton
+            aria-label={playing ? 'play' : 'pause'}
+            onClick={() => setPlaying(!playing)}
+          >
+            {playing ? (
+              <PauseRounded sx={{ fontSize: '3rem' }} />
+            ) : (
+              <PlayArrowRounded sx={{ fontSize: '3rem' }} />
+            )}
+          </IconButton>
+          <IconButton
+            aria-label="fast forward"
+            onClick={() => {
+              playerRef.current &&
+                playedSeconds + 2 < duration &&
+                playerRef.current.seekTo(playedSeconds + 2);
+            }}
+          >
+            <FastForwardRounded fontSize="large" />
+          </IconButton>
+        </Box>
+        <IconButton
+          aria-label="fullscreen"
+          onClick={() =>
+            playerRef.current &&
+            playerRef.current.getInternalPlayer().requestFullscreen &&
+            playerRef.current.getInternalPlayer().requestFullscreen()
+          }
+        >
+          <Fullscreen fontSize="small" />
         </IconButton>
       </Box>
     </Box>
