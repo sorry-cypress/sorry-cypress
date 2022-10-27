@@ -22,6 +22,8 @@ async function main() {
   });
 }
 
+app.disable('x-powered-by');
+
 process.on('uncaughtException', (err) => {
   console.error(err, 'uncaughtException');
   process.exit(1);

@@ -8,15 +8,23 @@ import {
   updateInstanceResults,
 } from './api/instances';
 import { blockKeys, handleCreateRun } from './api/runs';
+import { PROBE_LOGGER } from './config';
 import { catchRequestHandlerErrors } from './lib/express';
 
 export const app = express();
 
 app
   .use(
-    expressPino({
-      logger: getLogger(),
-    })
+    PROBE_LOGGER === 'true'
+      ? expressPino({
+          logger: getLogger(),
+        })
+      : expressPino({
+          logger: getLogger(),
+          autoLogging: {
+            ignorePaths: ['/health-check-db', '/ping'],
+          },
+        })
   )
   .use(
     express.json({

@@ -437,6 +437,8 @@ Resources:
               Value: !Join ['-', [!Ref 'AWS::StackName', 'test-results']]
             - Name: S3_REGION
               Value: !Ref 'AWS::Region'
+            - Name: PROBE_LOGGER
+              Value: "false"
           DependsOn:
             - ContainerName: mongo
               Condition: START

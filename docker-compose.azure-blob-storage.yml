@@ -21,6 +21,7 @@ services:
       AZURE_CONNEXION_STRING: 'DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;QueueEndpoint=http://127.0.0.1:10001/devstoreaccount1;TableEndpoint=http://127.0.0.1:10001/devstoreaccount1;'
       AZURE_CONTAINER_NAME: 'sorry-cypress'
       AZURE_UPLOAD_URL_EXPIRY_IN_HOURS: 24
+      PROBE_LOGGER: "false"
     ports:
       - '10000:10000'
       - '10001:10001'
