@@ -15,6 +15,7 @@ services:
       EXECUTION_DRIVER: '../execution/mongo/driver'
       SCREENSHOTS_DRIVER: '../screenshots/cos.driver'
       GITLAB_JOB_RETRIES: 'false'
+      USE_SSL_FOR_LINKS: 'true'
       COS_ACCESSKEY: 'cos_hmac_access_key'
       COS_SECRETKEY: 'cos_hmac_secret_key'
       COS_REGION: 'cos_region'

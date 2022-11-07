@@ -1,8 +1,8 @@
-export const getGithubCommitURL = (repo: string, sha: string) =>
-  handleSshURL(repo.replace(/.git$/, '') + `/commit/${sha}`);
+export const getGithubCommitURL = (repo: string, sha: string, useSSL: boolean = true) =>
+handleURL(repo.replace(/.git$/, '') + `/commit/${sha}`, useSSL);
 
-export const getGithubBranchURL = (repo: string, branch: string) =>
-  handleSshURL(repo.replace(/.git$/, '') + `/tree/${branch}`);
+export const getGithubBranchURL = (repo: string, branch: string, useSSL: boolean = true) =>
+handleURL(repo.replace(/.git$/, '') + `/tree/${branch}`, useSSL);
 
-export const handleSshURL = (sshUrl: string) =>
-  sshUrl.replace(/git@([\w.]+):(.+)/, 'https://$1/$2');
+export const handleURL = (Url: string, UseSSL: boolean = true) =>
+  Url.replace(/git@([\w.]+):(.+)/, UseSSL ? 'https://$1/$2' : 'http://$1/$2');

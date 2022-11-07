@@ -15,6 +15,7 @@ services:
       DASHBOARD_URL: http://localhost:8080
       EXECUTION_DRIVER: '../execution/mongo/driver'
       GITLAB_JOB_RETRIES: 'false'
+      USE_SSL_FOR_LINKS: 'true'
       MONGODB_URI: 'mongodb://mongo:27017'
       MONGODB_DATABASE: 'sorry-cypress'
       SCREENSHOTS_DRIVER: '../screenshots/azure-blob-storage.driver'

@@ -4,12 +4,15 @@ import {
   PersonOutline,
   PlaceOutlined,
 } from '@mui/icons-material';
+import {
+  USE_SSL_FOR_LINKS,
+} from '@sorry-cypress/director/config';
 import { Grid, Link, Tooltip, Typography } from '@mui/material';
 import { Commit as CommitDef } from '@sorry-cypress/dashboard/generated/graphql';
 import {
   getGithubBranchURL,
   getGithubCommitURL,
-  handleSshURL,
+  handleURL,
 } from '@sorry-cypress/dashboard/lib/github';
 import React, { FunctionComponent } from 'react';
 import { CommitMessage } from '../commitMessage';
@@ -44,10 +47,10 @@ export const Commit: CommitComponent = (props) => {
                   <Link
                     target="_blank"
                     rel="noopener noreferrer"
-                    href={handleSshURL(commit.remoteOrigin)}
+                    href={handleURL(commit.remoteOrigin, USE_SSL_FOR_LINKS)}
                     underline="hover"
                   >
-                    {handleSshURL(commit.remoteOrigin)}
+                    {handleURL(commit.remoteOrigin, USE_SSL_FOR_LINKS)}
                   </Link>
                 )}
                 {noLinks && commit.remoteOrigin}
@@ -81,7 +84,8 @@ export const Commit: CommitComponent = (props) => {
                     rel="noopener noreferrer"
                     href={getGithubBranchURL(
                       commit.remoteOrigin,
-                      commit.branch
+                      commit.branch,
+                      USE_SSL_FOR_LINKS
                     )}
                     underline="hover"
                   >
@@ -139,7 +143,7 @@ export const Commit: CommitComponent = (props) => {
                 <Link
                   target="_blank"
                   rel="noopener noreferrer"
-                  href={getGithubCommitURL(commit.remoteOrigin, commit.sha)}
+                  href={getGithubCommitURL(commit.remoteOrigin, commit.sha, USE_SSL_FOR_LINKS)}
                   underline="hover"
                 >
                   <CommitMessage brief={brief} message={commit.message} />
