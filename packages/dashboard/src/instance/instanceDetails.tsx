@@ -28,12 +28,14 @@ import { get } from 'lodash';
 import React, {
   FunctionComponent,
   SyntheticEvent,
+  useCallback,
   useEffect,
+  useRef,
   useState,
 } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { INSTANCE_STATE_COLORS, Paper, TEST_STATE_ICONS } from '../components';
-import { Player } from '../components/ui/player';
+import { Player, PlayerHandle } from '../components/ui/player';
 import { TestDetailsView } from '../testItem/testDetailsView';
 import { getTestDuration, getTestStartedAt } from './util';
 
@@ -42,6 +44,7 @@ export const InstanceDetails: InstanceDetailsComponent = (props) => {
 
   const navigate = useNavigate();
   const theme = useTheme();
+  const videoPlayerRef = useRef<PlayerHandle>(null);
   const isSmScreenOrSmaller = useMediaQuery(theme.breakpoints.down('md'));
   const [showNavigationPanel, setShowNavigationPanel] = useState(true);
   const [
@@ -119,6 +122,31 @@ export const InstanceDetails: InstanceDetailsComponent = (props) => {
     setShowNavigationPanel(!showNavigationPanel);
   };
 
+  const seekVideo = useCallback(
+    (e: SyntheticEvent, node: NavigationItem) => {
+      e.stopPropagation();
+      e.preventDefault();
+      if (
+        typeof node.timestamp !== 'number' ||
+        !navigationTree.has('RECORDED_VIDEO')
+      ) {
+        return;
+      }
+      if (videoPlayerRef.current) {
+        videoPlayerRef.current.seekTo(node.timestamp);
+      } else {
+        setSelected({
+          nodeId: 'RECORDED_VIDEO',
+          data: {
+            ...navigationTree.get('RECORDED_VIDEO')!,
+            timestamp: node.timestamp,
+          },
+        });
+      }
+    },
+    [instance]
+  );
+
   const renderTree = (nodes: Map<string, NavigationItem>) => {
     const render = [];
     for (const [key, entry] of nodes.entries()) {
@@ -174,7 +202,7 @@ export const InstanceDetails: InstanceDetailsComponent = (props) => {
                   />
                 </Tooltip>
               )}
-              <Grid item pr={2}>
+              <Grid item pr={2} onClick={(e) => seekVideo(e, entry)}>
                 <Typography variant="caption" color="inherit">
                   {entry.test && (
                     <Tooltip
@@ -309,7 +337,13 @@ export const InstanceDetails: InstanceDetailsComponent = (props) => {
                 testId={selected.data.testId}
               />
             )}
-            {selected?.data.videoUrl && <Player src={selected.data.videoUrl} />}
+            {selected?.data.videoUrl && (
+              <Player
+                ref={videoPlayerRef}
+                timestamp={selected.data.timestamp}
+                src={selected.data.videoUrl}
+              />
+            )}
           </Paper>
         </Grid>
       </Grid>
@@ -348,6 +382,9 @@ function getTreeOfNavigationItems(instance: GetInstanceQuery['instance']) {
 
   // Add tests as navigation items to the navigation tree
   const testsMap: { [key: string]: any } = {};
+  const specStartedAt = instance?.results?.stats.wallClockStartedAt
+    ? new Date(instance?.results?.stats.wallClockStartedAt)
+    : null;
   tests.forEach((test, testIndex) => {
     let currentMap = navigationTree;
     test.title.forEach((title, titleIndex) => {
@@ -356,6 +393,16 @@ function getTreeOfNavigationItems(instance: GetInstanceQuery['instance']) {
       if (children) {
         currentMap = children;
       } else {
+        const passedOrFirstAttempt =
+          test.attempts.find((attempt) => attempt.state === 'passed') ||
+          test.attempts[0];
+        const testStartedAt = passedOrFirstAttempt.wallClockStartedAt
+          ? new Date(passedOrFirstAttempt.wallClockStartedAt)
+          : null;
+        const timestamp =
+          specStartedAt && testStartedAt
+            ? testStartedAt.getTime() - specStartedAt.getTime()
+            : undefined;
         if (isFolder) {
           const nodeId = `FOLDER${testIndex}${titleIndex}`;
           nodeIds.push(nodeId);
@@ -373,6 +420,7 @@ function getTreeOfNavigationItems(instance: GetInstanceQuery['instance']) {
             id: nodeId,
             isFolder,
             test,
+            timestamp,
           });
           testsMap[nodeId] = test;
           firstItem = firstItem ?? { nodeId, data: test };
@@ -389,6 +437,7 @@ type NavigationItem = {
   isFolder?: boolean;
   isVideo?: boolean;
   videoUrl?: string;
+  timestamp?: number;
   test?: GetInstanceTestFragment;
   children?: Map<string, NavigationItem>;
 };
