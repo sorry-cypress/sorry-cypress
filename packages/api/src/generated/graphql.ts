@@ -151,6 +151,10 @@ export type GenericHook = {
 
 export type GithubHook = {
   __typename?: 'GithubHook';
+  githubAppId?: Maybe<Scalars['String']>;
+  githubAppInstallationId?: Maybe<Scalars['String']>;
+  githubAppPrivateKey?: Maybe<Scalars['String']>;
+  githubAuthType?: Maybe<Scalars['String']>;
   githubContext?: Maybe<Scalars['String']>;
   githubToken?: Maybe<Scalars['String']>;
   hookId: Scalars['ID'];
@@ -164,6 +168,10 @@ export type Hook = {
   bitbucketBuildName?: Maybe<Scalars['String']>;
   bitbucketToken?: Maybe<Scalars['String']>;
   bitbucketUsername?: Maybe<Scalars['String']>;
+  githubAppId?: Maybe<Scalars['String']>;
+  githubAppInstallationId?: Maybe<Scalars['String']>;
+  githubAppPrivateKey?: Maybe<Scalars['String']>;
+  githubAuthType?: Maybe<Scalars['String']>;
   githubContext?: Maybe<Scalars['String']>;
   githubToken?: Maybe<Scalars['String']>;
   headers?: Maybe<Scalars['String']>;
@@ -179,6 +187,10 @@ export type HookInput = {
   bitbucketBuildName?: InputMaybe<Scalars['String']>;
   bitbucketToken?: InputMaybe<Scalars['String']>;
   bitbucketUsername?: InputMaybe<Scalars['String']>;
+  githubAppId?: InputMaybe<Scalars['String']>;
+  githubAppInstallationId?: InputMaybe<Scalars['String']>;
+  githubAppPrivateKey?: InputMaybe<Scalars['String']>;
+  githubAuthType?: InputMaybe<Scalars['String']>;
   githubContext?: InputMaybe<Scalars['String']>;
   githubToken?: InputMaybe<Scalars['String']>;
   headers?: InputMaybe<Scalars['String']>;
@@ -594,6 +606,10 @@ export type UpdateGenericHookInput = {
 };
 
 export type UpdateGithubHookInput = {
+  githubAppId?: InputMaybe<Scalars['String']>;
+  githubAppInstallationId?: InputMaybe<Scalars['String']>;
+  githubAppPrivateKey?: InputMaybe<Scalars['String']>;
+  githubAuthType?: InputMaybe<Scalars['String']>;
   githubContext?: InputMaybe<Scalars['String']>;
   githubToken?: InputMaybe<Scalars['String']>;
   hookId: Scalars['ID'];
@@ -1051,6 +1067,26 @@ export type GithubHookResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['GithubHook'] = ResolversParentTypes['GithubHook']
 > = {
+  githubAppId?: Resolver<
+    Maybe<ResolversTypes['String']>,
+    ParentType,
+    ContextType
+  >;
+  githubAppInstallationId?: Resolver<
+    Maybe<ResolversTypes['String']>,
+    ParentType,
+    ContextType
+  >;
+  githubAppPrivateKey?: Resolver<
+    Maybe<ResolversTypes['String']>,
+    ParentType,
+    ContextType
+  >;
+  githubAuthType?: Resolver<
+    Maybe<ResolversTypes['String']>,
+    ParentType,
+    ContextType
+  >;
   githubContext?: Resolver<
     Maybe<ResolversTypes['String']>,
     ParentType,
@@ -1092,6 +1128,26 @@ export type HookResolvers<
     ContextType
   >;
   bitbucketUsername?: Resolver<
+    Maybe<ResolversTypes['String']>,
+    ParentType,
+    ContextType
+  >;
+  githubAppId?: Resolver<
+    Maybe<ResolversTypes['String']>,
+    ParentType,
+    ContextType
+  >;
+  githubAppInstallationId?: Resolver<
+    Maybe<ResolversTypes['String']>,
+    ParentType,
+    ContextType
+  >;
+  githubAppPrivateKey?: Resolver<
+    Maybe<ResolversTypes['String']>,
+    ParentType,
+    ContextType
+  >;
+  githubAuthType?: Resolver<
     Maybe<ResolversTypes['String']>,
     ParentType,
     ContextType

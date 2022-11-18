@@ -46,8 +46,12 @@ export type GenericHook = BaseHook & {
 
 export type GithubHook = BaseHook & {
   hookType: HookType.GITHUB_STATUS_HOOK;
+  githubAuthType?: 'token' | 'app';
   githubToken?: string;
   githubContext?: string;
+  githubAppPrivateKey?: string;
+  githubAppId?: number;
+  githubAppInstallationId?: number;
 };
 
 export type BitBucketHook = BaseHook & {
