@@ -1,4 +1,5 @@
 import { createAppAuth } from '@octokit/auth-app';
+import { Octokit } from '@octokit/rest';
 import {
   getGithubConfiguration,
   getGithubStatusUrl,
@@ -11,7 +12,6 @@ import {
 import { APP_NAME } from '@sorry-cypress/director/config';
 import { getDashboardRunURL } from '@sorry-cypress/director/lib/urls';
 import { getLogger } from '@sorry-cypress/logger';
-import { Octokit } from 'octokit';
 
 type OctokitOptions = ConstructorParameters<typeof Octokit>[0];
 
