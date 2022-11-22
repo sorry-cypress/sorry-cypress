@@ -28,6 +28,8 @@
   "dependencies": {
     "@azure/identity": "^2.0.5",
     "@azure/storage-blob": "^12.10.0",
+    "@octokit/auth-app": "^4.0.7",
+    "@octokit/rest": "^19.0.5",
     "@sorry-cypress/common": "1.0.0",
     "@sorry-cypress/logger": "1.0.0",
     "@sorry-cypress/mongo": "1.0.0",
@@ -43,7 +45,6 @@
     "lodash": "^4.17.21",
     "md5": "^2.2.1",
     "minio": "^7.0.28",
-    "octokit": "^2.0.10",
     "pm2": "^5.2.0",
     "semver": "^7.3.5",
     "source-map-support": "^0.5.20",
