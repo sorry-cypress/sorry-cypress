@@ -52,8 +52,12 @@ type GithubHook {
   hookId: ID!
   url: String!
   hookType: GithubHookType!
+  githubAuthType: String
   githubToken: String
   githubContext: String
+  githubAppPrivateKey: String
+  githubAppId: String
+  githubAppInstallationId: String
 }
 
 input CreateGithubHookInput {
@@ -64,8 +68,12 @@ input UpdateGithubHookInput {
   projectId: ID!
   hookId: ID!
   url: String!
+  githubAuthType: String
   githubToken: String
   githubContext: String
+  githubAppPrivateKey: String
+  githubAppId: String
+  githubAppInstallationId: String
 }
 
 type BitbucketHook {
@@ -156,7 +164,11 @@ type Hook {
   headers: String
   hookEvents: [String]
   hookType: String
+  githubAuthType: String
   githubToken: String
+  githubAppPrivateKey: String
+  githubAppId: String
+  githubAppInstallationId: String
   githubContext: String
   bitbucketUsername: String
   bitbucketToken: String
@@ -171,7 +183,11 @@ input HookInput {
   headers: String
   hookEvents: [String]
   hookType: String
+  githubAuthType: String
   githubToken: String
+  githubAppPrivateKey: String
+  githubAppId: String
+  githubAppInstallationId: String
   githubContext: String
   bitbucketUsername: String
   bitbucketToken: String

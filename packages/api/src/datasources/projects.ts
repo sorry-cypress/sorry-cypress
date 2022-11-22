@@ -226,8 +226,21 @@ async function updateGithubHook(input: UpdateGithubHookInput) {
   const $set: Record<string, string | undefined> = {
     'hooks.$[hooks].url': hook.url,
     'hooks.$[hooks].githubContext': hook.githubContext ?? undefined,
+    'hooks.$[hooks].githubAuthType': hook.githubAuthType ?? undefined,
+    'hooks.$[hooks].githubAppId': hook.githubAppId ?? undefined,
+    'hooks.$[hooks].githubAppInstallationId':
+      hook.githubAppInstallationId ?? undefined,
   };
+
+  if (hook.githubAppPrivateKey) {
+    $set['hooks.$[hooks].githubAppPrivateKey'] = hook.githubAppPrivateKey;
+    $set['hooks.$[hooks].githubToken'] = undefined;
+  }
+
   if (hook.githubToken) {
+    $set['hooks.$[hooks].githubAppPrivateKey'] = undefined;
+    $set['hooks.$[hooks].githubAppId'] = undefined;
+    $set['hooks.$[hooks].githubAppInstallationId'] = undefined;
     $set['hooks.$[hooks].githubToken'] = hook.githubToken;
   }
 

@@ -1,4 +1,7 @@
+import { createAppAuth } from '@octokit/auth-app';
+import { OctokitOptions } from '@octokit/core/dist-types/types';
 import {
+  getGithubConfiguration,
   getGithubStatusUrl,
   GithubHook,
   HookEvent,
@@ -9,7 +12,14 @@ import {
 import { APP_NAME } from '@sorry-cypress/director/config';
 import { getDashboardRunURL } from '@sorry-cypress/director/lib/urls';
 import { getLogger } from '@sorry-cypress/logger';
-import axios from 'axios';
+import { Octokit } from 'octokit';
+
+type GithubStatusData = {
+  state: 'error' | 'failure' | 'pending' | 'success' | undefined;
+  context: string;
+  description: string;
+  target_url: string;
+};
 
 interface GitHubReporterStatusParams {
   run: Run;
@@ -17,14 +27,31 @@ interface GitHubReporterStatusParams {
   groupId: string;
   groupProgress: RunGroupProgress;
 }
+
 export async function reportStatusToGithub(
   hook: GithubHook,
   eventData: GitHubReporterStatusParams
 ) {
-  if (!hook.githubToken) {
+  if (
+    (hook.githubAuthType === 'token' || !hook.githubAuthType) &&
+    !hook.githubToken
+  ) {
     getLogger().warn(
       { ...hook, runId: eventData.run.runId, groupID: eventData.groupId },
       '[github-reporter] No github token defined, ignoring hook...'
+    );
+    return;
+  }
+
+  if (
+    hook.githubAuthType === 'app' &&
+    (!hook.githubAppPrivateKey ||
+      !hook.githubAppId ||
+      !hook.githubAppInstallationId)
+  ) {
+    getLogger().warn(
+      { ...hook, runId: eventData.run.runId, groupID: eventData.groupId },
+      '[github-reporter] Not all required values for github app auth are set, ignoring hook...'
     );
     return;
   }
@@ -41,8 +68,8 @@ export async function reportStatusToGithub(
     context = `${context}: ${groupId}`;
   }
 
-  const data = {
-    state: '',
+  const data: GithubStatusData = {
+    state: undefined,
     context,
     description,
     target_url: getDashboardRunURL(run.runId),
@@ -64,31 +91,44 @@ export async function reportStatusToGithub(
   }
   if (eventType === HookEvent.RUN_TIMEOUT) {
     data.state = 'failure';
-    data.description = `timedout - ${data.description}`;
+    data.description = `timed out - ${data.description}`;
   }
 
   if (!data.state) {
     return;
   }
 
+  const octokitOptions: OctokitOptions = {
+    auth: hook.githubToken,
+  };
+
+  if (hook.githubAuthType === 'app') {
+    octokitOptions.authStrategy = createAppAuth;
+    octokitOptions.auth = {
+      appId: hook.githubAppId,
+      privateKey: hook.githubAppPrivateKey,
+      installationId: hook.githubAppInstallationId,
+    };
+  }
+
+  const octokit = new Octokit(octokitOptions);
+
   const fullStatusPostUrl = getGithubStatusUrl(hook.url, run.meta.commit.sha);
+  const { githubRepo, githubProject } = getGithubConfiguration(hook.url);
 
   getLogger().log(
     { fullStatusPostUrl, eventType, ...data },
     '[github-reporter] Sending HTTP request to GitHub'
   );
   try {
-    await axios({
-      method: 'post',
-      url: fullStatusPostUrl,
-      auth: {
-        username: APP_NAME,
-        password: hook.githubToken,
-      },
-      headers: {
-        Accept: 'application/vnd.github.v3+json',
-      },
-      data,
+    await octokit.rest.repos.createCommitStatus({
+      sha: run.meta.commit.sha,
+      owner: githubProject,
+      repo: githubRepo,
+      state: data.state,
+      context: data.context,
+      description: data.description,
+      target_url: getDashboardRunURL(run.runId),
     });
   } catch (error) {
     getLogger().error(
