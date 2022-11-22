@@ -1,7 +1,7 @@
 import {
-  ResultFilter,
   getBitbucketBuildUrl,
-  getGithubStatusUrl,
+  getGithubConfiguration,
+  ResultFilter,
 } from '@sorry-cypress/common';
 
 export const bitbucketUrlValidation = (value: string) => {
@@ -15,7 +15,7 @@ export const bitbucketUrlValidation = (value: string) => {
 
 export const githubUrlValidation = (value: string) => {
   try {
-    getGithubStatusUrl(value, 'fake');
+    getGithubConfiguration(value);
     return true;
   } catch (e) {
     return 'Valid Github URL required, e.g. https://github.com/<org>/<repository>.git';
