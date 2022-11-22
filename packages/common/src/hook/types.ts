@@ -50,8 +50,8 @@ export type GithubHook = BaseHook & {
   githubToken?: string;
   githubContext?: string;
   githubAppPrivateKey?: string;
-  githubAppId?: number;
-  githubAppInstallationId?: number;
+  githubAppId?: string;
+  githubAppInstallationId?: string;
 };
 
 export type BitBucketHook = BaseHook & {
