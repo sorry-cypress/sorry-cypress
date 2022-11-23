@@ -38,13 +38,13 @@ export const enhanceSpec = (groupId: string) => (spec: string): RunSpec => ({
 
 export const getRemoteOrigin = (
   remoteOrigin: string | undefined,
-  useSSL: string = 'true'
+  useSSL: string | undefined
 ): string | undefined => {
   if (!remoteOrigin) return;
 
   if (remoteOrigin.includes('@')) {
     if (useSSL === 'true')
-      return 'http://' + remoteOrigin.split('@')[1].replace(':', '/');
+      return 'https://' + remoteOrigin.split('@')[1].replace(':', '/');
     else return 'http://' + remoteOrigin.split('@')[1].replace(':', '/');
   }
   return remoteOrigin;
