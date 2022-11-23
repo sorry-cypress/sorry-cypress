@@ -1,9 +1,7 @@
 import { createAppAuth } from '@octokit/auth-app';
-import { OctokitOptions } from '@octokit/core/dist-types/types';
 import { Octokit } from '@octokit/rest';
 import {
   getGithubConfiguration,
-  getGithubStatusUrl,
   GithubHook,
   HookEvent,
   isRunGroupSuccessful,
@@ -13,6 +11,8 @@ import {
 import { APP_NAME } from '@sorry-cypress/director/config';
 import { getDashboardRunURL } from '@sorry-cypress/director/lib/urls';
 import { getLogger } from '@sorry-cypress/logger';
+
+type OctokitOptions = ConstructorParameters<typeof Octokit>[0];
 
 type GithubStatusData = {
   state: 'error' | 'failure' | 'pending' | 'success' | undefined;
@@ -98,6 +98,14 @@ export async function reportStatusToGithub(
     return;
   }
 
+  const {
+    githubDomain,
+    githubRepo,
+    githubProject,
+    isEnterpriseUrl,
+    enterpriseUrl,
+  } = getGithubConfiguration(hook.url);
+
   const octokitOptions: OctokitOptions = {
     auth: hook.githubToken,
   };
@@ -111,17 +119,25 @@ export async function reportStatusToGithub(
     };
   }
 
+  if (isEnterpriseUrl) {
+    octokitOptions.baseUrl = enterpriseUrl;
+  }
+
   const octokit = new Octokit(octokitOptions);
 
-  const fullStatusPostUrl = getGithubStatusUrl(hook.url, run.meta.commit.sha);
-  const { githubRepo, githubProject } = getGithubConfiguration(hook.url);
-
   getLogger().log(
-    { fullStatusPostUrl, eventType, ...data },
+    {
+      githubDomain,
+      githubRepo,
+      githubProject,
+      sha: run.meta.commit.sha,
+      eventType,
+      ...data,
+    },
     '[github-reporter] Sending HTTP request to GitHub'
   );
   try {
-    await octokit.rest.repos.createCommitStatus({
+    await octokit.repos.createCommitStatus({
       sha: run.meta.commit.sha,
       owner: githubProject,
       repo: githubRepo,
@@ -133,12 +149,14 @@ export async function reportStatusToGithub(
   } catch (error) {
     getLogger().error(
       {
-        fullStatusPostUrl,
+        githubDomain,
+        githubRepo,
+        githubProject,
         runId: run.runId,
         error: error.toJSON ? error.toJSON() : error,
         resonse: error.response?.data ? error.response.data : null,
       },
-      `[github-reporter] Hook post to ${fullStatusPostUrl} responded with error`
+      `[github-reporter] Hook post to ${githubDomain} responded with error`
     );
   }
 }

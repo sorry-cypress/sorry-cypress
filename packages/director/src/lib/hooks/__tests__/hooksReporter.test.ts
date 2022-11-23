@@ -1,3 +1,5 @@
+import { createAppAuth } from '@octokit/auth-app';
+import { Octokit } from '@octokit/rest';
 import {
   BitBucketHook,
   GChatHook,
@@ -28,6 +30,14 @@ import teamsHook from './fixtures/teamsHook.json';
 import teamsReportStatusRequest from './fixtures/teamsReportStatusRequest.json';
 
 jest.mock('axios');
+jest.mock('@octokit/rest');
+
+const createCommitStatus = jest.fn();
+const octokitMock = (Octokit as unknown) as jest.Mock;
+
+octokitMock.mockImplementation(function () {
+  this.repos = { createCommitStatus };
+});
 
 beforeEach(() => {
   ((axios as unknown) as jest.Mock).mockReset();
@@ -76,10 +86,49 @@ describe('Report status to GitHub', () => {
       eventType: HookEvent.RUN_START,
     });
 
-    expect(axios).toBeCalledWith({
+    expect(octokitMock).toBeCalledWith({
+      auth: 'testGithubToken',
+    });
+
+    expect(createCommitStatus).toBeCalledWith({
       ...githubReportStatusRequest,
-      url:
-        'https://api.github.com/repos/test-company/test-project/statuses/testCommitSha',
+      owner: 'test-company',
+      repo: 'test-project',
+      sha: 'testCommitSha',
+    });
+  });
+
+  it('should send request with app authentication when run is started', async () => {
+    await reportStatusToGithub(
+      {
+        ...ghHook,
+        githubAuthType: 'app',
+        githubAppPrivateKey: 'private-key',
+        githubAppId: '123',
+        githubAppInstallationId: '456',
+      },
+      {
+        run,
+        groupId: 'ciBuildId',
+        groupProgress,
+        eventType: HookEvent.RUN_START,
+      }
+    );
+
+    expect(octokitMock).toBeCalledWith({
+      authStrategy: createAppAuth,
+      auth: {
+        appId: '123',
+        privateKey: 'private-key',
+        installationId: '456',
+      },
+    });
+
+    expect(createCommitStatus).toBeCalledWith({
+      ...githubReportStatusRequest,
+      owner: 'test-company',
+      repo: 'test-project',
+      sha: 'testCommitSha',
     });
   });
 
@@ -97,10 +146,16 @@ describe('Report status to GitHub', () => {
       }
     );
 
-    expect(axios).toBeCalledWith({
+    expect(octokitMock).toBeCalledWith({
+      auth: 'testGithubToken',
+      baseUrl: 'https://gh.testcompany.com/api/v3',
+    });
+
+    expect(createCommitStatus).toBeCalledWith({
       ...githubReportStatusRequest,
-      url:
-        'https://gh.testcompany.com/api/v3/repos/test-company/test-project/statuses/testCommitSha',
+      owner: 'test-company',
+      repo: 'test-project',
+      sha: 'testCommitSha',
     });
   });
 });
