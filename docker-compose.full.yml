@@ -15,10 +15,11 @@ services:
       EXECUTION_DRIVER: '../execution/mongo/driver'
       SCREENSHOTS_DRIVER: '../screenshots/s3.driver'
       GITLAB_JOB_RETRIES: 'false'
+      USE_SSL_FOR_LINKS: 'true'
       AWS_ACCESS_KEY_ID: 'key'
       AWS_SECRET_ACCESS_KEY: 'secret'
       S3_BUCKET: sorry-cypress
-      PROBE_LOGGER: "false"
+      PROBE_LOGGER: 'false'
     ports:
       - 1234:1234
     depends_on:
@@ -41,7 +42,6 @@ services:
       GRAPHQL_SCHEMA_URL: http://localhost:4000
       GRAPHQL_CLIENT_CREDENTIALS: ''
       CI_URL: ''
-      USE_SSL_FOR_LINKS: 'true'
       PORT: 8080
     ports:
       - 8080:8080

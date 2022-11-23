@@ -11,7 +11,6 @@ import {
   getGithubCommitURL,
   handleURL,
 } from '@sorry-cypress/dashboard/lib/github';
-import { environment } from '@sorry-cypress/dashboard/state/environment';
 import React, { FunctionComponent } from 'react';
 import { CommitMessage } from '../commitMessage';
 
@@ -45,16 +44,10 @@ export const Commit: CommitComponent = (props) => {
                   <Link
                     target="_blank"
                     rel="noopener noreferrer"
-                    href={handleURL(
-                      commit.remoteOrigin,
-                      environment.USE_SSL_FOR_LINKS
-                    )}
+                    href={handleURL(commit.remoteOrigin)}
                     underline="hover"
                   >
-                    {handleURL(
-                      commit.remoteOrigin,
-                      environment.USE_SSL_FOR_LINKS
-                    )}
+                    {handleURL(commit.remoteOrigin)}
                   </Link>
                 )}
                 {noLinks && commit.remoteOrigin}
@@ -88,8 +81,7 @@ export const Commit: CommitComponent = (props) => {
                     rel="noopener noreferrer"
                     href={getGithubBranchURL(
                       commit.remoteOrigin,
-                      commit.branch,
-                      environment.USE_SSL_FOR_LINKS
+                      commit.branch
                     )}
                     underline="hover"
                   >
@@ -147,11 +139,7 @@ export const Commit: CommitComponent = (props) => {
                 <Link
                   target="_blank"
                   rel="noopener noreferrer"
-                  href={getGithubCommitURL(
-                    commit.remoteOrigin,
-                    commit.sha,
-                    environment.USE_SSL_FOR_LINKS
-                  )}
+                  href={getGithubCommitURL(commit.remoteOrigin, commit.sha)}
                   underline="hover"
                 >
                   <CommitMessage brief={brief} message={commit.message} />

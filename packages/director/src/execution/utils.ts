@@ -37,12 +37,15 @@ export const enhanceSpec = (groupId: string) => (spec: string): RunSpec => ({
 });
 
 export const getRemoteOrigin = (
-  remoteOrigin: string | undefined
+  remoteOrigin: string | undefined,
+  useSSL: string = 'true'
 ): string | undefined => {
   if (!remoteOrigin) return;
 
   if (remoteOrigin.includes('@')) {
-    return 'http://' + remoteOrigin.split('@')[1].replace(':', '/');
+    if (useSSL === 'true')
+      return 'https://' + remoteOrigin.split('@')[1].replace(':', '/');
+    else return 'http://' + remoteOrigin.split('@')[1].replace(':', '/');
   }
   return remoteOrigin;
 };

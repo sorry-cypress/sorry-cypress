@@ -429,6 +429,8 @@ Resources:
               Value: ../screenshots/s3.driver
             - Name: GITLAB_JOB_RETRIES
               Value: false
+            - Name: USE_SSL_FOR_LINKS
+              Value: 'true'
             - Name: MONGODB_DATABASE
               Value: sorry-cypress
             - Name: MONGODB_URI
@@ -438,7 +440,7 @@ Resources:
             - Name: S3_REGION
               Value: !Ref 'AWS::Region'
             - Name: PROBE_LOGGER
-              Value: "false"
+              Value: 'false'
           DependsOn:
             - ContainerName: mongo
               Condition: START
