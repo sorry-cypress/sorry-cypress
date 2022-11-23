@@ -483,8 +483,6 @@ Resources:
               Value: 8080
             - Name: CI_URL
               Value: ''
-            - Name: USE_SSL_FOR_LINKS
-              Value: 'true'
           DependsOn:
             - ContainerName: api
               Condition: START
