@@ -11,9 +11,9 @@ import {
   getGithubCommitURL,
   handleURL,
 } from '@sorry-cypress/dashboard/lib/github';
+import { environment } from '@sorry-cypress/dashboard/state/environment';
 import React, { FunctionComponent } from 'react';
 import { CommitMessage } from '../commitMessage';
-import { environment } from '@sorry-cypress/dashboard/state/environment';
 
 export const Commit: CommitComponent = (props) => {
   const { commit, noLinks, brief = false } = props;
@@ -45,10 +45,16 @@ export const Commit: CommitComponent = (props) => {
                   <Link
                     target="_blank"
                     rel="noopener noreferrer"
-                    href={handleURL(commit.remoteOrigin, environment.USE_SSL_FOR_LINKS)}
+                    href={handleURL(
+                      commit.remoteOrigin,
+                      environment.USE_SSL_FOR_LINKS
+                    )}
                     underline="hover"
                   >
-                    {handleURL(commit.remoteOrigin, environment.USE_SSL_FOR_LINKS)}
+                    {handleURL(
+                      commit.remoteOrigin,
+                      environment.USE_SSL_FOR_LINKS
+                    )}
                   </Link>
                 )}
                 {noLinks && commit.remoteOrigin}
@@ -137,11 +143,15 @@ export const Commit: CommitComponent = (props) => {
         <Grid item flex={1}>
           <Typography component="p" variant="subtitle1">
             {!noLinks && commit.remoteOrigin && (
-              <Tooltip title="Commit Message">
+              <Tooltip title="Commit Message :)">
                 <Link
                   target="_blank"
                   rel="noopener noreferrer"
-                  href={getGithubCommitURL(commit.remoteOrigin, commit.sha, environment.USE_SSL_FOR_LINKS)}
+                  href={getGithubCommitURL(
+                    commit.remoteOrigin,
+                    commit.sha,
+                    environment.USE_SSL_FOR_LINKS
+                  )}
                   underline="hover"
                 >
                   <CommitMessage brief={brief} message={commit.message} />
