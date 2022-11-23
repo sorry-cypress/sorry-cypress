@@ -2,7 +2,7 @@ export interface Environment {
   GRAPHQL_CLIENT_CREDENTIALS: string;
   GRAPHQL_SCHEMA_URL: string;
   CI_URL: string;
-  USE_SSL_FOR_LINKS: boolean;
+  USE_SSL_FOR_LINKS: string;
 }
 
 export const environment: Environment = {
