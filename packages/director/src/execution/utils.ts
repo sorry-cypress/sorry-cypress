@@ -44,7 +44,7 @@ export const getRemoteOrigin = (
 
   if (remoteOrigin.includes('@')) {
     if (useSSL === 'true')
-      return 'https://' + remoteOrigin.split('@')[1].replace(':', '/');
+      return 'http://' + remoteOrigin.split('@')[1].replace(':', '/');
     else return 'http://' + remoteOrigin.split('@')[1].replace(':', '/');
   }
   return remoteOrigin;
