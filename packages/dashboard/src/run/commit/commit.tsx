@@ -136,14 +136,14 @@ export const Commit: CommitComponent = (props) => {
 
       <Grid item container sm={12} md={6} lg={6} xl={4} alignItems="flex-start">
         <Grid item mt={0.4} mr={1}>
-          <Tooltip title="Commit Message ">
+          <Tooltip title="Commit Message">
             <Code fontSize="small" />
           </Tooltip>
         </Grid>
         <Grid item flex={1}>
           <Typography component="p" variant="subtitle1">
             {!noLinks && commit.remoteOrigin && (
-              <Tooltip title="Commit Message :)">
+              <Tooltip title="Commit Message">
                 <Link
                   target="_blank"
                   rel="noopener noreferrer"

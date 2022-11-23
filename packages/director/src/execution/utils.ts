@@ -42,7 +42,7 @@ export const getRemoteOrigin = (
   if (!remoteOrigin) return;
 
   if (remoteOrigin.includes('@')) {
-    return 'https://' + remoteOrigin.split('@')[1].replace(':', '/');
+    return 'http://' + remoteOrigin.split('@')[1].replace(':', '/');
   }
   return remoteOrigin;
 };
