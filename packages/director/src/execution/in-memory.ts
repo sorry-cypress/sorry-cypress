@@ -12,7 +12,10 @@ import {
   Task,
   UpdateInstanceResultsPayload,
 } from '@sorry-cypress/common';
-import { INACTIVITY_TIMEOUT_SECONDS } from '@sorry-cypress/director/config';
+import {
+  INACTIVITY_TIMEOUT_SECONDS,
+  USE_SSL_FOR_LINKS,
+} from '@sorry-cypress/director/config';
 import { getRunCiBuildId } from '@sorry-cypress/director/lib/ciBuildId';
 import {
   AppError,
@@ -103,7 +106,10 @@ const createRun: ExecutionDriver['createRun'] = async (
     );
   }
 
-  params.commit.remoteOrigin = getRemoteOrigin(params.commit.remoteOrigin);
+  params.commit.remoteOrigin = getRemoteOrigin(
+    params.commit.remoteOrigin,
+    USE_SSL_FOR_LINKS
+  );
 
   // @ts-ignore
   runs[runId] = {
