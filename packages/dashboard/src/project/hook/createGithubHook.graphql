@@ -4,7 +4,11 @@ mutation createGithubHook($input: CreateGithubHookInput!) {
     hookId
     hookType
     url
+    githubAuthType
     githubToken
     githubContext
+    githubAppPrivateKey
+    githubAppId
+    githubAppInstallationId
   }
 }

@@ -1,9 +1,9 @@
 import {
   FastForwardRounded,
   FastRewindRounded,
+  Fullscreen,
   PauseRounded,
   PlayArrowRounded,
-  Fullscreen,
 } from '@mui/icons-material';
 import {
   alpha,
@@ -15,8 +15,10 @@ import {
   useTheme,
 } from '@mui/material';
 import React, {
-  FunctionComponent,
+  forwardRef,
   SyntheticEvent,
+  useEffect,
+  useImperativeHandle,
   useRef,
   useState,
 } from 'react';
@@ -32,8 +34,12 @@ const TinyText = styled(Typography)({
   letterSpacing: 0.2,
 });
 
-export const Player: PlayerComponent = (props) => {
-  const { src } = props;
+export type PlayerHandle = {
+  seekTo: (timestamp: number) => void;
+};
+
+export const Player = forwardRef<PlayerHandle, PlayerProps>((props, ref) => {
+  const { src, timestamp = -1 } = props;
 
   const theme = useTheme();
   const playerRef = useRef<FilePlayer>();
@@ -43,12 +49,32 @@ export const Player: PlayerComponent = (props) => {
   const [played, setPlayed] = useState(0);
   const [playedSeconds, setPlayedSeconds] = useState(0);
   const [seeking, setSeeking] = useState(false);
+  const [seekRequest, setSeekRequest] = useState(-1);
 
   function formatDuration(value: number) {
     const minute = Math.floor(value / 60);
     const secondLeft = +(value - minute * 60).toFixed();
     return `${minute}:${secondLeft <= 9 ? `0${secondLeft}` : secondLeft}`;
   }
+
+  useImperativeHandle(ref, () => ({
+    seekTo: (ts) => setSeekRequest(ts),
+  }));
+
+  useEffect(() => {
+    setSeekRequest(timestamp);
+  }, [timestamp]);
+
+  useEffect(() => {
+    if (duration > 0 && seekRequest >= 0) {
+      const seconds = seekRequest / 1000;
+      playerRef.current?.seekTo(seconds);
+      setPlaying(false);
+      setPlayed(seconds / duration);
+      setPlayedSeconds(seconds);
+      setSeekRequest(-1);
+    }
+  }, [seekRequest, duration]);
 
   function handleProgress(state: any) {
     if (!seeking) {
@@ -210,9 +236,11 @@ export const Player: PlayerComponent = (props) => {
       </Box>
     </Box>
   );
-};
+});
+
+Player.displayName = 'Player';
 
 type PlayerProps = {
   src?: string;
+  timestamp?: number;
 };
-type PlayerComponent = FunctionComponent<PlayerProps>;

@@ -13,8 +13,12 @@ query getProject($projectId: ID!) {
       slackResultFilter
       slackBranchFilter
 
+      githubAuthType
       githubContext
       githubToken
+      githubAppPrivateKey
+      githubAppId
+      githubAppInstallationId
 
       bitbucketUsername
       bitbucketToken

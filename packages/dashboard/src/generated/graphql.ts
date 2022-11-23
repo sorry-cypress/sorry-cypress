@@ -145,6 +145,10 @@ export type GenericHook = {
 
 export type GithubHook = {
   __typename?: 'GithubHook';
+  githubAppId: Maybe<Scalars['String']>;
+  githubAppInstallationId: Maybe<Scalars['String']>;
+  githubAppPrivateKey: Maybe<Scalars['String']>;
+  githubAuthType: Maybe<Scalars['String']>;
   githubContext: Maybe<Scalars['String']>;
   githubToken: Maybe<Scalars['String']>;
   hookId: Scalars['ID'];
@@ -158,6 +162,10 @@ export type Hook = {
   bitbucketBuildName: Maybe<Scalars['String']>;
   bitbucketToken: Maybe<Scalars['String']>;
   bitbucketUsername: Maybe<Scalars['String']>;
+  githubAppId: Maybe<Scalars['String']>;
+  githubAppInstallationId: Maybe<Scalars['String']>;
+  githubAppPrivateKey: Maybe<Scalars['String']>;
+  githubAuthType: Maybe<Scalars['String']>;
   githubContext: Maybe<Scalars['String']>;
   githubToken: Maybe<Scalars['String']>;
   headers: Maybe<Scalars['String']>;
@@ -173,6 +181,10 @@ export type HookInput = {
   bitbucketBuildName: InputMaybe<Scalars['String']>;
   bitbucketToken: InputMaybe<Scalars['String']>;
   bitbucketUsername: InputMaybe<Scalars['String']>;
+  githubAppId: InputMaybe<Scalars['String']>;
+  githubAppInstallationId: InputMaybe<Scalars['String']>;
+  githubAppPrivateKey: InputMaybe<Scalars['String']>;
+  githubAuthType: InputMaybe<Scalars['String']>;
   githubContext: InputMaybe<Scalars['String']>;
   githubToken: InputMaybe<Scalars['String']>;
   headers: InputMaybe<Scalars['String']>;
@@ -588,6 +600,10 @@ export type UpdateGenericHookInput = {
 };
 
 export type UpdateGithubHookInput = {
+  githubAppId: InputMaybe<Scalars['String']>;
+  githubAppInstallationId: InputMaybe<Scalars['String']>;
+  githubAppPrivateKey: InputMaybe<Scalars['String']>;
+  githubAuthType: InputMaybe<Scalars['String']>;
   githubContext: InputMaybe<Scalars['String']>;
   githubToken: InputMaybe<Scalars['String']>;
   hookId: Scalars['ID'];
@@ -819,8 +835,12 @@ export type GetProjectQuery = {
       hookType: string | null;
       slackResultFilter: string | null;
       slackBranchFilter: Array<string | null> | null;
+      githubAuthType: string | null;
       githubContext: string | null;
       githubToken: string | null;
+      githubAppPrivateKey: string | null;
+      githubAppId: string | null;
+      githubAppInstallationId: string | null;
       bitbucketUsername: string | null;
       bitbucketToken: string | null;
       bitbucketBuildName: string | null;
@@ -902,8 +922,12 @@ export type CreateGithubHookMutation = {
     hookId: string;
     hookType: any;
     url: string;
+    githubAuthType: string | null;
     githubToken: string | null;
     githubContext: string | null;
+    githubAppPrivateKey: string | null;
+    githubAppId: string | null;
+    githubAppInstallationId: string | null;
   };
 };
 
@@ -1730,8 +1754,12 @@ export const GetProjectDocument = gql`
         hookType
         slackResultFilter
         slackBranchFilter
+        githubAuthType
         githubContext
         githubToken
+        githubAppPrivateKey
+        githubAppId
+        githubAppInstallationId
         bitbucketUsername
         bitbucketToken
         bitbucketBuildName
@@ -2018,8 +2046,12 @@ export const CreateGithubHookDocument = gql`
       hookId
       hookType
       url
+      githubAuthType
       githubToken
       githubContext
+      githubAppPrivateKey
+      githubAppId
+      githubAppInstallationId
     }
   }
 `;

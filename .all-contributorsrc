@@ -377,6 +377,15 @@
       "contributions": [
         "infra"
       ]
+    },
+    {
+      "login": "Spea",
+      "name": "Martin Parsiegla",
+      "avatar_url": "https://avatars.githubusercontent.com/u/495017?v=4",
+      "profile": "http://speanet.info",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
@@ -384,5 +393,6 @@
   "projectOwner": "sorry-cypress",
   "repoType": "github",
   "repoHost": "https://github.com",
-  "skipCi": true
+  "skipCi": true,
+  "commitConvention": "angular"
 }

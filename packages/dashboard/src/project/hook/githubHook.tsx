@@ -1,11 +1,14 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import {
   Button,
+  FormControlLabel,
   Grid,
   IconButton,
   InputAdornment,
   Link,
   OutlinedInput,
+  Radio,
+  RadioGroup,
   TextField,
 } from '@mui/material';
 import { GithubHook as GithubHookType } from '@sorry-cypress/common';
@@ -15,7 +18,7 @@ import {
   useUpdateGithubHookMutation,
 } from '@sorry-cypress/dashboard/generated/graphql';
 import { useSwitch } from '@sorry-cypress/dashboard/hooks/useSwitch';
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useCurrentProjectId } from './useCurrentProjectId';
 import { githubUrlValidation } from './validation';
@@ -26,9 +29,17 @@ interface GithubHookPros {
 export const GithubHook = ({ hook }: GithubHookPros) => {
   const projectId = useCurrentProjectId();
   const [editToken, toggleEditToken] = useSwitch();
+  const [editPrivateKey, togglePrivateKey] = useSwitch();
   const { register, handleSubmit, errors } = useForm({
     mode: 'onChange',
   });
+
+  const [githubAuthType, setAuthType] = useState<'token' | 'app'>(
+    hook.githubAuthType || 'token'
+  );
+
+  const updateGithubAuthType = (event: React.ChangeEvent<HTMLInputElement>) =>
+    setAuthType(event.target.value === 'app' ? 'app' : 'token');
 
   const [showToken, toggleToken] = useSwitch();
   const [updateHook, { loading }] = useUpdateGithubHookMutation();
@@ -49,6 +60,34 @@ export const GithubHook = ({ hook }: GithubHookPros) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid>
+        <Grid item xs={12}>
+          <InputFieldLabel
+            helpText="The github authentication mechanism you want to use. Currently app and token authentication is supported"
+            label="Authentication mechanism"
+            htmlFor="githubAuthType"
+            errorMessage={errors['githubAuthType']?.message}
+            required
+          >
+            <RadioGroup
+              row
+              value={githubAuthType}
+              defaultValue={hook.githubAuthType || 'token'}
+              name="githubAuthType"
+              onChange={updateGithubAuthType}
+            >
+              <FormControlLabel
+                value="token"
+                control={<Radio inputRef={register} />}
+                label="Github token"
+              />
+              <FormControlLabel
+                value="app"
+                control={<Radio inputRef={register} />}
+                label="Github app"
+              />
+            </RadioGroup>
+          </InputFieldLabel>
+        </Grid>
         <Grid item xs={12}>
           <InputFieldLabel
             helpText="This is the GitHub repository URL, e.g. https://github.com/sorry-cypress/sorry-cypress"
@@ -76,60 +115,147 @@ export const GithubHook = ({ hook }: GithubHookPros) => {
             />
           </InputFieldLabel>
         </Grid>
-        <Grid item xs={12}>
-          <InputFieldLabel
-            helpText="Your private GitHub token with repo:status permissions. Once this token is saved you will not be able to see it again. You will alwayse be able to update it."
-            label={
-              <span>
-                Github Token&nbsp;
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href="https://github.com/settings/tokens/new?scopes=repo&description=Sorry-cypress-status"
-                >
-                  (Create One)
-                </a>
-              </span>
-            }
-            htmlFor="githubToken"
-            errorMessage={errors['githubToken']?.message}
-            required
-          >
-            {hook.githubToken && !editToken && (
-              <>
-                Using saved token
-                <Link onClick={() => toggleEditToken(true)}>Edit</Link>
-              </>
-            )}
-            {(!hook.githubToken || editToken) && (
-              <OutlinedInput
-                inputRef={register({
-                  required: {
-                    value: true,
-                    message: 'Github token is required',
-                  },
-                })}
-                type={showToken ? 'text' : 'password'}
-                name="githubToken"
-                id="new-password"
-                disabled={disabled}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle token visibility"
-                      onClick={() => toggleToken()}
-                      edge="end"
+        {githubAuthType === 'token' && (
+          <Grid item xs={12}>
+            <InputFieldLabel
+              helpText="Your private GitHub token with repo:status permissions. Once this token is saved you will not be able to see it again. You will always be able to update it."
+              label={
+                <span>
+                  Github Token&nbsp;
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href="https://github.com/settings/tokens/new?scopes=repo&description=Sorry-cypress-status"
+                  >
+                    (Create One)
+                  </a>
+                </span>
+              }
+              htmlFor="githubToken"
+              errorMessage={errors['githubToken']?.message}
+              required
+            >
+              {hook.githubToken && !editToken && (
+                <>
+                  Using saved token
+                  <Link onClick={() => toggleEditToken(true)}>Edit</Link>
+                </>
+              )}
+              {(!hook.githubToken || editToken) && (
+                <OutlinedInput
+                  inputRef={register({
+                    required: {
+                      value: true,
+                      message: 'Github token is required',
+                    },
+                  })}
+                  type={showToken ? 'text' : 'password'}
+                  name="githubToken"
+                  id="new-password"
+                  disabled={disabled}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle token visibility"
+                        onClick={() => toggleToken()}
+                        edge="end"
+                      >
+                        {showToken ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  label="Password"
+                  size="small"
+                />
+              )}
+            </InputFieldLabel>
+          </Grid>
+        )}
+        {githubAuthType === 'app' && (
+          <div>
+            <Grid item xs={12}>
+              <InputFieldLabel
+                helpText="Your private key from the github app. Once it is saved you can no longer see it. You will always be able to update it."
+                label={
+                  <span>
+                    Github App Private Key&nbsp;
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href="https://docs.github.com/en/developers/overview/managing-deploy-keys#server-to-server-tokens"
                     >
-                      {showToken ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
+                      (App setup instructions)
+                    </a>
+                  </span>
                 }
-                label="Password"
-                size="small"
-              />
-            )}
-          </InputFieldLabel>
-        </Grid>
+                htmlFor="githubAppPrivateKey"
+                errorMessage={errors['githubAppPrivateKey']?.message}
+                required
+              >
+                {hook.githubAppPrivateKey && !editPrivateKey && (
+                  <>
+                    Using saved private key
+                    <Link onClick={() => togglePrivateKey(true)}>Edit</Link>
+                  </>
+                )}
+                {(!hook.githubAppPrivateKey || editPrivateKey) && (
+                  <OutlinedInput
+                    inputRef={register({
+                      required: {
+                        value: true,
+                        message: 'App private key is required',
+                      },
+                    })}
+                    minRows={5}
+                    type="text"
+                    multiline={true}
+                    name="githubAppPrivateKey"
+                    id="new-password"
+                    disabled={disabled}
+                    label="Private key"
+                    size="small"
+                  />
+                )}
+              </InputFieldLabel>
+            </Grid>
+            <Grid item xs={12}>
+              <InputFieldLabel
+                helpText="The ID from your github app"
+                label="App Id"
+                htmlFor="appId"
+                errorMessage={errors['githubAppId']?.message}
+              >
+                <TextField
+                  name="githubAppId"
+                  placeholder="Github app id"
+                  defaultValue={hook.githubAppId}
+                  inputRef={register}
+                  disabled={disabled}
+                  size="small"
+                  inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                />
+              </InputFieldLabel>
+            </Grid>
+            <Grid item xs={12}>
+              <InputFieldLabel
+                helpText="The ID from your github app installation"
+                label="Installation Id"
+                htmlFor="githubAppInstallationId"
+                errorMessage={errors['githubAppInstallationId']?.message}
+              >
+                <TextField
+                  name="githubAppInstallationId"
+                  placeholder="Github app installation id"
+                  defaultValue={hook.githubAppInstallationId}
+                  inputRef={register}
+                  disabled={disabled}
+                  size="small"
+                  inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                />
+              </InputFieldLabel>
+            </Grid>
+          </div>
+        )}
         <Grid item xs={12}>
           <InputFieldLabel
             helpText='Status label in GitHub to differentiate this project status from others. Default value is "Sorry-Cypress-Tests"'

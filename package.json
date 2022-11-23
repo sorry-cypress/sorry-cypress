@@ -1,6 +1,6 @@
 {
   "name": "sorry-cypress",
-  "version": "2.4.2",
+  "version": "2.5.0",
   "author": {
     "name": "Andrew Goldis",
     "email": "agoldis@gmail.com"
@@ -17,7 +17,8 @@
   "resolutions": {
     "@types/express": "4.17.12",
     "@types/serve-static": "1.13.10",
-    "pac-resolver": "^5.0.0"
+    "pac-resolver": "^5.0.0",
+    "loader-utils": "^2.0.4"
   },
   "scripts": {
     "killall": "ps -ef | egrep \"webpack|node|nodemon\" | grep sorry | awk '{ print $2 }' | xargs kill",
