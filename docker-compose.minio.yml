@@ -17,7 +17,6 @@ services:
 
       SCREENSHOTS_DRIVER: '../screenshots/minio.driver'
       GITLAB_JOB_RETRIES: 'false'
-      USE_SSL_FOR_LINKS: 'true'
       MINIO_ACCESS_KEY: 'MW32h3gd6HvjBEgTRx'
       MINIO_SECRET_KEY: 't6NgQWUcEyG2AzaDCVkN6sbWcvDCVkN6sGiZ7'
       MINIO_ENDPOINT: 'localhost'
@@ -50,6 +49,7 @@ services:
       GRAPHQL_CLIENT_CREDENTIALS: ''
       PORT: 8080
       CI_URL: ''
+      USE_SSL_FOR_LINKS: 'true'
     ports:
       - 8080:8080
     depends_on:

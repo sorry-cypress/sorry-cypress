@@ -6,3 +6,4 @@ exports.GRAPHQL_SCHEMA_URL =
 exports.GRAPHQL_CLIENT_CREDENTIALS =
   process.env.GRAPHQL_CLIENT_CREDENTIALS || '';
 exports.CI_URL = process.env.CI_URL || '';
+exports.USE_SSL_FOR_LINKS = process.env.USE_SSL_FOR_LINKS || 'true';

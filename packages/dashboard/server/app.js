@@ -5,12 +5,14 @@ const {
   GRAPHQL_CLIENT_CREDENTIALS,
   GRAPHQL_SCHEMA_URL,
   CI_URL,
+  USE_SSL_FOR_LINKS,
 } = require('./config');
 
 const SORRY_CYPRESS_ENVIRONMENT = JSON.stringify({
   GRAPHQL_CLIENT_CREDENTIALS,
   GRAPHQL_SCHEMA_URL,
   CI_URL,
+  USE_SSL_FOR_LINKS,
 });
 
 app.set('view engine', 'ejs');

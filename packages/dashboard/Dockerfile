@@ -18,4 +18,5 @@ COPY --from=build /app/packages/dashboard/dist .
 COPY --from=build /app/packages/dashboard/dist/views/index.ejs index.html
 ENV GRAPHQL_SCHEMA_URL "http://localhost:4000"
 ENV CI_URL ""
+ENV USE_SSL_FOR_LINKS "true"
 ENV GRAPHQL_CLIENT_CREDENTIALS ""

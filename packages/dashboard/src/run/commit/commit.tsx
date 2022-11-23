@@ -4,9 +4,6 @@ import {
   PersonOutline,
   PlaceOutlined,
 } from '@mui/icons-material';
-import {
-  USE_SSL_FOR_LINKS,
-} from '@sorry-cypress/director/config';
 import { Grid, Link, Tooltip, Typography } from '@mui/material';
 import { Commit as CommitDef } from '@sorry-cypress/dashboard/generated/graphql';
 import {
@@ -16,6 +13,7 @@ import {
 } from '@sorry-cypress/dashboard/lib/github';
 import React, { FunctionComponent } from 'react';
 import { CommitMessage } from '../commitMessage';
+import { environment } from '@sorry-cypress/dashboard/state/environment';
 
 export const Commit: CommitComponent = (props) => {
   const { commit, noLinks, brief = false } = props;
@@ -47,10 +45,10 @@ export const Commit: CommitComponent = (props) => {
                   <Link
                     target="_blank"
                     rel="noopener noreferrer"
-                    href={handleURL(commit.remoteOrigin, USE_SSL_FOR_LINKS)}
+                    href={handleURL(commit.remoteOrigin, environment.USE_SSL_FOR_LINKS)}
                     underline="hover"
                   >
-                    {handleURL(commit.remoteOrigin, USE_SSL_FOR_LINKS)}
+                    {handleURL(commit.remoteOrigin, environment.USE_SSL_FOR_LINKS)}
                   </Link>
                 )}
                 {noLinks && commit.remoteOrigin}
@@ -85,7 +83,7 @@ export const Commit: CommitComponent = (props) => {
                     href={getGithubBranchURL(
                       commit.remoteOrigin,
                       commit.branch,
-                      USE_SSL_FOR_LINKS
+                      environment.USE_SSL_FOR_LINKS
                     )}
                     underline="hover"
                   >
@@ -143,7 +141,7 @@ export const Commit: CommitComponent = (props) => {
                 <Link
                   target="_blank"
                   rel="noopener noreferrer"
-                  href={getGithubCommitURL(commit.remoteOrigin, commit.sha, USE_SSL_FOR_LINKS)}
+                  href={getGithubCommitURL(commit.remoteOrigin, commit.sha, environment.USE_SSL_FOR_LINKS)}
                   underline="hover"
                 >
                   <CommitMessage brief={brief} message={commit.message} />
