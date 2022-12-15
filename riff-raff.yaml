@@ -1,0 +1,26 @@
+regions:
+  - eu-west-1
+stacks:
+  - playground
+allowedStages:
+  - CODE
+  - PROD
+deployments:
+  sorry-cypress-cloudformation:
+    type: cloud-formation
+    app: sorry-cypress
+    parameters:
+      cloudFormationStackByTags: false
+      prependStackToCloudFormationStackName: false
+      cloudFormationStackName: sorry-cypress
+      templatePath: SorryCypress.template.json
+
+  sorry-cypress:
+    dependencies:
+      - sorry-cypress-cloudformation
+    type: aws-lambda
+    parameters:
+      prefixStack: false
+      bucket: developer-playground-dist
+      fileName: sorry-cypress.zip
+      functionNames: [sorry-cypress-lambda-api-]

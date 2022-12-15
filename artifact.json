@@ -1,0 +1,16 @@
+{
+  "projectName": "Sorry Cypress",
+  "vcsURL": "https://github.com/guardian/sorry-cypress",
+  "actions": [
+    {
+      "action": "sorry-cypress-cloudformation",
+      "path": "cdk/cdk.out/SorryCypress.template.json",
+      "compress": false
+    },
+    {
+      "action": "sorry-cypress",
+      "path": "dist",
+      "compress": "zip"
+    }
+  ]
+}

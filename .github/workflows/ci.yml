@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  # Manual invocation.
+  workflow_dispatch:
+  push:
+
+jobs:
+  CI:
+    runs-on: ubuntu-latest
+
+    # See https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
+    permissions:
+      # required by aws-actions/configure-aws-credentials
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v2
+
+      # Setup AWS credentials to enable uploading to S3 for Riff-Raff.
+      # See https://github.com/aws-actions/configure-aws-credentials
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
+          aws-region: eu-west-1
+
+      # Setup Node, checking common Node config files to determine the version of Node to use.
+      # See https://github.com/guardian/actions-setup-node
+      - name: Setup Node
+        uses: guardian/actions-setup-node@v2.4.1
+        with:
+          cache: 'yarn'
+
+      - name: install dependencies
+        run: yarn install
+
+      - name: run CDK tests
+        run: yarn workspace cdk test
+
+      #        - name: perform a linting check
+      #          run: npm run lint
+
+      - name: write the current GIT hash to GIT_COMMIT_HASH.ts (so it's available at build time - so it gets baked into the artifact)
+        run: |
+          GIT_COMMIT_HASH=$(git rev-parse HEAD)
+          echo 'export const GIT_COMMIT_HASH = "'$GIT_COMMIT_HASH'";' > GIT_COMMIT_HASH.ts
+
+      - name: build
+        run: yarn build
+
+      - name: combine client and server into directory
+        run: |
+          mkdir dist
+          cp -v packages/director/dist/index.js dist/
+
+      - name: upload riff-raff artifacts
+        run: yarn node-riffraff-artifact

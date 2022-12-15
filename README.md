@@ -1,3 +1,7 @@
+# Guardian Sorry Cypress
+
+Sorry cypress modified to run in an AWS lambda using guCDK
+
 ![Update Dockerhub Images](https://github.com/agoldis/sorry-cypress/workflows/Update%20Dockerhub%20Images/badge.svg?event=push)
 ![Update Dockerhub Images](https://github.com/agoldis/sorry-cypress/workflows/Lint%20and%20test/badge.svg)
 <a href="https://join.slack.com/t/sorry-cypress/shared_invite/zt-eis1h6jl-tJELaD7q9UGEhMP8WHJOaw" target="_blank">![Join slack](https://img.shields.io/badge/join-slack-orange?logo=slack)<a/>
@@ -21,8 +25,6 @@
 **[Sorry Cypress](https://sorry-cypress.dev)** is open-source, free alternative to Cypress Dashboard that unlocks unlimited parallelization, test recordings, integration with GitHub, Slack and more.
 
 **[Currents.dev](https://currents.dev/?utm_source=github_readme)** - is an enhanced version of Sorry Cypress. It is a managed cloud service that hundreds of companies around the globe use to run **millions** of Cypress tests without breaking the bank. It offers a better security, performance, analytics, integrations and support.
-
-
 
 ## Table of contents
 
