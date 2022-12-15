@@ -16,17 +16,10 @@ RUN yarn workspace @sorry-cypress/director build
 
 RUN yarn install --production --frozen-lockfile
 RUN apk --no-cache add curl && \
-    curl -sf https://gobinaries.com/tj/node-prune | sh && \
-    node-prune
+  curl -sf https://gobinaries.com/tj/node-prune | sh && \
+  node-prune
 
-FROM node:16-alpine
-ARG USER=node
-WORKDIR /app
-COPY --chown=node:node --from=build /app/packages/ packages/
-COPY --chown=node:node --from=build /app/node_modules/ node_modules/
-RUN apk add --no-cache tini
+FROM amazon/aws-lambda-nodejs:16
+COPY --chown=node:node --from=build /app/packages/director/dist/index.js index.js
 ENV NODE_ENV=production
-USER ${USER}
-EXPOSE 1234
-ENTRYPOINT ["/sbin/tini", "--"]
-CMD ["./node_modules/.bin/pm2-runtime", "packages/director/dist"]
+CMD ["index.handler"]
