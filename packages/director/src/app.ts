@@ -17,14 +17,14 @@ app
   .use(
     PROBE_LOGGER === 'true'
       ? expressPino({
-          logger: getLogger(),
-        })
+        logger: getLogger(),
+      })
       : expressPino({
-          logger: getLogger(),
-          autoLogging: {
-            ignorePaths: ['/health-check-db', '/ping'],
-          },
-        })
+        logger: getLogger(),
+        autoLogging: {
+          ignorePaths: ['/health-check-db', '/ping'],
+        },
+      })
   )
   .use(
     express.json({
@@ -89,6 +89,28 @@ app.get(
     (await executionDriver.isDBHealthy())
       ? res.sendStatus(200)
       : res.sendStatus(503);
+  })
+);
+
+app.get(
+  '/hi',
+  catchRequestHandlerErrors(async (_, res) => {
+    const executionDriver = await getExecutionDriver();
+    let out = await executionDriver.getProjects;
+    console.log("OUT:", out);
+    return res.json(out);
+
+  })
+);
+
+app.post(
+  '/hook',
+  catchRequestHandlerErrors(async (req, res) => {
+    const executionDriver = await getExecutionDriver();
+    let out = await executionDriver.getInstanceById('hello-cypress');
+    console.log("HOOK RECEIVED:", req.body);
+    return res.json(req.body);
+
   })
 );
 

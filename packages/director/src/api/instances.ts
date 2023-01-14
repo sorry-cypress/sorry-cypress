@@ -171,6 +171,7 @@ async function completeInstance(
       runId,
       groupId,
     });
+    await executionDriver.setRunCompleted(runId);
   }
 
   await executionDriver.maybeSetRunCompleted(runId);

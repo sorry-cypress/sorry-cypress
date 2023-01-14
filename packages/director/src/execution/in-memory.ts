@@ -3,6 +3,8 @@ import {
   CreateRunResponse,
   CreateRunWarning,
   getCreateProjectValue,
+  HookType,
+  HookEvent,
   Instance,
   InstanceResult,
   Project,
@@ -27,6 +29,7 @@ import {
 import { mergeInstanceResults } from '@sorry-cypress/director/lib/instance';
 import { getDashboardRunURL } from '@sorry-cypress/director/lib/urls';
 import { ExecutionDriver } from '@sorry-cypress/director/types';
+import { getNewGroupTemplate } from './mongo/runs/run.model';
 import {
   enhanceSpec,
   getClaimedSpecs,
@@ -36,8 +39,8 @@ import {
   getSpecsForGroup,
 } from './utils';
 
-const projects: { [key: string]: Project } = {};
-const runs: { [key: string]: Run } = {};
+const projects: { [key: string]: Project; } = { test: { projectId: 'test', createdAt: '123', hooks: [{ hookId: '1', url: 'http://localhost:1234/hook', hookEvents: [HookEvent.RUN_FINISH], hookType: HookType.GENERIC_HOOK }] } };
+const runs: { [key: string]: Run; } = {};
 const instances: {
   [key: string]: Instance;
 } = {};
@@ -105,7 +108,7 @@ const createRun: ExecutionDriver['createRun'] = async (
 
   params.commit.remoteOrigin = getRemoteOrigin(params.commit.remoteOrigin);
 
-  // @ts-ignore
+
   runs[runId] = {
     runId,
     createdAt: new Date().toUTCString(),
@@ -121,6 +124,11 @@ const createRun: ExecutionDriver['createRun'] = async (
       ci: params.ci,
     } as RunMetaData,
     specs: params.specs.map(enhanceSpecForThisRun),
+    cypressVersion: params.cypressVersion,
+    progress: {
+      updatedAt: new Date(),
+      groups: [getNewGroupTemplate(groupId, params.specs.length)]
+    }
   };
 
   return response;
@@ -188,6 +196,11 @@ const setInstanceTests = async (
     ...instances[instanceId],
     _createTestsPayload: { ...payload },
   };
+
+  const overallTextCount = runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId)?.tests.overall || 0;
+
+  //@ts-ignore
+  runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId).tests.overall = overallTextCount + payload.tests.length;
 };
 
 const updateInstanceResults = async (
@@ -206,13 +219,24 @@ const updateInstanceResults = async (
   );
 
   instances[instanceId].results = instanceResult;
+
+  //@ts-ignore
+  runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId).tests.passes = runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId).tests.passes + instanceResult.stats.passes;
+  //@ts-ignore
+  runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId).tests.failures = runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId).tests.failures + instanceResult.stats.failures;
+  //@ts-ignore
+  runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId).tests.skipped = runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId).tests.skipped + instanceResult.stats.skipped;
+  //@ts-ignore
+  runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId).tests.pending = runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId).tests.pending + instanceResult.stats.pending;
+
   return instances[instanceId];
 };
 
-export const driver: ExecutionDriver = {
+export const driver: any = {
   id: 'in-memory',
   init: () => Promise.resolve(),
   isDBHealthy: () => Promise.resolve(true),
+  getProjects: runs,
   getProjectById: (projectId: string) => Promise.resolve(projects[projectId]),
   getRunById: (runId: string) => Promise.resolve(runs[runId]),
   maybeSetRunCompleted: async (_runId: string) => true,
