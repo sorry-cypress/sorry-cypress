@@ -173,8 +173,6 @@ async function completeInstance(
     });
     await executionDriver.setRunCompleted(runId);
   }
-
-  await executionDriver.maybeSetRunCompleted(runId);
 }
 async function getInstanceScreenshots(
   instanceId: string,

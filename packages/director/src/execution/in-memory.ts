@@ -221,6 +221,10 @@ const updateInstanceResults = async (
   instances[instanceId].results = instanceResult;
 
   //@ts-ignore
+  runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId).instances.complete = runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId)?.instances.complete + 1;
+
+
+  //@ts-ignore
   runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId).tests.passes = runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId).tests.passes + instanceResult.stats.passes;
   //@ts-ignore
   runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId).tests.failures = runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId).tests.failures + instanceResult.stats.failures;
@@ -232,6 +236,11 @@ const updateInstanceResults = async (
   return instances[instanceId];
 };
 
+const allGroupSpecsCompleted = (runId, groupId) => {
+  let instances = runs[runId].progress.groups.find(group => group.groupId === groupId)?.instances;
+  return instances?.overall === instances?.complete;
+};
+
 export const driver: any = {
   id: 'in-memory',
   init: () => Promise.resolve(),
@@ -240,7 +249,7 @@ export const driver: any = {
   getProjectById: (projectId: string) => Promise.resolve(projects[projectId]),
   getRunById: (runId: string) => Promise.resolve(runs[runId]),
   maybeSetRunCompleted: async (_runId: string) => true,
-  allGroupSpecsCompleted: async () => true,
+  allGroupSpecsCompleted,
   getInstanceById: (instanceId: string) =>
     Promise.resolve(instances[instanceId]),
   createRun,
