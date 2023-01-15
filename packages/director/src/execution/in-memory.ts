@@ -13,6 +13,7 @@ import {
   SetInstanceTestsPayload,
   Task,
   UpdateInstanceResultsPayload,
+  Hook,
 } from '@sorry-cypress/common';
 import { INACTIVITY_TIMEOUT_SECONDS } from '@sorry-cypress/director/config';
 import { getRunCiBuildId } from '@sorry-cypress/director/lib/ciBuildId';
@@ -39,7 +40,7 @@ import {
   getSpecsForGroup,
 } from './utils';
 
-const projects: { [key: string]: Project; } = { test: { projectId: 'test', createdAt: '123', hooks: [{ hookId: '1', url: 'http://localhost:1234/hook', hookEvents: [HookEvent.RUN_FINISH], hookType: HookType.GENERIC_HOOK }] } };
+const projects: { [key: string]: Project; } = {};
 const runs: { [key: string]: Run; } = {};
 const instances: {
   [key: string]: Instance;
@@ -241,11 +242,16 @@ const allGroupSpecsCompleted = (runId, groupId) => {
   return instances?.overall === instances?.complete;
 };
 
+const setHooks = (projectId: string, hooks: Hook[]) => {
+  projects[projectId] = { projectId, createdAt: new Date().toISOString(), hooks };
+  return projects;
+};
+
 export const driver: any = {
   id: 'in-memory',
   init: () => Promise.resolve(),
   isDBHealthy: () => Promise.resolve(true),
-  getProjects: runs,
+  getProjects: () => projects,
   getProjectById: (projectId: string) => Promise.resolve(projects[projectId]),
   getRunById: (runId: string) => Promise.resolve(runs[runId]),
   maybeSetRunCompleted: async (_runId: string) => true,
@@ -257,6 +263,7 @@ export const driver: any = {
   setInstanceResults,
   setInstanceTests,
   updateInstanceResults,
+  setHooks,
   setScreenshotUrl: () => Promise.resolve(),
   setVideoUrl: () => Promise.resolve(),
   setRunCompleted: async (runId) => {

@@ -92,25 +92,30 @@ app.get(
   })
 );
 
-app.get(
-  '/hi',
-  catchRequestHandlerErrors(async (_, res) => {
+
+app.post(
+  '/hooks',
+  catchRequestHandlerErrors(async (req, res) => {
     const executionDriver = await getExecutionDriver();
-    let out = await executionDriver.getProjects;
-    console.log("OUT:", out);
-    return res.json(out);
+    if (executionDriver.id !== 'in-memory')
+      return res.status(405).send('This is only available for in-memory db. Please use the dashboard to set your hooks.');
+
+    const { projectId, hooks } = req.body;
+    const projects = executionDriver.setHooks(projectId, hooks);
+    getLogger().log(`[hooks] Hooks set for project ${req.body.projectId}`);
+    return res.json(projects);
 
   })
 );
 
-app.post(
-  '/hook',
+app.get(
+  '/hooks',
   catchRequestHandlerErrors(async (req, res) => {
     const executionDriver = await getExecutionDriver();
-    let out = await executionDriver.getInstanceById('hello-cypress');
-    console.log("HOOK RECEIVED:", req.body);
-    return res.json(req.body);
+    if (executionDriver.id !== 'in-memory')
+      return res.status(405).send('This is only available for in-memory db. Please use the dashboard to set your hooks.');
 
+    return res.json(executionDriver.getProjects());
   })
 );
 
