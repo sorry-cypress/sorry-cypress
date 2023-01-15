@@ -14,6 +14,7 @@ import {
   Task,
   UpdateInstanceResultsPayload,
   Hook,
+  isTestFlaky,
 } from '@sorry-cypress/common';
 import { INACTIVITY_TIMEOUT_SECONDS } from '@sorry-cypress/director/config';
 import { getRunCiBuildId } from '@sorry-cypress/director/lib/ciBuildId';
@@ -30,6 +31,7 @@ import {
 import { mergeInstanceResults } from '@sorry-cypress/director/lib/instance';
 import { getDashboardRunURL } from '@sorry-cypress/director/lib/urls';
 import { ExecutionDriver } from '@sorry-cypress/director/types';
+import { group } from 'console';
 import { getNewGroupTemplate } from './mongo/runs/run.model';
 import {
   enhanceSpec,
@@ -221,25 +223,38 @@ const updateInstanceResults = async (
 
   instances[instanceId].results = instanceResult;
 
-  //@ts-ignore
-  runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId).instances.complete = runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId)?.instances.complete + 1;
-
-
-  //@ts-ignore
-  runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId).tests.passes = runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId).tests.passes + instanceResult.stats.passes;
-  //@ts-ignore
-  runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId).tests.failures = runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId).tests.failures + instanceResult.stats.failures;
-  //@ts-ignore
-  runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId).tests.skipped = runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId).tests.skipped + instanceResult.stats.skipped;
-  //@ts-ignore
-  runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId).tests.pending = runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId).tests.pending + instanceResult.stats.pending;
-
+  updateRunsProgress(instanceId, instanceResult);
   return instances[instanceId];
+};
+
+const updateRunsProgress = (instanceId, instanceResult) => {
+  const hasFailures = instanceResult.stats.failures > 0 || instanceResult.stats.skipped > 0;
+  const flakyTests = instanceResult.tests.filter(isTestFlaky);
+  let progressGroup = runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId);
+  //@ts-ignore
+  progressGroup.instances.complete = progressGroup?.instances.complete + 1;
+  if (hasFailures) {
+    //@ts-ignore
+    progressGroup.instances.failures = progressGroup?.instances.failures + 1;
+  } else {
+    //@ts-ignore
+    progressGroup.instances.passes = progressGroup?.instances.passes + 1;
+  }
+  //@ts-ignore
+  progressGroup.tests.passes = progressGroup.tests.passes + instanceResult.stats.passes;
+  //@ts-ignore
+  progressGroup.tests.failures = progressGroup.tests.failures + instanceResult.stats.failures;
+  //@ts-ignore
+  progressGroup.tests.skipped = progressGroup.tests.skipped + instanceResult.stats.skipped;
+  //@ts-ignore
+  progressGroup.tests.pending = progressGroup.tests.pending + instanceResult.stats.pending;
+  //@ts-ignore
+  progressGroup?.tests.flaky = progressGroup.tests.flaky + flakyTests.length;
 };
 
 const allGroupSpecsCompleted = (runId, groupId) => {
   let instances = runs[runId].progress.groups.find(group => group.groupId === groupId)?.instances;
-  return instances?.overall === instances?.complete;
+  return Promise.resolve(instances?.overall === instances?.complete);
 };
 
 const setHooks = (projectId: string, hooks: Hook[]) => {
@@ -247,7 +262,7 @@ const setHooks = (projectId: string, hooks: Hook[]) => {
   return projects;
 };
 
-export const driver: any = {
+export const driver: ExecutionDriver = {
   id: 'in-memory',
   init: () => Promise.resolve(),
   isDBHealthy: () => Promise.resolve(true),
