@@ -104,22 +104,11 @@ app.post(
     //@ts-ignore
     const projects = executionDriver.setHooks(projectId, hooks);
     getLogger().log(`[hooks] Hooks set for project ${req.body.projectId}`);
-    return res.json(projects);
+    return res.sendStatus(200).send(`Hooks set for project ${req.body.projectId}`);
 
   })
 );
 
-app.get(
-  '/hooks',
-  catchRequestHandlerErrors(async (req, res) => {
-    const executionDriver = await getExecutionDriver();
-    if (executionDriver.id !== 'in-memory')
-      return res.status(405).send('This is only available for in-memory db. Please use the dashboard to set your hooks.');
-
-    //@ts-ignore
-    return res.json(executionDriver!.getProjects());
-  })
-);
 
 app.use((error, req, res, _next) => {
   res
