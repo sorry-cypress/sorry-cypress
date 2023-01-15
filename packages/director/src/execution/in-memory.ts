@@ -199,11 +199,10 @@ const setInstanceTests = async (
     ...instances[instanceId],
     _createTestsPayload: { ...payload },
   };
-
-  const overallTextCount = runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId)?.tests.overall || 0;
-
   //@ts-ignore
-  runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId).tests.overall = overallTextCount + payload.tests.length;
+  let runTests = runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId).tests;
+  //@ts-ignore
+  runTests.overall = runTests.overall + payload.tests.length;
 };
 
 const updateInstanceResults = async (
@@ -249,7 +248,7 @@ const updateRunsProgress = (instanceId, instanceResult) => {
   //@ts-ignore
   progressGroup.tests.pending = progressGroup.tests.pending + instanceResult.stats.pending;
   //@ts-ignore
-  progressGroup?.tests.flaky = progressGroup.tests.flaky + flakyTests.length;
+  progressGroup.tests.flaky = progressGroup.tests.flaky + flakyTests.length;
 };
 
 const allGroupSpecsCompleted = (runId, groupId) => {

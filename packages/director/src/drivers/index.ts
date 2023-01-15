@@ -24,7 +24,7 @@ export const getScreenshotsDriver = async (): Promise<ScreenshotsDriver> => {
   return storageDriver;
 };
 
-export const getExecutionDriver = async (): Promise<any> => {
+export const getExecutionDriver = async (): Promise<ExecutionDriver> => {
   if (executionDriver) {
     return executionDriver;
   }
