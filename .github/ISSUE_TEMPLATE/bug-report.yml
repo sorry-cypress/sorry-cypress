@@ -29,11 +29,11 @@ body:
         <details>
 
         ```
-- sorry-cypress version: `<here>`
-- cypress version: `<here>`
-- cy2 version: `<here>`
-- platform: `k8s | docker | cloud provider`
-- service: `api | director | dashboard | all`
+          - sorry-cypress version: `<here>`
+          - cypress version: `<here>`
+          - cy2 version: `<here>`
+          - platform: `k8s | docker | cloud provider`
+          - service: `api | director | dashboard | all`
 
         ```
 
