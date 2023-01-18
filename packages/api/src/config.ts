@@ -7,3 +7,4 @@ export const CI_BUILD_BATCH_SIZE = Number(
   process.env.CI_BUILD_BATCH_SIZE ?? 1000
 );
 export const APOLLO_PLAYGROUND = process.env.APOLLO_PLAYGROUND || 'false';
+export const BASE_PATH = process.env.BASE_PATH || '/graphql';

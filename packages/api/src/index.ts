@@ -11,7 +11,7 @@ import {
   ApolloServerPluginLandingPageDisabled,
 } from 'apollo-server-core';
 import express from 'express';
-import { HOST, PORT, APOLLO_PLAYGROUND } from './config';
+import { HOST, PORT, APOLLO_PLAYGROUND, BASE_PATH } from './config';
 import { InstancesAPI } from './datasources/instances';
 import { ProjectsAPI } from './datasources/projects';
 import { RunsAPI } from './datasources/runs';
@@ -59,7 +59,7 @@ async function start() {
 
   apolloServer.applyMiddleware({
     app,
-    path: '/',
+    path: BASE_PATH,
     bodyParserConfig: { limit: '50mb' },
     onHealthCheck: async () => Promise.resolve('true'),
     cors: { origin: '*' },
@@ -79,7 +79,7 @@ async function start() {
     protocol: 'http',
     hostname: (httpServer.address() as any).address,
     port: (httpServer.address() as any).port,
-    pathname: '/graphql',
+    pathname: BASE_PATH,
   });
 
   console.log(`🚀 Apollo server is ready at ${url}`);
