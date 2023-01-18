@@ -15,6 +15,7 @@ import {
   UpdateInstanceResultsPayload,
   Hook,
   isTestFlaky,
+  isRunCompleted,
 } from '@sorry-cypress/common';
 import { INACTIVITY_TIMEOUT_SECONDS } from '@sorry-cypress/director/config';
 import { getRunCiBuildId } from '@sorry-cypress/director/lib/ciBuildId';
@@ -31,6 +32,7 @@ import {
 import { mergeInstanceResults } from '@sorry-cypress/director/lib/instance';
 import { getDashboardRunURL } from '@sorry-cypress/director/lib/urls';
 import { ExecutionDriver } from '@sorry-cypress/director/types';
+import { getLogger } from '@sorry-cypress/logger';
 import { group } from 'console';
 import { getNewGroupTemplate } from './mongo/runs/run.model';
 import {
@@ -230,25 +232,21 @@ const updateRunsProgress = (instanceId, instanceResult) => {
   const hasFailures = instanceResult.stats.failures > 0 || instanceResult.stats.skipped > 0;
   const flakyTests = instanceResult.tests.filter(isTestFlaky);
   let progressGroup = runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId);
-  //@ts-ignore
-  progressGroup.instances.complete = progressGroup?.instances.complete + 1;
-  if (hasFailures) {
-    //@ts-ignore
-    progressGroup.instances.failures = progressGroup?.instances.failures + 1;
-  } else {
-    //@ts-ignore
-    progressGroup.instances.passes = progressGroup?.instances.passes + 1;
+  if (progressGroup) {
+    progressGroup.instances.complete = progressGroup?.instances.complete + 1;
+    if (hasFailures) {
+
+      progressGroup.instances.failures = progressGroup?.instances.failures + 1;
+    } else {
+
+      progressGroup.instances.passes = progressGroup?.instances.passes + 1;
+    }
+    progressGroup.tests.passes = progressGroup.tests.passes + instanceResult.stats.passes;
+    progressGroup.tests.failures = progressGroup.tests.failures + instanceResult.stats.failures;
+    progressGroup.tests.skipped = progressGroup.tests.skipped + instanceResult.stats.skipped;
+    progressGroup.tests.pending = progressGroup.tests.pending + instanceResult.stats.pending;
+    progressGroup.tests.flaky = progressGroup.tests.flaky + flakyTests.length;
   }
-  //@ts-ignore
-  progressGroup.tests.passes = progressGroup.tests.passes + instanceResult.stats.passes;
-  //@ts-ignore
-  progressGroup.tests.failures = progressGroup.tests.failures + instanceResult.stats.failures;
-  //@ts-ignore
-  progressGroup.tests.skipped = progressGroup.tests.skipped + instanceResult.stats.skipped;
-  //@ts-ignore
-  progressGroup.tests.pending = progressGroup.tests.pending + instanceResult.stats.pending;
-  //@ts-ignore
-  progressGroup.tests.flaky = progressGroup.tests.flaky + flakyTests.length;
 };
 
 const allGroupSpecsCompleted = (runId, groupId) => {
@@ -261,6 +259,34 @@ const setHooks = (projectId: string, hooks: Hook[]) => {
   return projects;
 };
 
+const allRunSpecsCompleted = async (runId: string): Promise<boolean> => {
+  const run = runs[runId];
+  if (!run) {
+    throw new AppError(RUN_NOT_EXIST);
+  }
+  if (!run.progress) {
+    return false;
+  }
+  return isRunCompleted(run.progress);
+};
+
+const maybeSetRunCompleted = async (runId) => {
+  if (await allRunSpecsCompleted(runId)) {
+    getLogger().log({ runId }, `[run-completion] Run completed`);
+    setRunCompleted(runId).catch(getLogger().error);
+    return true;
+  }
+  // timeout should handle
+  return false;
+};
+
+const setRunCompleted = async (runId) => {
+  if (!runs[runId]) {
+    throw new AppError(RUN_NOT_EXIST);
+  }
+  runs[runId].completion = { completed: true };
+};
+
 export const driver: ExecutionDriver = {
   id: 'in-memory',
   init: () => Promise.resolve(),
@@ -268,7 +294,7 @@ export const driver: ExecutionDriver = {
   getProjects: () => projects,
   getProjectById: (projectId: string) => Promise.resolve(projects[projectId]),
   getRunById: (runId: string) => Promise.resolve(runs[runId]),
-  maybeSetRunCompleted: async (_runId: string) => true,
+  maybeSetRunCompleted: maybeSetRunCompleted,
   allGroupSpecsCompleted,
   getInstanceById: (instanceId: string) =>
     Promise.resolve(instances[instanceId]),
@@ -280,12 +306,7 @@ export const driver: ExecutionDriver = {
   setHooks,
   setScreenshotUrl: () => Promise.resolve(),
   setVideoUrl: () => Promise.resolve(),
-  setRunCompleted: async (runId) => {
-    if (!runs[runId]) {
-      throw new AppError(RUN_NOT_EXIST);
-    }
-    runs[runId].completion = { completed: true };
-  },
+  setRunCompleted,
   setRunCompletedWithTimeout: async ({ runId, timeoutMs }) => {
     if (!runs[runId]) {
       throw new AppError(RUN_NOT_EXIST);

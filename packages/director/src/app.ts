@@ -104,8 +104,7 @@ router.post(
       return res.status(405).send('This is only available for in-memory db. Please use the dashboard to set your hooks.');
 
     const { projectId, hooks } = req.body;
-    //@ts-ignore
-    const projects = executionDriver.setHooks(projectId, hooks);
+    executionDriver.setHooks && executionDriver.setHooks(projectId, hooks);
     getLogger().log(`[hooks] Hooks set for project ${req.body.projectId}`);
     return res.sendStatus(200).send(`Hooks set for project ${req.body.projectId}`);
 
