@@ -1,34 +1,96 @@
----
-name: Bug Report
-about: A bug 🐞
----
+name: Bug report
+description: Create a report to help us improve sorry-cypress
+labels: bug
 
-Please note - issues that are not following the template will be closed automatically:
+body:
+  - type: checkboxes
+    attributes:
+      label: |
+        Before opening, please confirm:
+      options:
+        - label: I have [searched for duplicate or closed issues](https://github.com/sorry-cypress/sorry-cypress/issues?q=is%3Aopen+is%3Aissue) and [discussions](https://github.com/sorry-cypress/sorry-cypress/discussions).
+          required: true
+        - label: I have done my best to include a minimal, self-contained set of instructions for consistently reproducing the issue.
+          required: true
+        - label: I have read the [documentation](https://docs.sorry-cypress.dev/) and found no answer to my problem
+          required: true
 
-- [ ] I have verified that all sorry-cypress services are running and accessible
-- [ ] I have read documentation and found no answer to my problem
-- [ ] I have searched issues / discussions and found to answer to my problem
-- [ ] I have read [Minio Configutation guide](https://docs.sorry-cypress.dev/configuration/director-configuration/minio-configuration) - for issues related to Screenshots / Videos uploads for Minio 
-- [ ] I have activated the debug mode `DEBUG=cypress:server:api cy2 ....` and have the network error
+  - type: markdown
+    attributes:
+      value: |
+        ## Environment
+  - type: textarea
+    attributes:
+      label: Environment information
+      description: |
+        Please provide information about your environment.
 
-## Summary
+      value: |
+        <details>
 
-Sorry cypress does X, but should do Y
-
-## How to reproduce
-
-1. Step A
-2. Step B
-
-## Relevant logs / screenshots
-
-- Please submit relevant logs from `DEBUG=cypress:server:api cy2 ....`
-- Please submit relevant logs from director / api / dahsboard service
-- Please submit screenshots if relevant
-
-## Environment
-
+        ```
 - sorry-cypress version: `<here>`
 - cypress version: `<here>`
-- platform: `docker | cloud provider`
+- cy2 version: `<here>`
+- platform: `k8s | docker | cloud provider`
 - service: `api | director | dashboard | all`
+
+        ```
+
+        </details>
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        ## Details
+  - type: textarea
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what you expected to happen.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Reproduction steps
+      description: |
+        - Clear and concise description of steps to reproduce the problem
+
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Full log and debug output
+      description: |
+        Run in debug mode to provide more info - error messages and stack traces.
+
+        - **👉🏻 Include the full log 👈🏻 - starting from running the command till receiving an error.**
+        - Attach a link / file for long outputs.
+
+        Example:
+
+        - Linux: `DEBUG=cy2*,cypress:* cy2 run ...`
+        - Windows: `cmd /V /C "set DEBUG=cy2*,cypress:*&& set CYPRESS_API_URL=some && cy2 run ..."`
+
+        **Be sure to remove any sensitive data.**
+      value: |
+        <details>
+
+        ```
+        // Put your logs below this line
+
+
+        ```
+
+        </details>
+    validations:
+      required: true
