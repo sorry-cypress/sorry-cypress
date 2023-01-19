@@ -113,7 +113,6 @@ const createRun: ExecutionDriver['createRun'] = async (
 
   params.commit.remoteOrigin = getRemoteOrigin(params.commit.remoteOrigin);
 
-
   runs[runId] = {
     runId,
     createdAt: new Date().toUTCString(),
@@ -201,10 +200,11 @@ const setInstanceTests = async (
     ...instances[instanceId],
     _createTestsPayload: { ...payload },
   };
-  //@ts-ignore
-  let runTests = runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId).tests;
-  //@ts-ignore
-  runTests.overall = runTests.overall + payload.tests.length;
+
+  let runTests = runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId)?.tests;
+  if (runTests) {
+    runTests.overall = runTests.overall + payload.tests.length;
+  }
 };
 
 const updateInstanceResults = async (
@@ -235,10 +235,8 @@ const updateRunsProgress = (instanceId, instanceResult) => {
   if (progressGroup) {
     progressGroup.instances.complete = progressGroup?.instances.complete + 1;
     if (hasFailures) {
-
       progressGroup.instances.failures = progressGroup?.instances.failures + 1;
     } else {
-
       progressGroup.instances.passes = progressGroup?.instances.passes + 1;
     }
     progressGroup.tests.passes = progressGroup.tests.passes + instanceResult.stats.passes;
