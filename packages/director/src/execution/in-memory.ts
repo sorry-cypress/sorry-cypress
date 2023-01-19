@@ -33,7 +33,6 @@ import { mergeInstanceResults } from '@sorry-cypress/director/lib/instance';
 import { getDashboardRunURL } from '@sorry-cypress/director/lib/urls';
 import { ExecutionDriver } from '@sorry-cypress/director/types';
 import { getLogger } from '@sorry-cypress/logger';
-import { group } from 'console';
 import { getNewGroupTemplate } from './mongo/runs/run.model';
 import {
   enhanceSpec,
@@ -289,10 +288,9 @@ export const driver: ExecutionDriver = {
   id: 'in-memory',
   init: () => Promise.resolve(),
   isDBHealthy: () => Promise.resolve(true),
-  getProjects: () => projects,
   getProjectById: (projectId: string) => Promise.resolve(projects[projectId]),
   getRunById: (runId: string) => Promise.resolve(runs[runId]),
-  maybeSetRunCompleted: maybeSetRunCompleted,
+  maybeSetRunCompleted,
   allGroupSpecsCompleted,
   getInstanceById: (instanceId: string) =>
     Promise.resolve(instances[instanceId]),

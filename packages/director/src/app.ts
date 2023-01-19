@@ -107,7 +107,6 @@ router.post(
     executionDriver.setHooks && executionDriver.setHooks(projectId, hooks);
     getLogger().log(`[hooks] Hooks set for project ${req.body.projectId}`);
     return res.status(200).send(`Hooks set for project "${req.body.projectId}".`);
-
   })
 );
 

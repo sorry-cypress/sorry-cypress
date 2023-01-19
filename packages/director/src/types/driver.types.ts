@@ -45,7 +45,6 @@ export interface ExecutionDriver extends Driver {
   isDBHealthy: () => Promise<boolean>;
   maybeSetRunCompleted: (runId: string) => Promise<boolean>;
   allGroupSpecsCompleted: (runId: string, groupId: string) => Promise<boolean>;
-  getProjects?: () => { [key: string]: Project; },
   getProjectById: (projectId: string) => Promise<Project | null>;
   getRunById: (runId: string) => Promise<Run | null>;
   getInstanceById: (instanceId: string) => Promise<Instance | null>;
