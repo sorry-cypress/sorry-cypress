@@ -476,7 +476,7 @@ Resources:
               awslogs-stream-prefix: ecs
           Environment:
             - Name: GRAPHQL_SCHEMA_URL
-              Value: /api
+              Value: /graphql
             - Name: PORT
               Value: 8080
             - Name: CI_URL
