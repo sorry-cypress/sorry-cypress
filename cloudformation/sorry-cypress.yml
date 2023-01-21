@@ -265,7 +265,7 @@ Resources:
       Conditions:
         - Field: path-pattern
           Values:
-            - /api
+            - /graphql
       ListenerArn: !Ref 'PublicLoadBalancerListener'
       Priority: 2
 
