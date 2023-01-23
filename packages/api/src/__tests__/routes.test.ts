@@ -21,10 +21,14 @@ describe('BASE_PATH', () => {
   it('override should serve on /foo/graphql', async () => {
     const {httpServer, apolloServer} = await start(HOST, 0, '/foo', APOLLO_PLAYGROUND);
     const request = supertest(httpServer);
-    const response = await request.get('/foo/graphql?query={__schema {queryType {name}}}');
-    expect(response.status).toBe(200);
-    await apolloServer.stop();
-    await httpServer.stop();
+    try { 
+      const response = await request.get('/foo/graphql?query={__schema {queryType {name}}}');
+      expect(response.status).toBe(200);
+    }
+    finally {
+      await apolloServer.stop();
+      await httpServer.stop();
+    }
   });
 
   it('override should not serve on /graphql', async () => {
