@@ -12,7 +12,7 @@
   "license": "MIT",
   "scripts": {
     "type-check": "tsc",
-    "type-check:watch": "npm run type-check -- --watch",
+    "type-check:watch": "npm run type-check -- --watch  --preserveWatchOutput",
     "dev:app": "NODE_ENV=development nodemon --watch ./server ./server/",
     "dev": "run-p type-check:watch dev:app generate:watch",
     "format": "prettier --write .",

@@ -1,27 +1,28 @@
-
-import http from 'http';
-import { format } from 'url';
 import { initMongoNoIndexes, isMongoDBHealthy } from '@sorry-cypress/mongo';
-import stoppable from 'stoppable';
-import { ApolloServer } from 'apollo-server-express';
 import {
-  ApolloServerPluginLandingPageGraphQLPlayground,
   ApolloServerPluginLandingPageDisabled,
+  ApolloServerPluginLandingPageGraphQLPlayground,
 } from 'apollo-server-core';
+import { ApolloServer } from 'apollo-server-express';
 import express from 'express';
-
+import http, { Server } from 'http';
+import { isString } from 'lodash';
+import stoppable from 'stoppable';
 import { InstancesAPI } from './datasources/instances';
 import { ProjectsAPI } from './datasources/projects';
 import { RunsAPI } from './datasources/runs';
 import { RunTimeoutAPI } from './datasources/runTimeout';
 import { SpecsAPI } from './datasources/specs';
+import { catchRequestHandlerErrors } from './lib/express';
 import { resolvers } from './resolvers';
 import { typeDefs } from './schema/schema';
-import { catchRequestHandlerErrors } from './lib/express';
 
-
-
-export const start = async function start(host: string, port: number, basePath: string, apolloPlayground: string) {
+export const start = async function start(
+  host: string,
+  port: number,
+  basePath: string,
+  apolloPlayground: string
+) {
   await initMongoNoIndexes();
   const dataSources = {
     runsAPI: new RunsAPI(),
@@ -43,19 +44,14 @@ export const start = async function start(host: string, port: number, basePath: 
     ],
   });
 
-
-  const app = express();
-
-  app.disable('x-powered-by');
-
-  app.get(
-    '/health-check-db',
-    catchRequestHandlerErrors(async (_, res) => {
-      (await isMongoDBHealthy()) ? res.sendStatus(200) : res.sendStatus(503);
-    })
-  );
-
-  const httpServer = stoppable(http.createServer(app), 10_000);
+  const app = express()
+    .disable('x-powered-by')
+    .get(
+      '/health-check-db',
+      catchRequestHandlerErrors(async (_, res) => {
+        (await isMongoDBHealthy()) ? res.sendStatus(200) : res.sendStatus(503);
+      })
+    );
 
   await apolloServer.start();
 
@@ -67,19 +63,27 @@ export const start = async function start(host: string, port: number, basePath: 
     cors: { origin: '*' },
   });
 
+  const httpServer = stoppable(http.createServer(app), 10_000) as Server;
   await new Promise((resolve, reject) => {
     httpServer.once('listening', resolve);
     httpServer.once('error', reject);
-    httpServer.listen({ port: port, host: host });
+    httpServer.listen({ port, host });
   });
 
-  const url = format({
-    protocol: 'http',
-    hostname: (httpServer.address() as any).address,
-    port: (httpServer.address() as any).port,
-    pathname: basePath,
-  });
-
-  console.log(`🚀 Apollo server is ready at ${url}`);
+  console.log(
+    `🚀 Apollo server is ready at ${getAddress(httpServer)}${basePath}}`
+  );
   return { httpServer, apolloServer };
+};
+
+function getAddress(http: Server) {
+  const address = http.address();
+  if (isString(address)) {
+    return address;
+  }
+  if (address == null) {
+    return '';
+  }
+  const { address: host, port } = address;
+  return `http://${host}:${port}`;
 }
