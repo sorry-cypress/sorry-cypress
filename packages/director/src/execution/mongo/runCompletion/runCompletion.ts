@@ -2,13 +2,11 @@ import { emitRunTimedout } from '@sorry-cypress/director/lib/hooks/events';
 import { getLogger } from '@sorry-cypress/logger';
 import { runTimeoutModel } from '@sorry-cypress/mongo';
 import {
-  allRunSpecsCompleted,
   getNonCompletedGroups,
   maybeSetRunCompleted,
 } from '../runs/run.controller';
 import {
   getRunById,
-  setRunCompleted,
   setRunCompletedWithTimeout,
 } from '../runs/run.model';
 

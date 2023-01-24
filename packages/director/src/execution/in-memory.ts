@@ -3,8 +3,6 @@ import {
   CreateRunResponse,
   CreateRunWarning,
   getCreateProjectValue,
-  HookType,
-  HookEvent,
   Instance,
   InstanceResult,
   Project,
@@ -130,8 +128,8 @@ const createRun: ExecutionDriver['createRun'] = async (
     cypressVersion: params.cypressVersion,
     progress: {
       updatedAt: new Date(),
-      groups: [getNewGroupTemplate(groupId, params.specs.length)]
-    }
+      groups: [getNewGroupTemplate(groupId, params.specs.length)],
+    },
   };
 
   return response;
@@ -200,7 +198,7 @@ const setInstanceTests = async (
     _createTestsPayload: { ...payload },
   };
 
-  let runTests = runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId)?.tests;
+  const runTests = runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId)?.tests;
   if (runTests) {
     runTests.overall = runTests.overall + payload.tests.length;
   }
@@ -230,7 +228,7 @@ const updateInstanceResults = async (
 const updateRunsProgress = (instanceId, instanceResult) => {
   const hasFailures = instanceResult.stats.failures > 0 || instanceResult.stats.skipped > 0;
   const flakyTests = instanceResult.tests.filter(isTestFlaky);
-  let progressGroup = runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId);
+  const progressGroup = runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId);
   if (progressGroup) {
     progressGroup.instances.complete = progressGroup?.instances.complete + 1;
     if (hasFailures) {
@@ -247,7 +245,7 @@ const updateRunsProgress = (instanceId, instanceResult) => {
 };
 
 const allGroupSpecsCompleted = (runId, groupId) => {
-  let instances = runs[runId].progress.groups.find(group => group.groupId === groupId)?.instances;
+  const instances = runs[runId].progress.groups.find(group => group.groupId === groupId)?.instances;
   return Promise.resolve(instances?.overall === instances?.complete);
 };
 
