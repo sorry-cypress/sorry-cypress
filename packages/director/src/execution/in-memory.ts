@@ -11,6 +11,9 @@ import {
   SetInstanceTestsPayload,
   Task,
   UpdateInstanceResultsPayload,
+  Hook,
+  isTestFlaky,
+  isRunCompleted,
 } from '@sorry-cypress/common';
 import { INACTIVITY_TIMEOUT_SECONDS } from '@sorry-cypress/director/config';
 import { getRunCiBuildId } from '@sorry-cypress/director/lib/ciBuildId';
@@ -27,6 +30,8 @@ import {
 import { mergeInstanceResults } from '@sorry-cypress/director/lib/instance';
 import { getDashboardRunURL } from '@sorry-cypress/director/lib/urls';
 import { ExecutionDriver } from '@sorry-cypress/director/types';
+import { getLogger } from '@sorry-cypress/logger';
+import { getNewGroupTemplate } from './mongo/runs/run.model';
 import {
   enhanceSpec,
   getClaimedSpecs,
@@ -36,8 +41,8 @@ import {
   getSpecsForGroup,
 } from './utils';
 
-const projects: { [key: string]: Project } = {};
-const runs: { [key: string]: Run } = {};
+const projects: { [key: string]: Project; } = {};
+const runs: { [key: string]: Run; } = {};
 const instances: {
   [key: string]: Instance;
 } = {};
@@ -105,7 +110,6 @@ const createRun: ExecutionDriver['createRun'] = async (
 
   params.commit.remoteOrigin = getRemoteOrigin(params.commit.remoteOrigin);
 
-  // @ts-ignore
   runs[runId] = {
     runId,
     createdAt: new Date().toUTCString(),
@@ -121,6 +125,11 @@ const createRun: ExecutionDriver['createRun'] = async (
       ci: params.ci,
     } as RunMetaData,
     specs: params.specs.map(enhanceSpecForThisRun),
+    cypressVersion: params.cypressVersion,
+    progress: {
+      updatedAt: new Date(),
+      groups: [getNewGroupTemplate(groupId, params.specs.length)],
+    },
   };
 
   return response;
@@ -188,6 +197,11 @@ const setInstanceTests = async (
     ...instances[instanceId],
     _createTestsPayload: { ...payload },
   };
+
+  const runTests = runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId)?.tests;
+  if (runTests) {
+    runTests.overall = runTests.overall + payload.tests.length;
+  }
 };
 
 const updateInstanceResults = async (
@@ -206,7 +220,66 @@ const updateInstanceResults = async (
   );
 
   instances[instanceId].results = instanceResult;
+
+  updateRunsProgress(instanceId, instanceResult);
   return instances[instanceId];
+};
+
+const updateRunsProgress = (instanceId, instanceResult) => {
+  const hasFailures = instanceResult.stats.failures > 0 || instanceResult.stats.skipped > 0;
+  const flakyTests = instanceResult.tests.filter(isTestFlaky);
+  const progressGroup = runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId);
+  if (progressGroup) {
+    progressGroup.instances.complete = progressGroup?.instances.complete + 1;
+    if (hasFailures) {
+      progressGroup.instances.failures = progressGroup?.instances.failures + 1;
+    } else {
+      progressGroup.instances.passes = progressGroup?.instances.passes + 1;
+    }
+    progressGroup.tests.passes = progressGroup.tests.passes + instanceResult.stats.passes;
+    progressGroup.tests.failures = progressGroup.tests.failures + instanceResult.stats.failures;
+    progressGroup.tests.skipped = progressGroup.tests.skipped + instanceResult.stats.skipped;
+    progressGroup.tests.pending = progressGroup.tests.pending + instanceResult.stats.pending;
+    progressGroup.tests.flaky = progressGroup.tests.flaky + flakyTests.length;
+  }
+};
+
+const allGroupSpecsCompleted = (runId, groupId) => {
+  const instances = runs[runId].progress.groups.find(group => group.groupId === groupId)?.instances;
+  return Promise.resolve(instances?.overall === instances?.complete);
+};
+
+const setHooks = (projectId: string, hooks: Hook[]) => {
+  projects[projectId] = { projectId, createdAt: new Date().toISOString(), hooks };
+  return projects;
+};
+
+const allRunSpecsCompleted = async (runId: string): Promise<boolean> => {
+  const run = runs[runId];
+  if (!run) {
+    throw new AppError(RUN_NOT_EXIST);
+  }
+  if (!run.progress) {
+    return false;
+  }
+  return isRunCompleted(run.progress);
+};
+
+const maybeSetRunCompleted = async (runId) => {
+  if (await allRunSpecsCompleted(runId)) {
+    getLogger().log({ runId }, `[run-completion] Run completed`);
+    setRunCompleted(runId).catch(getLogger().error);
+    return true;
+  }
+  // timeout should handle
+  return false;
+};
+
+const setRunCompleted = async (runId) => {
+  if (!runs[runId]) {
+    throw new AppError(RUN_NOT_EXIST);
+  }
+  runs[runId].completion = { completed: true };
 };
 
 export const driver: ExecutionDriver = {
@@ -215,8 +288,8 @@ export const driver: ExecutionDriver = {
   isDBHealthy: () => Promise.resolve(true),
   getProjectById: (projectId: string) => Promise.resolve(projects[projectId]),
   getRunById: (runId: string) => Promise.resolve(runs[runId]),
-  maybeSetRunCompleted: async (_runId: string) => true,
-  allGroupSpecsCompleted: async () => true,
+  maybeSetRunCompleted,
+  allGroupSpecsCompleted,
   getInstanceById: (instanceId: string) =>
     Promise.resolve(instances[instanceId]),
   createRun,
@@ -224,14 +297,10 @@ export const driver: ExecutionDriver = {
   setInstanceResults,
   setInstanceTests,
   updateInstanceResults,
+  setHooks,
   setScreenshotUrl: () => Promise.resolve(),
   setVideoUrl: () => Promise.resolve(),
-  setRunCompleted: async (runId) => {
-    if (!runs[runId]) {
-      throw new AppError(RUN_NOT_EXIST);
-    }
-    runs[runId].completion = { completed: true };
-  },
+  setRunCompleted,
   setRunCompletedWithTimeout: async ({ runId, timeoutMs }) => {
     if (!runs[runId]) {
       throw new AppError(RUN_NOT_EXIST);

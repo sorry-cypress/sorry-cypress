@@ -2,23 +2,13 @@ import { emitRunTimedout } from '@sorry-cypress/director/lib/hooks/events';
 import { getLogger } from '@sorry-cypress/logger';
 import { runTimeoutModel } from '@sorry-cypress/mongo';
 import {
-  allRunSpecsCompleted,
   getNonCompletedGroups,
+  maybeSetRunCompleted,
 } from '../runs/run.controller';
 import {
   getRunById,
-  setRunCompleted,
   setRunCompletedWithTimeout,
 } from '../runs/run.model';
-
-export const maybeSetRunCompleted = async (runId: string) => {
-  if (await allRunSpecsCompleted(runId)) {
-    getLogger().log({ runId }, `[run-completion] Run completed`);
-    setRunCompleted(runId).catch(getLogger().error);
-    return true;
-  }
-  return false;
-};
 
 export const checkRunCompletionOnTimeout = async (
   runId: string,

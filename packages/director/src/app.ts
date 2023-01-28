@@ -18,14 +18,14 @@ router
   .use(
     PROBE_LOGGER === 'true'
       ? expressPino({
-          logger: getLogger(),
-        })
+        logger: getLogger(),
+      })
       : expressPino({
-          logger: getLogger(),
-          autoLogging: {
-            ignorePaths: ['/health-check-db', '/ping'],
-          },
-        })
+        logger: getLogger(),
+        autoLogging: {
+          ignorePaths: ['/health-check-db', '/ping'],
+        },
+      })
   )
   .use(
     express.json({
@@ -93,6 +93,20 @@ router.get(
     (await executionDriver.isDBHealthy())
       ? res.sendStatus(200)
       : res.sendStatus(503);
+  })
+);
+
+router.post(
+  '/hooks',
+  catchRequestHandlerErrors(async (req, res) => {
+    const executionDriver = await getExecutionDriver();
+    if (executionDriver.id !== 'in-memory')
+      return res.status(405).send('This is only available for in-memory db. Please use the dashboard to set your hooks.');
+
+    const { projectId, hooks } = req.body;
+    executionDriver.setHooks && executionDriver.setHooks(projectId, hooks);
+    getLogger().log(`[hooks] Hooks set for project ${req.body.projectId}`);
+    return res.status(200).send(`Hooks set for project "${req.body.projectId}".`);
   })
 );
 
