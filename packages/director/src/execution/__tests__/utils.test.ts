@@ -12,7 +12,7 @@ describe('Driver utility functions', () => {
       description: 'ssh protocol',
       remoteOrigin: 'ssh@gitlab.com:group/project.git',
       expected: 'https://gitlab.com/group/project.git',
-      useuseSSLSSH: 'true',
+      useuseSSL: 'true',
     },
     {
       description: 'http/s protocol',
