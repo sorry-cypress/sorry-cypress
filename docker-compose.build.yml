@@ -17,7 +17,7 @@ services:
       EXECUTION_DRIVER: '../execution/mongo/driver'
       SCREENSHOTS_DRIVER: '../screenshots/s3.driver'
       GITLAB_JOB_RETRIES: 'false'
-      USE_SSL_FOR_LINKS: 'true'
+      USE_HTTPS_FOR_GIT_ORIGIN: 'true'
       AWS_ACCESS_KEY_ID: 'key'
       AWS_SECRET_ACCESS_KEY: 'secret'
       S3_BUCKET: sorry-cypress
