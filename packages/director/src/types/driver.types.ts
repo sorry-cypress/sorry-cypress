@@ -2,6 +2,7 @@ import {
   AssetUploadInstruction,
   CreateRunParameters,
   CreateRunResponse,
+  Hook,
   Instance,
   InstanceResult,
   Project,
@@ -74,4 +75,7 @@ export interface ExecutionDriver extends Driver {
     instanceId: string;
     videoUrl: string;
   }) => Promise<void>;
+  setHooks?: (projectId: string, hooks: Hook[]) => {
+    [key: string]: Project;
+  };
 }

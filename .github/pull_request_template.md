@@ -1,13 +1,16 @@
-For bug fixes:
+> PRs that do not follow the template will be automatically closed
 
-- [ ] Add a reference to the original issue
-- [ ] Add a test and / or some kind of instructions to verify the fix
+## References
 
----
+- [ ] I have updated the [documentation](https://github.com/sorry-cypress/gitbook). PR link `<here>`
+- [ ] I have added inclued automated tests
+- [ ] I acknowledge that I have tested that the change is backwards-compatible
+- [ ] Original issue / feature request / discussion: `<here>`
 
-For new features:
+## Use case
 
-- [ ] It's better to first discuss features proposal in [Discussions](https://github.com/sorry-cypress/sorry-cypress/discussions) or [Slack](https://sorry-cypress.slack.com/join/shared_invite/zt-eis1h6jl-tJELaD7q9UGEhMP8WHJOaw#/)
-- [ ] Describe the use-case in details
-- [ ] Ensure the solution is backwards-compatible
-- [ ] Test it. Submit screenshots / outputs / tests together with the PR.
+> Describe the use-case in details
+
+## Example
+
+> Submit screenshots / outputs / tests together with the PR.

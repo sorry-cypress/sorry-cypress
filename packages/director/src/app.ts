@@ -8,23 +8,24 @@ import {
   updateInstanceResults,
 } from './api/instances';
 import { blockKeys, handleCreateRun } from './api/runs';
-import { PROBE_LOGGER } from './config';
+import { BASE_PATH, PROBE_LOGGER } from './config';
 import { catchRequestHandlerErrors } from './lib/express';
 
 export const app = express();
+export const router = express();
 
-app
+router
   .use(
     PROBE_LOGGER === 'true'
       ? expressPino({
-          logger: getLogger(),
-        })
+        logger: getLogger(),
+      })
       : expressPino({
-          logger: getLogger(),
-          autoLogging: {
-            ignorePaths: ['/health-check-db', '/ping'],
-          },
-        })
+        logger: getLogger(),
+        autoLogging: {
+          ignorePaths: ['/health-check-db', '/ping'],
+        },
+      })
   )
   .use(
     express.json({
@@ -33,20 +34,23 @@ app
   )
   .use(setLoggerMiddleware);
 
-app.get('/', (_, res) =>
+router.get('/', (_, res) =>
   res.redirect('https://github.com/agoldis/sorry-cypress')
 );
 
-app.post('/runs', blockKeys, catchRequestHandlerErrors(handleCreateRun));
+router.post('/runs', blockKeys, catchRequestHandlerErrors(handleCreateRun));
 
 // https://github.com/cypress-io/cypress/blob/b880e8c89051403b94133dc2f98fc6403f9ffe71/packages/server/lib/modes/record.js#L542
-app.post('/runs/:runId/instances', catchRequestHandlerErrors(createInstance));
+router.post(
+  '/runs/:runId/instances',
+  catchRequestHandlerErrors(createInstance)
+);
 
 /**
  * cypress prior to 6.7.0 sends instance results in a single API call
  * deprecated since 2.0.0
  */
-app.put('/instances/:instanceId', (_, res, __) => res.status(404).send());
+router.put('/instances/:instanceId', (_, res, __) => res.status(404).send());
 
 /**
  * cypress 6.7.0+ sends two separate API calls
@@ -56,11 +60,11 @@ app.put('/instances/:instanceId', (_, res, __) => res.status(404).send());
  * - /instances/:instanceId/results after completing a spec
  * https://github.com/cypress-io/cypress/blob/b880e8c89051403b94133dc2f98fc6403f9ffe71/packages/server/lib/modes/record.js#L567
  */
-app.post(
+router.post(
   '/instances/:instanceId/tests',
   catchRequestHandlerErrors(setInstanceTests)
 );
-app.post(
+router.post(
   '/instances/:instanceId/results',
   catchRequestHandlerErrors(updateInstanceResults)
 );
@@ -69,7 +73,7 @@ app.post(
 4. PUT https://api.cypress.io/instances/<instanceId>/stdout
 >> response 'OK'
 */
-app.put('/instances/:instanceId/stdout', (req, res) => {
+router.put('/instances/:instanceId/stdout', (req, res) => {
   const { instanceId } = req.params;
   getLogger().log(
     { instanceId },
@@ -78,11 +82,11 @@ app.put('/instances/:instanceId/stdout', (req, res) => {
   return res.sendStatus(200);
 });
 
-app.get('/ping', (_, res) => {
+router.get('/ping', (_, res) => {
   res.send(`${Date.now()}: sorry-cypress-director is live`);
 });
 
-app.get(
+router.get(
   '/health-check-db',
   catchRequestHandlerErrors(async (_, res) => {
     const executionDriver = await getExecutionDriver();
@@ -92,10 +96,26 @@ app.get(
   })
 );
 
-app.use((error, req, res, _next) => {
+router.post(
+  '/hooks',
+  catchRequestHandlerErrors(async (req, res) => {
+    const executionDriver = await getExecutionDriver();
+    if (executionDriver.id !== 'in-memory')
+      return res.status(405).send('This is only available for in-memory db. Please use the dashboard to set your hooks.');
+
+    const { projectId, hooks } = req.body;
+    executionDriver.setHooks && executionDriver.setHooks(projectId, hooks);
+    getLogger().log(`[hooks] Hooks set for project ${req.body.projectId}`);
+    return res.status(200).send(`Hooks set for project "${req.body.projectId}".`);
+  })
+);
+
+router.use((error, req, res, _next) => {
   res
     .status(500)
     .send(
       'Unexpected error from sorry-cypress director service. Check the service logs for details.'
     );
 });
+
+app.use(BASE_PATH, router);
