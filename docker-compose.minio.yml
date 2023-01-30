@@ -1,8 +1,16 @@
 version: '3.6'
 
+# Replace each <mongo-user> with the desired username
+# Replace each <mongo-pass> with the desired password
+# Replace each <minio-ip-address> with the publicly available ip address or url without http(s)
+# Replace <graphql-ip-address> with the publicly available ip address or url without http(s)
+
 services:
   mongo:
     image: mongo:4.4
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: '<mongo-user>'
+      MONGO_INITDB_ROOT_PASSWORD: '<mongo-pass>'
     volumes:
       - ./data/data-mongo-cypress:/data/db
     ports:
@@ -12,16 +20,16 @@ services:
     environment:
       DASHBOARD_URL: http://localhost:8080
       EXECUTION_DRIVER: '../execution/mongo/driver'
-      MONGODB_URI: 'mongodb://mongo:27017'
+      MONGODB_URI: 'mongodb://<mongo-user>:<mongo-pass>@mongo:27017'
       MONGODB_DATABASE: 'sorry-cypress'
 
       SCREENSHOTS_DRIVER: '../screenshots/minio.driver'
       GITLAB_JOB_RETRIES: 'false'
       USE_HTTPS_FOR_GIT_ORIGIN: 'true'
-      MINIO_ACCESS_KEY: 'MW32h3gd6HvjBEgTRx'
-      MINIO_SECRET_KEY: 't6NgQWUcEyG2AzaDCVkN6sbWcvDCVkN6sGiZ7'
-      MINIO_ENDPOINT: 'localhost'
-      MINIO_URL: 'http://localhost'
+      MINIO_ACCESS_KEY: '<minio-user>'
+      MINIO_SECRET_KEY: '<minio-pass>'
+      MINIO_ENDPOINT: '<minio-ip-address>'
+      MINIO_URL: 'http://<minio-ip-address>'
       MINIO_PORT: '9000'
       MINIO_USESSL: 'false'
       MINIO_BUCKET: sorry-cypress
@@ -29,13 +37,14 @@ services:
     ports:
       - 1234:1234
       - 9000:9000
+      - 9090:9090
     depends_on:
       - mongo
 
   api:
     image: agoldis/sorry-cypress-api:latest
     environment:
-      MONGODB_URI: 'mongodb://mongo:27017'
+      MONGODB_URI: 'mongodb://<mongo-user>:<mongo-pass>@mongo:27017'
       MONGODB_DATABASE: 'sorry-cypress'
       APOLLO_PLAYGROUND: 'false'
     ports:
@@ -46,7 +55,7 @@ services:
   dashboard:
     image: agoldis/sorry-cypress-dashboard:latest
     environment:
-      GRAPHQL_SCHEMA_URL: http://localhost:4000
+      GRAPHQL_SCHEMA_URL: http://<graphql-ip-address>:4000
       GRAPHQL_CLIENT_CREDENTIALS: ''
       PORT: 8080
       CI_URL: ''
@@ -60,11 +69,11 @@ services:
     image: minio/minio
     network_mode: service:director
     environment:
-      MINIO_ACCESS_KEY: 'MW32h3gd6HvjBEgTRx'
-      MINIO_SECRET_KEY: 't6NgQWUcEyG2AzaDCVkN6sbWcvDCVkN6sGiZ7'
+      MINIO_ROOT_USER: '<minio-user>'
+      MINIO_ROOT_PASSWORD: '<minio-pass>'
     volumes:
       - ./data/data-minio-cypress:/data
-    command: server /data
+    command: minio server --console-address ":9090" /data
 
   createbuckets:
     image: minio/mc
@@ -74,10 +83,10 @@ services:
     entrypoint: >
       /bin/sh -c "
       sleep 3;
-      /usr/bin/mc config host add myminio http://localhost:9000 MW32h3gd6HvjBEgTRx t6NgQWUcEyG2AzaDCVkN6sbWcvDCVkN6sGiZ7;
+      /usr/bin/mc config host add myminio http://localhost:9000 <minio-user> <minio-pass>;
       /usr/bin/mc rm -r --dangerous --force myminio/sorry-cypress;
       /usr/bin/mc mb myminio/sorry-cypress;
-      /usr/bin/mc policy set download myminio/sorry-cypress;
-      /usr/bin/mc policy set public myminio/sorry-cypress;
+      /usr/bin/mc anonymous set download myminio/sorry-cypress;
+      /usr/bin/mc anonymous set public myminio/sorry-cypress;
       exit 0;
       "

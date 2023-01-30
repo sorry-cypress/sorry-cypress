@@ -31,3 +31,5 @@ export const REDIS_URI = process.env.REDIS_URI;
 export const GITLAB_JOB_RETRIES = process.env.GITLAB_JOB_RETRIES || 'false';
 export const USE_HTTPS_FOR_GIT_ORIGIN = process.env.USE_HTTPS_FOR_GIT_ORIGIN || 'true';
 export const PROBE_LOGGER = process.env.PROBE_LOGGER || 'false';
+export const BASE_PATH = process.env.BASE_PATH || '/';
+

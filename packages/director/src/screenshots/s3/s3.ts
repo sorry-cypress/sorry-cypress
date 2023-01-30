@@ -4,6 +4,7 @@ import { sanitizeS3KeyPrefix } from '../utils/';
 import {
   S3_ACL,
   S3_BUCKET,
+  S3_FORCE_PATH_STYLE,
   S3_IMAGE_KEY_PREFIX,
   S3_READ_URL_PREFIX,
   S3_REGION,
@@ -11,7 +12,10 @@ import {
 } from './config';
 import { S3SignedUploadResult } from './types';
 
-const BUCKET_URL = `https://${S3_BUCKET}.s3.amazonaws.com`;
+const BUCKET_URL = S3_FORCE_PATH_STYLE
+  ? `https://s3.amazonaws.com/${S3_BUCKET}`
+  : `https://${S3_BUCKET}.s3.amazonaws.com`;
+
 const ImageContentType = 'image/png';
 const VideoContentType = 'video/mp4';
 
