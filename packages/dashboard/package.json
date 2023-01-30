@@ -1,6 +1,6 @@
 {
   "name": "@sorry-cypress/dashboard",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "author": {
     "name": "Andrew Goldis",
     "email": "agoldis@gmail.com"
@@ -50,6 +50,7 @@
     "react-color": "^2.19.3",
     "react-dom": "^17.0.2",
     "react-hook-form": "^6.15.8",
+    "react-medium-image-zoom": "^5.1.2",
     "react-player": "^2.9.0",
     "react-router": "^6.0.2",
     "react-router-dom": "^6.0.2",

@@ -4,6 +4,8 @@ import { Box } from '@mui/system';
 import { ExpandableArea } from '@sorry-cypress/dashboard/components';
 import { InstanceScreeshot } from '@sorry-cypress/dashboard/generated/graphql';
 import React from 'react';
+import Zoom from 'react-medium-image-zoom';
+import 'react-medium-image-zoom/dist/styles.css';
 
 export const TestError = ({
   name,
@@ -46,13 +48,9 @@ export const Screenshot = ({
   if (!screenshot?.screenshotURL) {
     return null;
   }
+
   return (
-    <Box
-      component="a"
-      target="_blank"
-      rel="noopener noreferrer"
-      href={screenshot.screenshotURL}
-    >
+    <Zoom>
       <Box
         component="img"
         src={screenshot.screenshotURL}
@@ -62,6 +60,6 @@ export const Screenshot = ({
           borderRadius: 1,
         }}
       />
-    </Box>
+    </Zoom>
   );
 };

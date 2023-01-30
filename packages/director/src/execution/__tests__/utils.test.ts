@@ -6,42 +6,42 @@ describe('Driver utility functions', () => {
       description: 'git protocol',
       remoteOrigin: 'git@gitlab.com:group/project.git',
       expected: 'https://gitlab.com/group/project.git',
-      useSSH: 'true',
+      useSSL: 'true',
     },
     {
       description: 'ssh protocol',
       remoteOrigin: 'ssh@gitlab.com:group/project.git',
       expected: 'https://gitlab.com/group/project.git',
-      useSSH: 'true',
+      useuseSSLSSH: 'true',
     },
     {
       description: 'http/s protocol',
       remoteOrigin: 'https://gitlab.com/group/project.git',
       expected: 'https://gitlab.com/group/project.git',
-      useSSH: 'true',
+      useSSL: 'true',
     },
     {
       description: 'http/s protocol with token',
       remoteOrigin:
         'https://gitlab-ci-token:token-to-remove@gitlab.com:group/project.git',
       expected: 'https://gitlab.com/group/project.git',
-      useSSH: 'true',
+      useSSL: 'true',
     },
     {
       description: 'git protocol',
       remoteOrigin: 'git@gitlab.com:group/project.git',
       expected: 'http://gitlab.com/group/project.git',
-      useSSH: 'false',
+      useSSL: 'false',
     },
     {
       description: 'ssh protocol',
       remoteOrigin: 'ssh@gitlab.com:group/project.git',
       expected: 'http://gitlab.com/group/project.git',
-      useSSH: 'false',
+      useSSL: 'false',
     },
-  ].forEach(({ description, remoteOrigin, expected, useSSH }) => {
+  ].forEach(({ description, remoteOrigin, expected, useSSL }) => {
     it(`parses remoteOrigin for ${description} correctly`, () => {
-      const href = getRemoteOrigin(remoteOrigin, useSSH);
+      const href = getRemoteOrigin(remoteOrigin, useSSL);
       expect(href).toEqual(expected);
     });
   });

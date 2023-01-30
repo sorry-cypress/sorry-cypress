@@ -14,7 +14,7 @@ import {
 } from '@sorry-cypress/common';
 import {
   INACTIVITY_TIMEOUT_SECONDS,
-  USE_SSL_FOR_LINKS,
+  USE_HTTPS_FOR_GIT_ORIGIN,
 } from '@sorry-cypress/director/config';
 import { getRunCiBuildId } from '@sorry-cypress/director/lib/ciBuildId';
 import {
@@ -108,7 +108,7 @@ const createRun: ExecutionDriver['createRun'] = async (
 
   params.commit.remoteOrigin = getRemoteOrigin(
     params.commit.remoteOrigin,
-    USE_SSL_FOR_LINKS
+    USE_HTTPS_FOR_GIT_ORIGIN
   );
 
   // @ts-ignore
