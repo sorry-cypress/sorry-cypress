@@ -151,6 +151,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="http://speanet.info"><img src="https://avatars.githubusercontent.com/u/495017?v=4?s=100" width="100px;" alt="Martin Parsiegla"/><br /><sub><b>Martin Parsiegla</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=Spea" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/amit-o"><img src="https://avatars.githubusercontent.com/u/21155198?v=4?s=100" width="100px;" alt="Amit Oren"/><br /><sub><b>Amit Oren</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=amit-o" title="Code">💻</a></td>
     </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://www.linkedin.com/in/blakeromano/"><img src="https://avatars.githubusercontent.com/u/85771645?v=4?s=100" width="100px;" alt="Blake R"/><br /><sub><b>Blake R</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=blakeromano" title="Code">💻</a></td>
+    </tr>
   </tbody>
 </table>
 
