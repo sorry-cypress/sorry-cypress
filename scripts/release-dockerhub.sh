@@ -44,9 +44,9 @@ function getTagsArg() {
 }
 
 function dockerBuild() {
-  echo 🔨 Building ${2} from ${1}: docker buildx build --file ${1}/Dockerfile --platforms=linux/arm/v7,linux/amd64 $(getTagsArg ${2})
+  echo 🔨 Building ${2} from ${1}: docker buildx build --file ${1}/Dockerfile --platform=linux/arm/v7,linux/amd64 $(getTagsArg ${2})
   echo ========================
-  docker buildx build --file ${1}/Dockerfile --platforms=linux/arm/v7,linux/amd64 $(getTagsArg ${2}) .
+  docker buildx build --file ${1}/Dockerfile --platform=linux/arm/v7,linux/amd64 $(getTagsArg ${2}) .
   echo ========================
   echo ✅ Build completed ${2} from ${1} 
 }
