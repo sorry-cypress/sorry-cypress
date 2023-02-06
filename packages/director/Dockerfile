@@ -7,17 +7,14 @@ COPY packages/logger/ ./packages/logger
 COPY package.json ./
 COPY yarn.lock ./
 COPY tsconfig.json ./
-RUN yarn install --frozen-lockfile
+RUN yarn install --frozen-lockfile --network-timeout 300000
 
 RUN yarn workspace @sorry-cypress/common build
 RUN yarn workspace @sorry-cypress/mongo build
 RUN yarn workspace @sorry-cypress/logger build
 RUN yarn workspace @sorry-cypress/director build
 
-RUN yarn install --production --frozen-lockfile
-RUN apk --no-cache add curl && \
-    curl -sf https://gobinaries.com/tj/node-prune | sh && \
-    node-prune
+RUN yarn install --production --frozen-lockfile --network-timeout 300000
 
 FROM node:16-alpine
 ARG USER=node
