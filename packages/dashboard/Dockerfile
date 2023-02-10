@@ -6,7 +6,7 @@ COPY packages/common/ ./packages/common
 COPY package.json ./
 COPY yarn.lock ./
 COPY tsconfig.json ./
-RUN yarn install --frozen-lockfile --network-timeout 300000
+RUN yarn install --frozen-lockfile
 RUN yarn workspace @sorry-cypress/common build
 RUN yarn workspace @sorry-cypress/dashboard build
 
