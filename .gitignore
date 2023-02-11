@@ -75,3 +75,4 @@ example/data
 .DS_Store
 .yarn
 generated
+.turbo
