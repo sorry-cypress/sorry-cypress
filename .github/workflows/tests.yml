@@ -12,14 +12,9 @@ jobs:
     steps:
       - uses: actions/checkout@master
 
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
       - uses: actions/cache@v3
-        id: yarn-cache
         with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          path: '**/node_modules'
           key: v1-${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             v1-${{ runner.os }}-yarn-
@@ -33,8 +28,7 @@ jobs:
             ${{ runner.os }}-turbo-
 
       - name: Install dependencies
-        run: yarn --prefer-offline
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn
 
       - name: Run lint
         run: yarn lint
