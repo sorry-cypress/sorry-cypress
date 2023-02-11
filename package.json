@@ -23,11 +23,11 @@
   "scripts": {
     "killall": "ps -ef | egrep \"webpack|node|nodemon\" | grep sorry | awk '{ print $2 }' | xargs kill",
     "release": "./scripts/release-github.sh",
-    "release-packages": "turbo run release",
-    "build": "turbo run build",
-    "test": "turbo run test",
-    "lint": "turbo run lint",
-    "dev": "APOLLO_PLAYGROUND=true turbo run dev"
+    "release-packages": "turbo run release --cache-dir=.turbo",
+    "build": "turbo run build --cache-dir=.turbo",
+    "test": "turbo run test --cache-dir=.turbo",
+    "lint": "turbo run lint --cache-dir=.turbo",
+    "dev": "APOLLO_PLAYGROUND=true turbo run dev --cache-dir=.turbo"
   },
   "husky": {
     "hooks": {
