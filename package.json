@@ -25,9 +25,9 @@
     "release": "./scripts/release-github.sh",
     "release-packages": "turbo run release --cache-dir=.turbo",
     "build": "turbo run build --cache-dir=.turbo",
-    "test": "turbo run test --cache-dir=.turbo",
-    "lint": "turbo run lint --cache-dir=.turbo",
-    "dev": "APOLLO_PLAYGROUND=true turbo run dev --cache-dir=.turbo"
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "dev": "APOLLO_PLAYGROUND=true turbo run dev"
   },
   "husky": {
     "hooks": {
