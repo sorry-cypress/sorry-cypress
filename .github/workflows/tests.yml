@@ -33,6 +33,7 @@ jobs:
 
       - name: Install dependencies
         run: yarn --prefer-offline
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
 
       - name: Run lint
         run: yarn lint
