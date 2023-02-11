@@ -51,8 +51,7 @@
     "semver": "^7.3.2",
     "tsconfig-paths": "^4.1.0",
     "turbo": "^1.7.3",
-    "typescript": "^4.0.3",
-    "wsrun": "^5.2.4"
+    "typescript": "^4.0.3"
   },
   "packageManager": "yarn@1"
 }
