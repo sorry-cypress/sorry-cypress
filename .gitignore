@@ -73,3 +73,5 @@ example/data
 
 # OS files
 .DS_Store
+.yarn
+generated
