@@ -24,6 +24,9 @@
       "dependsOn": ["^build"],
       "outputs": []
     },
-    "lint": {}
+    "lint": {},
+    "dev": {
+      "cache": false
+    }
   }
 }
