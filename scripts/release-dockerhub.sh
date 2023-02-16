@@ -43,18 +43,10 @@ function getTagsArg() {
   done
 }
 
-function dockerBuildxSetup() {
-  echo Setting Up Docker Buildx
-  echo ========================
-  docker buildx create --platform=linux/arm/v7,linux/amd64 --use
-  echo ========================
-  echo ✅ Build completed ${2} from ${1} 
-}
-
 function dockerBuild() {
-  echo 🔨 Building ${2} from ${1}: docker buildx build --file ${1}/Dockerfile --platform=linux/arm/v7,linux/amd64 $(getTagsArg ${2})
+  echo 🔨 Building ${2} from ${1}: docker build --file ${1}/Dockerfile $(getTagsArg ${2})
   echo ========================
-  docker buildx build --file ${1}/Dockerfile --platform=linux/arm/v7,linux/amd64 $(getTagsArg ${2}) .
+  docker build --file ${1}/Dockerfile $(getTagsArg ${2}) .
   echo ========================
   echo ✅ Build completed ${2} from ${1} 
 }
@@ -95,8 +87,6 @@ fi
 
 echo 🚀 Releasing tags: $TAGS
 echo ========================
-
-dockerBuildxSetup
 
 dockerBuild "packages/${service}" "agoldis/sorry-cypress-${service}"
 # dockerBuild "packages/api" "agoldis/sorry-cypress-api"
