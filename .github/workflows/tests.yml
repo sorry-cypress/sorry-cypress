@@ -12,41 +12,26 @@ jobs:
     steps:
       - uses: actions/checkout@master
 
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
       - uses: actions/cache@v3
-        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
         with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          path: '**/node_modules'
           key: v1-${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             v1-${{ runner.os }}-yarn-
+
+      - name: Cache turbo build setup
+        uses: actions/cache@v3
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
 
       - name: Install dependencies
         run: yarn
 
       - name: Run lint
         run: yarn lint
-
-      - name: Type check director
-        run: yarn workspace @sorry-cypress/director build:types
-
-      - name: Type check api
-        run: yarn workspace @sorry-cypress/api build:types
-
-      - name: Type check dashboard
-        run: yarn workspace @sorry-cypress/dashboard type-check
-
-      - name: Build common package
-        run: yarn workspace @sorry-cypress/common build
-
-      - name: Build logger package
-        run: yarn workspace @sorry-cypress/logger build
-
-      - name: Build mongo package
-        run: yarn workspace @sorry-cypress/mongo build
 
       - name: Run unit tests
         run: yarn test

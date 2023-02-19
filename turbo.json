@@ -1,0 +1,32 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist"]
+    },
+    "api#build": {
+      "dependsOn": ["common#build", "logger#build", "mongo#build"],
+      "outputs": ["src/generated"]
+    },
+    "director#build": {
+      "dependsOn": ["common#build", "logger#build", "mongo#build"]
+    },
+    "dashboard#build": {
+      "dependsOn": ["common#build"],
+      "outputs": ["src/generated"]
+    },
+    "mongo#build": {
+      "dependsOn": ["common#build"]
+    },
+    "test": {
+      "inputs": ["src"],
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "lint": {},
+    "dev": {
+      "cache": false
+    }
+  }
+}
