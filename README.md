@@ -153,6 +153,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     </tr>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://www.linkedin.com/in/blakeromano/"><img src="https://avatars.githubusercontent.com/u/85771645?v=4?s=100" width="100px;" alt="Blake R"/><br /><sub><b>Blake R</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=blakeromano" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/nmengual"><img src="https://avatars.githubusercontent.com/u/1969394?v=4?s=100" width="100px;" alt="Nicolás"/><br /><sub><b>Nicolás</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=nmengual" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
