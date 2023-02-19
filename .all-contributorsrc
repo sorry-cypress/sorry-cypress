@@ -404,6 +404,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "nmengual",
+      "name": "Nicolás",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1969394?v=4",
+      "profile": "https://github.com/nmengual",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
