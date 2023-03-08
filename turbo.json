@@ -5,6 +5,10 @@
       "dependsOn": ["^build"],
       "outputs": ["dist"]
     },
+    "release": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist"]
+    },
     "api#build": {
       "dependsOn": ["common#build", "logger#build", "mongo#build"],
       "outputs": ["src/generated"]
