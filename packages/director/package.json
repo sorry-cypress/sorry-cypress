@@ -1,6 +1,6 @@
 {
   "name": "@sorry-cypress/director",
-  "version": "2.5.1",
+  "version": "2.5.4",
   "author": {
     "name": "Andrew Goldis",
     "email": "agoldis@gmail.com"
@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@azure/identity": "^2.0.5",
-    "@azure/storage-blob": "^12.10.0",
+    "@azure/storage-blob": "^12.13.0",
     "@octokit/auth-app": "^4.0.7",
     "@octokit/rest": "^19.0.5",
     "@sorry-cypress/common": "1.0.0",
@@ -44,7 +44,7 @@
     "ibm-cos-sdk": "^1.8.0",
     "lodash": "^4.17.21",
     "md5": "^2.2.1",
-    "minio": "^7.0.28",
+    "minio": "^7.0.33",
     "pm2": "^5.2.0",
     "semver": "^7.3.5",
     "source-map-support": "^0.5.20",
