@@ -395,6 +395,24 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "blakeromano",
+      "name": "Blake R",
+      "avatar_url": "https://avatars.githubusercontent.com/u/85771645?v=4",
+      "profile": "https://www.linkedin.com/in/blakeromano/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "nmengual",
+      "name": "Nicolás",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1969394?v=4",
+      "profile": "https://github.com/nmengual",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
