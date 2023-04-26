@@ -43,23 +43,12 @@ function getTagsArg() {
   done
 }
 
-function dockerBuild() {
-  echo 🔨 Building ${2} from ${1}: docker build --file ${1}/Dockerfile $(getTagsArg ${2})
+function dockerBuildAndPush() {
+  echo 🔨 Building and 💾 pushing ${2} from ${1} to remote: docker buildx build --push --platform linux/arm64/v8,linux/amd64 --file ${1}/Dockerfile $(getTagsArg ${2})
   echo ========================
-  docker build --file ${1}/Dockerfile $(getTagsArg ${2}) .
+  docker buildx build --push --platform linux/arm64/v8,linux/amd64 --file ${1}/Dockerfile $(getTagsArg ${2}) .
   echo ========================
   echo ✅ Build completed ${2} from ${1} 
-}
-
-function dockerPush() {
-  for TAG in ${TAGS}
-  do
-    echo 💾 Pushing to remote: docker push ${1}:${TAG}
-    echo ========================
-    docker push "${1}:${TAG}"
-    echo ========================
-    echo ✅ Pushed "${1}:${TAG}"
-  done
 }
 
 # ./scripts/release-dockerhub.sh -t cypress-v5
@@ -88,13 +77,9 @@ fi
 echo 🚀 Releasing tags: $TAGS
 echo ========================
 
-dockerBuild "packages/${service}" "agoldis/sorry-cypress-${service}"
-# dockerBuild "packages/api" "agoldis/sorry-cypress-api"
-# dockerBuild "packages/dashboard" "agoldis/sorry-cypress-dashboard"
-
-dockerPush "agoldis/sorry-cypress-${service}"
-# dockerPush "agoldis/sorry-cypress-api"
-# dockerPush "agoldis/sorry-cypress-dashboard"
+dockerBuildAndPush "packages/${service}" "agoldis/sorry-cypress-${service}"
+# dockerBuildAndPush "packages/api" "agoldis/sorry-cypress-api"
+# dockerBuildAndPush "packages/dashboard" "agoldis/sorry-cypress-dashboard"
 
 echo ========================
 echo 🎉 Released to Dockerhub: $TAGS
