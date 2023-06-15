@@ -9,6 +9,7 @@ import {
   MINIO_SECRET_KEY,
   MINIO_URL,
   MINIO_USESSL,
+  UPLOAD_EXPIRY_SECONDS,
 } from './config';
 import { S3SignedUploadResult } from './types';
 
@@ -26,14 +27,17 @@ const minioClient = new Minio.Client({
 interface GetUploadURLParams {
   key: string;
   ContentType?: string;
+  expiry?: number;
 }
 export const getUploadUrl = async ({
   key,
+  expiry = UPLOAD_EXPIRY_SECONDS,
 }: GetUploadURLParams): Promise<S3SignedUploadResult> => {
   return new Promise((resolve, reject) => {
     minioClient.presignedPutObject(
       MINIO_BUCKET,
       key,
+      expiry,
       (error: Error, uploadUrl: string) => {
         if (error) {
           return reject(error);
