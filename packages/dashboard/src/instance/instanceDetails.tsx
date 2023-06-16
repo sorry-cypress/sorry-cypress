@@ -3,6 +3,21 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import TreeItem from '@mui/lab/TreeItem';
 import TreeView from '@mui/lab/TreeView';
+import aws from 'aws-sdk';
+import { AssetDownloadInstruction } from '@sorry-cypress/common';
+import {
+  S3_ACL,
+  S3_BUCKET,
+  S3_REGION,
+  S3_PRESIGN_DOWNLOAD_URLS,
+  S3_FORCE_PATH_STYLE,
+  S3_READ_URL_PREFIX,
+  S3_IMAGE_KEY_PREFIX,
+  S3_VIDEO_KEY_PREFIX,
+  S3_DOWNLOAD_EXPIRY_SECONDS,
+} from '../../../director/src/screenshots/s3/config';
+import * as s3 from '../../../director/src/screenshots/s3/s3';
+import { S3SignedDownloadResult } from '../../../director/src/screenshots/s3/types';
 import {
   Alert,
   AlertTitle,
@@ -359,6 +374,13 @@ function getTreeOfNavigationItems(instance: GetInstanceQuery['instance']) {
 
   // if instance has video add it as the first item of the navigation tree
   if (instance?.results?.videoUrl) {
+
+    if (S3_PRESIGN_DOWNLOAD_URLS === true) {
+      const key = instance.results.videoUrl.split('/').pop()  // split url and get last item to get object key
+      const signedDownloadUrl = s3.getDownloadUrl(key)
+      instance.results.videoUrl = signedDownloadUrl
+    }
+
     navigationTree.set('RECORDED_VIDEO', {
       id: 'RECORDED_VIDEO',
       isVideo: true,

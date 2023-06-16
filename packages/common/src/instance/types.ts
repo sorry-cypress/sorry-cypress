@@ -68,7 +68,15 @@ export interface AssetUploadInstruction {
   readUrl: string;
 }
 
+export interface AssetDownloadInstruction {
+  downloadUrl: string;
+}
+
 export interface ScreenshotUploadInstruction extends AssetUploadInstruction {
+  screenshotId: string;
+}
+
+export interface ScreenshotDownloadInstruction extends AssetUDownloadInstruction {
   screenshotId: string;
 }
 
