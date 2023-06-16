@@ -1,4 +1,4 @@
-import { AssetUploadInstruction,AssetDownloadInstruction } from '@sorry-cypress/common';
+import { AssetUploadInstruction, AssetDownloadInstruction } from '@sorry-cypress/common';
 import aws from 'aws-sdk';
 import { sanitizeS3KeyPrefix } from '../utils/';
 import {
