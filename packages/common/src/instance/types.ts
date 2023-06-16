@@ -76,7 +76,7 @@ export interface ScreenshotUploadInstruction extends AssetUploadInstruction {
   screenshotId: string;
 }
 
-export interface ScreenshotDownloadInstruction extends AssetUDownloadInstruction {
+export interface ScreenshotDownloadInstruction extends AssetDownloadInstruction {
   screenshotId: string;
 }
 
