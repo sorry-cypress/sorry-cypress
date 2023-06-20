@@ -7,5 +7,5 @@ export const S3_IMAGE_KEY_PREFIX = process.env.S3_IMAGE_KEY_PREFIX || undefined;
 export const S3_VIDEO_KEY_PREFIX = process.env.S3_VIDEO_KEY_PREFIX || undefined;
 export const UPLOAD_EXPIRY_SECONDS = parseInt(
   process.env.UPLOAD_EXPIRY_SECONDS || '90',
-  90
+  10
 );
