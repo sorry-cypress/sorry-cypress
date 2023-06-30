@@ -5,6 +5,7 @@
     "target": "es2019",
     "types": ["jest"],
     "noEmit": true,
+    "skipLibCheck": true,
     "esModuleInterop": true,
     "strictNullChecks": true,
     "resolveJsonModule": true,
