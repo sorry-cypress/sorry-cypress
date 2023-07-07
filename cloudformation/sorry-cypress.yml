@@ -1,13 +1,104 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description:
   A stack for deploying containerized sorry-cypress applications in AWS Fargate.
-  An open-source, on-premise, self-hosted alternative to Cypress dashboard. Read more at https://github.com/agoldis/sorry-cypress
+  An open-source, on-premise, self-hosted alternative to Cypress dashboard.
+  Read more at https://github.com/agoldis/sorry-cypress
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+    -
+      Label:
+        default: "Network Configuration"
+      Parameters:
+        - VPC
+        - PrivateSubnets
+        - AccessCIDR
+    -
+      Label:
+        default: "Security Configuration"
+      Parameters:
+        - ACMCertificateArn
+        - S3ObjectACL
+        - AllowedPublicIps
+    -
+      Label:
+        default: "ECS Task Configuration"
+      Parameters:
+        - TaskCpu
+        - TaskMemory
+        - DirectorPort
+        - SorryCypressVersion
+        - DockerUsername
+        - DockerPassword
+    -
+      Label:
+        default: "Screenshots Storage Configuration"
+      Parameters:
+        - S3LifecycleExpirationDays
+    -
+      Label:
+        default: "Database Configuration"
+      Parameters:
+        - DBType
+        - DBInstanceClass
+        - DBPassword
+    -
+      Label:
+        default: "Scheduled Scaling Configuration"
+      Parameters:
+        - MinCapacityOff
+        - MinCapacityOn
+        - MaxCapacityOff
+        - MaxCapacityOn
+        - ScaleUpHour
+        - ScaleDownHour
+
+    ParameterLabels:
+      VPC:
+        default: "VPC"
+      PrivateSubnets:
+        default: "Private Subnets"
+      AccessCIDR:
+        default: "Access CIDR"
+      S3LifecycleExpirationDays:
+        default: "Screenshots Expiration"
+      TaskCpu:
+        default: "ECS Task CPU"
+      TaskMemory:
+        default: "ECS Task Memory"
+      DirectorPort:
+        default: "sorry-cypress Director Port"
+      MinCapacityOff:
+        default: "Off Hours Minimum Capacity"
+      MinCapacityOn:
+        default: "On Hours Minimum Capacity"
+      MaxCapacityOff:
+        default: "Off Hours Maximum Capacity"
+      MaxCapacityOn:
+        default: "On Hours Maximum Capacity"
+      ScaleUpHour:
+        default: "Hour to Scale Up (EST, 24-hour format)"
+      ScaleDownHour:
+        default: "Hour to Scale Down (EST, 24-hour format)"
+      DBType:
+        default: Database Type
+      DBInstanceClass:
+        default: Database Instance Class
+      DBPassword:
+        default: Database Password
+      DockerUsername:
+        default: Docker Credential Username
+      DockerPassword:
+        default: Docker Credential Password
+      ACMCertificateArn:
+        default: "ACM Certificate ARN"
+      S3ObjectACL:
+        default: "ACL for Uploaded Objects in S3"
+      AllowedPublicIps:
+        default: Allowed Public IPs
 
 Parameters:
-  StackName:
-    Type: String
-    Default: sorry-cypress-unique
-    Description: The unique name of the stack that you are creating. Necessary to scope and identify resources created by that stack.
 
   TaskCpu:
     Type: Number
@@ -24,97 +115,152 @@ Parameters:
     Default: 8080
     Description: What port number to use for accessing director service
 
-Mappings:
-  # Hard values for the subnet masks. These masks define
-  # the range of internal IP addresses that can be assigned.
-  # The VPC can have all IP's from 10.0.0.0 to 10.0.255.255
-  # There are two subnets which cover the ranges:
-  #
-  # 10.0.0.0 - 10.0.0.255
-  # 10.0.1.0 - 10.0.1.255
-  #
-  # If you need more IP addresses (perhaps you have so many
-  # instances that you run out) then you can customize these
-  # ranges to add more
-  SubnetConfig:
-    VPC:
-      CIDR: '10.0.0.0/16'
-    PublicOne:
-      CIDR: '10.0.0.0/24'
-    PublicTwo:
-      CIDR: '10.0.1.0/24'
-Resources:
-  # VPC in which containers will be networked.
-  # It has two public subnets
-  # We distribute the subnets across the first two available subnets
-  # for the region, for high availability.
   VPC:
-    Type: AWS::EC2::VPC
-    Properties:
-      EnableDnsSupport: true
-      EnableDnsHostnames: true
-      CidrBlock: !FindInMap ['SubnetConfig', 'VPC', 'CIDR']
+    Type: AWS::EC2::VPC::Id
+    Description: VPC in which to deploy
 
-  # Two public subnets, where containers can have public IP addresses
-  PublicSubnetOne:
-    Type: AWS::EC2::Subnet
-    Properties:
-      AvailabilityZone:
-        Fn::Select:
-          - 0
-          - Fn::GetAZs: { Ref: 'AWS::Region' }
-      VpcId: !Ref 'VPC'
-      CidrBlock: !FindInMap ['SubnetConfig', 'PublicOne', 'CIDR']
-      MapPublicIpOnLaunch: true
-  PublicSubnetTwo:
-    Type: AWS::EC2::Subnet
-    Properties:
-      AvailabilityZone:
-        Fn::Select:
-          - 1
-          - Fn::GetAZs: { Ref: 'AWS::Region' }
-      VpcId: !Ref 'VPC'
-      CidrBlock: !FindInMap ['SubnetConfig', 'PublicTwo', 'CIDR']
-      MapPublicIpOnLaunch: true
+  PrivateSubnets:
+    Type: List<AWS::EC2::Subnet::Id>
+    Description: Private subnets in which to deploy
 
-  # Setup networking resources for the public subnets. Containers
-  # in the public subnets have public IP addresses and the routing table
-  # sends network traffic via the internet gateway.
-  InternetGateway:
-    Type: AWS::EC2::InternetGateway
-  GatewayAttachement:
-    Type: AWS::EC2::VPCGatewayAttachment
-    Properties:
-      VpcId: !Ref 'VPC'
-      InternetGatewayId: !Ref 'InternetGateway'
-  PublicRouteTable:
-    Type: AWS::EC2::RouteTable
-    Properties:
-      VpcId: !Ref 'VPC'
-  PublicRoute:
-    Type: AWS::EC2::Route
-    DependsOn: GatewayAttachement
-    Properties:
-      RouteTableId: !Ref 'PublicRouteTable'
-      DestinationCidrBlock: '0.0.0.0/0'
-      GatewayId: !Ref 'InternetGateway'
-  PublicSubnetOneRouteTableAssociation:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
-      SubnetId: !Ref PublicSubnetOne
-      RouteTableId: !Ref PublicRouteTable
-  PublicSubnetTwoRouteTableAssociation:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
-      SubnetId: !Ref PublicSubnetTwo
-      RouteTableId: !Ref PublicRouteTable
+  AccessCIDR:
+    Type: String
+    Default: 10.0.0.0/8
+    Description: CIDR range that is allowed to access the sorry-cypress service
 
-  # ECS Resources
-  ECSCluster:
-    Type: AWS::ECS::Cluster
+  S3LifecycleExpirationDays:
+    Type: Number
+    Default: 7
+    Description: The number of days after which to expire objects in the screenshots storage S3 bucket
+
+  DBType:
+    Type: String
+    Description: |
+      Type of database for the sorry-cypress service.
+      'local' will run a mongoDB container within the service.
+      'remote' will create a DocumentDB instance.
+    Default: 'remote'
+    AllowedValues:
+      - 'local'
+      - 'remote'
+
+  DBInstanceClass:
+    Type: String
+    Description: Class for the DB instance, if using a remote database
+    AllowedValues:
+      - db.t3.medium
+      - db.r5.large
+      - db.r5.xlarge
+    Default: db.t3.medium
+
+  DBPassword:
+    Type: String
+    Description: Database password, if using a remote database
+    NoEcho: True
+
+  MinCapacityOn:
+    Type: Number
+    Description: Minimum sorry-cypress task capacity during ON hours
+    Default: 1
+    MinValue: 1
+
+  MaxCapacityOn:
+    Type: Number
+    Description: Maximum sorry-cypress task capacity during ON hours
+    Default: 2
+    MinValue: 1
+
+  MinCapacityOff:
+    Type: Number
+    Description: Minimum sorry-cypress task capacity during OFF hours
+    Default: 0
+
+  MaxCapacityOff:
+    Type: Number
+    Description: Maximum sorry-cypress task capacity during OFF hours
+    Default: 0
+
+  ScaleUpHour:
+    Type: String
+    Description: The hour in EST (24-hour format) at which to scale up the sorry-cypress service tasks each day
+    Default: 5
+    MinLength: 1
+    MaxLength: 2
+
+  ScaleDownHour:
+    Type: String
+    Description: The hour in EST (24-hour format) at which to scale down the sorry-cypress service tasks each day
+    Default: 23
+    MinLength: 1
+    MaxLength: 2
+
+  SorryCypressVersion:
+    Type: String
+    Description: Version (tag) of the sorry-cypress images to use
+    Default: latest
+    MinLength: 1
+
+  DockerUsername:
+    Type: String
+    Description: Username for authentication with Docker registry
+
+  DockerPassword:
+    Type: String
+    Description: Password for authentication with Docker registry
+    NoEcho: True
+
+  ACMCertificateArn:
+    Type: String
+    Description: ARN of the ACM certificate for the Load Balancer
+
+  S3ObjectACL:
+    Type: String
+    Description: |
+      ACL to apply to uploaded objects in S3 (videos and screenshots). This value
+      will be set in the pre-signed URL that sorry-cypress generates when a job is about
+      to upload something to the S3 bucket
+    AllowedValues:
+      - public-read
+      - bucket-owner-full-control
+      - private
+    Default: "public-read"
+
+  AllowedPublicIps:
+    Type: String
+    Description: |
+      Public IPs that are allowed to download from the S3 bucket. These should be your NAT Gateways, VPNs, or any
+      public IPs that go through the internet to get to S3 and download screenshots / videos from the storage bucket.
+      Use a comma-separated list. Ex: 1.1.1.1/32,2.2.2.2/32
+
+Conditions:
+  UseRemoteDB: !Equals
+    - !Ref DBType
+    - 'remote'
+
+  UseLocalDB: !Equals
+    - !Ref DBType
+    - 'local'
+
+  UseDockerCredential: !And
+    - !Not
+      - !Equals
+        - !Ref DockerUsername
+        - ''
+    - !Not
+      - !Equals
+        - !Ref DockerPassword
+        - ''
+
+Resources:
+
+  #------------------------------------------------------------#
+  #
+  # Load Balancer and Supporting Resources
+  #
+  #------------------------------------------------------------#
 
   # A security group for the containers we will run in Fargate.
-  # Two rules, allowing network traffic from a public facing load
+  # Two rules, allowing network traffic from the load
   # balancer and from other members of the security group.
   #
   # Remove any of the following ingress rules that are not needed.
@@ -125,27 +271,45 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       VpcId: !Ref 'VPC'
-      GroupName: !Join [':', [!Ref 'AWS::StackName', 'fargate-sg']]
+      GroupName: !Sub ${AWS::StackName}-fargate-sg
       GroupDescription: Access to the Fargate containers
+      Tags:
+        - Key: Name
+          Value: sorry-cypress-fargate-container-sg
 
-  PublicLoadBalancerSG:
+  LoadBalancerSG:
     Type: AWS::EC2::SecurityGroup
     Properties:
       VpcId: !Ref 'VPC'
-      GroupName: !Join [':', [!Ref 'AWS::StackName', 'load-balancer-sg']]
-      GroupDescription: Access to the public facing load balancer
+      GroupName: !Sub '${AWS::StackName}-load-balancer-sg'
+      GroupDescription: Access to the load balancer
       SecurityGroupIngress:
-        # Allow access to ALB from anywhere on the internet
-        - CidrIp: 0.0.0.0/0
-          IpProtocol: -1
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: !Ref AccessCIDR
+          Description: Allow port 80 UI traffic
+        - IpProtocol: tcp
+          FromPort: 8080
+          ToPort: 8080
+          CidrIp: !Ref AccessCIDR
+          Description: Allow port 8080 API traffic
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: !Ref AccessCIDR
+          Description: Allow port 443 UI traffic
+      Tags:
+        - Key: Name
+          Value: sorry-cypress-user-lb-sg
 
   EcsSecurityGroupIngressFromPublicALB:
     Type: AWS::EC2::SecurityGroupIngress
     Properties:
-      Description: Ingress from the public ALB
+      Description: Ingress from the ALB
       GroupId: !Ref 'FargateContainerSecurityGroup'
       IpProtocol: -1
-      SourceSecurityGroupId: !Ref 'PublicLoadBalancerSG'
+      SourceSecurityGroupId: !Ref 'LoadBalancerSG'
 
   EcsSecurityGroupIngressFromSelf:
     Type: AWS::EC2::SecurityGroupIngress
@@ -155,51 +319,46 @@ Resources:
       IpProtocol: -1
       SourceSecurityGroupId: !Ref 'FargateContainerSecurityGroup'
 
-  # Load balancers for getting traffic to containers.
-  # This sample template creates one load balancer:
-  #
-  # - One public load balancer, hosted in public subnets that is accessible
-  #   to the public, and is intended to route traffic to one or more public
-  #   facing services.
-
-  # A public facing load balancer, this is used for accepting traffic from the public
-  # internet and directing it to public facing microservices
-  PublicLoadBalancer:
+  LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
       Name: !Ref 'AWS::StackName'
-      Scheme: internet-facing
+      Scheme: internal
       LoadBalancerAttributes:
         - Key: idle_timeout.timeout_seconds
           Value: '30'
-      Subnets:
-        # The load balancer is placed into the public subnets, so that traffic
-        # from the internet can reach the load balancer directly via the internet gateway
-        - !Ref PublicSubnetOne
-        - !Ref PublicSubnetTwo
-      SecurityGroups: [!Ref 'PublicLoadBalancerSG']
+      Subnets: !Ref PrivateSubnets
+      SecurityGroups: [!Ref 'LoadBalancerSG']
 
-  PublicLoadBalancerListener:
+  LoadBalancerListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
-    DependsOn:
-      - PublicLoadBalancer
     Properties:
       DefaultActions:
         - TargetGroupArn: !Ref 'TargetGroupDashboard'
           Type: 'forward'
-      LoadBalancerArn: !Ref 'PublicLoadBalancer'
+      LoadBalancerArn: !Ref 'LoadBalancer'
       Port: 80
       Protocol: HTTP
 
-  PublicLoadBalancerListenerDirector:
+  LoadBalancerListenerHttps:
     Type: AWS::ElasticLoadBalancingV2::Listener
-    DependsOn:
-      - PublicLoadBalancer
+    Properties:
+      DefaultActions:
+        - TargetGroupArn: !Ref 'TargetGroupDashboard'
+          Type: 'forward'
+      LoadBalancerArn: !Ref 'LoadBalancer'
+      Port: 443
+      Protocol: HTTPS
+      Certificates:
+        - CertificateArn: !Ref ACMCertificateArn
+
+  LoadBalancerListenerDirector:
+    Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
       DefaultActions:
         - TargetGroupArn: !Ref 'TargetGroupDirector'
           Type: 'forward'
-      LoadBalancerArn: !Ref 'PublicLoadBalancer'
+      LoadBalancerArn: !Ref 'LoadBalancer'
       Port: !Ref 'DirectorPort'
       Protocol: HTTP
 
@@ -208,16 +367,15 @@ Resources:
   TargetGroupDirector:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      HealthCheckIntervalSeconds: 15
-      HealthCheckPath: /ping
+      HealthCheckIntervalSeconds: 6
+      HealthCheckPath: /
       HealthCheckProtocol: HTTP
       HealthCheckTimeoutSeconds: 5
       HealthyThresholdCount: 2
       TargetType: ip
-      Name: !Join ['-', [!Ref 'AWS::StackName', 'director-tg']]
       Port: 1234
       Matcher:
-        HttpCode: 200
+        HttpCode: 302
       Protocol: HTTP
       UnhealthyThresholdCount: 2
       VpcId: !Ref VPC
@@ -226,16 +384,15 @@ Resources:
   TargetGroupAPI:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      HealthCheckIntervalSeconds: 15
-      HealthCheckPath: /.well-known/apollo/server-health
+      HealthCheckIntervalSeconds: 6
+      HealthCheckPath: /
       HealthCheckProtocol: HTTP
       HealthCheckTimeoutSeconds: 5
       HealthyThresholdCount: 2
       TargetType: ip
-      Name: !Join ['-', [!Ref 'AWS::StackName', 'api-tg']]
       Port: 4000
       Matcher:
-        HttpCode: 200
+        HttpCode: 400
       Protocol: HTTP
       UnhealthyThresholdCount: 2
       VpcId: !Ref VPC
@@ -244,13 +401,12 @@ Resources:
   TargetGroupDashboard:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      HealthCheckIntervalSeconds: 15
+      HealthCheckIntervalSeconds: 6
       HealthCheckPath: /
       HealthCheckProtocol: HTTP
       HealthCheckTimeoutSeconds: 5
       HealthyThresholdCount: 2
       TargetType: ip
-      Name: !Join ['-', [!Ref 'AWS::StackName', 'dashboard-tg']]
       Port: 8080
       Protocol: HTTP
       UnhealthyThresholdCount: 2
@@ -266,8 +422,67 @@ Resources:
         - Field: path-pattern
           Values:
             - /api
-      ListenerArn: !Ref 'PublicLoadBalancerListener'
+      ListenerArn: !Ref 'LoadBalancerListener'
       Priority: 2
+
+  #------------------------------------------------------------#
+  #
+  # Conditional - Remote DB Resources
+  #
+  #------------------------------------------------------------#
+
+  DBCluster:
+    Type: AWS::DocDB::DBCluster
+    Condition: UseRemoteDB
+    Properties:
+      BackupRetentionPeriod: 1
+      DBSubnetGroupName: !Ref DBSubnetGroup
+      DeletionProtection: False
+      EngineVersion: 4.0.0
+      MasterUsername: sorrycypress
+      MasterUserPassword: !Ref DBPassword
+      DBClusterParameterGroupName: !Ref DBParameterGroup
+      Port: 27017
+      StorageEncrypted: True
+      KmsKeyId: !Ref KMSKey
+      VpcSecurityGroupIds:
+        - !Ref FargateContainerSecurityGroup
+
+  DBSubnetGroup:
+    Type: AWS::DocDB::DBSubnetGroup
+    Condition: UseRemoteDB
+    Properties:
+      DBSubnetGroupName: !Sub "${AWS::StackName}-subnetgroup"
+      DBSubnetGroupDescription: "Subnet group for sorry-cypress DB"
+      SubnetIds: !Ref PrivateSubnets
+
+  DBParameterGroup:
+    Type: AWS::DocDB::DBClusterParameterGroup
+    Condition: UseRemoteDB
+    Properties:
+      Description: DocumentDB parameter group for sorry-cypress
+      Family: "docdb4.0"
+      Parameters:
+        audit_logs: disabled
+        change_stream_log_retention_duration: 10800
+        profiler: disabled
+        profiler_sampling_rate: 1.0
+        profiler_threshold_ms: 100
+        tls: disabled
+        ttl_monitor: enabled
+
+  DBInstance:
+    Type: AWS::DocDB::DBInstance
+    Condition: UseRemoteDB
+    Properties:
+      DBClusterIdentifier: !Ref DBCluster
+      DBInstanceClass: !Ref DBInstanceClass
+
+  #------------------------------------------------------------#
+  #
+  # IAM Resources
+  #
+  #------------------------------------------------------------#
 
   # This is an IAM role which authorizes ECS to manage resources on your
   # account on your behalf, such as updating your load balancer with the
@@ -280,7 +495,8 @@ Resources:
         Statement:
           - Effect: Allow
             Principal:
-              Service: [ecs.amazonaws.com]
+              Service:
+                - !Sub ecs.${AWS::URLSuffix}
             Action: ['sts:AssumeRole']
       Path: /
       Policies:
@@ -300,32 +516,13 @@ Resources:
                   - 'ec2:DetachNetworkInterface'
 
                   # Rules which allow ECS to update load balancers on your behalf
-                  # with the information sabout how to send traffic to your containers
+                  # with the information about how to send traffic to your containers
                   - 'elasticloadbalancing:DeregisterInstancesFromLoadBalancer'
                   - 'elasticloadbalancing:DeregisterTargets'
                   - 'elasticloadbalancing:Describe*'
                   - 'elasticloadbalancing:RegisterInstancesWithLoadBalancer'
                   - 'elasticloadbalancing:RegisterTargets'
                 Resource: '*'
-
-  # Screenshots bucket
-  S3Bucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: !Join ['-', [!Ref 'AWS::StackName', 'test-results']]
-      AccessControl: PublicRead
-      CorsConfiguration:
-        CorsRules:
-          - AllowedHeaders:
-              - '*'
-            AllowedMethods:
-              - 'POST'
-              - 'GET'
-              - 'PUT'
-              - 'DELETE'
-              - 'HEAD'
-            AllowedOrigins:
-              - '*'
 
   # This is a role that's used by container payload
   TaskRole:
@@ -335,11 +532,12 @@ Resources:
         Statement:
           - Effect: Allow
             Principal:
-              Service: [ecs-tasks.amazonaws.com]
+              Service:
+                - !Sub ecs-tasks.${AWS::URLSuffix}
             Action: ['sts:AssumeRole']
       Path: /
       Policies:
-        - PolicyName: !Join ['-', [!Ref 'AWS::StackName', 's3-write']]
+        - PolicyName: !Sub ${AWS::StackName}-s3-write
           PolicyDocument:
             Statement:
               - Effect: Allow
@@ -347,7 +545,15 @@ Resources:
                   # Allow ECS task to upload new objects
                   - 's3:PutObject'
                   - 's3:PutObjectAcl'
-                Resource: !Join ['', [!GetAtt 'S3Bucket.Arn', '/*']]
+                Resource:
+                  - !Sub ${S3Bucket.Arn}/*
+        - PolicyName: KmsKeyPermissions
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: 'kms:*'
+                Resource: !Sub '${KMSKey.Arn}'
 
   # This is a role which is used by the ECS agent
   ECSTaskExecutionRole:
@@ -357,7 +563,8 @@ Resources:
         Statement:
           - Effect: Allow
             Principal:
-              Service: [ecs-tasks.amazonaws.com]
+              Service:
+                - !Sub ecs-tasks.${AWS::URLSuffix}
             Action: ['sts:AssumeRole']
       Path: /
       Policies:
@@ -371,20 +578,183 @@ Resources:
                   - 'ecr:BatchCheckLayerAvailability'
                   - 'ecr:GetDownloadUrlForLayer'
                   - 'ecr:BatchGetImage'
-
                   # Allow the ECS tasks to upload logs to CloudWatch
                   - 'logs:CreateLogStream'
                   - 'logs:PutLogEvents'
                 Resource: '*'
+        - PolicyName: KmsKeyPermissions
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: 'kms:*'
+                Resource: !Sub '${KMSKey.Arn}'
+
+  #------------------------------------------------------------#
+  #
+  # Storage Resources
+  #
+  #------------------------------------------------------------#
+
+  # Screenshots bucket
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Delete
+    Properties:
+      # Settings to allow public access with a bucket policy that restricts by IP
+      # Taken from:
+      # https://docs.sorry-cypress.dev/configuration/troubleshooting#can-i-use-a-private-aws-s3-bucket-with-sorry-cypress
+      PublicAccessBlockConfiguration:
+        IgnorePublicAcls: false
+        BlockPublicAcls: false
+        BlockPublicPolicy: true
+        RestrictPublicBuckets: true
+      LifecycleConfiguration:
+        Rules:
+          - Id: ContentExpiration
+            Status: 'Enabled'
+            ExpirationInDays: !Ref S3LifecycleExpirationDays
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+              - '*'
+            AllowedMethods:
+              - 'POST'
+              - 'GET'
+              - 'PUT'
+              - 'HEAD'
+            AllowedOrigins:
+              - '*'
+
+  BucketPolicy:
+    Type: 'AWS::S3::BucketPolicy'
+    Properties:
+      Bucket: !Ref S3Bucket
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: AllowRestrictedPublicIps
+            Effect: Allow
+            Principal: "*"
+            Action: 's3:GetObject'
+            Resource: !Sub "${S3Bucket.Arn}/*"
+            Condition:
+              IpAddress:
+                aws:SourceIp: !Split
+                  - ","
+                  - !Ref AllowedPublicIps
 
   CloudWatchGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Join ['/', ['/ecs', !Ref 'AWS::StackName', 'logs']]
+      LogGroupName: !Sub '/ecs/${AWS::StackName}/logs'
       RetentionInDays: 7
 
-  EcsTaskDefinition:
+  #------------------------------------------------------------#
+  #
+  # ECS Resources
+  #
+  #------------------------------------------------------------#
+
+  ECSCluster:
+    Type: AWS::ECS::Cluster
+
+  EcsTaskDefinitionRemoteDB:
     Type: AWS::ECS::TaskDefinition
+    Condition: UseRemoteDB
+    Properties:
+      Family: 'sorry-cypress-bundle-cf'
+      NetworkMode: awsvpc
+      Memory: !Ref 'TaskMemory'
+      Cpu: !Ref 'TaskCpu'
+      TaskRoleArn: !GetAtt 'TaskRole.Arn'
+      ExecutionRoleArn: !GetAtt 'ECSTaskExecutionRole.Arn'
+      RequiresCompatibilities:
+        - FARGATE
+      ContainerDefinitions:
+        - Image: !Sub agoldis/sorry-cypress-director:${SorryCypressVersion}
+          Essential: true
+          PortMappings:
+            - ContainerPort: 1234
+          RepositoryCredentials: !If
+            - UseDockerCredential
+            - CredentialsParameter: !Ref DockerCredentialsSecret
+            - !Ref AWS::NoValue
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref CloudWatchGroup
+              awslogs-region: !Ref 'AWS::Region'
+              awslogs-stream-prefix: ecs
+          Environment:
+            - Name: DASHBOARD_URL
+              Value: !Sub 'http://${LoadBalancer.DNSName}'
+            - Name: EXECUTION_DRIVER
+              Value: ../execution/mongo/driver
+            - Name: SCREENSHOTS_DRIVER
+              Value: ../screenshots/s3.driver
+            - Name: MONGODB_DATABASE
+              Value: sorry-cypress
+            - Name: MONGODB_URI
+              Value: !Sub mongodb://sorrycypress:${DBPassword}@${DBCluster.Endpoint}:27017
+            - Name: S3_BUCKET
+              Value: !Ref S3Bucket
+            - Name: S3_REGION
+              Value: !Ref 'AWS::Region'
+            - Name: S3_ACL
+              Value: !Ref S3ObjectACL
+          Name: director
+        - Image: !Sub agoldis/sorry-cypress-api:${SorryCypressVersion}
+          PortMappings:
+            - ContainerPort: 4000
+          RepositoryCredentials: !If
+            - UseDockerCredential
+            - CredentialsParameter: !Ref DockerCredentialsSecret
+            - !Ref AWS::NoValue
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref CloudWatchGroup
+              awslogs-region: !Ref 'AWS::Region'
+              awslogs-stream-prefix: ecs
+          Environment:
+            - Name: MONGODB_DATABASE
+              Value: sorry-cypress
+            - Name: MONGODB_URI
+              Value: !Sub mongodb://sorrycypress:${DBPassword}@${DBCluster.Endpoint}:27017
+          DependsOn:
+            - ContainerName: director
+              Condition: START
+          Name: api
+        - Image: !Sub agoldis/sorry-cypress-dashboard:${SorryCypressVersion}
+          PortMappings:
+            - ContainerPort: 8080
+          RepositoryCredentials: !If
+            - UseDockerCredential
+            - CredentialsParameter: !Ref DockerCredentialsSecret
+            - !Ref AWS::NoValue
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref CloudWatchGroup
+              awslogs-region: !Ref 'AWS::Region'
+              awslogs-stream-prefix: ecs
+          Environment:
+            - Name: GRAPHQL_SCHEMA_URL
+              Value: /api
+            - Name: PORT
+              Value: 8080
+            - Name: CI_URL
+              Value: ''
+          DependsOn:
+            - ContainerName: api
+              Condition: START
+          Name: dashboard
+
+  EcsTaskDefinitionLocalDB:
+    Type: AWS::ECS::TaskDefinition
+    Condition: UseLocalDB
     Properties:
       Family: 'sorry-cypress-bundle-cf'
       NetworkMode: awsvpc
@@ -409,11 +779,14 @@ Resources:
             - Name: MONGO_INITDB_ROOT_USERNAME
               Value: sorry-cypress
           Name: mongo
-
-        - Image: agoldis/sorry-cypress-director
+        - Image: !Sub agoldis/sorry-cypress-director:${SorryCypressVersion}
           Essential: true
           PortMappings:
             - ContainerPort: 1234
+          RepositoryCredentials: !If
+            - UseDockerCredential
+            - CredentialsParameter: !Ref DockerCredentialsSecret
+            - !Ref AWS::NoValue
           LogConfiguration:
             LogDriver: awslogs
             Options:
@@ -422,31 +795,32 @@ Resources:
               awslogs-stream-prefix: ecs
           Environment:
             - Name: DASHBOARD_URL
-              Value: !Join ['', ['http://', !GetAtt PublicLoadBalancer.DNSName]]
+              Value: !Sub 'http://${LoadBalancer.DNSName}'
             - Name: EXECUTION_DRIVER
               Value: ../execution/mongo/driver
             - Name: SCREENSHOTS_DRIVER
               Value: ../screenshots/s3.driver
-            - Name: GITLAB_JOB_RETRIES
-              Value: false
             - Name: MONGODB_DATABASE
               Value: sorry-cypress
             - Name: MONGODB_URI
               Value: mongodb://sorry-cypress:sorry-cypress@127.0.0.1:27017
             - Name: S3_BUCKET
-              Value: !Join ['-', [!Ref 'AWS::StackName', 'test-results']]
+              Value: !Ref S3Bucket
             - Name: S3_REGION
               Value: !Ref 'AWS::Region'
-            - Name: PROBE_LOGGER
-              Value: "false"
+            - Name: S3_ACL
+              Value: !Ref S3ObjectACL
           DependsOn:
             - ContainerName: mongo
               Condition: START
           Name: director
-
-        - Image: agoldis/sorry-cypress-api
+        - Image: !Sub agoldis/sorry-cypress-api:${SorryCypressVersion}
           PortMappings:
             - ContainerPort: 4000
+          RepositoryCredentials: !If
+            - UseDockerCredential
+            - CredentialsParameter: !Ref DockerCredentialsSecret
+            - !Ref AWS::NoValue
           LogConfiguration:
             LogDriver: awslogs
             Options:
@@ -458,16 +832,17 @@ Resources:
               Value: sorry-cypress
             - Name: MONGODB_URI
               Value: mongodb://sorry-cypress:sorry-cypress@127.0.0.1:27017
-            - Name: APOLLO_PLAYGROUND
-              Value: false
           DependsOn:
             - ContainerName: director
               Condition: START
           Name: api
-
-        - Image: agoldis/sorry-cypress-dashboard
+        - Image: !Sub agoldis/sorry-cypress-dashboard:${SorryCypressVersion}
           PortMappings:
             - ContainerPort: 8080
+          RepositoryCredentials: !If
+            - UseDockerCredential
+            - CredentialsParameter: !Ref DockerCredentialsSecret
+            - !Ref AWS::NoValue
           LogConfiguration:
             LogDriver: awslogs
             Options:
@@ -492,25 +867,27 @@ Resources:
   EcsService:
     Type: AWS::ECS::Service
     DependsOn:
-      - EcsTaskDefinition
       - LoadBalancerRuleAPI
+      - EcsTaskDefinitionWaitCondition
+      - DBWaitCondition
     Properties:
-      ServiceName: !Join ['-', [!Ref 'AWS::StackName', 'ecs-service']]
+      ServiceName: !Sub ${AWS::StackName}-ecs-service
       Cluster: !Ref 'ECSCluster'
       LaunchType: FARGATE
       DeploymentConfiguration:
         MaximumPercent: 200
         MinimumHealthyPercent: 100
-      DesiredCount: 1
+      DesiredCount: 2
       NetworkConfiguration:
         AwsvpcConfiguration:
-          AssignPublicIp: ENABLED
+          AssignPublicIp: DISABLED
           SecurityGroups:
             - !Ref 'FargateContainerSecurityGroup'
-          Subnets:
-            - !Ref 'PublicSubnetOne'
-            - !Ref 'PublicSubnetTwo'
-      TaskDefinition: !Ref 'EcsTaskDefinition'
+          Subnets: !Ref PrivateSubnets
+      TaskDefinition: !If
+        - UseRemoteDB
+        - !Ref 'EcsTaskDefinitionRemoteDB'
+        - !Ref 'EcsTaskDefinitionLocalDB'
       LoadBalancers:
         - ContainerName: director
           ContainerPort: 1234
@@ -522,31 +899,338 @@ Resources:
           ContainerPort: 8080
           TargetGroupArn: !Ref 'TargetGroupDashboard'
 
-# These are the values output by the CloudFormation template. Be careful
-# about changing any of them, because of them are exported with specific
-# names so that the other task related CF templates can use them.
+  #------------------------------------------------------------#
+  #
+  # Condition-based Wait Handles
+  #
+  #------------------------------------------------------------#
+
+  RemoteDBWaitHandle:
+    Condition: UseRemoteDB
+    Type: "AWS::CloudFormation::WaitConditionHandle"
+
+  LocalDBWaitHandle:
+    Condition: UseLocalDB
+    Type: "AWS::CloudFormation::WaitConditionHandle"
+
+  DBWaitCondition:
+    Type: "AWS::CloudFormation::WaitCondition"
+    Properties:
+      Handle: !If [UseRemoteDB, !Ref RemoteDBWaitHandle, !Ref LocalDBWaitHandle]
+      Timeout: "1"
+      Count: 0
+
+  EcsTaskDefinitionWaitCondition:
+    Type: "AWS::CloudFormation::WaitCondition"
+    Properties:
+      Handle: !If [UseRemoteDB, !Ref RemoteDBWaitHandle, !Ref LocalDBWaitHandle]
+      Timeout: "1"
+      Count: 0
+
+  #------------------------------------------------------------#
+  #
+  # Scheduled Scaling Resources
+  #
+  #------------------------------------------------------------#
+
+  ScheduledScalingLambdaFunction:
+    Type: AWS::Lambda::Function
+    DependsOn: EcsService
+    Properties:
+      Description: |
+        Creates AWS Auto Scaling Scheduled Scaling Actions to scale the
+        sorry-cypress tasks up and down
+      Handler: index.lambda_handler
+      Role: !GetAtt ScheduledScalingLambdaExecutionRole.Arn
+      Runtime: python3.9
+      Timeout: 30
+      Code:
+        ZipFile: !Sub |
+          import json
+          import time
+          import boto3
+          import cfnresponse
+          from botocore.exceptions import ClientError
+          from botocore.config import Config
+
+          boto3_config = Config(region_name = '${AWS::Region}')
+          client = boto3.client('application-autoscaling', config=boto3_config)
+          service_id = 'service/${ECSCluster}/${EcsService.Name}'
+          dimension = 'ecs:service:DesiredCount'
+          on_action_name = 'sorry-cypress-scale-up'
+          off_action_name = 'sorry-cypress-scale-down'
+
+          def lambda_handler(event, context):
+            r = event['RequestType']
+            print("CF sent %s." % r)
+
+            if r == "Create":
+              if register_target():
+                print("Registered target")
+                if set_schedule():
+                  print("Success")
+                  cfnresponse.send(event, context, cfnresponse.SUCCESS, {})
+                else:
+                  print("Failed setting schedule")
+                  cfnresponse.send(event, context, cfnresponse.FAILED, {})
+              else:
+                  print("Failed registering target")
+                  cfnresponse.send(event, context, cfnresponse.FAILED, {})
+            elif r == "Update":
+              physical_resource_id = event['PhysicalResourceId']
+              print("physical_resource_id: %s" % physical_resource_id)
+              if register_target():
+                print("Registered target")
+                if set_schedule():
+                  print("Success")
+                  cfnresponse.send(event, context, cfnresponse.SUCCESS, {}, physical_resource_id)
+                else:
+                  print("Failed setting schedule")
+                  cfnresponse.send(event, context, cfnresponse.FAILED, {})
+              else:
+                  print("Failed registering target")
+                  cfnresponse.send(event, context, cfnresponse.FAILED, {})
+            elif r == "Delete":
+              if delete():
+                time.sleep(10)
+                cfnresponse.send(event, context, cfnresponse.SUCCESS, {})
+              else:
+                cfnresponse.send(event, context, cfnresponse.FAILED, {"Message": "Delete failed. See CW logs."})
+            else:
+              msg = "Unhandled event from CF - " + r + ". Fail."
+              print(msg)
+              cfnresponse.send(event, context, cfnresponse.FAILED, {"Message": msg})
+
+          def describe_target():
+            try:
+              r = client.describe_scalable_targets(
+                ServiceNamespace='ecs',
+                ResourceIds=[service_id],
+                ScalableDimension=dimension
+              )
+              if len(r['ScalableTargets']):
+                return True
+              else:
+                return False
+            except ClientError as e:
+              print(e)
+              return False
+
+          def register_target():
+            if not describe_target():
+              try:
+                r = client.register_scalable_target(
+                  ServiceNamespace='ecs',
+                  ResourceId=service_id,
+                  ScalableDimension=dimension,
+                  MinCapacity=${MinCapacityOn},
+                  MaxCapacity=${MaxCapacityOn}
+                )
+              except ClientError as e:
+                print(e)
+                return False
+
+              if 'ResponseMetadata' in r:
+                return True
+              else:
+                return False
+            else:
+              return True
+
+          def set_schedule():
+            try:
+              r = client.put_scheduled_action(
+                ServiceNamespace='ecs',
+                Schedule='cron(0 ${ScaleUpHour} * * ? *)',
+                Timezone='America/New_York',
+                ScheduledActionName=on_action_name,
+                ResourceId=service_id,
+                ScalableDimension=dimension,
+                ScalableTargetAction={
+                  'MinCapacity': ${MinCapacityOn},
+                  'MaxCapacity': ${MaxCapacityOn}
+                }
+              )
+              r = client.put_scheduled_action(
+                ServiceNamespace='ecs',
+                Schedule='cron(0 ${ScaleDownHour} * * ? *)',
+                Timezone='America/New_York',
+                ScheduledActionName=off_action_name,
+                ResourceId=service_id,
+                ScalableDimension=dimension,
+                ScalableTargetAction={
+                  'MinCapacity': ${MinCapacityOff},
+                  'MaxCapacity': ${MaxCapacityOff}
+                }
+              )
+            except ClientError as e:
+              print(e)
+              return False
+            else:
+              return True
+
+          def delete():
+            try:
+              r = client.delete_scheduled_action(
+                ServiceNamespace='ecs',
+                ScheduledActionName=on_action_name,
+                ResourceId=service_id,
+                ScalableDimension=dimension
+              )
+              r = client.delete_scheduled_action(
+                ServiceNamespace='ecs',
+                ScheduledActionName=off_action_name,
+                ResourceId=service_id,
+                ScalableDimension=dimension
+              )
+              if describe_target():
+                r = client.deregister_scalable_target(
+                  ServiceNamespace='ecs',
+                  ResourceId=service_id,
+                  ScalableDimension=dimension
+                )
+            except ClientError as e:
+              print(e)
+            return True
+
+  ScheduledScalingLambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action:
+              - sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service:
+                - !Sub lambda.${AWS::URLSuffix}
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+        - !Sub arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Path: /
+      Policies:
+        - PolicyName: GrantAutoScalingPermissions
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - application-autoscaling:DescribeScalableTargets
+                  - application-autoscaling:RegisterScalableTarget
+                  - application-autoscaling:DeleteScheduledAction
+                  - application-autoscaling:PutScheduledAction
+                  - application-autoscaling:DeregisterScalableTarget
+                Resource: '*'
+        - PolicyName: GrantIAMAssumeRole
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - iam:CreateServiceLinkedRole
+                Resource: !Sub arn:${AWS::Partition}:iam::${AWS::AccountId}:role/aws-service-role/ecs.application-autoscaling.${AWS::URLSuffix}/AWSServiceRoleForApplicationAutoScaling_ECSService
+
+  SetAutoScalingSchedule:
+    Type: Custom::SetAutoScalingSchedule
+    Properties:
+      ServiceToken: !GetAtt ScheduledScalingLambdaFunction.Arn
+      MinCapacityOn: !Ref MinCapacityOn
+      MaxCapacityOn: !Ref MaxCapacityOn
+      MinCapacityOff: !Ref MinCapacityOff
+      MaxCapacityOff: !Ref MaxCapacityOff
+      ScaleDownHour: !Ref ScaleDownHour
+      ScaleUpHour: !Ref ScaleUpHour
+
+  #------------------------------------------------------------#
+  #
+  # Conditional - Docker Credential Secret and Policy
+  #
+  #------------------------------------------------------------#
+
+  DockerCredentialsSecret:
+    Type: AWS::SecretsManager::Secret
+    Condition: UseDockerCredential
+    Properties:
+      Name: !Sub '${AWS::StackName}/docker-credentials'
+      SecretString: !Sub '{"username":"${DockerUsername}","password":"${DockerPassword}"}'
+
+  GrantSecretsManagerPermissionsPolicy:
+    Condition: UseDockerCredential
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: GrantSecretsManagerPermissions
+      Roles:
+        - !Ref ECSTaskExecutionRole
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'secretsmanager:DescribeSecret'
+              - 'secretsmanager:GetSecretValue'
+            Resource: !Ref DockerCredentialsSecret
+
+  #------------------------------------------------------------#
+  #
+  # Encryption Resources
+  #
+  #------------------------------------------------------------#
+
+  KMSKey:
+    Type: 'AWS::KMS::Key'
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Retain
+    Properties:
+      Description: KMS key used for sorry-cypress
+      Enabled: true
+      EnableKeyRotation: true
+      KeyUsage: ENCRYPT_DECRYPT
+      KeyPolicy:
+        Version: 2012-10-17
+        Id: sorry-cypress-kms-key
+        Statement:
+          - Sid: AllowRoot
+            Effect: Allow
+            Principal:
+              AWS: !Sub 'arn:${AWS::Partition}:iam::${AWS::AccountId}:root'
+            Action: 'kms:*'
+            Resource: '*'
+          - Sid: KMSPermissions
+            Effect: Allow
+            Principal:
+              AWS: '*'
+            Action:
+              - 'kms:Encrypt'
+              - 'kms:Decrypt'
+              - 'kms:ReEncrypt*'
+              - 'kms:GenerateDataKey*'
+              - 'kms:CreateGrant'
+              - 'kms:ListGrants'
+              - 'kms:DescribeKey'
+            Resource: '*'
+            Condition:
+              StringEquals:
+                'kms:CallerAccount': !Ref 'AWS::AccountId'
+
+  #------------------------------------------------------------#
+  #
+  # Outputs
+  #
+  #------------------------------------------------------------#
+
 Outputs:
   DirectorURL:
     Description: DirectorURL
-    Value:
-      !Join [
-        '',
-        [
-          'http://',
-          !GetAtt 'PublicLoadBalancer.DNSName',
-          ':',
-          !Ref 'DirectorPort',
-        ],
-      ]
+    Value: !Sub 'http://${LoadBalancer.DNSName}:${DirectorPort}'
     Export:
-      Name: !Join [':', [!Ref 'AWS::StackName', 'DirectorURL']]
+      Name: !Sub '${AWS::StackName}:DirectorURL'
   DashboardURL:
     Description: DashboardURL
-    Value: !Join ['', ['http://', !GetAtt 'PublicLoadBalancer.DNSName']]
+    Value: !Sub 'http://${LoadBalancer.DNSName}'
     Export:
-      Name: !Join [':', [!Ref 'AWS::StackName', 'DashboardURL']]
+      Name: !Sub '${AWS::StackName}:DashboardURL'
   ApiURL:
     Description: ApiURL
-    Value: !Join ['', ['http://', !GetAtt 'PublicLoadBalancer.DNSName', '/api']]
+    Value: !Sub 'http://${LoadBalancer.DNSName}/api'
     Export:
-      Name: !Join [':', [!Ref 'AWS::StackName', 'ApiURL']]
+      Name: !Sub '${AWS::StackName}:ApiURL'
