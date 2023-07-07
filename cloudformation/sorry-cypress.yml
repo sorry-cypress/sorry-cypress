@@ -313,6 +313,7 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Join ['-', [!Ref 'AWS::StackName', 'test-results']]
+      AccessControl: PublicRead
       CorsConfiguration:
         CorsRules:
           - AllowedHeaders:
