@@ -44,17 +44,16 @@ function getTagsArg() {
 }
 
 function dockerBuildxSetup() {
-  echo Setting Up Docker Buildx
-  echo ========================
+  echo Setting Up Docker Buildx...
   docker buildx use default
-  echo ========================
-  echo ✅ Build completed ${2} from ${1} 
+  echo "✅ buildx setup completed"
 }
 
 function dockerBuildAndPush() {
-  echo 🔨 Building ${2} from ${1}: docker buildx --file ${1}/Dockerfile --platform=linux/arm64,linux/amd64 $(getTagsArg ${2}) --provenance=false --push
+  echo 🔨 Building ${2} from ${1}
+  echo docker buildx build --file ${1}/Dockerfile --platform=linux/arm64/v8,linux/amd64 $(getTagsArg ${2}) --provenance=false --push
   echo ========================
-  docker buildx --file ${1}/Dockerfile --platform=linux/arm64,linux/amd64 $(getTagsArg ${2}) --provenance=false --push .
+  docker buildx build --file ${1}/Dockerfile --platform=linux/arm64/v8,linux/amd64 $(getTagsArg ${2}) --provenance=false --push .
   echo ========================
   echo ✅ Build \& push completed ${2} from ${1} 
 }
