@@ -422,6 +422,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "mauriciovillalobos",
+      "name": "Mauricio Villalobos",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8905916?v=4",
+      "profile": "https://github.com/mauriciovillalobos",
+      "contributions": [
+        "code",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
