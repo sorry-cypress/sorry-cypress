@@ -5,7 +5,6 @@ export const GCS_PROJECT_ID = process.env.GCS_PROJECT_ID;
 export const GCS_IMAGE_KEY_PREFIX = process.env.GCS_IMAGE_KEY_PREFIX ?? '';
 export const GCS_VIDEO_KEY_PREFIX = process.env.GCS_VIDEO_KEY_PREFIX ?? '';
 
-export const GCS_UPLOAD_URL_EXPIRY_IN_HOURS = parseInt(
-  process.env.GCS_UPLOAD_URL_EXPIRY_IN_HOURS ?? '24',
-  10
+export const UPLOAD_EXPIRY_SECONDS = Number(
+  process.env.UPLOAD_EXPIRY_SECONhDS || '300'
 );

@@ -6,8 +6,8 @@ import {
   GCS_IMAGE_KEY_PREFIX,
   GCS_IS_BUCKET_PUBLIC_READ,
   GCS_PROJECT_ID,
-  GCS_UPLOAD_URL_EXPIRY_IN_HOURS,
   GCS_VIDEO_KEY_PREFIX,
+  UPLOAD_EXPIRY_SECONDS,
 } from './config';
 
 const SEVEN_DAYS_IN_SECONDS = 7 * 24 * 60 * 60;
@@ -30,8 +30,7 @@ export const getUploadUrl = async ({
   key,
   contentType = ImageContentType,
 }: GetUploadURLParams): Promise<AssetUploadInstruction> => {
-  const signedUploadUrlExpiresOn =
-    Date.now() + 3600 * 1000 * GCS_UPLOAD_URL_EXPIRY_IN_HOURS;
+  const signedUploadUrlExpiresOn = Date.now() + 1000 * UPLOAD_EXPIRY_SECONDS;
   const signedReadUrlExpiresOn = Date.now() + 1000 * SEVEN_DAYS_IN_SECONDS; // 7 Days, Maximun supported on GCS v4 signed urls
 
   const [uploadUrl] = await storageClient
