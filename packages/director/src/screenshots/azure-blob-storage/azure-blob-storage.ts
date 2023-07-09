@@ -4,6 +4,7 @@ import {
   AZURE_CONNEXION_STRING,
   AZURE_CONTAINER_NAME,
   AZURE_UPLOAD_URL_EXPIRY_IN_HOURS,
+  UPLOAD_EXPIRY_SECONDS,
 } from '@sorry-cypress/director/screenshots/azure-blob-storage/config';
 
 const blobServiceClient = BlobServiceClient.fromConnectionString(
@@ -24,8 +25,7 @@ export const getUploadUrl = async ({
 }: GetUploadURLParams): Promise<AssetUploadInstruction> => {
   const signedUploadUrlStartsOn = new Date();
   const signedUploadUrlExpiresOn = new Date(
-    signedUploadUrlStartsOn.getTime() +
-      3600 * 1000 * AZURE_UPLOAD_URL_EXPIRY_IN_HOURS
+    signedUploadUrlStartsOn.getTime() + 1000 * getExpirationSeconds()
   );
   const signedReadUrlStartsOn = new Date();
   const signedReadUrlExpiresOn = new Date(
@@ -65,3 +65,10 @@ export const getVideoUploadUrl = async (
     key: `${key}.mp4`,
     ContentType: VideoContentType,
   });
+
+function getExpirationSeconds() {
+  if (AZURE_UPLOAD_URL_EXPIRY_IN_HOURS) {
+    return AZURE_UPLOAD_URL_EXPIRY_IN_HOURS * 60 * 60;
+  }
+  return UPLOAD_EXPIRY_SECONDS;
+}

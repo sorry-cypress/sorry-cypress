@@ -3,7 +3,7 @@
 ## References
 
 - [ ] I have updated the [documentation](https://github.com/sorry-cypress/gitbook). PR link `<here>`
-- [ ] I have added inclued automated tests
+- [ ] I have added included automated tests or evidence that it's working
 - [ ] I acknowledge that I have tested that the change is backwards-compatible
 - [ ] Original issue / feature request / discussion: `<here>`
 
