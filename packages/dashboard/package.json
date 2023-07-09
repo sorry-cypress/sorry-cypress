@@ -1,6 +1,6 @@
 {
   "name": "@sorry-cypress/dashboard",
-  "version": "2.5.3",
+  "version": "2.5.7",
   "author": {
     "name": "Andrew Goldis",
     "email": "agoldis@gmail.com"
@@ -94,7 +94,7 @@
     "svg-url-loader": "^7.1.1",
     "typescript": "^4.1.5",
     "url-loader": "^4.1.1",
-    "webpack": "^5.64.0",
+    "webpack": "^5.76.0",
     "webpack-cli": "^4.9.1",
     "webpack-dev-middleware": "^5.2.1",
     "webpack-dev-server": "^4.5.0"

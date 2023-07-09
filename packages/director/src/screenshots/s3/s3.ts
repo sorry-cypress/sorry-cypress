@@ -9,6 +9,7 @@ import {
   S3_READ_URL_PREFIX,
   S3_REGION,
   S3_VIDEO_KEY_PREFIX,
+  UPLOAD_EXPIRY_SECONDS,
 } from './config';
 import { S3SignedUploadResult } from './types';
 
@@ -33,7 +34,7 @@ interface GetUploadURLParams {
 export const getUploadUrl = async ({
   key,
   ContentType = ImageContentType,
-  Expires = 60,
+  Expires = UPLOAD_EXPIRY_SECONDS,
 }: GetUploadURLParams): Promise<S3SignedUploadResult> => {
   const s3Params = {
     Bucket: S3_BUCKET,
@@ -73,5 +74,5 @@ export const getVideoUploadUrl = async (
   getUploadUrl({
     key: `${sanitizeS3KeyPrefix(S3_VIDEO_KEY_PREFIX)}${key}.mp4`,
     ContentType: VideoContentType,
-    Expires: 90,
+    Expires: UPLOAD_EXPIRY_SECONDS,
   });

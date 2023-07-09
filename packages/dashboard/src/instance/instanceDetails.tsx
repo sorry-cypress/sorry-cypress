@@ -393,10 +393,11 @@ function getTreeOfNavigationItems(instance: GetInstanceQuery['instance']) {
       if (children) {
         currentMap = children;
       } else {
-        const passedOrFirstAttempt =
-          test.attempts.find((attempt) => attempt.state === 'passed') ||
-          test.attempts[0];
-        const testStartedAt = passedOrFirstAttempt.wallClockStartedAt
+        const passedOrFirstAttempt = test.attempts.find(
+          (attempt) => attempt.state === 'passed'
+        );
+        test.attempts[0];
+        const testStartedAt = passedOrFirstAttempt?.wallClockStartedAt
           ? new Date(passedOrFirstAttempt.wallClockStartedAt)
           : null;
         const timestamp =
