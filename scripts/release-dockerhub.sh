@@ -43,11 +43,11 @@ function getTagsArg() {
   done
 }
 
-function dockerBuildxSetup() {
-  echo Setting Up Docker Buildx...
-  docker buildx use default
-  echo "✅ buildx setup completed"
-}
+# function dockerBuildxSetup() {
+#   echo Setting Up Docker Buildx...
+#   docker buildx use default
+#   echo "✅ buildx setup completed"
+# }
 
 function dockerBuildAndPush() {
   echo 🔨 Building ${2} from ${1}
@@ -83,7 +83,8 @@ fi
 echo 🚀 Releasing tags: $TAGS
 echo ========================
 
-dockerBuildxSetup
+# dockerBuildxSetup
+docker buildx ls
 dockerBuildAndPush "packages/${service}" "agoldis/sorry-cypress-${service}"
 
 echo ========================
