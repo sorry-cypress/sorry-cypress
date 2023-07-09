@@ -49,7 +49,7 @@
     "prettier-plugin-organize-imports": "^1.1.1",
     "pretty-quick": "^3.0.2",
     "rimraf": "^3.0.2",
-    "semver": "^7.3.2",
+    "semver": "^7.5.2",
     "tsconfig-paths": "^4.1.0",
     "turbo": "^1.9.1",
     "typescript": "^4.0.3",
