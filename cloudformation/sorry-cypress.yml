@@ -313,7 +313,11 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Join ['-', [!Ref 'AWS::StackName', 'test-results']]
-      AccessControl: PublicRead
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: ObjectWriter
       CorsConfiguration:
         CorsRules:
           - AllowedHeaders:
@@ -438,7 +442,7 @@ Resources:
             - Name: S3_REGION
               Value: !Ref 'AWS::Region'
             - Name: PROBE_LOGGER
-              Value: "false"
+              Value: 'false'
           DependsOn:
             - ContainerName: mongo
               Condition: START
