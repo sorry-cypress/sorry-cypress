@@ -4,7 +4,7 @@ Description:
   a VPC, 2 public subnets, 2 private subnets, an IGW, a NAT GW, a public and private route table, and
   all required attachments / associations. This is not required to run sorry-cypress, but is made available
   for convenience when deploying the advanced template. You may use a pre-existing VPC with sorry-cypress, which
-  only needs 1 private subnet with a NAT GW attachment, at a minimum.
+  only needs 1 subnet with Internet routing, at a minimum.
 
 Mappings:
   # Hard values for the subnet masks. These masks define
