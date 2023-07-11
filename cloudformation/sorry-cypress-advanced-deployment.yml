@@ -11,7 +11,7 @@ Metadata:
       Label:
         default: "Network Configuration"
       Parameters:
-        - VPCId
+        - VPC
         - PrivateSubnets
         - LoadBalancerSubnets
         - LoadBalancerScheme
@@ -57,7 +57,7 @@ Metadata:
         - ScaleDownHour
 
     ParameterLabels:
-      VPCId:
+      VPC:
         default: "VPC Id"
       LoadBalancerSubnets:
         default: "Load Balancer Subnets"
@@ -119,7 +119,7 @@ Parameters:
     Default: 8080
     Description: What port number to use for accessing director service
 
-  VPCId:
+  VPC:
     Type: AWS::EC2::VPC::Id
     Description: VPC in which to deploy sorry-cypress.
 
@@ -288,7 +288,7 @@ Resources:
   FargateContainerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      VpcId: !Ref 'VPCId'
+      VpcId: !Ref 'VPC'
       GroupName: !Sub ${AWS::StackName}-fargate-sg
       GroupDescription: Access to the Fargate containers
       Tags:
@@ -298,7 +298,7 @@ Resources:
   LoadBalancerSG:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      VpcId: !Ref 'VPCId'
+      VpcId: !Ref 'VPC'
       GroupName: !Sub '${AWS::StackName}-load-balancer-sg'
       GroupDescription: Access to the load balancer
       SecurityGroupIngress:
@@ -396,7 +396,7 @@ Resources:
         HttpCode: 302
       Protocol: HTTP
       UnhealthyThresholdCount: 2
-      VpcId: !Ref 'VPCId'
+      VpcId: !Ref 'VPC'
 
   # API
   TargetGroupAPI:
@@ -413,7 +413,7 @@ Resources:
         HttpCode: 400
       Protocol: HTTP
       UnhealthyThresholdCount: 2
-      VpcId: !Ref 'VPCId'
+      VpcId: !Ref 'VPC'
 
   # Dashboard
   TargetGroupDashboard:
@@ -428,7 +428,7 @@ Resources:
       Port: 8080
       Protocol: HTTP
       UnhealthyThresholdCount: 2
-      VpcId: !Ref 'VPCId'
+      VpcId: !Ref 'VPC'
 
   LoadBalancerRuleAPI:
     Type: AWS::ElasticLoadBalancingV2::ListenerRule
