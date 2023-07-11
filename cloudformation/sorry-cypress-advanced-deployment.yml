@@ -11,16 +11,18 @@ Metadata:
       Label:
         default: "Network Configuration"
       Parameters:
-        - VPC
+        - VPCId
         - PrivateSubnets
-        - AccessCIDR
+        - LoadBalancerSubnets
+        - LoadBalancerScheme
     -
       Label:
         default: "Security Configuration"
       Parameters:
+        - AccessCIDR
+        - AllowedCIDRRanges
         - ACMCertificateArn
         - S3ObjectACL
-        - AllowedPublicIps
     -
       Label:
         default: "ECS Task Configuration"
@@ -55,12 +57,16 @@ Metadata:
         - ScaleDownHour
 
     ParameterLabels:
-      VPC:
-        default: "VPC"
+      VPCId:
+        default: "VPC Id"
+      LoadBalancerSubnets:
+        default: "Load Balancer Subnets"
       PrivateSubnets:
         default: "Private Subnets"
       AccessCIDR:
-        default: "Access CIDR"
+        default: "Front End Access CIDR"
+      AllowedCIDRRanges:
+        default: "Allowed CIDR Ranges"
       S3LifecycleExpirationDays:
         default: "Screenshots Expiration"
       TaskCpu:
@@ -95,8 +101,6 @@ Metadata:
         default: "ACM Certificate ARN"
       S3ObjectACL:
         default: "ACL for Uploaded Objects in S3"
-      AllowedPublicIps:
-        default: Allowed Public IPs
 
 Parameters:
 
@@ -115,18 +119,32 @@ Parameters:
     Default: 8080
     Description: What port number to use for accessing director service
 
-  VPC:
+  VPCId:
     Type: AWS::EC2::VPC::Id
-    Description: VPC in which to deploy
+    Description: VPC in which to deploy sorry-cypress.
+
+  LoadBalancerSubnets:
+    Type: List<AWS::EC2::Subnet::Id>
+    Description: |
+      Subnets in which to deploy to deploy the Load Balancer. Public or private based on the selected Load Balancer scheme.
 
   PrivateSubnets:
     Type: List<AWS::EC2::Subnet::Id>
-    Description: Private subnets in which to deploy
+    Description: Private subnets in which to deploy.
 
   AccessCIDR:
     Type: String
     Default: 10.0.0.0/8
-    Description: CIDR range that is allowed to access the sorry-cypress service
+    Description: |
+      CIDR range that is allowed to access the sorry-cypress app frontend. Enter a single CIDR range here. You can add more
+      to the security group that is attached to the load balancer by hand later.
+
+  AllowedCIDRRanges:
+    Type: String
+    Description: |
+      The ranges you enter will be allowed to download from the S3 bucket via Bucket Policy. Depending on how you will be
+      accessing sorry-cypress (internally or over the Internet) these values will depend on your environment. In most cases,
+      this will be the same as AccessCIDR. Use a comma-separated list. Ex: 1.1.1.1/32,2.2.2.2/32
 
   S3LifecycleExpirationDays:
     Type: Number
@@ -225,14 +243,14 @@ Parameters:
       - private
     Default: "public-read"
 
-  AllowedPublicIps:
+  LoadBalancerScheme:
     Type: String
-    Description: |
-      Public IPs that are allowed to download from the S3 bucket. These should be your NAT Gateways, VPNs, or any
-      public IPs that go through the internet to get to S3 and download screenshots / videos from the storage bucket.
-      Use a comma-separated list. Ex: 1.1.1.1/32,2.2.2.2/32
+    Description: Scheme for the load balancer
+    AllowedValues: ["internal", "internet-facing"]
+    Default: "internal"
 
 Conditions:
+
   UseRemoteDB: !Equals
     - !Ref DBType
     - 'remote'
@@ -270,7 +288,7 @@ Resources:
   FargateContainerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      VpcId: !Ref 'VPC'
+      VpcId: !Ref 'VPCId'
       GroupName: !Sub ${AWS::StackName}-fargate-sg
       GroupDescription: Access to the Fargate containers
       Tags:
@@ -280,7 +298,7 @@ Resources:
   LoadBalancerSG:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      VpcId: !Ref 'VPC'
+      VpcId: !Ref 'VPCId'
       GroupName: !Sub '${AWS::StackName}-load-balancer-sg'
       GroupDescription: Access to the load balancer
       SecurityGroupIngress:
@@ -323,11 +341,11 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
       Name: !Ref 'AWS::StackName'
-      Scheme: internal
+      Scheme: !Ref LoadBalancerScheme
       LoadBalancerAttributes:
         - Key: idle_timeout.timeout_seconds
           Value: '30'
-      Subnets: !Ref PrivateSubnets
+      Subnets: !Ref LoadBalancerSubnets
       SecurityGroups: [!Ref 'LoadBalancerSG']
 
   LoadBalancerListener:
@@ -378,7 +396,7 @@ Resources:
         HttpCode: 302
       Protocol: HTTP
       UnhealthyThresholdCount: 2
-      VpcId: !Ref VPC
+      VpcId: !Ref 'VPCId'
 
   # API
   TargetGroupAPI:
@@ -395,7 +413,7 @@ Resources:
         HttpCode: 400
       Protocol: HTTP
       UnhealthyThresholdCount: 2
-      VpcId: !Ref VPC
+      VpcId: !Ref 'VPCId'
 
   # Dashboard
   TargetGroupDashboard:
@@ -410,7 +428,7 @@ Resources:
       Port: 8080
       Protocol: HTTP
       UnhealthyThresholdCount: 2
-      VpcId: !Ref VPC
+      VpcId: !Ref 'VPCId'
 
   LoadBalancerRuleAPI:
     Type: AWS::ElasticLoadBalancingV2::ListenerRule
@@ -643,7 +661,7 @@ Resources:
               IpAddress:
                 aws:SourceIp: !Split
                   - ","
-                  - !Ref AllowedPublicIps
+                  - !Ref AllowedCIDRRanges
 
   CloudWatchGroup:
     Type: AWS::Logs::LogGroup
