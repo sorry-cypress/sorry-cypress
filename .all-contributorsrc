@@ -413,6 +413,25 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "pavlospt",
+      "name": "Pavlos-Petros Tournaris",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1070871?v=4",
+      "profile": "https://pavlospt.com",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "mauriciovillalobos",
+      "name": "Mauricio Villalobos",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8905916?v=4",
+      "profile": "https://github.com/mauriciovillalobos",
+      "contributions": [
+        "code",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
@@ -421,5 +440,6 @@
   "repoType": "github",
   "repoHost": "https://github.com",
   "skipCi": true,
-  "commitConvention": "angular"
+  "commitConvention": "angular",
+  "commitType": "docs"
 }
