@@ -1,6 +1,6 @@
 {
   "name": "@sorry-cypress/director",
-  "version": "2.5.7",
+  "version": "2.5.8",
   "author": {
     "name": "Andrew Goldis",
     "email": "agoldis@gmail.com"
@@ -28,6 +28,7 @@
   "dependencies": {
     "@azure/identity": "^2.0.5",
     "@azure/storage-blob": "^12.13.0",
+    "@google-cloud/storage": "^6.11.0",
     "@octokit/auth-app": "^4.0.7",
     "@octokit/rest": "^19.0.5",
     "@sorry-cypress/common": "1.0.0",
@@ -46,7 +47,7 @@
     "md5": "^2.2.1",
     "minio": "^7.0.33",
     "pm2": "^5.2.0",
-    "semver": "^7.3.5",
+    "semver": "^7.5.2",
     "source-map-support": "^0.5.20",
     "uuid": "^3.3.2"
   },

@@ -1,4 +1,5 @@
-FROM node:16-alpine AS build
+ARG BUILD_PLATFORM=linux/amd64
+FROM --platform="${BUILD_PLATFORM}" node:16-alpine AS build
 WORKDIR /app
 COPY packages/api/src/schema ./packages/api/src/schema
 COPY packages/dashboard/ ./packages/dashboard

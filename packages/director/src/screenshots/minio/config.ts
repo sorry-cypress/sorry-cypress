@@ -11,7 +11,6 @@ export const MINIO_USESSL = process.env.MINIO_USESSL || 'false';
 export const MINIO_URL =
   process.env.MINIO_URL || 'https://storage.yourdomain.com';
 
-export const UPLOAD_EXPIRY_SECONDS = parseInt(
-  process.env.UPLOAD_EXPIRY_SECONDS || '90',
-  90
+export const UPLOAD_EXPIRY_SECONDS = Number(
+  process.env.UPLOAD_EXPIRY_SECONDS || '90'
 );
