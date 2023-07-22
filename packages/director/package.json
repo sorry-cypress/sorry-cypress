@@ -1,6 +1,6 @@
 {
   "name": "@sorry-cypress/director",
-  "version": "2.5.7",
+  "version": "2.5.8",
   "author": {
     "name": "Andrew Goldis",
     "email": "agoldis@gmail.com"
@@ -28,6 +28,7 @@
   "dependencies": {
     "@azure/identity": "^2.0.5",
     "@azure/storage-blob": "^12.13.0",
+    "@google-cloud/storage": "^6.11.0",
     "@octokit/auth-app": "^4.0.7",
     "@octokit/rest": "^19.0.5",
     "@sorry-cypress/common": "1.0.0",
