@@ -22,8 +22,6 @@
 
 **[Currents.dev](https://currents.dev/?utm_source=github_readme)** - is an enhanced version of Sorry Cypress. It is a managed cloud service that hundreds of companies around the globe use to run **millions** of Cypress tests without breaking the bank. It offers a better security, performance, analytics, integrations and support.
 
-
-
 ## Table of contents
 
 - [Features](#features)
