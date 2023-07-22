@@ -432,6 +432,16 @@
         "code",
         "doc"
       ]
+    },
+    {
+      "login": "crux-capacitor",
+      "name": "crux-capacitor",
+      "avatar_url": "https://avatars.githubusercontent.com/u/18069703?v=4",
+      "profile": "https://github.com/crux-capacitor",
+      "contributions": [
+        "infra",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
