@@ -38,6 +38,7 @@
 - run cypress tests in parallel with no limitations
 - upload screenshots and videos to your own storage
 - browse test results, screenshots and video recordings
+- see all your projects test results in one page
 - self-hosted - use your own infrastructure, own your data
 - integrate with GitHub, Slack or anything else via webhooks
 - works on popular cloud platforms and your data center:
