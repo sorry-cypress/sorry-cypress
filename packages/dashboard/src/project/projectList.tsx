@@ -1,7 +1,17 @@
 import { Fade, Grid, Skeleton } from '@mui/material';
-import { Paper } from '@sorry-cypress/dashboard/components';
+import { isTestFlaky } from '@sorry-cypress/common';
+import {
+  Paper,
+  TestFailureChip,
+  TestFlakyChip,
+  TestOverallChip,
+  TestPendingChip,
+  TestSkippedChip,
+  TestSuccessChip,
+} from '@sorry-cypress/dashboard/components';
 import {
   Filters,
+  useGetInstanceQuery,
   useGetProjectsQuery,
 } from '@sorry-cypress/dashboard/generated/graphql';
 import { ProjectListItem } from '@sorry-cypress/dashboard/project/projectListItem';
@@ -16,12 +26,12 @@ type ProjectsListProps = {
 const ProjectsList = ({ search }: ProjectsListProps) => {
   const filters: Filters[] = search
     ? [
-        {
-          value: (undefined as unknown) as null,
-          key: 'projectId',
-          like: search,
-        },
-      ]
+      {
+        value: (undefined as unknown) as null,
+        key: 'projectId',
+        like: search,
+      },
+    ]
     : [];
   const { loading, error, data, refetch } = useGetProjectsQuery({
     variables: {
@@ -48,11 +58,11 @@ const ProjectsList = ({ search }: ProjectsListProps) => {
   }
   if (!data || error) {
     return (
-      <Paper>{(error && error.toString()) || 'Oops an error occurred'}</Paper>
+      <Paper>{(error && String(error)) || 'Oops an error occurred'}</Paper>
     );
   }
 
-  const { projects } = data;
+  const projects = data?.projects || [];
 
   if (projects.length === 0) {
     if (search) {
@@ -88,6 +98,8 @@ const ProjectsList = ({ search }: ProjectsListProps) => {
         >
           <div>
             <ProjectListItem project={project} reloadProjects={refetch} />
+
+            <InstanceData projectId={project.projectId} />
           </div>
         </Grid>
       ))}
@@ -96,3 +108,46 @@ const ProjectsList = ({ search }: ProjectsListProps) => {
 };
 
 export default ProjectsList;
+
+// New component to fetch instance data for a project
+const InstanceData: React.FC<{ projectId: string }> = ({ projectId }) => {
+  const { loading, error, data } = useGetInstanceQuery({
+    variables: { instanceId: projectId },
+  });
+  if (loading) {
+    return <Skeleton variant="rectangular" height={88} />;
+  }
+  if (error || !data) {
+    return <p>Error fetching instance data</p>;
+  }
+  // Use the data to render the test chips
+  const instanceData = data.instance?.results?.stats;
+  if (!instanceData) {
+    return null;
+  }
+  const stats = data.instance?.results?.stats;
+  const flaky = data.instance?.results?.tests?.filter(isTestFlaky).length ?? 0;
+
+  return (
+    <Grid>
+      <Grid item>
+        <TestOverallChip value={stats?.tests ?? 0} />
+      </Grid>
+      <Grid item>
+        <TestSuccessChip value={stats?.passes ?? 0} />
+      </Grid>
+      <Grid item>
+        <TestFailureChip value={stats?.failures ?? 0} />
+      </Grid>
+      <Grid item>
+        <TestFlakyChip value={flaky} />
+      </Grid>
+      <Grid item>
+        <TestSkippedChip value={stats?.skipped ?? 0} />
+      </Grid>
+      <Grid item>
+        <TestPendingChip value={stats?.pending ?? 0} />
+      </Grid>
+    </Grid>
+  );
+};
