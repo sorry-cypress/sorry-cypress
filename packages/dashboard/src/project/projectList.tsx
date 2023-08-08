@@ -1,7 +1,17 @@
 import { Fade, Grid, Skeleton } from '@mui/material';
-import { Paper } from '@sorry-cypress/dashboard/components';
+import { isTestFlaky } from '@sorry-cypress/common';
+import {
+  Paper,
+  TestFailureChip,
+  TestFlakyChip,
+  TestOverallChip,
+  TestPendingChip,
+  TestSkippedChip,
+  TestSuccessChip,
+} from '@sorry-cypress/dashboard/components';
 import {
   Filters,
+  useGetInstanceQuery,
   useGetProjectsQuery,
 } from '@sorry-cypress/dashboard/generated/graphql';
 import { ProjectListItem } from '@sorry-cypress/dashboard/project/projectListItem';
@@ -67,32 +77,92 @@ const ProjectsList = ({ search }: ProjectsListProps) => {
   }
 
   return (
-    <Grid
-      component={TransitionGroup}
-      container
-      rowSpacing={2}
-      columnSpacing={4}
-      columns={{ xs: 1, sm: 8, md: 12, lg: 24, xl: 24 }}
-    >
-      {projects.map((project) => (
-        <Grid
-          component={Fade}
-          item
-          key={project.projectId}
-          xs={1}
-          sm={4}
-          md={6}
-          lg={8}
-          xl={6}
-          timeout={500}
-        >
-          <div>
-            <ProjectListItem project={project} reloadProjects={refetch} />
-          </div>
-        </Grid>
-      ))}
+    <Grid>
+      <SummaryComponent projects={projects} />
+      <Grid
+        component={TransitionGroup}
+        container
+        rowSpacing={2}
+        columnSpacing={4}
+        columns={{ xs: 1, sm: 8, md: 12, lg: 24, xl: 24 }}
+      >
+        {projects.map((project) => (
+          <Grid
+            component={Fade}
+            item
+            key={project.projectId}
+            xs={1}
+            sm={4}
+            md={6}
+            lg={8}
+            xl={6}
+            timeout={500}
+          >
+            <div>
+              <ProjectListItem project={project} reloadProjects={refetch} />
+            </div>
+          </Grid>
+        ))}
+      </Grid>
     </Grid>
   );
 };
 
 export default ProjectsList;
+
+const SummaryComponent: React.FC<{ projects: Array<any> }> = ({ projects }) => {
+  const aggregatedStats = projects.reduce(
+    (acc, project) => {
+      const { loading, error, data } = useGetInstanceQuery({
+        variables: { instanceId: project.projectId },
+      });
+
+      if (!loading && !error && data) {
+        const stats = data.instance?.results?.stats;
+        const flaky =
+          data.instance?.results?.tests?.filter(isTestFlaky).length ?? 0;
+        acc.tests += stats?.tests ?? 0;
+        acc.passes += stats?.passes ?? 0;
+        acc.failures += stats?.failures ?? 0;
+        acc.flaky += flaky;
+        acc.skipped += stats?.skipped ?? 0;
+        acc.pending += stats?.pending ?? 0;
+      }
+      return acc;
+    },
+    {
+      tests: 0,
+      passes: 0,
+      failures: 0,
+      flaky: 0,
+      skipped: 0,
+      pending: 0,
+    }
+  );
+
+  return (
+    <Paper>
+      <Grid container>
+        <Grid>Total tests :</Grid>
+        <Grid item>
+          <TestOverallChip value={aggregatedStats.tests} />
+        </Grid>
+        <Grid item>
+          <TestSuccessChip value={aggregatedStats.passes} />
+        </Grid>
+        <Grid item>
+          <TestFailureChip value={aggregatedStats.failures} />
+        </Grid>
+        <Grid item>
+          <TestFlakyChip value={aggregatedStats.flaky} />
+        </Grid>
+        <Grid item>
+          <TestSkippedChip value={aggregatedStats.skipped} />
+        </Grid>
+        <Grid item>
+          <TestPendingChip value={aggregatedStats.pending} />
+        </Grid>
+      </Grid>
+    </Paper>
+  );
+};
