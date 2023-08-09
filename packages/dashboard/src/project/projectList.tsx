@@ -1,5 +1,4 @@
 import { Fade, Grid, Skeleton } from '@mui/material';
-import { isTestFlaky } from '@sorry-cypress/common';
 import {
   Paper,
   TestFailureChip,
@@ -11,10 +10,12 @@ import {
 } from '@sorry-cypress/dashboard/components';
 import {
   Filters,
-  useGetInstanceQuery,
   useGetProjectsQuery,
 } from '@sorry-cypress/dashboard/generated/graphql';
-import { ProjectListItem } from '@sorry-cypress/dashboard/project/projectListItem';
+import {
+  getTestsFromProject,
+  ProjectListItem,
+} from '@sorry-cypress/dashboard/project/projectListItem';
 import React from 'react';
 import { TransitionGroup } from 'react-transition-group';
 import NoProjects from './noProjects';
@@ -113,21 +114,13 @@ export default ProjectsList;
 const SummaryComponent: React.FC<{ projects: Array<any> }> = ({ projects }) => {
   const aggregatedStats = projects.reduce(
     (acc, project) => {
-      const { loading, error, data } = useGetInstanceQuery({
-        variables: { instanceId: project.projectId },
-      });
-
-      if (!loading && !error && data) {
-        const stats = data.instance?.results?.stats;
-        const flaky =
-          data.instance?.results?.tests?.filter(isTestFlaky).length ?? 0;
-        acc.tests += stats?.tests ?? 0;
-        acc.passes += stats?.passes ?? 0;
-        acc.failures += stats?.failures ?? 0;
-        acc.flaky += flaky;
-        acc.skipped += stats?.skipped ?? 0;
-        acc.pending += stats?.pending ?? 0;
-      }
+      const tests = getTestsFromProject(project);
+      acc.tests += tests?.overall ?? 0;
+      acc.passes += tests?.passes ?? 0;
+      acc.failures += tests?.failures ?? 0;
+      acc.flaky += tests?.flaky ?? 0;
+      acc.skipped += tests?.skipped ?? 0;
+      acc.pending += tests?.pending ?? 0;
       return acc;
     },
     {
@@ -139,7 +132,6 @@ const SummaryComponent: React.FC<{ projects: Array<any> }> = ({ projects }) => {
       pending: 0,
     }
   );
-
   return (
     <Paper>
       <Grid container>

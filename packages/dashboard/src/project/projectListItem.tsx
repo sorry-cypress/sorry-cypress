@@ -10,9 +10,7 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
-  Skeleton,
 } from '@mui/material';
-import { isTestFlaky } from '@sorry-cypress/common';
 import { ArrayItemType } from '@sorry-cypress/common/ts';
 import {
   TestFailureChip,
@@ -22,10 +20,8 @@ import {
   TestSkippedChip,
   TestSuccessChip,
 } from '@sorry-cypress/dashboard/components';
-import {
-  GetProjectsQuery,
-  useGetInstanceQuery,
-} from '@sorry-cypress/dashboard/generated/graphql';
+import { GetProjectsQuery } from '@sorry-cypress/dashboard/generated/graphql';
+import { useGetRunsFeed } from '@sorry-cypress/dashboard/run/runsFeed/useGetRunFeed';
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -35,6 +31,10 @@ type ProjectListItemProps = {
 };
 
 export function ProjectListItem({ project }: ProjectListItemProps) {
+  // To fix a bug about project created directly from an execution instead of the dashboard
+  let defaultProjectColor;
+  if (project.projectColor === '') defaultProjectColor = '#3486E3';
+  else defaultProjectColor = project.projectColor ?? '#3486E3';
   return (
     <Link
       component={RouterLink}
@@ -53,13 +53,10 @@ export function ProjectListItem({ project }: ProjectListItemProps) {
               <ListItemAvatar>
                 <Avatar
                   sx={{
-                    backgroundColor: alpha(
-                      project.projectColor ?? '#3486E3',
-                      0.1
-                    ),
+                    backgroundColor: alpha(defaultProjectColor, 0.1),
                   }}
                 >
-                  <Book sx={{ color: project.projectColor ?? '#3486E3' }} />
+                  <Book sx={{ color: defaultProjectColor }} />
                 </Avatar>
               </ListItemAvatar>
               <ListItemText
@@ -70,7 +67,7 @@ export function ProjectListItem({ project }: ProjectListItemProps) {
                 }}
               />
             </ListItem>
-            <InstanceData projectId={project.projectId} />
+            <LastTestRunData project={project} />
           </CardContent>
         </CardActionArea>
       </Card>
@@ -78,41 +75,55 @@ export function ProjectListItem({ project }: ProjectListItemProps) {
   );
 }
 
-// New component to fetch instance data for a project
-const InstanceData: React.FC<{ projectId: string }> = ({ projectId }) => {
-  const { loading, error, data } = useGetInstanceQuery({
-    variables: { instanceId: projectId },
+/**
+ * Get tests information data from a given project.
+ * @param project the wanted project.
+ * @return the dataset of all tests status.
+ */
+export function getTestsFromProject(project: any) {
+  const projectId = project.projectId;
+  const search = '';
+  const [runsFeed] = useGetRunsFeed({
+    projectId,
+    search,
   });
-  if (loading) {
-    return <Skeleton variant="rectangular" height={88} />;
-  }
-  if (error || !data) {
-    return <p>Error fetching instance data</p>;
-  }
+  // We get the last run
+  const lastRun = runsFeed?.runs[0];
+  if (lastRun === undefined) return null;
+  const progress = lastRun?.progress;
+  const groups = progress?.groups;
+  let tests;
+  if (groups !== undefined && groups.length > 0) tests = groups[0].tests;
+  return tests;
+}
 
-  const stats = data.instance?.results?.stats;
-  const flaky = data.instance?.results?.tests?.filter(isTestFlaky).length ?? 0;
-
-  return (
-    <Grid container>
-      <Grid item>
-        <TestOverallChip value={stats?.tests ?? 0} />
+// New component to show the latest run data for a project
+const LastTestRunData: React.FC<{ project: any }> = ({ project }) => {
+  if (project === undefined) {
+    return null;
+  } else {
+    const tests = getTestsFromProject(project);
+    return (
+      <Grid container>
+        <Grid item>
+          <TestOverallChip value={tests?.overall ?? 0} />
+        </Grid>
+        <Grid item>
+          <TestSuccessChip value={tests?.passes ?? 0} />
+        </Grid>
+        <Grid item>
+          <TestFailureChip value={tests?.failures ?? 0} />
+        </Grid>
+        <Grid item>
+          <TestFlakyChip value={tests?.flaky ?? 0} />
+        </Grid>
+        <Grid item>
+          <TestSkippedChip value={tests?.skipped ?? 0} />
+        </Grid>
+        <Grid item>
+          <TestPendingChip value={tests?.pending ?? 0} />
+        </Grid>
       </Grid>
-      <Grid item>
-        <TestSuccessChip value={stats?.passes ?? 0} />
-      </Grid>
-      <Grid item>
-        <TestFailureChip value={stats?.failures ?? 0} />
-      </Grid>
-      <Grid item>
-        <TestFlakyChip value={flaky} />
-      </Grid>
-      <Grid item>
-        <TestSkippedChip value={stats?.skipped ?? 0} />
-      </Grid>
-      <Grid item>
-        <TestPendingChip value={stats?.pending ?? 0} />
-      </Grid>
-    </Grid>
-  );
+    );
+  }
 };
