@@ -1,5 +1,10 @@
-import { GroupWorkOutlined } from '@mui/icons-material';
-import { Alert, Grid, Tooltip, Typography } from '@mui/material';
+import {
+  AccessTime as AccessTimeIcon,
+  Code as CodeIcon,
+  GroupWorkOutlined,
+  Language as LanguageIcon,
+} from '@mui/icons-material';
+import { Alert, Grid, Link, Stack, Tooltip, Typography } from '@mui/material';
 import { isTestFlaky } from '@sorry-cypress/common';
 import {
   Chip,
@@ -20,8 +25,8 @@ import {
   GetInstanceQuery,
   InstanceStats,
 } from '@sorry-cypress/dashboard/generated/graphql';
+import { getDurationMs } from '@sorry-cypress/dashboard/lib/time';
 import React, { FunctionComponent } from 'react';
-import { getBase } from '../lib/path';
 
 export const InstanceSummary: InstanceSummaryComponent = (props) => {
   const { instance } = props;
@@ -31,29 +36,70 @@ export const InstanceSummary: InstanceSummaryComponent = (props) => {
   }
   const stats: InstanceStats = instance.results.stats;
   const flaky = instance.results.tests?.filter(isTestFlaky).length ?? 0;
+  const platform = instance.run.meta.platform;
 
   return (
     <Paper>
-      <Grid container direction="column" spacing={2}>
-        <Grid item>
+      <Grid container spacing={1} alignItems="center">
+        <Grid item xs={12}>
           <Typography component="h1" variant="h6" color="text.secondary">
-            {getBase(instance.spec)}
+            Run Details
           </Typography>
         </Grid>
-        <Grid item>
-          <Typography component="h2" variant="subtitle1">
-            {instance.spec}
+        <Grid item xs={12}>
+          <Stack direction="row" alignItems="center" gap={1}>
+            <Grid item>
+              <SpecStateChip
+                state={getInstanceState({
+                  claimedAt: null,
+                  stats: instance.results.stats,
+                })}
+              />
+            </Grid>
+            <Grid item xs>
+              <Typography component="h2" variant="subtitle1">
+                {instance.spec}
+              </Typography>
+            </Grid>
+          </Stack>
+        </Grid>
+        <Grid item xs={3}>
+          <Stack direction="row" alignItems="center" gap={1}>
+            <AccessTimeIcon fontSize="small" />
+            <Typography variant="overline">Duration</Typography>
+          </Stack>
+          <Typography variant="body2">
+            {getDurationMs(stats.wallClockDuration)}
+          </Typography>
+        </Grid>
+        {instance.ciRunURL && (
+          <Grid item xs={6}>
+            <Stack direction="row" alignItems="center" gap={1}>
+              <CodeIcon fontSize="small" />
+              <Typography variant="overline">CI Run URL</Typography>
+            </Stack>
+            <Link
+              target="_blank"
+              rel="noopener noreferrer"
+              href={instance.ciRunURL}
+              underline="hover"
+            >
+              {instance.ciRunURL.length > 60
+                ? `${instance.ciRunURL.substring(0, 60)}...`
+                : instance.ciRunURL}
+            </Link>
+          </Grid>
+        )}
+        <Grid item xs={3}>
+          <Stack direction="row" alignItems="center" gap={1}>
+            <LanguageIcon fontSize="small" />
+            <Typography variant="overline">Browser</Typography>
+          </Stack>
+          <Typography variant="body2">
+            {platform?.browserName} {platform?.browserVersion}
           </Typography>
         </Grid>
         <Grid item container spacing={1}>
-          <Grid item>
-            <SpecStateChip
-              state={getInstanceState({
-                claimedAt: null,
-                stats: instance.results.stats,
-              })}
-            />
-          </Grid>
           <Grid item>
             <Tooltip title="Suites" arrow>
               <Chip

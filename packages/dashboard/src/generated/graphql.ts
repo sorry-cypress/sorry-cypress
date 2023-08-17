@@ -93,6 +93,12 @@ export type CypressConfig = {
   videoUploadOnPasses: Scalars['Boolean'];
 };
 
+export type CypressPlatform = {
+  __typename?: 'CypressPlatform';
+  browserName: Maybe<Scalars['String']>;
+  browserVersion: Maybe<Scalars['String']>;
+};
+
 export type DeleteHookInput = {
   hookId: Scalars['ID'];
   projectId: Scalars['String'];
@@ -198,6 +204,7 @@ export type HookInput = {
 
 export type Instance = {
   __typename?: 'Instance';
+  ciRunURL: Maybe<Scalars['String']>;
   groupId: Scalars['String'];
   instanceId: Scalars['ID'];
   projectId: Scalars['String'];
@@ -499,6 +506,7 @@ export type RunMeta = {
   __typename?: 'RunMeta';
   ciBuildId: Scalars['String'];
   commit: Maybe<Commit>;
+  platform: Maybe<CypressPlatform>;
   projectId: Scalars['String'];
 };
 
@@ -708,10 +716,19 @@ export type GetInstanceQuery = {
     runId: string;
     spec: string;
     projectId: string;
+    ciRunURL: string | null;
     run: {
       __typename?: 'Run';
       runId: string;
-      meta: { __typename?: 'RunMeta'; ciBuildId: string };
+      meta: {
+        __typename?: 'RunMeta';
+        ciBuildId: string;
+        platform: {
+          __typename?: 'CypressPlatform';
+          browserName: string | null;
+          browserVersion: string | null;
+        } | null;
+      };
     };
     results: {
       __typename?: 'InstanceResults';
@@ -1557,6 +1574,10 @@ export const GetInstanceDocument = gql`
         runId
         meta {
           ciBuildId
+          platform {
+            browserName
+            browserVersion
+          }
         }
       }
       results {
@@ -1580,6 +1601,7 @@ export const GetInstanceDocument = gql`
         }
         videoUrl
       }
+      ciRunURL
     }
   }
   ${AllInstanceStatsFragmentDoc}

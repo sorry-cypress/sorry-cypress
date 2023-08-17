@@ -22,6 +22,7 @@ import {
   UpdateSlackHookInput,
   UpdateTeamsHookInput,
 } from '@sorry-cypress/api/generated/graphql';
+import { getCiRunURL } from '@sorry-cypress/api/lib/query';
 import { Project } from '@sorry-cypress/common';
 import { GraphQLScalarType } from 'graphql';
 import { GraphQLDateTime } from 'graphql-iso-date';
@@ -134,7 +135,15 @@ export const resolvers = {
       if (!run) {
         return null;
       }
-      return { ...instance, projectId: run.meta.projectId, run };
+      const ciProvider = process.env.CI_PROVIDER || '';
+      const ciRunURL = getCiRunURL(ciProvider);
+
+      return {
+        ...instance,
+        ciRunURL,
+        projectId: run.meta.projectId,
+        run,
+      };
     },
   },
   Mutation: {

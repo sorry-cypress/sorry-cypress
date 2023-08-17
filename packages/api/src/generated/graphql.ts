@@ -99,6 +99,12 @@ export type CypressConfig = {
   videoUploadOnPasses: Scalars['Boolean'];
 };
 
+export type CypressPlatform = {
+  __typename?: 'CypressPlatform';
+  browserName?: Maybe<Scalars['String']>;
+  browserVersion?: Maybe<Scalars['String']>;
+};
+
 export type DeleteHookInput = {
   hookId: Scalars['ID'];
   projectId: Scalars['String'];
@@ -204,6 +210,7 @@ export type HookInput = {
 
 export type Instance = {
   __typename?: 'Instance';
+  ciRunURL?: Maybe<Scalars['String']>;
   groupId: Scalars['String'];
   instanceId: Scalars['ID'];
   projectId: Scalars['String'];
@@ -505,6 +512,7 @@ export type RunMeta = {
   __typename?: 'RunMeta';
   ciBuildId: Scalars['String'];
   commit?: Maybe<Commit>;
+  platform?: Maybe<CypressPlatform>;
   projectId: Scalars['String'];
 };
 
@@ -759,6 +767,7 @@ export type ResolversTypes = {
   CreateSlackHookInput: CreateSlackHookInput;
   CreateTeamsHookInput: CreateTeamsHookInput;
   CypressConfig: ResolverTypeWrapper<CypressConfig>;
+  CypressPlatform: ResolverTypeWrapper<CypressPlatform>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
   DeleteHookInput: DeleteHookInput;
   DeleteHookResponse: ResolverTypeWrapper<DeleteHookResponse>;
@@ -831,6 +840,7 @@ export type ResolversParentTypes = {
   CreateSlackHookInput: CreateSlackHookInput;
   CreateTeamsHookInput: CreateTeamsHookInput;
   CypressConfig: CypressConfig;
+  CypressPlatform: CypressPlatform;
   DateTime: Scalars['DateTime'];
   DeleteHookInput: DeleteHookInput;
   DeleteHookResponse: DeleteHookResponse;
@@ -968,6 +978,23 @@ export type CypressConfigResolvers<
   video?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   videoUploadOnPasses?: Resolver<
     ResolversTypes['Boolean'],
+    ParentType,
+    ContextType
+  >;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CypressPlatformResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['CypressPlatform'] = ResolversParentTypes['CypressPlatform']
+> = {
+  browserName?: Resolver<
+    Maybe<ResolversTypes['String']>,
+    ParentType,
+    ContextType
+  >;
+  browserVersion?: Resolver<
+    Maybe<ResolversTypes['String']>,
     ParentType,
     ContextType
   >;
@@ -1188,6 +1215,7 @@ export type InstanceResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['Instance'] = ResolversParentTypes['Instance']
 > = {
+  ciRunURL?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   groupId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   instanceId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   projectId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -1613,6 +1641,11 @@ export type RunMetaResolvers<
 > = {
   ciBuildId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   commit?: Resolver<Maybe<ResolversTypes['Commit']>, ParentType, ContextType>;
+  platform?: Resolver<
+    Maybe<ResolversTypes['CypressPlatform']>,
+    ParentType,
+    ContextType
+  >;
   projectId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1780,6 +1813,7 @@ export type Resolvers<ContextType = any> = {
   CiBuild?: CiBuildResolvers<ContextType>;
   Commit?: CommitResolvers<ContextType>;
   CypressConfig?: CypressConfigResolvers<ContextType>;
+  CypressPlatform?: CypressPlatformResolvers<ContextType>;
   DateTime?: GraphQLScalarType;
   DeleteHookResponse?: DeleteHookResponseResolvers<ContextType>;
   DeleteProjectResponse?: DeleteProjectResponseResolvers<ContextType>;

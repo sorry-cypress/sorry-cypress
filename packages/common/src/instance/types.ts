@@ -5,6 +5,7 @@ export interface Instance {
   runId: string;
   spec: string;
   cypressVersion: string;
+  ciRunURL: string;
   projectId: string;
   groupId: string;
   _createTestsPayload?: SetInstanceTestsPayload;

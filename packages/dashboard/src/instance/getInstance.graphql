@@ -8,6 +8,10 @@ query getInstance($instanceId: ID!) {
       runId
       meta {
         ciBuildId
+        platform {
+          browserName
+          browserVersion
+        }
       }
     }
     results {
@@ -31,5 +35,6 @@ query getInstance($instanceId: ID!) {
       }
       videoUrl
     }
+    ciRunURL
   }
 }

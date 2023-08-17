@@ -152,8 +152,14 @@ type Commit {
   remoteOrigin: String
 }
 
+type CypressPlatform {
+  browserName: String
+  browserVersion: String
+}
+
 type RunMeta {
   ciBuildId: String!
+  platform: CypressPlatform
   projectId: String!
   commit: Commit
 }
@@ -180,6 +186,7 @@ type Instance {
   projectId: String!
   instanceId: ID!
   results: InstanceResults
+  ciRunURL: String
 }
 
 # Execution results of a single instance
