@@ -43,7 +43,7 @@ export const InstanceSummary: InstanceSummaryComponent = (props) => {
       <Grid container spacing={1} alignItems="center">
         <Grid item xs={12}>
           <Typography component="h1" variant="h6" color="text.secondary">
-            Run Details
+            Test Details
           </Typography>
         </Grid>
         <Grid item xs={12}>

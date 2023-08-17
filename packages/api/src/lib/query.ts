@@ -40,9 +40,6 @@ export const getSortByAggregation = (direction: OrderDirection = 'DESC') => ({
   },
 });
 
-export type CiProvider = string | null;
-export const getCiRunURL = (provider: CiProvider) => {
-  if (provider && provider === 'GithubActions')
-    return process.env.GITHUB_ACTIONS_RUN_URL || '';
-  return null;
+export const getCiRunURL = () => {
+  return process.env.CI_RUN_URL || '';
 };
