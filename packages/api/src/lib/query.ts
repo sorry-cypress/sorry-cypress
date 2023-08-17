@@ -39,7 +39,3 @@ export const getSortByAggregation = (direction: OrderDirection = 'DESC') => ({
     _id: direction === 'DESC' ? -1 : 1,
   },
 });
-
-export const getCiRunURL = () => {
-  return process.env.CI_RUN_URL || '';
-};
