@@ -5,13 +5,23 @@ import {
   Card,
   CardActionArea,
   CardContent,
+  Grid,
   Link,
   ListItem,
   ListItemAvatar,
   ListItemText,
 } from '@mui/material';
 import { ArrayItemType } from '@sorry-cypress/common/ts';
+import {
+  TestFailureChip,
+  TestFlakyChip,
+  TestOverallChip,
+  TestPendingChip,
+  TestSkippedChip,
+  TestSuccessChip,
+} from '@sorry-cypress/dashboard/components';
 import { GetProjectsQuery } from '@sorry-cypress/dashboard/generated/graphql';
+import { useGetRunsFeed } from '@sorry-cypress/dashboard/run/runsFeed/useGetRunFeed';
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -21,6 +31,10 @@ type ProjectListItemProps = {
 };
 
 export function ProjectListItem({ project }: ProjectListItemProps) {
+  // To fix a bug about project created directly from an execution instead of the dashboard
+  let defaultProjectColor;
+  if (project.projectColor === '') defaultProjectColor = '#3486E3';
+  else defaultProjectColor = project.projectColor ?? '#3486E3';
   return (
     <Link
       component={RouterLink}
@@ -39,13 +53,10 @@ export function ProjectListItem({ project }: ProjectListItemProps) {
               <ListItemAvatar>
                 <Avatar
                   sx={{
-                    backgroundColor: alpha(
-                      project.projectColor || '#3486E3',
-                      0.1
-                    ),
+                    backgroundColor: alpha(defaultProjectColor, 0.1),
                   }}
                 >
-                  <Book sx={{ color: project.projectColor || '#3486E3' }} />
+                  <Book sx={{ color: defaultProjectColor }} />
                 </Avatar>
               </ListItemAvatar>
               <ListItemText
@@ -56,9 +67,63 @@ export function ProjectListItem({ project }: ProjectListItemProps) {
                 }}
               />
             </ListItem>
+            <LastTestRunData project={project} />
           </CardContent>
         </CardActionArea>
       </Card>
     </Link>
   );
 }
+
+/**
+ * Get tests information data from a given project.
+ * @param project the wanted project.
+ * @return the dataset of all tests status.
+ */
+export function getTestsFromProject(project: any) {
+  const projectId = project.projectId;
+  const search = '';
+  const [runsFeed] = useGetRunsFeed({
+    projectId,
+    search,
+  });
+  // We get the last run
+  const lastRun = runsFeed?.runs[0];
+  if (lastRun === undefined) return null;
+  const progress = lastRun?.progress;
+  const groups = progress?.groups;
+  let tests;
+  if (groups !== undefined && groups.length > 0) tests = groups[0].tests;
+  return tests;
+}
+
+// New component to show the latest run data for a project
+const LastTestRunData: React.FC<{ project: any }> = ({ project }) => {
+  if (project === undefined) {
+    return null;
+  } else {
+    const tests = getTestsFromProject(project);
+    return (
+      <Grid container>
+        <Grid item>
+          <TestOverallChip value={tests?.overall ?? 0} />
+        </Grid>
+        <Grid item>
+          <TestSuccessChip value={tests?.passes ?? 0} />
+        </Grid>
+        <Grid item>
+          <TestFailureChip value={tests?.failures ?? 0} />
+        </Grid>
+        <Grid item>
+          <TestFlakyChip value={tests?.flaky ?? 0} />
+        </Grid>
+        <Grid item>
+          <TestSkippedChip value={tests?.skipped ?? 0} />
+        </Grid>
+        <Grid item>
+          <TestPendingChip value={tests?.pending ?? 0} />
+        </Grid>
+      </Grid>
+    );
+  }
+};
