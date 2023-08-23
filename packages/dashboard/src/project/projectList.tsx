@@ -13,8 +13,8 @@ import {
   useGetProjectsQuery,
 } from '@sorry-cypress/dashboard/generated/graphql';
 import {
-  getTestsFromProject,
   ProjectListItem,
+  useGetTestsFromProject,
 } from '@sorry-cypress/dashboard/project/projectListItem';
 import React from 'react';
 import { TransitionGroup } from 'react-transition-group';
@@ -114,7 +114,7 @@ export default ProjectsList;
 const SummaryComponent: React.FC<{ projects: Array<any> }> = ({ projects }) => {
   const aggregatedStats = projects.reduce(
     (acc, project) => {
-      const tests = getTestsFromProject(project);
+      const tests = useGetTestsFromProject(project);
       acc.tests += tests?.overall ?? 0;
       acc.passes += tests?.passes ?? 0;
       acc.failures += tests?.failures ?? 0;
