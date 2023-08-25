@@ -4,11 +4,14 @@ export interface AggregationFilter {
   like?: string | null;
 }
 
-export const filtersToAggregations = (filters?: AggregationFilter[]) => {
+export const filtersToAggregations = (
+  filters?: AggregationFilter[],
+  dateMatch?: { [key: string]: any }
+) => {
   if (!filters) {
-    return [];
+    return dateMatch ? [{ $match: dateMatch }] : [];
   }
-  const match = {};
+  const match = dateMatch ? { ...dateMatch } : {};
   filters
     .filter(({ like, value }) => like !== undefined || value !== undefined)
     .forEach((filter) => {

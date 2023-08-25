@@ -136,6 +136,30 @@ export const resolvers = {
       }
       return { ...instance, projectId: run.meta.projectId, run };
     },
+    testInsights: async (
+      _: any,
+      {
+        filters,
+        startDate,
+        endDate,
+      }: Parameters<RunsAPI['getRunsWithFiltersAndDate']>[0],
+      { dataSources }: { dataSources: AppDatasources }
+    ) => {
+      const runs = await dataSources.runsAPI.getRunsWithFiltersAndDate({
+        orderDirection: OrderingOptions.Desc,
+        filters,
+        startDate,
+        endDate,
+      });
+
+      const numberOfTotalRuns = runs.length;
+      const result = dataSources.runsAPI.aggregateTestCounts(runs);
+
+      return {
+        numberOfTotalRuns,
+        ...result,
+      };
+    },
   },
   Mutation: {
     deleteRun: async (

@@ -1,5 +1,6 @@
 import {
   ArrowBack,
+  BarChart as BarChartIcon,
   PlayLesson as PlayLessonIcon,
   Settings as SettingsIcon,
 } from '@mui/icons-material';
@@ -28,6 +29,12 @@ export const ProjectDetailsMenu: ProjectDetailsMenuType = ({
       link: `/${encodeURIComponent(projectId)}/runs`,
       iconComponent: PlayLessonIcon,
       type: NavItemType.latestRuns,
+    },
+    {
+      label: 'Insights',
+      link: `/${encodeURIComponent(projectId)}/insights`,
+      iconComponent: BarChartIcon,
+      type: NavItemType.insights,
     },
     {
       label: 'Project settings',

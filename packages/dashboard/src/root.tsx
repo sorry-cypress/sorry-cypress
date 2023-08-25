@@ -6,6 +6,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Layout } from './components';
 import { DashboardView } from './dashboard/dashboardView';
+import { InsightsView } from './insights/insightsView';
 import { InstanceDetailsView } from './instance/instanceDetailsView';
 import { client } from './lib/apolloClient';
 import { ProjectEditView } from './project/projectEditView';
@@ -69,6 +70,7 @@ export const Root = () => {
                 />
                 <Route path="/:projectId/runs" element={<RunsView />} />
                 <Route path="/:projectId/edit" element={<ProjectEditView />} />
+                <Route path="/:projectId/insights" element={<InsightsView />} />
                 <Route path="/run/:id" element={<RunDetailsView />} />
                 <Route
                   path={'/instance/:id'}

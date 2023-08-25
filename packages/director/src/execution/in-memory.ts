@@ -3,17 +3,17 @@ import {
   CreateRunResponse,
   CreateRunWarning,
   getCreateProjectValue,
+  Hook,
   Instance,
   InstanceResult,
+  isRunCompleted,
+  isTestFlaky,
   Project,
   Run,
   RunMetaData,
   SetInstanceTestsPayload,
   Task,
   UpdateInstanceResultsPayload,
-  Hook,
-  isTestFlaky,
-  isRunCompleted,
 } from '@sorry-cypress/common';
 import { INACTIVITY_TIMEOUT_SECONDS } from '@sorry-cypress/director/config';
 import { getRunCiBuildId } from '@sorry-cypress/director/lib/ciBuildId';
@@ -41,8 +41,8 @@ import {
   getSpecsForGroup,
 } from './utils';
 
-const projects: { [key: string]: Project; } = {};
-const runs: { [key: string]: Run; } = {};
+const projects: { [key: string]: Project } = {};
+const runs: { [key: string]: Run } = {};
 const instances: {
   [key: string]: Instance;
 } = {};
@@ -123,6 +123,7 @@ const createRun: ExecutionDriver['createRun'] = async (
       projectId: params.projectId,
       platform: params.platform,
       ci: params.ci,
+      buildEnvironment: params.buildEnvironment,
     } as RunMetaData,
     specs: params.specs.map(enhanceSpecForThisRun),
     cypressVersion: params.cypressVersion,
@@ -198,7 +199,9 @@ const setInstanceTests = async (
     _createTestsPayload: { ...payload },
   };
 
-  const runTests = runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId)?.tests;
+  const runTests = runs[instances[instanceId].runId].progress.groups.find(
+    (group) => group.groupId === instances[instanceId].groupId
+  )?.tests;
   if (runTests) {
     runTests.overall = runTests.overall + payload.tests.length;
   }
@@ -226,9 +229,12 @@ const updateInstanceResults = async (
 };
 
 const updateRunsProgress = (instanceId, instanceResult) => {
-  const hasFailures = instanceResult.stats.failures > 0 || instanceResult.stats.skipped > 0;
+  const hasFailures =
+    instanceResult.stats.failures > 0 || instanceResult.stats.skipped > 0;
   const flakyTests = instanceResult.tests.filter(isTestFlaky);
-  const progressGroup = runs[instances[instanceId].runId].progress.groups.find(group => group.groupId === instances[instanceId].groupId);
+  const progressGroup = runs[instances[instanceId].runId].progress.groups.find(
+    (group) => group.groupId === instances[instanceId].groupId
+  );
   if (progressGroup) {
     progressGroup.instances.complete = progressGroup?.instances.complete + 1;
     if (hasFailures) {
@@ -236,21 +242,31 @@ const updateRunsProgress = (instanceId, instanceResult) => {
     } else {
       progressGroup.instances.passes = progressGroup?.instances.passes + 1;
     }
-    progressGroup.tests.passes = progressGroup.tests.passes + instanceResult.stats.passes;
-    progressGroup.tests.failures = progressGroup.tests.failures + instanceResult.stats.failures;
-    progressGroup.tests.skipped = progressGroup.tests.skipped + instanceResult.stats.skipped;
-    progressGroup.tests.pending = progressGroup.tests.pending + instanceResult.stats.pending;
+    progressGroup.tests.passes =
+      progressGroup.tests.passes + instanceResult.stats.passes;
+    progressGroup.tests.failures =
+      progressGroup.tests.failures + instanceResult.stats.failures;
+    progressGroup.tests.skipped =
+      progressGroup.tests.skipped + instanceResult.stats.skipped;
+    progressGroup.tests.pending =
+      progressGroup.tests.pending + instanceResult.stats.pending;
     progressGroup.tests.flaky = progressGroup.tests.flaky + flakyTests.length;
   }
 };
 
 const allGroupSpecsCompleted = (runId, groupId) => {
-  const instances = runs[runId].progress.groups.find(group => group.groupId === groupId)?.instances;
+  const instances = runs[runId].progress.groups.find(
+    (group) => group.groupId === groupId
+  )?.instances;
   return Promise.resolve(instances?.overall === instances?.complete);
 };
 
 const setHooks = (projectId: string, hooks: Hook[]) => {
-  projects[projectId] = { projectId, createdAt: new Date().toISOString(), hooks };
+  projects[projectId] = {
+    projectId,
+    createdAt: new Date().toISOString(),
+    hooks,
+  };
   return projects;
 };
 

@@ -8,6 +8,7 @@ query getInstance($instanceId: ID!) {
       runId
       meta {
         ciBuildId
+        buildEnvironment
       }
     }
     results {

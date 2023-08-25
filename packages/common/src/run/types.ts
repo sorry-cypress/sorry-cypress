@@ -31,6 +31,7 @@ export interface CreateRunParameters {
   platform: PlatformData;
   group?: string;
   cypressVersion?: string;
+  buildEnvironment: string;
 }
 
 export type CreateRunWarning = Record<string, string> & {
@@ -51,6 +52,7 @@ export interface RunMetaData {
   projectId: string;
   platform: PlatformData;
   ci: RunCI;
+  buildEnvironment: string;
 }
 export interface RunSpec {
   spec: string;

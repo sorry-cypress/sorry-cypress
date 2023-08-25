@@ -118,10 +118,28 @@ export type DeleteRunResponse = {
   success: Scalars['Boolean'];
 };
 
+export type FailedTestAggregate = {
+  __typename?: 'FailedTestAggregate';
+  firstFailedRun: Run;
+  firstFailedRunIndex: Scalars['Int'];
+  lastFailedRun: Run;
+  lastFailedRunIndex: Scalars['Int'];
+  spec: Scalars['String'];
+};
+
 export type Filters = {
   key: InputMaybe<Scalars['String']>;
   like: InputMaybe<Scalars['String']>;
   value: InputMaybe<Scalars['String']>;
+};
+
+export type FlakyTestAggregate = {
+  __typename?: 'FlakyTestAggregate';
+  firstFlakyRun: Run;
+  firstFlakyRunIndex: Scalars['Int'];
+  lastFlakyRun: Run;
+  lastFlakyRunIndex: Scalars['Int'];
+  spec: Scalars['String'];
 };
 
 export type GChatHook = {
@@ -388,6 +406,7 @@ export type Query = {
   runFeed: RunFeed;
   runs: Array<Maybe<Run>>;
   specStats: Maybe<SpecStats>;
+  testInsights: TestInsights;
 };
 
 export type QueryCiBuildsArgs = {
@@ -425,6 +444,12 @@ export type QueryRunsArgs = {
 export type QuerySpecStatsArgs = {
   filters?: InputMaybe<Array<InputMaybe<Filters>>>;
   spec: Scalars['String'];
+};
+
+export type QueryTestInsightsArgs = {
+  endDate?: InputMaybe<Scalars['DateTime']>;
+  filters?: InputMaybe<Array<InputMaybe<Filters>>>;
+  startDate?: InputMaybe<Scalars['DateTime']>;
 };
 
 export type ReporterStats = {
@@ -497,6 +522,7 @@ export type RunGroupProgressTests = {
 
 export type RunMeta = {
   __typename?: 'RunMeta';
+  buildEnvironment: Maybe<Scalars['String']>;
   ciBuildId: Scalars['String'];
   commit: Maybe<Commit>;
   projectId: Scalars['String'];
@@ -566,6 +592,16 @@ export type TestError = {
   message: Scalars['String'];
   name: Scalars['String'];
   stack: Scalars['String'];
+};
+
+export type TestInsights = {
+  __typename?: 'TestInsights';
+  failedTests: Array<FailedTestAggregate>;
+  flakyTests: Array<FlakyTestAggregate>;
+  numberOfFailedTests: Scalars['Int'];
+  numberOfFlakyTests: Scalars['Int'];
+  numberOfPassedTests: Scalars['Int'];
+  numberOfTotalRuns: Scalars['Int'];
 };
 
 export enum TestState {
@@ -696,6 +732,39 @@ export type GetCiBuildsQuery = {
   } | null>;
 };
 
+export type GetTestInsightsQueryVariables = Exact<{
+  filters: Array<Filters> | Filters;
+  startDate: InputMaybe<Scalars['DateTime']>;
+  endDate: InputMaybe<Scalars['DateTime']>;
+}>;
+
+export type GetTestInsightsQuery = {
+  __typename?: 'Query';
+  testInsights: {
+    __typename?: 'TestInsights';
+    numberOfTotalRuns: number;
+    numberOfPassedTests: number;
+    numberOfFailedTests: number;
+    numberOfFlakyTests: number;
+    flakyTests: Array<{
+      __typename?: 'FlakyTestAggregate';
+      spec: string;
+      firstFlakyRunIndex: number;
+      lastFlakyRunIndex: number;
+      firstFlakyRun: { __typename?: 'Run'; runId: string; createdAt: string };
+      lastFlakyRun: { __typename?: 'Run'; runId: string; createdAt: string };
+    }>;
+    failedTests: Array<{
+      __typename?: 'FailedTestAggregate';
+      spec: string;
+      firstFailedRunIndex: number;
+      lastFailedRunIndex: number;
+      firstFailedRun: { __typename?: 'Run'; runId: string; createdAt: string };
+      lastFailedRun: { __typename?: 'Run'; runId: string; createdAt: string };
+    }>;
+  };
+};
+
 export type GetInstanceQueryVariables = Exact<{
   instanceId: Scalars['ID'];
 }>;
@@ -711,7 +780,11 @@ export type GetInstanceQuery = {
     run: {
       __typename?: 'Run';
       runId: string;
-      meta: { __typename?: 'RunMeta'; ciBuildId: string };
+      meta: {
+        __typename?: 'RunMeta';
+        ciBuildId: string;
+        buildEnvironment: string | null;
+      };
     };
     results: {
       __typename?: 'InstanceResults';
@@ -1546,6 +1619,99 @@ export type GetCiBuildsQueryResult = Apollo.QueryResult<
   GetCiBuildsQuery,
   GetCiBuildsQueryVariables
 >;
+export const GetTestInsightsDocument = gql`
+  query GetTestInsights(
+    $filters: [Filters!]!
+    $startDate: DateTime
+    $endDate: DateTime
+  ) {
+    testInsights(filters: $filters, startDate: $startDate, endDate: $endDate) {
+      numberOfTotalRuns
+      numberOfPassedTests
+      numberOfFailedTests
+      numberOfFlakyTests
+      flakyTests {
+        spec
+        firstFlakyRun {
+          runId
+          createdAt
+        }
+        firstFlakyRunIndex
+        lastFlakyRun {
+          runId
+          createdAt
+        }
+        lastFlakyRunIndex
+      }
+      failedTests {
+        spec
+        firstFailedRun {
+          runId
+          createdAt
+        }
+        firstFailedRunIndex
+        lastFailedRun {
+          runId
+          createdAt
+        }
+        lastFailedRunIndex
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetTestInsightsQuery__
+ *
+ * To run a query within a React component, call `useGetTestInsightsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTestInsightsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTestInsightsQuery({
+ *   variables: {
+ *      filters: // value for 'filters'
+ *      startDate: // value for 'startDate'
+ *      endDate: // value for 'endDate'
+ *   },
+ * });
+ */
+export function useGetTestInsightsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetTestInsightsQuery,
+    GetTestInsightsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetTestInsightsQuery, GetTestInsightsQueryVariables>(
+    GetTestInsightsDocument,
+    options
+  );
+}
+export function useGetTestInsightsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetTestInsightsQuery,
+    GetTestInsightsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetTestInsightsQuery,
+    GetTestInsightsQueryVariables
+  >(GetTestInsightsDocument, options);
+}
+export type GetTestInsightsQueryHookResult = ReturnType<
+  typeof useGetTestInsightsQuery
+>;
+export type GetTestInsightsLazyQueryHookResult = ReturnType<
+  typeof useGetTestInsightsLazyQuery
+>;
+export type GetTestInsightsQueryResult = Apollo.QueryResult<
+  GetTestInsightsQuery,
+  GetTestInsightsQueryVariables
+>;
 export const GetInstanceDocument = gql`
   query getInstance($instanceId: ID!) {
     instance(id: $instanceId) {
@@ -1557,6 +1723,7 @@ export const GetInstanceDocument = gql`
         runId
         meta {
           ciBuildId
+          buildEnvironment
         }
       }
       results {

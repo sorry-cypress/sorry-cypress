@@ -161,4 +161,95 @@ export class RunsAPI extends DataSource {
       runIds: runIds,
     };
   }
+  async getRunsWithFiltersAndDate({
+    orderDirection,
+    filters,
+    startDate,
+    endDate,
+  }: {
+    orderDirection: OrderingOptions;
+    filters: AggregationFilter[];
+    startDate?: Date;
+    endDate?: Date;
+  }) {
+    const dateMatch =
+      startDate && endDate
+        ? {
+            createdAt: {
+              $gte: startDate.toISOString(),
+              $lte: endDate.toISOString(),
+            },
+          }
+        : undefined;
+
+    const aggregationPipeline = [
+      ...filtersToAggregations(filters, dateMatch),
+      getSortByAggregation(orderDirection),
+    ].filter(negate(isNil));
+
+    getLogger().log({ aggregationPipeline }, 'Getting all runs...');
+
+    try {
+      const results = (await Collection.run()
+        .aggregate(aggregationPipeline)
+        .toArray()) as Run[];
+      return results;
+    } catch (error) {
+      getLogger().error({ error }, 'Error while getting all runs...');
+      throw error;
+    }
+  }
+
+  aggregateTestCounts = (runs: Run[]): any => {
+    let numberOfPassedTests = 0;
+    let numberOfFailedTests = 0;
+    let numberOfFlakyTests = 0;
+    const flakyTestsMap = new Map<string, FlakyTestAggregate>();
+    const failedTestsMap = new Map<string, FailedTestAggregate>();
+
+    runs.forEach((run, runIndex) => {
+      run.progress?.groups.forEach((group) => {
+        numberOfPassedTests += group.tests.passes;
+        numberOfFailedTests += group.tests.failures;
+        numberOfFlakyTests += group.tests.flaky;
+
+        if (group.tests.flaky > 0) {
+          run.specs.forEach((spec) => {
+            const flakyTest = flakyTestsMap.get(spec.spec) || {
+              spec: spec.spec,
+              firstFlakyRun: run,
+              firstFlakyRunIndex: runIndex,
+              lastFlakyRun: run,
+            };
+            flakyTest.lastFlakyRun = run;
+            flakyTest.lastFlakyRunIndex = runIndex;
+            flakyTestsMap.set(spec.spec, flakyTest);
+          });
+        }
+        if (group.tests.failures > 0) {
+          run.specs.forEach((spec) => {
+            if (spec.results && spec.results.stats.failures > 0) {
+              const failedTest = failedTestsMap.get(spec.spec) || {
+                spec: spec.spec,
+                firstFailedRun: run,
+                firstFailedRunIndex: runIndex,
+                lastFailedRun: run,
+              };
+              failedTest.lastFailedRun = run;
+              failedTest.lastFailedRunIndex = runIndex;
+              failedTestsMap.set(spec.spec, failedTest);
+            }
+          });
+        }
+      });
+    });
+
+    return {
+      numberOfPassedTests,
+      numberOfFailedTests,
+      numberOfFlakyTests,
+      flakyTests: [...flakyTestsMap.values()],
+      failedTests: [...failedTestsMap.values()],
+    };
+  };
 }
