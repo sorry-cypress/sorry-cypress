@@ -1,0 +1,38 @@
+query GetTestInsights(
+  $filters: [Filters!]!
+  $startDate: DateTime
+  $endDate: DateTime
+) {
+  testInsights(filters: $filters, startDate: $startDate, endDate: $endDate) {
+    numberOfTotalRuns
+    numberOfPassedTests
+    numberOfFailedTests
+    numberOfFlakyTests
+    flakyTests {
+      spec
+      firstFlakyRun {
+        runId
+        createdAt
+      }
+      firstFlakyRunIndex
+      lastFlakyRun {
+        runId
+        createdAt
+      }
+      lastFlakyRunIndex
+    }
+    failedTests {
+      spec
+      firstFailedRun {
+        runId
+        createdAt
+      }
+      firstFailedRunIndex
+      lastFailedRun {
+        runId
+        createdAt
+      }
+      lastFailedRunIndex
+    }
+  }
+}

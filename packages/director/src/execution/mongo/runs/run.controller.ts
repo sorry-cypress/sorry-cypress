@@ -50,6 +50,7 @@ import {
   setSpecClaimed,
   setSpecCompleted,
 } from './run.model';
+
 export const getById = getRunById;
 
 export const createRun: ExecutionDriver['createRun'] = async (params) => {
@@ -97,6 +98,7 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
         projectId: params.projectId,
         platform: params.platform,
         ci: params.ci,
+        buildEnvironment: params.buildEnvironment,
       },
       progress: {
         updatedAt: new Date(),

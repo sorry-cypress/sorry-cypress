@@ -124,10 +124,28 @@ export type DeleteRunResponse = {
   success: Scalars['Boolean'];
 };
 
+export type FailedTestAggregate = {
+  __typename?: 'FailedTestAggregate';
+  firstFailedRun: Run;
+  firstFailedRunIndex: Scalars['Int'];
+  lastFailedRun: Run;
+  lastFailedRunIndex: Scalars['Int'];
+  spec: Scalars['String'];
+};
+
 export type Filters = {
   key?: InputMaybe<Scalars['String']>;
   like?: InputMaybe<Scalars['String']>;
   value?: InputMaybe<Scalars['String']>;
+};
+
+export type FlakyTestAggregate = {
+  __typename?: 'FlakyTestAggregate';
+  firstFlakyRun: Run;
+  firstFlakyRunIndex: Scalars['Int'];
+  lastFlakyRun: Run;
+  lastFlakyRunIndex: Scalars['Int'];
+  spec: Scalars['String'];
 };
 
 export type GChatHook = {
@@ -394,6 +412,7 @@ export type Query = {
   runFeed: RunFeed;
   runs: Array<Maybe<Run>>;
   specStats?: Maybe<SpecStats>;
+  testInsights: TestInsights;
 };
 
 export type QueryCiBuildsArgs = {
@@ -431,6 +450,12 @@ export type QueryRunsArgs = {
 export type QuerySpecStatsArgs = {
   filters?: InputMaybe<Array<InputMaybe<Filters>>>;
   spec: Scalars['String'];
+};
+
+export type QueryTestInsightsArgs = {
+  endDate?: InputMaybe<Scalars['DateTime']>;
+  filters?: InputMaybe<Array<InputMaybe<Filters>>>;
+  startDate?: InputMaybe<Scalars['DateTime']>;
 };
 
 export type ReporterStats = {
@@ -503,6 +528,7 @@ export type RunGroupProgressTests = {
 
 export type RunMeta = {
   __typename?: 'RunMeta';
+  buildEnvironment?: Maybe<Scalars['String']>;
   ciBuildId: Scalars['String'];
   commit?: Maybe<Commit>;
   projectId: Scalars['String'];
@@ -572,6 +598,16 @@ export type TestError = {
   message: Scalars['String'];
   name: Scalars['String'];
   stack: Scalars['String'];
+};
+
+export type TestInsights = {
+  __typename?: 'TestInsights';
+  failedTests: Array<FailedTestAggregate>;
+  flakyTests: Array<FlakyTestAggregate>;
+  numberOfFailedTests: Scalars['Int'];
+  numberOfFlakyTests: Scalars['Int'];
+  numberOfPassedTests: Scalars['Int'];
+  numberOfTotalRuns: Scalars['Int'];
 };
 
 export enum TestState {
@@ -764,7 +800,9 @@ export type ResolversTypes = {
   DeleteHookResponse: ResolverTypeWrapper<DeleteHookResponse>;
   DeleteProjectResponse: ResolverTypeWrapper<DeleteProjectResponse>;
   DeleteRunResponse: ResolverTypeWrapper<DeleteRunResponse>;
+  FailedTestAggregate: ResolverTypeWrapper<FailedTestAggregate>;
   Filters: Filters;
+  FlakyTestAggregate: ResolverTypeWrapper<FlakyTestAggregate>;
   GChatHook: ResolverTypeWrapper<GChatHook>;
   GChatHookType: ResolverTypeWrapper<Scalars['GChatHookType']>;
   GenericHook: ResolverTypeWrapper<GenericHook>;
@@ -806,6 +844,7 @@ export type ResolversTypes = {
   TeamsHookType: ResolverTypeWrapper<Scalars['TeamsHookType']>;
   TestAttempt: ResolverTypeWrapper<TestAttempt>;
   TestError: ResolverTypeWrapper<TestError>;
+  TestInsights: ResolverTypeWrapper<TestInsights>;
   TestState: TestState;
   UpdateBitbucketHookInput: UpdateBitbucketHookInput;
   UpdateGChatHookInput: UpdateGChatHookInput;
@@ -836,7 +875,9 @@ export type ResolversParentTypes = {
   DeleteHookResponse: DeleteHookResponse;
   DeleteProjectResponse: DeleteProjectResponse;
   DeleteRunResponse: DeleteRunResponse;
+  FailedTestAggregate: FailedTestAggregate;
   Filters: Filters;
+  FlakyTestAggregate: FlakyTestAggregate;
   GChatHook: GChatHook;
   GChatHookType: Scalars['GChatHookType'];
   GenericHook: GenericHook;
@@ -877,6 +918,7 @@ export type ResolversParentTypes = {
   TeamsHookType: Scalars['TeamsHookType'];
   TestAttempt: TestAttempt;
   TestError: TestError;
+  TestInsights: TestInsights;
   UpdateBitbucketHookInput: UpdateBitbucketHookInput;
   UpdateGChatHookInput: UpdateGChatHookInput;
   UpdateGenericHookInput: UpdateGenericHookInput;
@@ -1013,6 +1055,34 @@ export type DeleteRunResponseResolvers<
     ContextType
   >;
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type FailedTestAggregateResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['FailedTestAggregate'] = ResolversParentTypes['FailedTestAggregate']
+> = {
+  firstFailedRun?: Resolver<ResolversTypes['Run'], ParentType, ContextType>;
+  firstFailedRunIndex?: Resolver<
+    ResolversTypes['Int'],
+    ParentType,
+    ContextType
+  >;
+  lastFailedRun?: Resolver<ResolversTypes['Run'], ParentType, ContextType>;
+  lastFailedRunIndex?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  spec?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type FlakyTestAggregateResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['FlakyTestAggregate'] = ResolversParentTypes['FlakyTestAggregate']
+> = {
+  firstFlakyRun?: Resolver<ResolversTypes['Run'], ParentType, ContextType>;
+  firstFlakyRunIndex?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  lastFlakyRun?: Resolver<ResolversTypes['Run'], ParentType, ContextType>;
+  lastFlakyRunIndex?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  spec?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1493,6 +1563,12 @@ export type QueryResolvers<
     ContextType,
     RequireFields<QuerySpecStatsArgs, 'filters' | 'spec'>
   >;
+  testInsights?: Resolver<
+    ResolversTypes['TestInsights'],
+    ParentType,
+    ContextType,
+    RequireFields<QueryTestInsightsArgs, 'endDate' | 'filters' | 'startDate'>
+  >;
 };
 
 export type ReporterStatsResolvers<
@@ -1611,6 +1687,11 @@ export type RunMetaResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['RunMeta'] = ResolversParentTypes['RunMeta']
 > = {
+  buildEnvironment?: Resolver<
+    Maybe<ResolversTypes['String']>,
+    ParentType,
+    ContextType
+  >;
   ciBuildId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   commit?: Resolver<Maybe<ResolversTypes['Commit']>, ParentType, ContextType>;
   projectId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -1774,6 +1855,35 @@ export type TestErrorResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type TestInsightsResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['TestInsights'] = ResolversParentTypes['TestInsights']
+> = {
+  failedTests?: Resolver<
+    Array<ResolversTypes['FailedTestAggregate']>,
+    ParentType,
+    ContextType
+  >;
+  flakyTests?: Resolver<
+    Array<ResolversTypes['FlakyTestAggregate']>,
+    ParentType,
+    ContextType
+  >;
+  numberOfFailedTests?: Resolver<
+    ResolversTypes['Int'],
+    ParentType,
+    ContextType
+  >;
+  numberOfFlakyTests?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  numberOfPassedTests?: Resolver<
+    ResolversTypes['Int'],
+    ParentType,
+    ContextType
+  >;
+  numberOfTotalRuns?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = any> = {
   BitbucketHook?: BitbucketHookResolvers<ContextType>;
   BitbucketHookType?: GraphQLScalarType;
@@ -1784,6 +1894,8 @@ export type Resolvers<ContextType = any> = {
   DeleteHookResponse?: DeleteHookResponseResolvers<ContextType>;
   DeleteProjectResponse?: DeleteProjectResponseResolvers<ContextType>;
   DeleteRunResponse?: DeleteRunResponseResolvers<ContextType>;
+  FailedTestAggregate?: FailedTestAggregateResolvers<ContextType>;
+  FlakyTestAggregate?: FlakyTestAggregateResolvers<ContextType>;
   GChatHook?: GChatHookResolvers<ContextType>;
   GChatHookType?: GraphQLScalarType;
   GenericHook?: GenericHookResolvers<ContextType>;
@@ -1819,4 +1931,5 @@ export type Resolvers<ContextType = any> = {
   TeamsHookType?: GraphQLScalarType;
   TestAttempt?: TestAttemptResolvers<ContextType>;
   TestError?: TestErrorResolvers<ContextType>;
+  TestInsights?: TestInsightsResolvers<ContextType>;
 };

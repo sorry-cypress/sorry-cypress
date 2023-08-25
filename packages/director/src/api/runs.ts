@@ -23,6 +23,7 @@ export const handleCreateRun: RequestHandler<
   CreateRunParameters
 > = async (req, res) => {
   const cypressVersion = req.headers['x-cypress-version']?.toString();
+  const buildEnvironment = process.env.BUILD_ENV || 'dev';
   const executionDriver = await getExecutionDriver();
 
   getLogger().log(
@@ -33,6 +34,7 @@ export const handleCreateRun: RequestHandler<
   const response = await executionDriver.createRun({
     ...req.body,
     cypressVersion,
+    buildEnvironment,
   });
 
   getLogger().log(response, `Responding to machine`);

@@ -11,6 +11,7 @@ export enum NavItemType {
   test,
   ciBuilds,
   projects,
+  insights,
 }
 interface NavItem {
   label?: string | null;
