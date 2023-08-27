@@ -224,6 +224,7 @@ export class RunsAPI extends DataSource {
               firstFlakyRun: run,
               firstFlakyRunIndex: runIndex,
               lastFlakyRun: run,
+              lastFlakyRunIndex: runIndex,
             };
             flakyTest.lastFlakyRun = run;
             flakyTest.lastFlakyRunIndex = runIndex;
@@ -238,6 +239,7 @@ export class RunsAPI extends DataSource {
                 firstFailedRun: run,
                 firstFailedRunIndex: runIndex,
                 lastFailedRun: run,
+                lastFailedRunIndex: runIndex,
               };
               failedTest.lastFailedRun = run;
               failedTest.lastFailedRunIndex = runIndex;
