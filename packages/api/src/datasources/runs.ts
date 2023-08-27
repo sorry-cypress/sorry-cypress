@@ -2,7 +2,11 @@ import {
   CI_BUILD_BATCH_SIZE,
   PAGE_ITEMS_LIMIT,
 } from '@sorry-cypress/api/config';
-import { OrderingOptions } from '@sorry-cypress/api/generated/graphql';
+import {
+  FailedTestAggregate,
+  FlakyTestAggregate,
+  OrderingOptions,
+} from '@sorry-cypress/api/generated/graphql';
 import {
   AggregationFilter,
   filtersToAggregations,
