@@ -2,7 +2,11 @@ import {
   CI_BUILD_BATCH_SIZE,
   PAGE_ITEMS_LIMIT,
 } from '@sorry-cypress/api/config';
-import { OrderingOptions } from '@sorry-cypress/api/generated/graphql';
+import {
+  FailedTestAggregate,
+  FlakyTestAggregate,
+  OrderingOptions,
+} from '@sorry-cypress/api/generated/graphql';
 import {
   AggregationFilter,
   filtersToAggregations,
@@ -220,6 +224,7 @@ export class RunsAPI extends DataSource {
               firstFlakyRun: run,
               firstFlakyRunIndex: runIndex,
               lastFlakyRun: run,
+              lastFlakyRunIndex: runIndex,
             };
             flakyTest.lastFlakyRun = run;
             flakyTest.lastFlakyRunIndex = runIndex;
@@ -234,6 +239,7 @@ export class RunsAPI extends DataSource {
                 firstFailedRun: run,
                 firstFailedRunIndex: runIndex,
                 lastFailedRun: run,
+                lastFailedRunIndex: runIndex,
               };
               failedTest.lastFailedRun = run;
               failedTest.lastFailedRunIndex = runIndex;
