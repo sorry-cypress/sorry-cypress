@@ -1,5 +1,5 @@
 import { Link, Stack, Typography } from '@mui/material';
-import { DataGrid, GridRowsProp } from '@mui/x-data-grid';
+import { DataGrid, GridRenderCellParams, GridRowsProp } from '@mui/x-data-grid';
 import { Paper } from '@sorry-cypress/dashboard/components/';
 import { FailedTestAggregate } from '@sorry-cypress/dashboard/generated/graphql';
 import { differenceInDays } from 'date-fns';
@@ -40,7 +40,7 @@ export const FailedInsightDetails: FailedInsightDetailsComponent = (props) => {
             field: 'firstFailedRun',
             headerName: 'First Failed Run',
             flex: 1,
-            renderCell: (params) => (
+            renderCell: (params: GridRenderCellParams<any, any, any>) => (
               <DateAndTestRunsAgo
                 runDate={params.row.firstFailedRun.firstFailedRun.createdAt}
                 numberOfTotalRuns={numberOfTotalRuns}
@@ -53,7 +53,7 @@ export const FailedInsightDetails: FailedInsightDetailsComponent = (props) => {
             field: 'lastFailedRun',
             headerName: 'Last Failed Run',
             flex: 1,
-            renderCell: (params) => (
+            renderCell: (params: GridRenderCellParams<any, any, any>) => (
               <DateAndTestRunsAgo
                 runDate={params.row.lastFailedRun.lastFailedRun.createdAt}
                 numberOfTotalRuns={numberOfTotalRuns}
