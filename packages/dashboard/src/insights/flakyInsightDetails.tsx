@@ -1,5 +1,5 @@
 import { Link, Stack, Typography } from '@mui/material';
-import { DataGrid, GridRowsProp } from '@mui/x-data-grid';
+import { DataGrid, GridRenderCellParams, GridRowsProp } from '@mui/x-data-grid';
 import { Paper } from '@sorry-cypress/dashboard/components/';
 import { FlakyTestAggregate } from '@sorry-cypress/dashboard/generated/graphql';
 import { differenceInDays } from 'date-fns';
@@ -42,7 +42,7 @@ export const FlakyInsightDetails: FlakyInsightDetailsComponent = (props) => {
             field: 'firstFlakyRun',
             headerName: 'First Flaky Run',
             flex: 1,
-            renderCell: (params) => (
+            renderCell: (params: GridRenderCellParams<any, any, any>) => (
               <DateAndTestRunsAgo
                 runDate={params.row.firstFlakyRun.firstFlakyRun.createdAt}
                 numberOfTotalRuns={numberOfTotalRuns}
@@ -55,7 +55,7 @@ export const FlakyInsightDetails: FlakyInsightDetailsComponent = (props) => {
             field: 'lastFlakyRun',
             headerName: 'Last Flaky Run',
             flex: 1,
-            renderCell: (params) => (
+            renderCell: (params: GridRenderCellParams<any, any, any>) => (
               <DateAndTestRunsAgo
                 runDate={params.row.lastFlakyRun.lastFlakyRun.createdAt}
                 numberOfTotalRuns={numberOfTotalRuns}
