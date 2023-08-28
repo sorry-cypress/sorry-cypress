@@ -59,8 +59,8 @@ export const FlakyInsightDetails: FlakyInsightDetailsComponent = (props) => {
               <DateAndTestRunsAgo
                 runDate={params.row.lastFlakyRun.lastFlakyRun.createdAt}
                 numberOfTotalRuns={numberOfTotalRuns}
-                runIndex={params.row.firstFlakyRun.lastFailedRunIndex}
-                runId={params.row.firstFlakyRun.lastFailedRun.runId}
+                runIndex={params.row.firstFlakyRun.lastFlakyRunIndex}
+                runId={params.row.firstFlakyRun.lastFlakyRun.runId}
               />
             ),
           },
