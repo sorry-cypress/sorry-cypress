@@ -28,6 +28,6 @@
   "dependencies": {
     "@sorry-cypress/common": "1.0.0",
     "date-fns": "^2.21.3",
-    "mongodb": "^3.6.5"
+    "mongodb": "^3.6.10"
   }
 }
