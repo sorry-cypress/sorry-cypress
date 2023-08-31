@@ -43,19 +43,6 @@ export function capitalizeFirstLetter(string: string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-export function convertTestsToRows(
-  tests: FailedTestAggregate[] | FlakyTestAggregate[]
-): GridRowsProp {
-  return tests.map((test) => {
-    return {
-      instanceId: stringHash(test.spec).toString(),
-      specName: test.spec,
-      firstFailedRun: test ? test : 'N/A',
-      lastFailedRun: test ? test : 'N/A',
-    };
-  });
-}
-
 export function getNumberOfDaysAgo(runDate: string) {
   const daysAgo = differenceInDays(new Date(), new Date(runDate || 0)) + 1;
   return `${daysAgo} days ago`;
@@ -67,4 +54,40 @@ export function getNumberOfTestRunsAgo(
 ) {
   const testRunsAgo = numberOfTotalRuns - runIndex;
   return `${testRunsAgo} test runs ago`;
+}
+
+export function convertTestsToRows(
+  tests: FailedTestAggregate[] | FlakyTestAggregate[]
+): GridRowsProp {
+  if (tests[0].__typename === 'FailedTestAggregate') {
+    return convertFailedTestsToRows(tests as FailedTestAggregate[]);
+  } else {
+    return convertFlakyTestsToRows(tests as FlakyTestAggregate[]);
+  }
+}
+
+function convertFailedTestsToRows(
+  failedTests: FailedTestAggregate[]
+): GridRowsProp {
+  return failedTests.map((test: FailedTestAggregate) => {
+    return {
+      instanceId: stringHash(test.spec).toString(),
+      specName: test.spec,
+      firstFailedRun: test ? test : 'N/A',
+      lastFailedRun: test ? test : 'N/A',
+    };
+  });
+}
+
+function convertFlakyTestsToRows(
+  flakyTests: FlakyTestAggregate[]
+): GridRowsProp {
+  return flakyTests.map((test: FlakyTestAggregate) => {
+    return {
+      instanceId: stringHash(test.spec).toString(),
+      specName: test.spec,
+      firstFailedRun: test ? test : 'N/A',
+      lastFailedRun: test ? test : 'N/A',
+    };
+  });
 }
