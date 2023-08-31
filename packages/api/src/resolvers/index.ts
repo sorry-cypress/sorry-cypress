@@ -151,12 +151,9 @@ export const resolvers = {
         startDate,
         endDate,
       });
-
-      const numberOfTotalRuns = runs.length;
       const result = dataSources.runsAPI.aggregateTestCounts(runs);
 
       return {
-        numberOfTotalRuns,
         ...result,
       };
     },

@@ -5,7 +5,7 @@ import {
 } from '@sorry-cypress/dashboard/lib/navigation';
 import React, { FunctionComponent, useLayoutEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { InsightDetails } from './insightDetails';
+import { TestInsights } from './testInsights';
 
 export const InsightsView: InsightsViewComponent = () => {
   const { projectId } = useParams();
@@ -29,7 +29,7 @@ export const InsightsView: InsightsViewComponent = () => {
     ]);
   }, []);
 
-  return <InsightDetails projectId={projectId!} />;
+  return <TestInsights projectId={projectId!} />;
 };
 
 type InsightsViewProps = {

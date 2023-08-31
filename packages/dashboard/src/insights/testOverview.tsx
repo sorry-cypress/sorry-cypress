@@ -4,7 +4,7 @@ import React, { FunctionComponent } from 'react';
 export const TestOverview: TestOverviewComponent = (props) => {
   const {
     totalFlakyTestsCount,
-    totalPassedTestsCount,
+    totalPassedRunsCount,
     totalFailedTestsCount,
     overallFlakinessPercentage,
     overallFailurePercentage,
@@ -69,6 +69,23 @@ export const TestOverview: TestOverviewComponent = (props) => {
           <CardContent>
             <Typography
               sx={{ fontSize: 18, fontWeight: '500' }}
+              color="green"
+              gutterBottom
+            >
+              Passed runs
+            </Typography>
+            <Typography variant="h4" color="text.secondary">
+              {totalPassedRunsCount}
+            </Typography>
+          </CardContent>
+        </Card>
+      </Grid>
+
+      <Grid item textAlign={'center'}>
+        <Card sx={{ minWidth: 230, borderRadius: '5px' }}>
+          <CardContent>
+            <Typography
+              sx={{ fontSize: 18, fontWeight: '500' }}
               color="burlywood"
               gutterBottom
             >
@@ -97,30 +114,13 @@ export const TestOverview: TestOverviewComponent = (props) => {
           </CardContent>
         </Card>
       </Grid>
-
-      <Grid item textAlign={'center'}>
-        <Card sx={{ minWidth: 230, borderRadius: '5px' }}>
-          <CardContent>
-            <Typography
-              sx={{ fontSize: 18, fontWeight: '500' }}
-              color="green"
-              gutterBottom
-            >
-              Passed tests
-            </Typography>
-            <Typography variant="h4" color="text.secondary">
-              {totalPassedTestsCount}
-            </Typography>
-          </CardContent>
-        </Card>
-      </Grid>
     </Grid>
   );
 };
 
 type TestOverviewProps = {
   totalFlakyTestsCount: string | number;
-  totalPassedTestsCount: string | number;
+  totalPassedRunsCount: string | number;
   totalFailedTestsCount: string | number;
   overallFlakinessPercentage: string | number;
   overallFailurePercentage: string | number;

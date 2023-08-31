@@ -135,6 +135,7 @@ export type Filters = {
 
 export type FlakyTestAggregate = {
   __typename?: 'FlakyTestAggregate';
+  consistentPasses: Scalars['Int'];
   firstFlakyRun: Run;
   firstFlakyRunIndex: Scalars['Int'];
   lastFlakyRun: Run;
@@ -600,7 +601,8 @@ export type TestInsights = {
   flakyTests: Array<FlakyTestAggregate>;
   numberOfFailedTests: Scalars['Int'];
   numberOfFlakyTests: Scalars['Int'];
-  numberOfPassedTests: Scalars['Int'];
+  numberOfPassedRuns: Scalars['Int'];
+  numberOfTests: Scalars['Int'];
   numberOfTotalRuns: Scalars['Int'];
 };
 
@@ -743,7 +745,8 @@ export type GetTestInsightsQuery = {
   testInsights: {
     __typename?: 'TestInsights';
     numberOfTotalRuns: number;
-    numberOfPassedTests: number;
+    numberOfPassedRuns: number;
+    numberOfTests: number;
     numberOfFailedTests: number;
     numberOfFlakyTests: number;
     flakyTests: Array<{
@@ -1627,7 +1630,8 @@ export const GetTestInsightsDocument = gql`
   ) {
     testInsights(filters: $filters, startDate: $startDate, endDate: $endDate) {
       numberOfTotalRuns
-      numberOfPassedTests
+      numberOfPassedRuns
+      numberOfTests
       numberOfFailedTests
       numberOfFlakyTests
       flakyTests {
