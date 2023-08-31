@@ -141,6 +141,7 @@ export type Filters = {
 
 export type FlakyTestAggregate = {
   __typename?: 'FlakyTestAggregate';
+  consistentPasses: Scalars['Int'];
   firstFlakyRun: Run;
   firstFlakyRunIndex: Scalars['Int'];
   lastFlakyRun: Run;
@@ -606,7 +607,8 @@ export type TestInsights = {
   flakyTests: Array<FlakyTestAggregate>;
   numberOfFailedTests: Scalars['Int'];
   numberOfFlakyTests: Scalars['Int'];
-  numberOfPassedTests: Scalars['Int'];
+  numberOfPassedRuns: Scalars['Int'];
+  numberOfTests: Scalars['Int'];
   numberOfTotalRuns: Scalars['Int'];
 };
 
@@ -1078,6 +1080,7 @@ export type FlakyTestAggregateResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['FlakyTestAggregate'] = ResolversParentTypes['FlakyTestAggregate']
 > = {
+  consistentPasses?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   firstFlakyRun?: Resolver<ResolversTypes['Run'], ParentType, ContextType>;
   firstFlakyRunIndex?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   lastFlakyRun?: Resolver<ResolversTypes['Run'], ParentType, ContextType>;
@@ -1875,11 +1878,8 @@ export type TestInsightsResolvers<
     ContextType
   >;
   numberOfFlakyTests?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  numberOfPassedTests?: Resolver<
-    ResolversTypes['Int'],
-    ParentType,
-    ContextType
-  >;
+  numberOfPassedRuns?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  numberOfTests?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   numberOfTotalRuns?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

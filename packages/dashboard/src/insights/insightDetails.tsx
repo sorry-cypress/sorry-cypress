@@ -1,154 +1,104 @@
-import { Box, Typography } from '@mui/material';
-import React, { FunctionComponent, useMemo, useState } from 'react';
+import { DataGrid, GridRenderCellParams } from '@mui/x-data-grid';
+import { Paper } from '@sorry-cypress/dashboard/components/';
 import {
   FailedTestAggregate,
   FlakyTestAggregate,
-  useGetTestInsightsQuery,
-} from '../generated/graphql';
-import { FailedInsightDetails } from './failedInsightDetails';
-import { FlakyInsightDetails } from './flakyInsightDetails';
-import { InsightsMenu } from './insightsMenu';
-import { TestOverview } from './testOverview';
-import { buildFilters, getDateRange } from './utils';
+} from '@sorry-cypress/dashboard/generated/graphql';
+import React, { FunctionComponent, useMemo } from 'react';
+import { DateAndTestRunsAgo } from './dateAndTestRunsAgo';
+import { capitalizeFirstLetter, convertTestsToRows } from './utils';
 
 export const InsightDetails: InsightDetailsComponent = (props) => {
-  const { projectId } = props;
-  const [selectedEnvironment, setSelectedEnvironment] = useState<string>('');
-  const [selectedDateRange, setSelectedDateRange] = useState<string>('');
+  const { tests, testType, numberOfTotalRuns } = props;
 
-  const filters = buildFilters(projectId, selectedEnvironment);
-
-  const dateRangeVariables = useMemo(() => {
-    if (selectedDateRange) {
-      return getDateRange(selectedDateRange);
-    }
+  if (!tests) {
     return null;
-  }, [selectedDateRange]);
-
-  const variables: any = { filters: filters };
-
-  if (dateRangeVariables) {
-    variables.startDate = dateRangeVariables.startDate;
-    variables.endDate = dateRangeVariables.endDate;
   }
 
-  const { data, loading, error } = useGetTestInsightsQuery({
-    variables,
-  });
-
-  const totalFlakyTestsCount = data?.testInsights.numberOfFlakyTests || 0;
-  const totalPassedTestsCount = data?.testInsights.numberOfPassedTests || 0;
-  const totalFailedTestsCount = data?.testInsights.numberOfFailedTests || 0;
-  const numberOfTotalRuns = data?.testInsights.numberOfTotalRuns || 0;
-
-  const overallFlakinessPercentage =
-    totalFlakyTestsCount > 0
-      ? ((totalFlakyTestsCount / totalPassedTestsCount) * 100).toFixed(2)
-      : 0;
-
-  const overallFailurePercentage =
-    totalFailedTestsCount > 0
-      ? ((totalFailedTestsCount / totalPassedTestsCount) * 100).toFixed(2)
-      : 0;
-
-  const flakyTests = data?.testInsights.flakyTests;
-  const failedTests = data?.testInsights.failedTests;
+  const rows = useMemo(() => {
+    return convertTestsToRows(tests);
+  }, [tests]);
 
   return (
-    <Box
-      m={6}
-      mt={2}
-      display="flex"
-      flexDirection="column"
-      justifyContent="space-between"
-    >
-      <InsightsMenu
-        selectedEnvironment={selectedEnvironment}
-        setSelectedEnvironment={setSelectedEnvironment}
-        selectedDateRange={selectedDateRange}
-        setSelectedDateRange={setSelectedDateRange}
+    <Paper sx={{ p: 0 }}>
+      <DataGrid
+        style={{ border: 0 }}
+        autoHeight
+        hideFooter={rows.length <= 5}
+        getRowId={(row) => row.instanceId}
+        initialState={{
+          pagination: { pageSize: 5 },
+        }}
+        rows={rows}
+        loading={false}
+        columns={[
+          {
+            field: 'specName',
+            headerName: 'Spec Name',
+            flex: 1,
+          },
+          {
+            field: `${
+              testType === 'flaky' ? 'firstFlakyRun' : 'firstFailedRun'
+            }`,
+            headerName: `First ${capitalizeFirstLetter(testType)} Run`,
+            flex: 1,
+            renderCell: (params: GridRenderCellParams<any, any, any>) => {
+              const runKey =
+                testType === 'flaky' ? 'firstFlakyRun' : 'firstFailedRun';
+              const runIndexKey =
+                testType === 'flaky'
+                  ? 'firstFlakyRunIndex'
+                  : 'firstFailedRunIndex';
+              const { [runKey]: runData } = params.row;
+              const { createdAt, runId } = runData;
+              const runIndex = params.row[runIndexKey];
+
+              return (
+                <DateAndTestRunsAgo
+                  runDate={createdAt}
+                  numberOfTotalRuns={numberOfTotalRuns}
+                  runIndex={runIndex}
+                  runId={runId}
+                />
+              );
+            },
+          },
+          {
+            field: `${testType === 'flaky' ? 'lastFlakyRun' : 'lastFailedRun'}`,
+            headerName: `Last ${capitalizeFirstLetter(testType)} Run`,
+            flex: 1,
+            renderCell: (params: GridRenderCellParams<any, any, any>) => {
+              const runKey =
+                testType === 'flaky' ? 'lastFlakyRun' : 'lastFailedRun';
+              const runIndexKey =
+                testType === 'flaky'
+                  ? 'lastFlakyRunIndex'
+                  : 'lastFailedRunIndex';
+              const { [runKey]: runData } = params.row;
+              const { createdAt, runId } = runData;
+              const runIndex = params.row[runIndexKey];
+
+              return (
+                <DateAndTestRunsAgo
+                  runDate={createdAt}
+                  numberOfTotalRuns={numberOfTotalRuns}
+                  runIndex={runIndex}
+                  runId={runId}
+                />
+              );
+            },
+          },
+        ]}
       />
-      <TestOverview
-        totalFlakyTestsCount={totalFlakyTestsCount}
-        totalPassedTestsCount={totalPassedTestsCount}
-        totalFailedTestsCount={totalFailedTestsCount}
-        overallFlakinessPercentage={overallFlakinessPercentage}
-        overallFailurePercentage={overallFailurePercentage}
-      />
-
-      {totalFailedTestsCount > 0 && (
-        <>
-          <Box
-            sx={{ backgroundColor: '#fff' }}
-            height={50}
-            display="flex"
-            justifyContent="flex-start"
-            alignItems="center"
-            mt={5}
-          >
-            <Typography
-              sx={{ fontSize: 18, fontWeight: '500' }}
-              ml={2}
-              color="text.secondary"
-            >
-              Failed Tests
-            </Typography>
-          </Box>
-          <FailedInsightDetails
-            failedTests={failedTests as FailedTestAggregate[]}
-            numberOfTotalRuns={numberOfTotalRuns}
-          />
-        </>
-      )}
-
-      {totalFlakyTestsCount > 0 && (
-        <>
-          <Box
-            sx={{ backgroundColor: '#fff' }}
-            height={50}
-            display="flex"
-            justifyContent="flex-start"
-            alignItems="center"
-            mt={5}
-          >
-            <Typography
-              sx={{ fontSize: 18, fontWeight: '500' }}
-              ml={2}
-              color="text.secondary"
-            >
-              Flaky Tests
-            </Typography>
-          </Box>
-          <FlakyInsightDetails
-            flakyTests={flakyTests as FlakyTestAggregate[]}
-            numberOfTotalRuns={numberOfTotalRuns}
-          />
-        </>
-      )}
-
-      {totalFlakyTestsCount === 0 && totalFailedTestsCount === 0 && (
-        <Box
-          sx={{ backgroundColor: '#fff' }}
-          height={80}
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          mt={5}
-        >
-          <Typography
-            sx={{ fontSize: 18, fontWeight: '500' }}
-            ml={2}
-            color="green"
-          >
-            Status: Healthy
-          </Typography>
-        </Box>
-      )}
-    </Box>
+    </Paper>
   );
 };
 
 type InsightDetailsProps = {
-  projectId: string;
+  tests: FailedTestAggregate[] | FlakyTestAggregate[];
+  testType: 'flaky' | 'failed';
+  numberOfTotalRuns: number;
 };
+
 type InsightDetailsComponent = FunctionComponent<InsightDetailsProps>;

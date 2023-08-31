@@ -205,18 +205,18 @@ export class RunsAPI extends DataSource {
   }
 
   aggregateTestCounts = (runs: Run[]): any => {
-    let numberOfPassedTests = 0;
-    let numberOfFailedTests = 0;
-    let numberOfFlakyTests = 0;
+    let numberOfPassedRuns = 0;
+    let numberOfTests = 0;
+    const numberOfTotalRuns = runs.length;
     const flakyTestsMap = new Map<string, FlakyTestAggregate>();
     const failedTestsMap = new Map<string, FailedTestAggregate>();
 
     runs.forEach((run, runIndex) => {
-      run.progress?.groups.forEach((group) => {
-        numberOfPassedTests += group.tests.passes;
-        numberOfFailedTests += group.tests.failures;
-        numberOfFlakyTests += group.tests.flaky;
+      let isRunPassed = true;
 
+      numberOfTests = run.progress?.groups[0].tests.overall;
+
+      run.progress?.groups.forEach((group) => {
         if (group.tests.flaky > 0) {
           run.specs.forEach((spec) => {
             const flakyTest = flakyTestsMap.get(spec.spec) || {
@@ -225,13 +225,26 @@ export class RunsAPI extends DataSource {
               firstFlakyRunIndex: runIndex,
               lastFlakyRun: run,
               lastFlakyRunIndex: runIndex,
+              consistentPasses: 0,
             };
             flakyTest.lastFlakyRun = run;
             flakyTest.lastFlakyRunIndex = runIndex;
-            flakyTestsMap.set(spec.spec, flakyTest);
+            (flakyTest.consistentPasses = 0),
+              flakyTestsMap.set(spec.spec, flakyTest);
+          });
+        } else {
+          run.specs.forEach((spec) => {
+            const flakyTest = flakyTestsMap.get(spec.spec);
+            if (flakyTest) {
+              flakyTest.consistentPasses += 1;
+              if (flakyTest.consistentPasses >= 5) {
+                flakyTestsMap.delete(spec.spec);
+              }
+            }
           });
         }
         if (group.tests.failures > 0) {
+          isRunPassed = false;
           run.specs.forEach((spec) => {
             if (spec.results && spec.results.stats.failures > 0) {
               const failedTest = failedTestsMap.get(spec.spec) || {
@@ -244,16 +257,24 @@ export class RunsAPI extends DataSource {
               failedTest.lastFailedRun = run;
               failedTest.lastFailedRunIndex = runIndex;
               failedTestsMap.set(spec.spec, failedTest);
+            } else {
+              failedTestsMap.delete(spec.spec);
             }
           });
         }
       });
+
+      if (isRunPassed) {
+        numberOfPassedRuns++;
+      }
     });
 
     return {
-      numberOfPassedTests,
-      numberOfFailedTests,
-      numberOfFlakyTests,
+      numberOfTotalRuns,
+      numberOfTests,
+      numberOfPassedRuns,
+      numberOfFailedTests: failedTestsMap.size,
+      numberOfFlakyTests: flakyTestsMap.size,
       flakyTests: [...flakyTestsMap.values()],
       failedTests: [...failedTestsMap.values()],
     };

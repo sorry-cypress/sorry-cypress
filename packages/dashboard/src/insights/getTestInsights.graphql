@@ -5,7 +5,8 @@ query GetTestInsights(
 ) {
   testInsights(filters: $filters, startDate: $startDate, endDate: $endDate) {
     numberOfTotalRuns
-    numberOfPassedTests
+    numberOfPassedRuns
+    numberOfTests
     numberOfFailedTests
     numberOfFlakyTests
     flakyTests {

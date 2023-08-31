@@ -286,7 +286,8 @@ input Filters {
 
 type TestInsights {
   numberOfTotalRuns: Int!
-  numberOfPassedTests: Int!
+  numberOfPassedRuns: Int!
+  numberOfTests: Int!
   numberOfFailedTests: Int!
   numberOfFlakyTests: Int!
   flakyTests: [FlakyTestAggregate!]!
@@ -299,6 +300,7 @@ type FlakyTestAggregate {
   firstFlakyRunIndex: Int!
   lastFlakyRun: Run!
   lastFlakyRunIndex: Int!
+  consistentPasses: Int!
 }
 
 type FailedTestAggregate {
