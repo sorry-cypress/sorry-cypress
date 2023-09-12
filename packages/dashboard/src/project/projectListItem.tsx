@@ -11,7 +11,7 @@ import {
   ListItemAvatar,
   ListItemText,
 } from '@mui/material';
-import { ArrayItemType } from '@sorry-cypress/common/ts';
+import { ArrayItemType, getRunTestsProgress } from '@sorry-cypress/common';
 import {
   TestFailureChip,
   TestFlakyChip,
@@ -20,7 +20,10 @@ import {
   TestSkippedChip,
   TestSuccessChip,
 } from '@sorry-cypress/dashboard/components';
-import { GetProjectsQuery } from '@sorry-cypress/dashboard/generated/graphql';
+import {
+  GetProjectsQuery,
+  RunProgress,
+} from '@sorry-cypress/dashboard/generated/graphql';
 import { useGetRunsFeed } from '@sorry-cypress/dashboard/run/runsFeed/useGetRunFeed';
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
@@ -45,11 +48,9 @@ export function useGetTestsFromProject(project: any) {
   // We get the last run
   const lastRun = runsFeed?.runs[0];
   if (lastRun === undefined) return null;
-  const progress = lastRun?.progress;
-  const groups = progress?.groups;
-  let tests;
-  if (groups !== undefined && groups.length > 0) tests = groups[0].tests;
-  return tests;
+  const groups = lastRun?.progress?.groups;
+  if (!groups) return null;
+  return getRunTestsProgress(lastRun?.progress as RunProgress);
 }
 
 /**
