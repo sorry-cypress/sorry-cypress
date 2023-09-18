@@ -4862,11 +4862,6 @@ acorn-walk@^7.1.1:
   resolved "https://registry.yarnpkg.com/acorn-walk/-/acorn-walk-7.2.0.tgz#0de889a601203909b0fbe07b8938dc21d2e967bc"
   integrity sha512-OPdCF6GsMIP+Az+aWfAAOEt2/+iVDKE7oy6lJ098aoe59oAmK76qV6Gw60SbZ8jHuG2wH058GF4pLFbYamYrVA==
 
-acorn-walk@^8.2.0:
-  version "8.2.0"
-  resolved "https://registry.yarnpkg.com/acorn-walk/-/acorn-walk-8.2.0.tgz#741210f2e2426454508853a2f44d0ab83b7f69c1"
-  integrity sha512-k+iyHEuPgSw6SbuDpGQM+06HQUa04DZ3o+F6CSzXMvvI5KMvnaEqXe+YVe555R9nn6GPt404fos4wcgpw12SDA==
-
 acorn@^7.1.1:
   version "7.4.1"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-7.4.1.tgz#feaed255973d2e77555b83dbc08851a6c63520fa"
@@ -5238,7 +5233,7 @@ asn1.js@^5.2.0:
     minimalistic-assert "^1.0.0"
     safer-buffer "^2.1.0"
 
-ast-types@^0.13.2:
+ast-types@^0.13.4:
   version "0.13.4"
   resolved "https://registry.yarnpkg.com/ast-types/-/ast-types-0.13.4.tgz#ee0d77b343263965ecc3fb62da16e7222b2b6782"
   integrity sha512-x1FCFnFifvYDDzTaLII71vG5uvDwgtmDTEVWAxrgeiR8VjMONcCXJx7E+USjDtHlwFmt9MysbqgF9b9Vjr6w+w==
@@ -6831,15 +6826,14 @@ define-properties@^1.1.3, define-properties@^1.1.4:
     has-property-descriptors "^1.0.0"
     object-keys "^1.1.1"
 
-degenerator@^3.0.2:
-  version "3.0.4"
-  resolved "https://registry.yarnpkg.com/degenerator/-/degenerator-3.0.4.tgz#07ccf95bc11044a37a6efc2f66029fb636e31f24"
-  integrity sha512-Z66uPeBfHZAHVmue3HPfyKu2Q0rC2cRxbTOsvmU/po5fvvcx27W4mIu9n0PUlQih4oUYvcG1BsbtVv8x7KDOSw==
+degenerator@^5.0.0:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/degenerator/-/degenerator-5.0.1.tgz#9403bf297c6dad9a1ece409b37db27954f91f2f5"
+  integrity sha512-TllpMR/t0M5sqCXfj85i4XaAzxmS5tVA16dqvdkMwGmzI+dXLXnw3J+3Vdv7VKw+ThlTMboK6i9rnZ6Nntj5CQ==
   dependencies:
-    ast-types "^0.13.2"
-    escodegen "^1.8.1"
-    esprima "^4.0.0"
-    vm2 "^3.9.17"
+    ast-types "^0.13.4"
+    escodegen "^2.1.0"
+    esprima "^4.0.1"
 
 del@^6.0.0:
   version "6.0.0"
@@ -7374,18 +7368,6 @@ escape-string-regexp@^4.0.0:
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-4.0.0.tgz#14ba83a5d373e3d311e5afca29cf5bfad965bf34"
   integrity sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==
 
-escodegen@^1.8.1:
-  version "1.14.3"
-  resolved "https://registry.yarnpkg.com/escodegen/-/escodegen-1.14.3.tgz#4e7b81fba61581dc97582ed78cab7f0e8d63f503"
-  integrity sha512-qFcX0XJkdg+PB3xjZZG/wKSuT1PnQWx57+TVSjIMmILd2yC/6ByYElPwJnslDsuWuSAp4AwJGumarAAmJch5Kw==
-  dependencies:
-    esprima "^4.0.1"
-    estraverse "^4.2.0"
-    esutils "^2.0.2"
-    optionator "^0.8.1"
-  optionalDependencies:
-    source-map "~0.6.1"
-
 escodegen@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/escodegen/-/escodegen-2.0.0.tgz#5e32b12833e8aa8fa35e1bf0befa89380484c7dd"
@@ -7395,6 +7377,17 @@ escodegen@^2.0.0:
     estraverse "^5.2.0"
     esutils "^2.0.2"
     optionator "^0.8.1"
+  optionalDependencies:
+    source-map "~0.6.1"
+
+escodegen@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/escodegen/-/escodegen-2.1.0.tgz#ba93bbb7a43986d29d6041f99f5262da773e2e17"
+  integrity sha512-2NlIDTwUWJN0mRPQOdtQBzbUHvdGY2P1VXSyU83Q3xKxM7WHX2Ql8dKq782Q9TgQUNOLEzEYu9bzLNj1q88I5w==
+  dependencies:
+    esprima "^4.0.1"
+    estraverse "^5.2.0"
+    esutils "^2.0.2"
   optionalDependencies:
     source-map "~0.6.1"
 
@@ -7556,7 +7549,7 @@ esrecurse@^4.3.0:
   dependencies:
     estraverse "^5.2.0"
 
-estraverse@^4.1.1, estraverse@^4.2.0:
+estraverse@^4.1.1:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/estraverse/-/estraverse-4.3.0.tgz#398ad3f3c5a24948be7725e83d11a7de28cdbd1d"
   integrity sha512-39nnKffWz8xN1BU/2c79n9nB9HDzo0niYUqx6xyqUnyoAnQyyWpOTdZEeiCch8BBu515t4wp9ZmgVfVhn9EBpw==
@@ -9014,6 +9007,11 @@ ip@^1.1.0, ip@^1.1.5:
   version "1.1.5"
   resolved "https://registry.yarnpkg.com/ip/-/ip-1.1.5.tgz#bdded70114290828c0a039e72ef25f5aaec4354a"
   integrity sha1-vd7XARQpCCjAoDnnLvJfWq7ENUo=
+
+ip@^1.1.8:
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/ip/-/ip-1.1.8.tgz#ae05948f6b075435ed3307acce04629da8cdbf48"
+  integrity sha512-PuExPYUiu6qMBQb4l06ecm6T6ujzhmh+MeJcW9wa89PoAz5pvd4zPgN5WJV104mb6S2T1AwNIAaB70JNrLQWhg==
 
 ipaddr.js@1.9.1, ipaddr.js@^1.9.1:
   version "1.9.1"
@@ -11557,13 +11555,13 @@ pac-proxy-agent@^4.1.0:
     raw-body "^2.2.0"
     socks-proxy-agent "5"
 
-pac-resolver@^4.1.0, pac-resolver@^5.0.0:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/pac-resolver/-/pac-resolver-5.0.1.tgz#c91efa3a9af9f669104fa2f51102839d01cde8e7"
-  integrity sha512-cy7u00ko2KVgBAjuhevqpPeHIkCIqPe1v24cydhWjmeuzaBfmUWFCZJ1iAh5TuVzVZoUzXIW7K8sMYOZ84uZ9Q==
+pac-resolver@^4.1.0, pac-resolver@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/pac-resolver/-/pac-resolver-7.0.0.tgz#79376f1ca26baf245b96b34c339d79bff25e900c"
+  integrity sha512-Fd9lT9vJbHYRACT8OhCbZBbxr6KRSawSovFpy8nDGshaK99S/EBhVIHp9+crhxrsZOuvLpgL1n23iyPg6Rl2hg==
   dependencies:
-    degenerator "^3.0.2"
-    ip "^1.1.5"
+    degenerator "^5.0.0"
+    ip "^1.1.8"
     netmask "^2.0.2"
 
 package-json@^6.3.0:
@@ -14437,14 +14435,6 @@ vizion@~2.2.1:
     git-node-fs "^1.0.0"
     ini "^1.3.5"
     js-git "^0.7.8"
-
-vm2@^3.9.17:
-  version "3.9.19"
-  resolved "https://registry.yarnpkg.com/vm2/-/vm2-3.9.19.tgz#be1e1d7a106122c6c492b4d51c2e8b93d3ed6a4a"
-  integrity sha512-J637XF0DHDMV57R6JyVsTak7nIL8gy5KH4r1HiwWLf/4GBbb5MKL5y7LpmF4A8E2nR6XmzpmMFQ7V7ppPTmUQg==
-  dependencies:
-    acorn "^8.7.0"
-    acorn-walk "^8.2.0"
 
 w3c-hr-time@^1.0.2:
   version "1.0.2"
