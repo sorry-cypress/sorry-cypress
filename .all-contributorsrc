@@ -442,6 +442,15 @@
         "infra",
         "doc"
       ]
+    },
+    {
+      "login": "samixchoumi",
+      "name": "samixchoumi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/22171928?v=4",
+      "profile": "https://github.com/samixchoumi",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
