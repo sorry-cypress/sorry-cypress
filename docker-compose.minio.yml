@@ -2,8 +2,6 @@ version: '3.6'
 
 # Replace each <mongo-user> with the desired username
 # Replace each <mongo-pass> with the desired password
-# Replace each <minio-ip-address> with the publicly available ip address or url without http(s)
-# Replace <graphql-ip-address> with the publicly available ip address or url without http(s)
 
 services:
   mongo:
@@ -27,8 +25,8 @@ services:
       GITLAB_JOB_RETRIES: 'false'
       MINIO_ACCESS_KEY: '<minio-user>'
       MINIO_SECRET_KEY: '<minio-pass>'
-      MINIO_ENDPOINT: '<minio-ip-address>'
-      MINIO_URL: 'http://<minio-ip-address>'
+      MINIO_ENDPOINT: 'localhost'
+      MINIO_URL: 'http://localhost'
       MINIO_PORT: '9000'
       MINIO_USESSL: 'false'
       MINIO_BUCKET: sorry-cypress
@@ -54,7 +52,7 @@ services:
   dashboard:
     image: agoldis/sorry-cypress-dashboard:latest
     environment:
-      GRAPHQL_SCHEMA_URL: http://<graphql-ip-address>:4000
+      GRAPHQL_SCHEMA_URL: http://localhost:4000
       GRAPHQL_CLIENT_CREDENTIALS: ''
       PORT: 8080
       CI_URL: ''
