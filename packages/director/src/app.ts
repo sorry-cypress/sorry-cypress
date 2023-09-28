@@ -4,6 +4,7 @@ import express from 'express';
 import expressPino from 'express-pino-logger';
 import {
   createInstance,
+  createInstances,
   setInstanceTests,
   updateInstanceResults,
 } from './api/instances';
@@ -44,6 +45,11 @@ router.post('/runs', blockKeys, catchRequestHandlerErrors(handleCreateRun));
 router.post(
   '/runs/:runId/instances',
   catchRequestHandlerErrors(createInstance)
+);
+
+router.post(
+  '/runs/:runId/cy/instances',
+  catchRequestHandlerErrors(createInstances)
 );
 
 /**

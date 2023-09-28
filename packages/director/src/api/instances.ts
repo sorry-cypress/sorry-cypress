@@ -20,6 +20,42 @@ import {
 import { getLogger } from '@sorry-cypress/logger';
 import { RequestHandler } from 'express';
 
+export const createInstances: RequestHandler = async (req, res) => {
+  const { groupId, machineId, batchSize } = req.body;
+  const { runId } = req.params;
+  const cypressVersion = req.headers['x-cypress-version']?.toString() ?? '';
+
+  getLogger().log(
+    { groupId, machineId, runId, batchSize, cypressVersion },
+    `Machine is requesting a batch of tasks`
+  );
+
+  try {
+    const promises = new Array(batchSize)
+      .fill(undefined)
+      .map(() => makeInstance(groupId, machineId, runId, cypressVersion));
+
+    const instances = await Promise.all(promises);
+
+    const specs = instances
+      .map(({ spec, instanceId }) => ({ spec, instanceId }))
+      // in case there are less remaining specs than batchSize:
+      .filter(({ spec }) => spec);
+
+    return res.json({
+      specs,
+      claimedInstances: 1,
+      totalInstances: 1,
+    });
+  } catch (error) {
+    getLogger().error({ error }, 'Error while creating instance...');
+    if (error.code && error.code === RUN_NOT_EXIST) {
+      return res.sendStatus(404);
+    }
+    throw error;
+  }
+};
+
 export const createInstance: RequestHandler = async (req, res) => {
   const { groupId, machineId } = req.body;
   const { runId } = req.params;
