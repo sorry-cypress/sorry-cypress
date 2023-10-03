@@ -11,8 +11,13 @@ import {
   ListItemAvatar,
   ListItemText,
 } from '@mui/material';
-import { ArrayItemType, getRunTestsProgress } from '@sorry-cypress/common';
 import {
+  ArrayItemType,
+  getRunTestsProgress,
+  isRunCompleted,
+} from '@sorry-cypress/common';
+import {
+  Chip,
   TestFailureChip,
   TestFlakyChip,
   TestOverallChip,
@@ -24,6 +29,10 @@ import {
   GetProjectsQuery,
   RunProgress,
 } from '@sorry-cypress/dashboard/generated/graphql';
+import {
+  useBackgroundColorOnProjectListItem,
+  useShowTestsAreRunningOnProjectListItem,
+} from '@sorry-cypress/dashboard/hooks';
 import { useGetRunsFeed } from '@sorry-cypress/dashboard/run/runsFeed/useGetRunFeed';
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
@@ -45,37 +54,103 @@ export function useGetTestsFromProject(project: any) {
     projectId,
     search,
   });
+  const [
+    shouldShowTestsAreRunningOnProjectListItem,
+  ] = useShowTestsAreRunningOnProjectListItem();
   // We get the last run
   const lastRun = runsFeed?.runs[0];
   if (lastRun === undefined) return null;
   const groups = lastRun?.progress?.groups;
   if (!groups) return null;
+  // We show only run finished
+  if (!shouldShowTestsAreRunningOnProjectListItem)
+    if (!isRunCompleted(lastRun?.progress as RunProgress)) return null;
   return getRunTestsProgress(lastRun?.progress as RunProgress);
 }
 
 /**
- * Get background color for the project component regarding the status of the test execution.
+ * Method to show a little Chip component that tests are actually running if activated.
  * @param project the wanted project.
+ * @return the Chip if true. Otherwise, null.
+ */
+export function showTestsAreRunning(project: any) {
+  const [
+    shouldShowTestsAreRunningOnProjectListItem,
+  ] = useShowTestsAreRunningOnProjectListItem();
+  const projectId = project.projectId;
+  const search = '';
+  const [runsFeed] = useGetRunsFeed({
+    projectId,
+    search,
+  });
+  // We get the last run
+  const lastRun = runsFeed?.runs[0];
+  if (lastRun === undefined) return null;
+  const groups = lastRun?.progress?.groups;
+  if (!groups) return null;
+  if (
+    !isRunCompleted(lastRun?.progress as RunProgress) &&
+    shouldShowTestsAreRunningOnProjectListItem
+  ) {
+    return <Chip label="Tests are running" color="cyan" />;
+  } else {
+    return null;
+  }
+}
+
+/**
+ * We add border only if we use background color properties.
+ * So we return only 1 if it's used, otherwise we return null.
+ */
+function useBorder() {
+  const [
+    shouldUseBackgroundColorOnProjectListItem,
+  ] = useBackgroundColorOnProjectListItem();
+  if (!shouldUseBackgroundColorOnProjectListItem) return null;
+  else return 1;
+}
+
+/**
+ * Get color for the project component regarding the status of the test execution.
+ * @param project the wanted project.
+ * @param isBackgroundColor if it's the background color or the border color wanted to use.
  * @return the wanted value (4 cases : empty project, failing project, flaky project, successful project)
  */
-function useGetBackgroundColorRegardingTestStatus(
+function useColorRegardingTestStatus(
   project: ArrayItemType<
     Array<{
       __typename?: 'Project';
       projectId: string;
       projectColor: string | null;
     }>
-  >
+  >,
+  isBackgroundColor: boolean
 ) {
+  const [
+    shouldUseBackgroundColorOnProjectListItem,
+  ] = useBackgroundColorOnProjectListItem();
+  if (!shouldUseBackgroundColorOnProjectListItem) return null;
   const tests = useGetTestsFromProject(project);
   // No test executed (empty project)
-  if (tests?.overall === undefined || tests?.overall === 0) return '#E7FFFD';
+  if (
+    (tests?.overall === undefined || tests?.overall === 0) &&
+    isBackgroundColor
+  )
+    return '#dcf1fa';
+  if (
+    (tests?.overall === undefined || tests?.overall === 0) &&
+    !isBackgroundColor
+  )
+    return '#0aabf0';
   // At least 1 test failed
-  else if (tests?.failures) return '#FFC0C8';
+  else if (tests?.failures && isBackgroundColor) return '#fae8ea';
+  if (tests?.failures && !isBackgroundColor) return '#f01616';
   // No fail but at least 1 test flaky
-  else if (tests?.flaky) return '#FADAF0';
+  else if (tests?.flaky && isBackgroundColor) return '#f1e3fa';
+  if (tests?.flaky && !isBackgroundColor) return '#9e16f0';
   // All tests worked
-  else return '#E0FEE7';
+  else if (isBackgroundColor) return '#e3f5e1';
+  if (!isBackgroundColor) return '#1a913a';
 }
 
 export function ProjectListItem({ project }: ProjectListItemProps) {
@@ -98,9 +173,10 @@ export function ProjectListItem({ project }: ProjectListItemProps) {
         <CardActionArea>
           <CardContent
             sx={{
-              backgroundColor: useGetBackgroundColorRegardingTestStatus(
-                project
-              ),
+              backgroundColor: useColorRegardingTestStatus(project, true),
+              border: useBorder(),
+              borderRadius: useBorder(),
+              borderColor: useColorRegardingTestStatus(project, false),
             }}
           >
             <ListItem>
@@ -120,6 +196,7 @@ export function ProjectListItem({ project }: ProjectListItemProps) {
                   style: { wordBreak: 'break-word' },
                 }}
               />
+              {showTestsAreRunning(project)}
             </ListItem>
             <LastTestRunData project={project} />
           </CardContent>
