@@ -58,11 +58,20 @@ export function useGetTestsFromProject(project: any) {
     shouldShowTestsAreRunningOnProjectListItem,
   ] = useShowTestsAreRunningOnProjectListItem();
   // We get the last run
+  if (!runsFeed) return null;
   const lastRun = runsFeed?.runs[0];
   if (lastRun === undefined) return null;
   const groups = lastRun?.progress?.groups;
   if (!groups) return null;
   // We show only run finished
+  if (!shouldShowTestsAreRunningOnProjectListItem) {
+    if (runsFeed.runs.length > 1) {
+      for (const run of runsFeed.runs) {
+        if (isRunCompleted(run?.progress as RunProgress))
+          return getRunTestsProgress(run?.progress as RunProgress);
+      }
+    }
+  }
   if (!shouldShowTestsAreRunningOnProjectListItem)
     if (!isRunCompleted(lastRun?.progress as RunProgress)) return null;
   return getRunTestsProgress(lastRun?.progress as RunProgress);
