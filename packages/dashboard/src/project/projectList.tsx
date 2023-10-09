@@ -1,10 +1,21 @@
 import { Fade, Grid, Skeleton } from '@mui/material';
-import { Paper } from '@sorry-cypress/dashboard/components';
+import {
+  Paper,
+  TestFailureChip,
+  TestFlakyChip,
+  TestOverallChip,
+  TestPendingChip,
+  TestSkippedChip,
+  TestSuccessChip,
+} from '@sorry-cypress/dashboard/components';
 import {
   Filters,
   useGetProjectsQuery,
 } from '@sorry-cypress/dashboard/generated/graphql';
-import { ProjectListItem } from '@sorry-cypress/dashboard/project/projectListItem';
+import {
+  ProjectListItem,
+  useGetTestsFromProject,
+} from '@sorry-cypress/dashboard/project/projectListItem';
 import React from 'react';
 import { TransitionGroup } from 'react-transition-group';
 import NoProjects from './noProjects';
@@ -48,11 +59,11 @@ const ProjectsList = ({ search }: ProjectsListProps) => {
   }
   if (!data || error) {
     return (
-      <Paper>{(error && error.toString()) || 'Oops an error occurred'}</Paper>
+      <Paper>{(error && String(error)) || 'Oops an error occurred'}</Paper>
     );
   }
 
-  const { projects } = data;
+  const projects = data?.projects || [];
 
   if (projects.length === 0) {
     if (search) {
@@ -67,32 +78,83 @@ const ProjectsList = ({ search }: ProjectsListProps) => {
   }
 
   return (
-    <Grid
-      component={TransitionGroup}
-      container
-      rowSpacing={2}
-      columnSpacing={4}
-      columns={{ xs: 1, sm: 8, md: 12, lg: 24, xl: 24 }}
-    >
-      {projects.map((project) => (
-        <Grid
-          component={Fade}
-          item
-          key={project.projectId}
-          xs={1}
-          sm={4}
-          md={6}
-          lg={8}
-          xl={6}
-          timeout={500}
-        >
-          <div>
-            <ProjectListItem project={project} reloadProjects={refetch} />
-          </div>
-        </Grid>
-      ))}
+    <Grid>
+      <SummaryComponent projects={projects} />
+      <Grid
+        component={TransitionGroup}
+        container
+        rowSpacing={2}
+        columnSpacing={4}
+        columns={{ xs: 1, sm: 8, md: 12, lg: 24, xl: 24 }}
+      >
+        {projects.map((project) => (
+          <Grid
+            component={Fade}
+            item
+            key={project.projectId}
+            xs={1}
+            sm={4}
+            md={6}
+            lg={8}
+            xl={6}
+            timeout={500}
+          >
+            <div>
+              <ProjectListItem project={project} reloadProjects={refetch} />
+            </div>
+          </Grid>
+        ))}
+      </Grid>
     </Grid>
   );
 };
 
 export default ProjectsList;
+
+const SummaryComponent: React.FC<{ projects: Array<any> }> = ({ projects }) => {
+  const aggregatedStats = projects.reduce(
+    (acc, project) => {
+      const tests = useGetTestsFromProject(project);
+      acc.tests += tests?.overall ?? 0;
+      acc.passes += tests?.passes ?? 0;
+      acc.failures += tests?.failures ?? 0;
+      acc.flaky += tests?.flaky ?? 0;
+      acc.skipped += tests?.skipped ?? 0;
+      acc.pending += tests?.pending ?? 0;
+      return acc;
+    },
+    {
+      tests: 0,
+      passes: 0,
+      failures: 0,
+      flaky: 0,
+      skipped: 0,
+      pending: 0,
+    }
+  );
+  return (
+    <Paper>
+      <Grid container>
+        <Grid>Total tests :</Grid>
+        <Grid item>
+          <TestOverallChip value={aggregatedStats.tests} />
+        </Grid>
+        <Grid item>
+          <TestSuccessChip value={aggregatedStats.passes} />
+        </Grid>
+        <Grid item>
+          <TestFailureChip value={aggregatedStats.failures} />
+        </Grid>
+        <Grid item>
+          <TestFlakyChip value={aggregatedStats.flaky} />
+        </Grid>
+        <Grid item>
+          <TestSkippedChip value={aggregatedStats.skipped} />
+        </Grid>
+        <Grid item>
+          <TestPendingChip value={aggregatedStats.pending} />
+        </Grid>
+      </Grid>
+    </Paper>
+  );
+};
