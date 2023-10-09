@@ -5,13 +5,26 @@ import {
   Card,
   CardActionArea,
   CardContent,
+  Grid,
   Link,
   ListItem,
   ListItemAvatar,
   ListItemText,
 } from '@mui/material';
-import { ArrayItemType } from '@sorry-cypress/common/ts';
-import { GetProjectsQuery } from '@sorry-cypress/dashboard/generated/graphql';
+import { ArrayItemType, getRunTestsProgress } from '@sorry-cypress/common';
+import {
+  TestFailureChip,
+  TestFlakyChip,
+  TestOverallChip,
+  TestPendingChip,
+  TestSkippedChip,
+  TestSuccessChip,
+} from '@sorry-cypress/dashboard/components';
+import {
+  GetProjectsQuery,
+  RunProgress,
+} from '@sorry-cypress/dashboard/generated/graphql';
+import { useGetRunsFeed } from '@sorry-cypress/dashboard/run/runsFeed/useGetRunFeed';
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -20,7 +33,56 @@ type ProjectListItemProps = {
   reloadProjects: () => void;
 };
 
+/**
+ * Get tests information data from a given project.
+ * @param project the wanted project.
+ * @return the dataset of all tests status.
+ */
+export function useGetTestsFromProject(project: any) {
+  const projectId = project.projectId;
+  const search = '';
+  const [runsFeed] = useGetRunsFeed({
+    projectId,
+    search,
+  });
+  // We get the last run
+  const lastRun = runsFeed?.runs[0];
+  if (lastRun === undefined) return null;
+  const groups = lastRun?.progress?.groups;
+  if (!groups) return null;
+  return getRunTestsProgress(lastRun?.progress as RunProgress);
+}
+
+/**
+ * Get background color for the project component regarding the status of the test execution.
+ * @param project the wanted project.
+ * @return the wanted value (4 cases : empty project, failing project, flaky project, successful project)
+ */
+function useGetBackgroundColorRegardingTestStatus(
+  project: ArrayItemType<
+    Array<{
+      __typename?: 'Project';
+      projectId: string;
+      projectColor: string | null;
+    }>
+  >
+) {
+  const tests = useGetTestsFromProject(project);
+  // No test executed (empty project)
+  if (tests?.overall === undefined || tests?.overall === 0) return '#E7FFFD';
+  // At least 1 test failed
+  else if (tests?.failures) return '#FFC0C8';
+  // No fail but at least 1 test flaky
+  else if (tests?.flaky) return '#FADAF0';
+  // All tests worked
+  else return '#E0FEE7';
+}
+
 export function ProjectListItem({ project }: ProjectListItemProps) {
+  // To fix a bug about project created directly from an execution instead of the dashboard
+  let defaultProjectNameColor;
+  if (project.projectColor === '') defaultProjectNameColor = '#3486E3';
+  else defaultProjectNameColor = project.projectColor ?? '#3486E3';
   return (
     <Link
       component={RouterLink}
@@ -34,18 +96,21 @@ export function ProjectListItem({ project }: ProjectListItemProps) {
         }}
       >
         <CardActionArea>
-          <CardContent>
+          <CardContent
+            sx={{
+              backgroundColor: useGetBackgroundColorRegardingTestStatus(
+                project
+              ),
+            }}
+          >
             <ListItem>
               <ListItemAvatar>
                 <Avatar
                   sx={{
-                    backgroundColor: alpha(
-                      project.projectColor || '#3486E3',
-                      0.1
-                    ),
+                    backgroundColor: alpha(defaultProjectNameColor, 0.1),
                   }}
                 >
-                  <Book sx={{ color: project.projectColor || '#3486E3' }} />
+                  <Book sx={{ color: defaultProjectNameColor }} />
                 </Avatar>
               </ListItemAvatar>
               <ListItemText
@@ -56,9 +121,41 @@ export function ProjectListItem({ project }: ProjectListItemProps) {
                 }}
               />
             </ListItem>
+            <LastTestRunData project={project} />
           </CardContent>
         </CardActionArea>
       </Card>
     </Link>
   );
 }
+
+// New component to show the latest run data for a project
+const LastTestRunData: React.FC<{ project: any }> = ({ project }) => {
+  if (project === undefined) {
+    return null;
+  } else {
+    const tests = useGetTestsFromProject(project);
+    return (
+      <Grid container>
+        <Grid item>
+          <TestOverallChip value={tests?.overall ?? 0} />
+        </Grid>
+        <Grid item>
+          <TestSuccessChip value={tests?.passes ?? 0} />
+        </Grid>
+        <Grid item>
+          <TestFailureChip value={tests?.failures ?? 0} />
+        </Grid>
+        <Grid item>
+          <TestFlakyChip value={tests?.flaky ?? 0} />
+        </Grid>
+        <Grid item>
+          <TestSkippedChip value={tests?.skipped ?? 0} />
+        </Grid>
+        <Grid item>
+          <TestPendingChip value={tests?.pending ?? 0} />
+        </Grid>
+      </Grid>
+    );
+  }
+};

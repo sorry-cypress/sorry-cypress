@@ -22,8 +22,6 @@
 
 **[Currents.dev](https://currents.dev/?utm_source=github_readme)** - is an enhanced version of Sorry Cypress. It is a managed cloud service that hundreds of companies around the globe use to run **millions** of Cypress tests without breaking the bank. It offers a better security, performance, analytics, integrations and support.
 
-
-
 ## Table of contents
 
 - [Features](#features)
@@ -40,6 +38,7 @@
 - run cypress tests in parallel with no limitations
 - upload screenshots and videos to your own storage
 - browse test results, screenshots and video recordings
+- see all your projects test results in one page
 - self-hosted - use your own infrastructure, own your data
 - integrate with GitHub, Slack or anything else via webhooks
 - works on popular cloud platforms and your data center:
@@ -156,6 +155,8 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/nmengual"><img src="https://avatars.githubusercontent.com/u/1969394?v=4?s=100" width="100px;" alt="Nicolás"/><br /><sub><b>Nicolás</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=nmengual" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://pavlospt.com"><img src="https://avatars.githubusercontent.com/u/1070871?v=4?s=100" width="100px;" alt="Pavlos-Petros Tournaris"/><br /><sub><b>Pavlos-Petros Tournaris</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=pavlospt" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/mauriciovillalobos"><img src="https://avatars.githubusercontent.com/u/8905916?v=4?s=100" width="100px;" alt="Mauricio Villalobos"/><br /><sub><b>Mauricio Villalobos</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=mauriciovillalobos" title="Code">💻</a> <a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=mauriciovillalobos" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/crux-capacitor"><img src="https://avatars.githubusercontent.com/u/18069703?v=4?s=100" width="100px;" alt="crux-capacitor"/><br /><sub><b>crux-capacitor</b></sub></a><br /><a href="#infra-crux-capacitor" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=crux-capacitor" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/samixchoumi"><img src="https://avatars.githubusercontent.com/u/22171928?v=4?s=100" width="100px;" alt="samixchoumi"/><br /><sub><b>samixchoumi</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=samixchoumi" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
