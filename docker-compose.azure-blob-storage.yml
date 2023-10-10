@@ -9,7 +9,7 @@ services:
       - 27017:27017
 
   director:
-    image: agoldis/sorry-cypress-director:latest
+    image: ehoglid/sorry-cypress-director:latest
     hostname: director
     environment:
       DASHBOARD_URL: http://localhost:8080
@@ -31,7 +31,7 @@ services:
       - mongo
 
   api:
-    image: agoldis/sorry-cypress-api:latest
+    image: ehoglid/sorry-cypress-api:latest
     environment:
       MONGODB_URI: 'mongodb://mongo:27017'
       MONGODB_DATABASE: 'sorry-cypress'
@@ -42,7 +42,7 @@ services:
       - mongo
 
   dashboard:
-    image: agoldis/sorry-cypress-dashboard:latest
+    image: ehoglid/sorry-cypress-dashboard:latest
     environment:
       GRAPHQL_SCHEMA_URL: http://localhost:4000
       GRAPHQL_CLIENT_CREDENTIALS: ''

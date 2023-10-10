@@ -16,7 +16,7 @@ services:
     ports:
       - 27017:27017
   director:
-    image: agoldis/sorry-cypress-director:latest
+    image: ehoglid/sorry-cypress-director:latest
     environment:
       DASHBOARD_URL: http://localhost:8080
       EXECUTION_DRIVER: '../execution/mongo/driver'
@@ -42,7 +42,7 @@ services:
       - mongo
 
   api:
-    image: agoldis/sorry-cypress-api:latest
+    image: ehoglid/sorry-cypress-api:latest
     environment:
       MONGODB_URI: 'mongodb://<mongo-user>:<mongo-pass>@mongo:27017'
       MONGODB_DATABASE: 'sorry-cypress'
@@ -53,7 +53,7 @@ services:
       - mongo
 
   dashboard:
-    image: agoldis/sorry-cypress-dashboard:latest
+    image: ehoglid/sorry-cypress-dashboard:latest
     environment:
       GRAPHQL_SCHEMA_URL: http://<graphql-ip-address>:4000
       GRAPHQL_CLIENT_CREDENTIALS: ''

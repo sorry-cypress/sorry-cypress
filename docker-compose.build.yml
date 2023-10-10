@@ -9,7 +9,7 @@ services:
       dockerfile: packages/director/Dockerfile
       context: .
 
-    image: agoldis/sorry-cypress-director:${VERSION:-latest}
+    image: ehoglid/sorry-cypress-director:${VERSION:-latest}
     environment:
       DASHBOARD_URL: http://localhost:8080
       MONGODB_URI: 'mongodb://mongo:27017'
@@ -31,7 +31,7 @@ services:
     build:
       dockerfile: packages/api/Dockerfile
       context: .
-    image: agoldis/sorry-cypress-api:${VERSION:-latest}
+    image: ehoglid/sorry-cypress-api:${VERSION:-latest}
     environment:
       MONGODB_URI: 'mongodb://mongo:27017'
       MONGODB_DATABASE: 'sorry-cypress'
@@ -45,7 +45,7 @@ services:
     build:
       dockerfile: packages/dashboard/Dockerfile
       context: .
-    image: agoldis/sorry-cypress-dashboard:${VERSION:-latest}
+    image: ehoglid/sorry-cypress-dashboard:${VERSION:-latest}
     environment:
       GRAPHQL_SCHEMA_URL: http://localhost:4000
       GRAPHQL_CLIENT_CREDENTIALS: ''
