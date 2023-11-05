@@ -7,6 +7,7 @@ import {
   MINIO_PORT,
   MINIO_READ_URL_PREFIX,
   MINIO_SECRET_KEY,
+  MINIO_UPLOAD_URL_PREFIX,
   MINIO_URL,
   MINIO_USESSL,
   UPLOAD_EXPIRY_SECONDS,
@@ -42,6 +43,16 @@ export const getUploadUrl = async ({
         if (error) {
           return reject(error);
         }
+        
+        if (MINIO_UPLOAD_URL_PREFIX) {
+          // Minio is proxied and the internal minio api endpoint is not accessible externally
+          // replace the http://minio:9000/{bucket}/{key}?{parameters}
+          // with ${MINIO_UPLOAD_URL_PREFIX}/{key}?{parameters}
+          const parts = uploadUrl.split(`/${key}`)
+          parts[0] = MINIO_UPLOAD_URL_PREFIX;
+          uploadUrl = parts.join(`/${key}`)
+        }
+        
         return resolve({
           readUrl: `${MINIO_READ_URL_PREFIX || BUCKET_URL}/${key}`,
           uploadUrl,
