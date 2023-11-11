@@ -43,16 +43,11 @@ export const getUploadUrl = async ({
         if (error) {
           return reject(error);
         }
-        
+
         if (MINIO_UPLOAD_URL_PREFIX) {
-          // Minio is proxied and the internal minio api endpoint is not accessible externally
-          // replace the http://minio:9000/{bucket}/{key}?{parameters}
-          // with {MINIO_UPLOAD_URL_PREFIX}/{key}?{parameters}
-          const parts = uploadUrl.split(`/${key}`)
-          parts[0] = MINIO_UPLOAD_URL_PREFIX;
-          uploadUrl = parts.join(`/${key}`)
+          uploadUrl = replacePrefix(uploadUrl, MINIO_UPLOAD_URL_PREFIX, key);
         }
-        
+
         return resolve({
           readUrl: `${MINIO_READ_URL_PREFIX || BUCKET_URL}/${key}`,
           uploadUrl,
@@ -60,6 +55,16 @@ export const getUploadUrl = async ({
       }
     );
   });
+};
+
+const replacePrefix = (uploadUrl, prefix, key) => {
+  // Minio is proxied and the internal minio api endpoint is not accessible externally
+  // replace the http://minio:9000/{bucket}/{key}?{parameters}
+  // with {MINIO_UPLOAD_URL_PREFIX}/{key}?{parameters}
+
+  const afterProtocol = uploadUrl.split('//').slice(1).join('//');
+  const afterKey = afterProtocol.split(`/${key}`).slice(1).join(`/${key}`);
+  return `${prefix}/${key}${afterKey}`;
 };
 
 export const getImageUploadUrl = async (
