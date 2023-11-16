@@ -1,7 +1,7 @@
 import { getSanitizedMongoObject } from '../results';
 import fixture280 from './fixtures/issue-280.json';
 import fixture31 from './fixtures/issue-31.json';
-import fixtureXX from './fixtures/issue-XX.json';
+import fixtureXX from './fixtures/issue-881.json';
 
 describe('getSanitizedMongoObject', () => {
   test('should pass regression issue #280', () => {
