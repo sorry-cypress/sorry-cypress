@@ -1,6 +1,7 @@
 import { getSanitizedMongoObject } from '../results';
 import fixture280 from './fixtures/issue-280.json';
 import fixture31 from './fixtures/issue-31.json';
+import fixtureXX from './fixtures/issue-XX.json';
 
 describe('getSanitizedMongoObject', () => {
   test('should pass regression issue #280', () => {
@@ -15,6 +16,12 @@ describe('getSanitizedMongoObject', () => {
     const result = getSanitizedMongoObject(fixture31);
     expect(result['dot_dot'].value).toEqual('dot.dot');
     expect(result['_schema'].value).toEqual('$schema');
+  });
+
+  test('should remove multiple occurrences of illegal characters', () => {
+    const result = getSanitizedMongoObject(fixtureXX);
+    expect(result['dot_dot_dot'].value).toEqual('dot.dot.dot');
+    expect(result['_schema_schema'].value).toEqual('$schema$schema');
   });
 
   test('should preserve arrays', () => {

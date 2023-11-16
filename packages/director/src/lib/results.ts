@@ -9,7 +9,7 @@ function sanitizeKey(_: string, value: any) {
   if (value && typeof value === 'object') {
     const replacement: Record<string, any> = {};
     for (const key in value) {
-      replacement[key.replace('$', '_').replace('.', '_')] = value[key];
+      replacement[key.replace(/\$/g, '_').replace(/\./g, '_')] = value[key];
     }
     return replacement;
   }
