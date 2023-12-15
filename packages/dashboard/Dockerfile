@@ -20,3 +20,4 @@ COPY --from=build /app/packages/dashboard/dist/views/index.ejs index.html
 ENV GRAPHQL_SCHEMA_URL "http://localhost:4000"
 ENV CI_URL ""
 ENV GRAPHQL_CLIENT_CREDENTIALS ""
+ENV RESET_DISABLED "false"
