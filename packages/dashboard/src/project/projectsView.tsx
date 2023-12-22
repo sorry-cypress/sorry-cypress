@@ -1,15 +1,34 @@
-import { Add as AddIcon, Loop as LoopIcon } from '@mui/icons-material';
+import {
+  Add as AddIcon,
+  InvertColors as ColorIcon,
+  InvertColorsOff as ColorOffIcon,
+  Loop as LoopIcon,
+  Sync as SyncIcon,
+  SyncDisabled as SyncDisabledIcon,
+} from '@mui/icons-material';
 import { Typography } from '@mui/material';
 import { Toolbar } from '@sorry-cypress/dashboard/components';
+import { useBackgroundColorOnProjectListItem } from '@sorry-cypress/dashboard/hooks/useBackgroundColorOnProjectListItem';
 import { NavItemType, setNav } from '@sorry-cypress/dashboard/lib/navigation';
 import ProjectsList from '@sorry-cypress/dashboard/project/projectList';
 import React, { useLayoutEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAutoRefresh } from '../hooks';
+import {
+  useAutoRefresh,
+  useShowTestsAreRunningOnProjectListItem,
+} from '../hooks';
 
 export function ProjectsView() {
   const [search, setSearch] = useState('');
   const navigate = useNavigate();
+  const [
+    shouldUseBackgroundColorOnProjectListItem,
+    setShouldUseBackgroundColorOnProjectListItem,
+  ] = useBackgroundColorOnProjectListItem();
+  const [
+    shouldUseShowTestsAreRunningOnProjectListItem,
+    setShouldUseShowTestsAreRunningOnProjectListItem,
+  ] = useShowTestsAreRunningOnProjectListItem();
   const [shouldAutoRefresh, setShouldAutoRefresh] = useAutoRefresh();
 
   useLayoutEffect(() => {
@@ -38,9 +57,39 @@ export function ProjectsView() {
             text: 'Auto Refresh',
             icon: LoopIcon,
             toggleButton: true,
-            selected: !!shouldAutoRefresh,
+            selected: shouldAutoRefresh,
             onClick: () => {
               setShouldAutoRefresh(!shouldAutoRefresh);
+              window.location.reload();
+            },
+          },
+          {
+            key: 'backgroundColor',
+            text: 'Use Project Background Color',
+            icon: shouldUseBackgroundColorOnProjectListItem
+              ? ColorIcon
+              : ColorOffIcon,
+            toggleButton: true,
+            selected: shouldUseBackgroundColorOnProjectListItem,
+            onClick: () => {
+              setShouldUseBackgroundColorOnProjectListItem(
+                !shouldUseBackgroundColorOnProjectListItem
+              );
+              window.location.reload();
+            },
+          },
+          {
+            key: 'showIfTestAreInProgress',
+            text: 'Show Tests In Progress',
+            icon: shouldUseShowTestsAreRunningOnProjectListItem
+              ? SyncIcon
+              : SyncDisabledIcon,
+            toggleButton: true,
+            selected: shouldUseShowTestsAreRunningOnProjectListItem,
+            onClick: () => {
+              setShouldUseShowTestsAreRunningOnProjectListItem(
+                !shouldUseShowTestsAreRunningOnProjectListItem
+              );
               window.location.reload();
             },
           },

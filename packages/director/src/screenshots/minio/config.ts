@@ -4,6 +4,7 @@ export const MINIO_ACCESS_KEY =
 export const MINIO_SECRET_KEY = process.env.MINIO_SECRET_KEY || 'defaultSecret';
 export const MINIO_ACL = process.env.MINIO_ACL || 'public-read';
 export const MINIO_READ_URL_PREFIX = process.env.MINIO_READ_URL_PREFIX || null;
+export const MINIO_UPLOAD_URL_PREFIX = process.env.MINIO_UPLOAD_URL_PREFIX || null;
 export const MINIO_ENDPOINT =
   process.env.MINIO_ENDPOINT || 'storage.yourdomain.com';
 export const MINIO_PORT = process.env.MINIO_PORT || '9000';
