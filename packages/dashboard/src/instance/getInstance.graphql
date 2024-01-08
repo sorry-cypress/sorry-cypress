@@ -27,7 +27,6 @@ query getInstance($instanceId: ID!) {
       }
       cypressConfig {
         video
-        videoUploadOnPasses
       }
       videoUrl
     }

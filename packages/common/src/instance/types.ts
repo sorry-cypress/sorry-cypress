@@ -46,7 +46,6 @@ export interface ReporterStats {
 
 export interface CypressConfig {
   video: boolean;
-  videoUploadOnPasses: boolean;
   [key: string]: any;
 }
 

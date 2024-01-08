@@ -29,7 +29,7 @@ export const getVideoUploadUrl = async (
   if (!result.cypressConfig?.video) {
     return null;
   }
-  if (!isInstanceFailed(result) && !result.cypressConfig.videoUploadOnPasses) {
+  if (!isInstanceFailed(result)) {
     return null;
   }
   return await minioGetVideoUploadUrl(instanceId);
