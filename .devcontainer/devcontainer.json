@@ -4,7 +4,14 @@
   "workspaceFolder": "/workspace",
   "service": "app",
   "forwardPorts": [1234, 8080, 4000, 9000],
-  "settings": {},
-  "extensions": [],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "mongodb.mongodb-vscode",
+        "esbenp.prettier-vscode"
+      ]
+    }
+  },
   "remoteUser": "vscode"
 }
