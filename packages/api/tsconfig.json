@@ -4,6 +4,7 @@
   "exclude": ["./src/**/__tests__/*", "node_modules", "dist"],
   "compilerOptions": {
     "outDir": "dist",
-    "typeRoots": ["./src/", "./node_modules/@types"]
+    "typeRoots": ["./src/", "./node_modules/@types"],
+    "types": ["jest"]
   }
 }
