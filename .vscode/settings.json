@@ -1,4 +1,5 @@
 {
+  "extensions.ignoreRecommendations": true,
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },

@@ -1,7 +1,11 @@
-ARG VARIANT="3.17"
-FROM mcr.microsoft.com/devcontainers/base:alpine-${VARIANT}
+ARG VARIANT="bullseye"
+FROM mcr.microsoft.com/devcontainers/base:${VARIANT}
 
-RUN apk update \
-  && apk add --no-cache nodejs npm
+# Install Node
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+  apt-get update && \
+  apt-get install -y nodejs && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/*
 
 RUN npm install -g corepack
