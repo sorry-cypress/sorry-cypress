@@ -18,14 +18,14 @@ router
   .use(
     PROBE_LOGGER === 'true'
       ? expressPino({
-        logger: getLogger(),
-      })
+          logger: getLogger(),
+        })
       : expressPino({
-        logger: getLogger(),
-        autoLogging: {
-          ignorePaths: ['/health-check-db', '/ping'],
-        },
-      })
+          logger: getLogger(),
+          autoLogging: {
+            ignorePaths: ['/health-check-db', '/ping'],
+          },
+        })
   )
   .use(
     express.json({
@@ -82,6 +82,20 @@ router.put('/instances/:instanceId/stdout', (req, res) => {
   return res.sendStatus(200);
 });
 
+/**
+ * Cypress 13.0.0+ added a delivery notification for artifacts.
+ * The corresponding PR is: https://github.com/cypress-io/cypress/pull/26421
+ * Currently, we just response with an 'OK'
+ */
+router.put('/instances/:instanceId/artifacts', (req, res) => {
+  const { instanceId } = req.params;
+  getLogger().log(
+    { instanceId },
+    `[not implemented] Received artifacts for instance`
+  );
+  return res.sendStatus(200);
+});
+
 router.get('/ping', (_, res) => {
   res.send(`${Date.now()}: sorry-cypress-director is live`);
 });
@@ -101,12 +115,18 @@ router.post(
   catchRequestHandlerErrors(async (req, res) => {
     const executionDriver = await getExecutionDriver();
     if (executionDriver.id !== 'in-memory')
-      return res.status(405).send('This is only available for in-memory db. Please use the dashboard to set your hooks.');
+      return res
+        .status(405)
+        .send(
+          'This is only available for in-memory db. Please use the dashboard to set your hooks.'
+        );
 
     const { projectId, hooks } = req.body;
     executionDriver.setHooks && executionDriver.setHooks(projectId, hooks);
     getLogger().log(`[hooks] Hooks set for project ${req.body.projectId}`);
-    return res.status(200).send(`Hooks set for project "${req.body.projectId}".`);
+    return res
+      .status(200)
+      .send(`Hooks set for project "${req.body.projectId}".`);
   })
 );
 
