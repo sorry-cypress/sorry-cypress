@@ -1,8 +1,11 @@
-# See here for image contents: https://github.com/microsoft/vscode-dev-containers/tree/v0.209.6/containers/alpine/.devcontainer/base.Dockerfile
-ARG VARIANT="3.15"
-FROM mcr.microsoft.com/vscode/devcontainers/base:0-alpine-${VARIANT}
+ARG VARIANT="bullseye"
+FROM mcr.microsoft.com/devcontainers/base:${VARIANT}
 
-RUN apk update \
-  && apk add --no-cache nodejs npm
+# Install Node
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+  apt-get update && \
+  apt-get install -y nodejs && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/*
 
 RUN npm install -g corepack
