@@ -11,26 +11,31 @@ services:
     image: minio/minio
     hostname: 'storage'
     environment:
-      MINIO_ACCESS_KEY: 'MW32h3gd6HvjBEgTRx'
-      MINIO_SECRET_KEY: 't6NgQWUcEyG2AzaDCVkN6sbWcvDCVkN6sGiZ7'
+      MINIO_ROOT_USER: $MINIO_ACCESS_KEY
+      MINIO_ROOT_PASSWORD: $MINIO_SECRET_KEY
+    env_file:
+      - .env
     volumes:
       - minio_data:/data
-    command: server /data
+    command: server --console-address ":9090" /data
     ports:
       - 9000:9000
+      - 9090:9090
 
   createbuckets:
     image: minio/mc
+    env_file:
+      - .env
     depends_on:
       - minio
     entrypoint: >
       /bin/sh -c "
       sleep 3;
-      /usr/bin/mc config host add myminio http://storage:9000 MW32h3gd6HvjBEgTRx t6NgQWUcEyG2AzaDCVkN6sbWcvDCVkN6sGiZ7;
+      /usr/bin/mc config host add myminio http://storage:9000 $$MINIO_ACCESS_KEY $$MINIO_SECRET_KEY;
       /usr/bin/mc rm -r --dangerous --force myminio/sorry-cypress;
       /usr/bin/mc mb myminio/sorry-cypress;
-      /usr/bin/mc policy set download myminio/sorry-cypress;
-      /usr/bin/mc policy set public myminio/sorry-cypress;
+      /usr/bin/mc anonymous set download myminio/sorry-cypress;
+      /usr/bin/mc anonymous set public myminio/sorry-cypress;
       exit 0;
       "
   
@@ -38,7 +43,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-
       args:
         # These set the ARG values in your Dockerfile
         USER_UID: 1000
@@ -46,6 +50,8 @@ services:
 
     volumes:
       - ..:/workspace:cached
+    env_file:
+      - .env
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
     # Runs app on the same network as the database container, allows "forwardPorts" in devcontainer.json function.

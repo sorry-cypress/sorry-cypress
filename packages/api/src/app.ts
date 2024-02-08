@@ -63,7 +63,7 @@ export const start = async function start(
     cors: { origin: '*' },
   });
 
-  const httpServer = stoppable(http.createServer(app), 10_000) as Server;
+  const httpServer = stoppable(http.createServer(app), 10_000);
   await new Promise((resolve, reject) => {
     httpServer.once('listening', resolve);
     httpServer.once('error', reject);

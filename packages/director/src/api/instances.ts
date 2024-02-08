@@ -19,6 +19,7 @@ import {
 } from '@sorry-cypress/director/lib/hooks/events';
 import { getLogger } from '@sorry-cypress/logger';
 import { RequestHandler } from 'express';
+import { shouldGenerateVideoUrl } from '../screenshots/utils';
 
 export const createInstance: RequestHandler = async (req, res) => {
   const { groupId, machineId } = req.body;
@@ -187,10 +188,13 @@ async function getInstanceScreenshots(
     result
   );
 
-  const videoUploadInstructions: AssetUploadInstruction | null = await screenshotsDriver.getVideoUploadUrl(
-    instanceId,
-    result
-  );
+  let videoUploadInstructions: AssetUploadInstruction | null = null;
+  if (shouldGenerateVideoUrl(result)) {
+    videoUploadInstructions = await screenshotsDriver.getVideoUploadUrl(
+      instanceId,
+      result
+    );
+  }
 
   if (screenshotUploadUrls.length > 0) {
     screenshotUploadUrls.forEach((screenshot: ScreenshotUploadInstruction) => {

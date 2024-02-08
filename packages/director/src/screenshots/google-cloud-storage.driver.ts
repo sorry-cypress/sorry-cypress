@@ -4,7 +4,6 @@ import {
   Screenshot,
   ScreenshotUploadInstruction,
 } from '@sorry-cypress/common';
-import { isInstanceFailed } from '@sorry-cypress/director/lib/results';
 import { ScreenshotsDriver } from '@sorry-cypress/director/types';
 import md5 from 'md5';
 import {
@@ -24,14 +23,8 @@ const getScreenshotUploadInstruction = (namespace: string) => async (
 
 export const getVideoUploadUrl = async (
   instanceId: string,
-  result: InstanceResult
+  _result: InstanceResult
 ): Promise<AssetUploadInstruction | null> => {
-  if (!result.cypressConfig?.video) {
-    return null;
-  }
-  if (!isInstanceFailed(result) && !result.cypressConfig.videoUploadOnPasses) {
-    return null;
-  }
   return await gcsGetVideoUploadUrl(instanceId);
 };
 

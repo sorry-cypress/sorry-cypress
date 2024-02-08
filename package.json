@@ -1,6 +1,6 @@
 {
   "name": "sorry-cypress",
-  "version": "2.5.11",
+  "version": "2.6.0",
   "author": {
     "name": "Andrew Goldis",
     "email": "agoldis@gmail.com"
@@ -30,6 +30,7 @@
     "release": "./scripts/release-github.sh",
     "release-packages": "wsrun run release --cache-dir=.turbo",
     "build": "turbo run build --cache-dir=.turbo",
+    "generate": "yarn --cwd packages/api generate && yarn --cwd packages/dashboard generate",
     "test": "turbo run test",
     "lint": "turbo run lint",
     "dev": "APOLLO_PLAYGROUND=true turbo run dev",

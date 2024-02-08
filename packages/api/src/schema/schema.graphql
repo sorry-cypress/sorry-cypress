@@ -209,7 +209,7 @@ type InstanceStats {
 
 type CypressConfig {
   video: Boolean!
-  videoUploadOnPasses: Boolean!
+  videoUploadOnPasses: Boolean
 }
 
 type InstanceScreeshot {
