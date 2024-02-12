@@ -25,6 +25,7 @@ ARG USER=node
 WORKDIR /app
 COPY --chown=node:node --from=build /app/packages/ packages/
 COPY --chown=node:node --from=build /app/node_modules/ node_modules/
+COPY aws/global-bundle.pem ./
 RUN apk add --no-cache tini
 ENV NODE_ENV=production
 USER ${USER}
