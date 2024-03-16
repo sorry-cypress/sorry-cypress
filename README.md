@@ -161,6 +161,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     </tr>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="http://dev.flauschig.ch"><img src="https://avatars.githubusercontent.com/u/393641?v=4?s=100" width="100px;" alt="Roman"/><br /><sub><b>Roman</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=Roemer" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://unaqaenapuros.wordpress.com/"><img src="https://avatars.githubusercontent.com/u/6990209?v=4?s=100" width="100px;" alt="Estefanía Fdez"/><br /><sub><b>Estefanía Fdez</b></sub></a><br /><a href="https://github.com/sorry-cypress/sorry-cypress/commits?author=estefafdez" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
