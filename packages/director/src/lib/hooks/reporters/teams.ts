@@ -54,6 +54,7 @@ export async function reportToTeams(
       break;
     case HookEvent.RUN_TIMEOUT:
       title = `:hourglass_flowing_sand: *Run timedout* (${ciBuildId})`;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       color = failureColor;
       break;
   }
