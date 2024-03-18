@@ -1,5 +1,5 @@
 import {
-  FlakyRounded
+  FlakyRounded,
   Loop as LoopIcon,
   MenuBook as MenuBookIcon,
   VisibilityOff as VisibilityOffIcon,
@@ -19,6 +19,7 @@ import {
   ReadableSpecNamesKind,
   useReadableSpecNames,
 } from '@sorry-cypress/dashboard/hooks/useReadableSpecNames';
+import { useShowFlakySpecs } from '@sorry-cypress/dashboard/hooks/useShowFlakySpecs';
 import {
   getProjectPath,
   getRunPath,
@@ -29,7 +30,6 @@ import { RunSummary } from '@sorry-cypress/dashboard/run/runSummary/runSummary';
 import React, { FunctionComponent, useLayoutEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { RunDetails } from './runDetails';
-import { useShowFlakySpecs } from '@sorry-cypress/dashboard/hooks/useShowFlakySpecs';
 
 export const RunDetailsView: RunDetailsViewComponent = () => {
   const { id } = useParams();
