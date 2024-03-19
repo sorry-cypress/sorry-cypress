@@ -24,6 +24,7 @@
 
 ## Table of contents
 
+- [Butterfly](#butterfly)
 - [Features](#features)
 - [Quickstart](#quickstart)
 - [FAQ](#faq)
@@ -32,6 +33,17 @@
 - [License](#license)
 - [Donate](#donate)
 - [Contributors](#contributors)
+
+## Butterfly
+
+This is a private fork of sorry-cypress, which has been modified from the upstream to include an AWS public key and provide build/push scripts for Butterfly ECR.
+
+To build and push the custom sorry-cypress images to our own ECR, run the following:
+
+```
+export ECR_URL="109366762410.dkr.ecr.us-east-1.amazonaws.com"
+./scripts/build-and-push.sh
+```
 
 ## Features
 
