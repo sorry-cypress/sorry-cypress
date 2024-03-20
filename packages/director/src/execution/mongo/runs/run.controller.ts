@@ -9,6 +9,7 @@ import {
 import {
   GITLAB_JOB_RETRIES,
   INACTIVITY_TIMEOUT_SECONDS,
+  USE_HTTPS_FOR_GIT_ORIGIN,
 } from '@sorry-cypress/director/config';
 import { getRunCiBuildId } from '@sorry-cypress/director/lib/ciBuildId';
 import {
@@ -82,7 +83,10 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
     }
     const specs = params.specs.map(enhanceSpecForThisRun);
 
-    params.commit.remoteOrigin = getRemoteOrigin(params.commit.remoteOrigin);
+    params.commit.remoteOrigin = getRemoteOrigin(
+      params.commit.remoteOrigin,
+      USE_HTTPS_FOR_GIT_ORIGIN
+    );
 
     const newRun: Run = {
       runId,

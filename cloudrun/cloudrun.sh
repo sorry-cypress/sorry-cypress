@@ -27,8 +27,8 @@ echo "🚀  Starting deployment to Google Cloud Run. Project: ${project}, Servic
 for i in director api dashboard; do
   fullname=$name-$i
   echo "🔧  Deploying ${name}-${i}..."
-  docker pull agoldis/sorry-cypress-$i
-  docker tag agoldis/sorry-cypress-$i gcr.io/${project}/$fullname
+  docker pull ehoglid/sorry-cypress-$i
+  docker tag ehoglid/sorry-cypress-$i gcr.io/${project}/$fullname
   docker push gcr.io/${project}/$fullname
   gcloud run deploy $fullname --image gcr.io/${project}/$fullname --platform managed --allow-unauthenticated; 
 done

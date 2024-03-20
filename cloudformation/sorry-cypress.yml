@@ -414,7 +414,7 @@ Resources:
               Value: sorry-cypress
           Name: mongo
 
-        - Image: agoldis/sorry-cypress-director
+        - Image: ehoglid/sorry-cypress-director
           Essential: true
           PortMappings:
             - ContainerPort: 1234
@@ -433,6 +433,8 @@ Resources:
               Value: ../screenshots/s3.driver
             - Name: GITLAB_JOB_RETRIES
               Value: false
+            - Name: USE_HTTPS_FOR_GIT_ORIGIN
+              Value: 'true'
             - Name: MONGODB_DATABASE
               Value: sorry-cypress
             - Name: MONGODB_URI
@@ -448,7 +450,7 @@ Resources:
               Condition: START
           Name: director
 
-        - Image: agoldis/sorry-cypress-api
+        - Image: ehoglid/sorry-cypress-api
           PortMappings:
             - ContainerPort: 4000
           LogConfiguration:
@@ -469,7 +471,7 @@ Resources:
               Condition: START
           Name: api
 
-        - Image: agoldis/sorry-cypress-dashboard
+        - Image: ehoglid/sorry-cypress-dashboard
           PortMappings:
             - ContainerPort: 8080
           LogConfiguration:

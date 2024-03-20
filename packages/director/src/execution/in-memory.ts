@@ -15,7 +15,10 @@ import {
   isTestFlaky,
   isRunCompleted,
 } from '@sorry-cypress/common';
-import { INACTIVITY_TIMEOUT_SECONDS } from '@sorry-cypress/director/config';
+import {
+  INACTIVITY_TIMEOUT_SECONDS,
+  USE_HTTPS_FOR_GIT_ORIGIN,
+} from '@sorry-cypress/director/config';
 import { getRunCiBuildId } from '@sorry-cypress/director/lib/ciBuildId';
 import {
   AppError,
@@ -108,7 +111,10 @@ const createRun: ExecutionDriver['createRun'] = async (
     );
   }
 
-  params.commit.remoteOrigin = getRemoteOrigin(params.commit.remoteOrigin);
+  params.commit.remoteOrigin = getRemoteOrigin(
+    params.commit.remoteOrigin,
+    USE_HTTPS_FOR_GIT_ORIGIN
+  );
 
   runs[runId] = {
     runId,
