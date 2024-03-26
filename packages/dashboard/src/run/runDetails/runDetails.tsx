@@ -39,8 +39,9 @@ export const RunDetails: RunDetailsComponent = (props) => {
   }
 
   const rows = useMemo(
-    () => convertToRows(run, hidePassedSpecs, showFlakySpecs, readableSpecNames),
-    [run, hidePassedSpecs]
+    () =>
+      convertToRows(run, hidePassedSpecs, showFlakySpecs, readableSpecNames),
+    [run, hidePassedSpecs, showFlakySpecs]
   );
 
   return (
