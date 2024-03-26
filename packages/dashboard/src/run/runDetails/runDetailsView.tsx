@@ -1,4 +1,5 @@
 import {
+  FlakyRounded,
   Loop as LoopIcon,
   MenuBook as MenuBookIcon,
   VisibilityOff as VisibilityOffIcon,
@@ -18,6 +19,7 @@ import {
   ReadableSpecNamesKind,
   useReadableSpecNames,
 } from '@sorry-cypress/dashboard/hooks/useReadableSpecNames';
+import { useShowFlakySpecs } from '@sorry-cypress/dashboard/hooks/useShowFlakySpecs';
 import {
   getProjectPath,
   getRunPath,
@@ -33,6 +35,7 @@ export const RunDetailsView: RunDetailsViewComponent = () => {
   const { id } = useParams();
   const autoRefreshRate = useAutoRefreshRate();
   const [hidePassedSpecs, setHidePassedSpecs] = useHideSuccessfulSpecs();
+  const [showFlakySpecs, setShowFlakySpecs] = useShowFlakySpecs();
   const [
     readableSpecNames,
     { switchReadableSpecNames },
@@ -118,6 +121,16 @@ export const RunDetailsView: RunDetailsViewComponent = () => {
             },
           },
           {
+            key: 'showFlakySpecs',
+            text: 'Show Only Flaky Specs',
+            icon: FlakyRounded,
+            selected: showFlakySpecs,
+            toggleButton: true,
+            onClick: () => {
+              setShowFlakySpecs(!showFlakySpecs);
+            },
+          },
+          {
             key: 'autoRefresh',
             text: 'Auto Refresh',
             icon: LoopIcon,
@@ -154,6 +167,7 @@ export const RunDetailsView: RunDetailsViewComponent = () => {
         key={readableSpecNames}
         run={data.run}
         hidePassedSpecs={hidePassedSpecs}
+        showFlakySpecs={showFlakySpecs}
         readableSpecNames={readableSpecNames}
       />
     </>

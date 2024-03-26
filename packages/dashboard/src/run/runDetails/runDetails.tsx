@@ -30,7 +30,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import stringHash from 'string-hash';
 
 export const RunDetails: RunDetailsComponent = (props) => {
-  const { run, hidePassedSpecs, readableSpecNames } = props;
+  const { run, hidePassedSpecs, showFlakySpecs, readableSpecNames } = props;
 
   const { specs } = run;
 
@@ -39,8 +39,9 @@ export const RunDetails: RunDetailsComponent = (props) => {
   }
 
   const rows = useMemo(
-    () => convertToRows(run, hidePassedSpecs, readableSpecNames),
-    [run, hidePassedSpecs]
+    () =>
+      convertToRows(run, hidePassedSpecs, showFlakySpecs, readableSpecNames),
+    [run, hidePassedSpecs, showFlakySpecs]
   );
 
   return (
@@ -113,19 +114,37 @@ export const RunDetails: RunDetailsComponent = (props) => {
 function convertToRows(
   run: NonNullable<GetRunQuery['run']>,
   hidePassedSpecs: boolean,
+  showFlakySpecs: boolean,
   readableSpecNames: ReadableSpecNamesKind
 ): GridRowsProp {
   return run.specs
     .filter((spec) => !!spec)
     .filter((spec) => {
-      if (!hidePassedSpecs) {
+      if (!hidePassedSpecs && !showFlakySpecs) {
         return true;
       }
+
+      if (!hidePassedSpecs && showFlakySpecs) {
+        return spec.results?.flaky && spec.results.flaky > 0;
+      }
+
       const state = getInstanceState({
         claimedAt: spec.claimedAt,
         stats: spec.results?.stats,
       });
-      return ['failed', 'pending', 'running'].includes(state);
+      const badStatus = ['failed', 'pending', 'running'];
+
+      if (hidePassedSpecs && !showFlakySpecs) {
+        return badStatus.includes(state);
+      }
+
+      if (hidePassedSpecs && showFlakySpecs) {
+        return (
+          badStatus.includes(state) &&
+          spec.results?.flaky &&
+          spec.results.flaky > 0
+        );
+      }
     })
     .map((spec) => {
       return {
@@ -267,6 +286,7 @@ function getMachineName(machineId: string) {
 type RunDetailsProps = {
   run: NonNullable<GetRunQuery['run']>;
   hidePassedSpecs: boolean;
+  showFlakySpecs: boolean;
   readableSpecNames: ReadableSpecNamesKind;
 };
 type RunDetailsComponent = FunctionComponent<RunDetailsProps>;
