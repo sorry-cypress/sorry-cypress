@@ -5,6 +5,7 @@ const {
   GRAPHQL_CLIENT_CREDENTIALS,
   GRAPHQL_SCHEMA_URL,
   CI_URL,
+  RESET_DISABLED,
   BASE_PATH,
 } = require('./config');
 
@@ -12,6 +13,7 @@ const SORRY_CYPRESS_ENVIRONMENT = JSON.stringify({
   GRAPHQL_CLIENT_CREDENTIALS,
   GRAPHQL_SCHEMA_URL,
   CI_URL,
+  RESET_DISABLED,
 });
 
 app.set('view engine', 'ejs');
