@@ -27,7 +27,7 @@ import { ExecutionDriver } from '@sorry-cypress/director/types';
 import { getLogger } from '@sorry-cypress/logger';
 import { runTimeoutModel } from '@sorry-cypress/mongo';
 import { addSeconds } from 'date-fns';
-import { curry, property, uniq } from 'lodash';
+import { curry, property, truncate, uniq } from 'lodash';
 import {
   enhanceSpec,
   getClaimedSpecs,
@@ -83,6 +83,8 @@ export const createRun: ExecutionDriver['createRun'] = async (params) => {
     const specs = params.specs.map(enhanceSpecForThisRun);
 
     params.commit.remoteOrigin = getRemoteOrigin(params.commit.remoteOrigin);
+
+    params.commit.message = truncate(params.commit.message, { length: 1024 })
 
     const newRun: Run = {
       runId,

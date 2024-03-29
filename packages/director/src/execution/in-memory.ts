@@ -40,6 +40,7 @@ import {
   getRemoteOrigin,
   getSpecsForGroup,
 } from './utils';
+import { truncate } from 'lodash';
 
 const projects: { [key: string]: Project; } = {};
 const runs: { [key: string]: Run; } = {};
@@ -109,6 +110,7 @@ const createRun: ExecutionDriver['createRun'] = async (
   }
 
   params.commit.remoteOrigin = getRemoteOrigin(params.commit.remoteOrigin);
+  params.commit.message = truncate(params.commit.message, { length: 1024 })
 
   runs[runId] = {
     runId,
