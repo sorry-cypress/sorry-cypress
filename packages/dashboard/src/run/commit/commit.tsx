@@ -9,7 +9,6 @@ import { Commit as CommitDef } from '@sorry-cypress/dashboard/generated/graphql'
 import {
   getGithubBranchURL,
   getGithubCommitURL,
-  handleSshURL,
 } from '@sorry-cypress/dashboard/lib/github';
 import React, { FunctionComponent } from 'react';
 import { CommitMessage } from '../commitMessage';
@@ -44,10 +43,10 @@ export const Commit: CommitComponent = (props) => {
                   <Link
                     target="_blank"
                     rel="noopener noreferrer"
-                    href={handleSshURL(commit.remoteOrigin)}
+                    href={commit.remoteOrigin}
                     underline="hover"
                   >
-                    {handleSshURL(commit.remoteOrigin)}
+                    {commit.remoteOrigin}
                   </Link>
                 )}
                 {noLinks && commit.remoteOrigin}
@@ -128,7 +127,7 @@ export const Commit: CommitComponent = (props) => {
 
       <Grid item container sm={12} md={6} lg={6} xl={4} alignItems="flex-start">
         <Grid item mt={0.4} mr={1}>
-          <Tooltip title="Commit Message ">
+          <Tooltip title="Commit Message">
             <Code fontSize="small" />
           </Tooltip>
         </Grid>

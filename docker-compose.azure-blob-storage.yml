@@ -9,19 +9,20 @@ services:
       - 27017:27017
 
   director:
-    image: agoldis/sorry-cypress-director:latest
+    image: ehoglid/sorry-cypress-director:latest
     hostname: director
     environment:
       DASHBOARD_URL: http://localhost:8080
       EXECUTION_DRIVER: '../execution/mongo/driver'
       GITLAB_JOB_RETRIES: 'false'
+      USE_HTTPS_FOR_GIT_ORIGIN: 'true'
       MONGODB_URI: 'mongodb://mongo:27017'
       MONGODB_DATABASE: 'sorry-cypress'
       SCREENSHOTS_DRIVER: '../screenshots/azure-blob-storage.driver'
       AZURE_CONNEXION_STRING: 'DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;QueueEndpoint=http://127.0.0.1:10001/devstoreaccount1;TableEndpoint=http://127.0.0.1:10001/devstoreaccount1;'
       AZURE_CONTAINER_NAME: 'sorry-cypress'
       AZURE_UPLOAD_URL_EXPIRY_IN_HOURS: 24
-      PROBE_LOGGER: "false"
+      PROBE_LOGGER: 'false'
     ports:
       - '10000:10000'
       - '10001:10001'
@@ -30,7 +31,7 @@ services:
       - mongo
 
   api:
-    image: agoldis/sorry-cypress-api:latest
+    image: ehoglid/sorry-cypress-api:latest
     environment:
       MONGODB_URI: 'mongodb://mongo:27017'
       MONGODB_DATABASE: 'sorry-cypress'
@@ -41,7 +42,7 @@ services:
       - mongo
 
   dashboard:
-    image: agoldis/sorry-cypress-dashboard:latest
+    image: ehoglid/sorry-cypress-dashboard:latest
     environment:
       GRAPHQL_SCHEMA_URL: http://localhost:4000
       GRAPHQL_CLIENT_CREDENTIALS: ''

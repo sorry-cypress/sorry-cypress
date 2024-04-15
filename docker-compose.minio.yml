@@ -16,7 +16,7 @@ services:
     ports:
       - 27017:27017
   director:
-    image: agoldis/sorry-cypress-director:latest
+    image: ehoglid/sorry-cypress-director:latest
     environment:
       DASHBOARD_URL: http://localhost:8080
       EXECUTION_DRIVER: '../execution/mongo/driver'
@@ -25,6 +25,7 @@ services:
 
       SCREENSHOTS_DRIVER: '../screenshots/minio.driver'
       GITLAB_JOB_RETRIES: 'false'
+      USE_HTTPS_FOR_GIT_ORIGIN: 'true'
       MINIO_ACCESS_KEY: '<minio-user>'
       MINIO_SECRET_KEY: '<minio-pass>'
       MINIO_ENDPOINT: '<minio-ip-address>'
@@ -32,7 +33,7 @@ services:
       MINIO_PORT: '9000'
       MINIO_USESSL: 'false'
       MINIO_BUCKET: sorry-cypress
-      PROBE_LOGGER: "false"
+      PROBE_LOGGER: 'false'
     ports:
       - 1234:1234
       - 9000:9000
@@ -41,7 +42,7 @@ services:
       - mongo
 
   api:
-    image: agoldis/sorry-cypress-api:latest
+    image: ehoglid/sorry-cypress-api:latest
     environment:
       MONGODB_URI: 'mongodb://<mongo-user>:<mongo-pass>@mongo:27017'
       MONGODB_DATABASE: 'sorry-cypress'
@@ -52,7 +53,7 @@ services:
       - mongo
 
   dashboard:
-    image: agoldis/sorry-cypress-dashboard:latest
+    image: ehoglid/sorry-cypress-dashboard:latest
     environment:
       GRAPHQL_SCHEMA_URL: http://<graphql-ip-address>:4000
       GRAPHQL_CLIENT_CREDENTIALS: ''

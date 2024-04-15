@@ -9,7 +9,7 @@ services:
       dockerfile: packages/director/Dockerfile
       context: .
 
-    image: agoldis/sorry-cypress-director:${VERSION:-latest}
+    image: ehoglid/sorry-cypress-director:${VERSION:-latest}
     environment:
       DASHBOARD_URL: http://localhost:8080
       MONGODB_URI: 'mongodb://mongo:27017'
@@ -17,10 +17,11 @@ services:
       EXECUTION_DRIVER: '../execution/mongo/driver'
       SCREENSHOTS_DRIVER: '../screenshots/s3.driver'
       GITLAB_JOB_RETRIES: 'false'
+      USE_HTTPS_FOR_GIT_ORIGIN: 'true'
       AWS_ACCESS_KEY_ID: 'key'
       AWS_SECRET_ACCESS_KEY: 'secret'
       S3_BUCKET: sorry-cypress
-      PROBE_LOGGER: "false"
+      PROBE_LOGGER: 'false'
     ports:
       - 1234:1234
     depends_on:
@@ -30,7 +31,7 @@ services:
     build:
       dockerfile: packages/api/Dockerfile
       context: .
-    image: agoldis/sorry-cypress-api:${VERSION:-latest}
+    image: ehoglid/sorry-cypress-api:${VERSION:-latest}
     environment:
       MONGODB_URI: 'mongodb://mongo:27017'
       MONGODB_DATABASE: 'sorry-cypress'
@@ -44,7 +45,7 @@ services:
     build:
       dockerfile: packages/dashboard/Dockerfile
       context: .
-    image: agoldis/sorry-cypress-dashboard:${VERSION:-latest}
+    image: ehoglid/sorry-cypress-dashboard:${VERSION:-latest}
     environment:
       GRAPHQL_SCHEMA_URL: http://localhost:4000
       GRAPHQL_CLIENT_CREDENTIALS: ''
