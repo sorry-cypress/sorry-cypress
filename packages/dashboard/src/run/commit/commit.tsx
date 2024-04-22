@@ -7,10 +7,10 @@ import {
 import { Grid, Link, Tooltip, Typography } from '@mui/material';
 import { Commit as CommitDef } from '@sorry-cypress/dashboard/generated/graphql';
 import {
-  getGithubBranchURL,
-  getGithubCommitURL,
+  getBranchURL,
+  getCommitURL,
   handleSshURL,
-} from '@sorry-cypress/dashboard/lib/github';
+} from '@sorry-cypress/dashboard/lib/repository';
 import React, { FunctionComponent } from 'react';
 import { CommitMessage } from '../commitMessage';
 
@@ -79,10 +79,7 @@ export const Commit: CommitComponent = (props) => {
                   <Link
                     target="_blank"
                     rel="noopener noreferrer"
-                    href={getGithubBranchURL(
-                      commit.remoteOrigin,
-                      commit.branch
-                    )}
+                    href={getBranchURL(commit.remoteOrigin, commit.branch)}
                     underline="hover"
                   >
                     {commit.branch}
@@ -139,7 +136,7 @@ export const Commit: CommitComponent = (props) => {
                 <Link
                   target="_blank"
                   rel="noopener noreferrer"
-                  href={getGithubCommitURL(commit.remoteOrigin, commit.sha)}
+                  href={getCommitURL(commit.remoteOrigin, commit.sha)}
                   underline="hover"
                 >
                   <CommitMessage brief={brief} message={commit.message} />
