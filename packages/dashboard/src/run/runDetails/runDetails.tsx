@@ -28,6 +28,7 @@ import React, { FunctionComponent, useMemo } from 'react';
 import { generatePath } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
 import stringHash from 'string-hash';
+import { environment } from '../../state/environment';
 
 export const RunDetails: RunDetailsComponent = (props) => {
   const { run, hidePassedSpecs, showFlakySpecs, readableSpecNames } = props;
@@ -172,7 +173,7 @@ function convertToRows(
 
 const getActionsCell = (run: NonNullable<GetRunQuery['run']>) => {
   const getAction = (params: GridRenderCellParams) => {
-    return params.row.claimedAt ? (
+    return environment.RESET_DISABLED !== 'true' && params.row.claimedAt ? (
       <ResetInstanceButton
         spec={params.row.specName}
         instanceId={params.row.instanceId ?? 0}
