@@ -202,9 +202,9 @@ type InstanceStats {
   pending: Int!
   skipped: Int!
   failures: Int!
-  wallClockStartedAt: String!
-  wallClockEndedAt: String!
-  wallClockDuration: Int!
+  wallClockStartedAt: String
+  wallClockEndedAt: String
+  wallClockDuration: Int
 }
 
 type CypressConfig {
