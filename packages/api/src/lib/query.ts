@@ -2,7 +2,7 @@ export interface AggregationFilter {
   key: string;
   value: string | number | Date;
   operator?: 'gte' | 'gt' | 'lte' | 'lt'; // Make sure operator is included as an optional field
-  like?: string; // If your query includes 'like', this might be a separate field
+  like?: string;
 }
 
 export const filtersToAggregations = (filters?: AggregationFilter[]) => {
