@@ -7,7 +7,7 @@ services:
       - ./data/data-mongo-cypress:/data/db
 
   director:
-    image: agoldis/sorry-cypress-director:latest
+    image: ehoglid/sorry-cypress-director:latest
     environment:
       DASHBOARD_URL: http://localhost:8080
       MONGODB_URI: 'mongodb://mongo:27017'
@@ -15,18 +15,19 @@ services:
       EXECUTION_DRIVER: '../execution/mongo/driver'
       SCREENSHOTS_DRIVER: '../screenshots/cos.driver'
       GITLAB_JOB_RETRIES: 'false'
+      USE_HTTPS_FOR_GIT_ORIGIN: 'true'
       COS_ACCESSKEY: 'cos_hmac_access_key'
       COS_SECRETKEY: 'cos_hmac_secret_key'
       COS_REGION: 'cos_region'
       COS_BUCKET: 'cos_bucket_name'
-      PROBE_LOGGER: "false"
+      PROBE_LOGGER: 'false'
     ports:
       - 1234:1234
     depends_on:
       - mongo
 
   api:
-    image: agoldis/sorry-cypress-api:latest
+    image: ehoglid/sorry-cypress-api:latest
     environment:
       MONGODB_URI: 'mongodb://mongo:27017'
       MONGODB_DATABASE: 'sorry-cypress'
@@ -37,7 +38,7 @@ services:
       - mongo
 
   dashboard:
-    image: agoldis/sorry-cypress-dashboard:latest
+    image: ehoglid/sorry-cypress-dashboard:latest
     environment:
       GRAPHQL_SCHEMA_URL: http://localhost:4000
       GRAPHQL_CLIENT_CREDENTIALS: ''

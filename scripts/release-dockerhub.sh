@@ -78,7 +78,7 @@ echo 🚀 Releasing tags: $TAGS
 echo ========================
 
 
-dockerBuildAndPush "packages/${service}" "agoldis/sorry-cypress-${service}"
+dockerBuildAndPush "packages/${service}" "ehoglid/sorry-cypress-${service}"
 
 echo ========================
 echo 🎉 Released to Dockerhub: $TAGS

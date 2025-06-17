@@ -28,5 +28,7 @@ export const INACTIVITY_TIMEOUT_SECONDS = Number(
 );
 
 export const GITLAB_JOB_RETRIES = process.env.GITLAB_JOB_RETRIES || 'false';
+export const USE_HTTPS_FOR_GIT_ORIGIN = process.env.USE_HTTPS_FOR_GIT_ORIGIN || 'true';
 export const PROBE_LOGGER = process.env.PROBE_LOGGER || 'false';
 export const BASE_PATH = process.env.BASE_PATH || '/';
+

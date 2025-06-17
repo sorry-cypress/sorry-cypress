@@ -691,7 +691,7 @@ Resources:
       RequiresCompatibilities:
         - FARGATE
       ContainerDefinitions:
-        - Image: !Sub agoldis/sorry-cypress-director:${SorryCypressVersion}
+        - Image: !Sub ehoglid/sorry-cypress-director:${SorryCypressVersion}
           Essential: true
           PortMappings:
             - ContainerPort: 1234
@@ -723,7 +723,7 @@ Resources:
             - Name: S3_ACL
               Value: !Ref S3ObjectACL
           Name: director
-        - Image: !Sub agoldis/sorry-cypress-api:${SorryCypressVersion}
+        - Image: !Sub ehoglid/sorry-cypress-api:${SorryCypressVersion}
           PortMappings:
             - ContainerPort: 4000
           RepositoryCredentials: !If
@@ -745,7 +745,7 @@ Resources:
             - ContainerName: director
               Condition: START
           Name: api
-        - Image: !Sub agoldis/sorry-cypress-dashboard:${SorryCypressVersion}
+        - Image: !Sub ehoglid/sorry-cypress-dashboard:${SorryCypressVersion}
           PortMappings:
             - ContainerPort: 8080
           RepositoryCredentials: !If
@@ -797,7 +797,7 @@ Resources:
             - Name: MONGO_INITDB_ROOT_USERNAME
               Value: sorry-cypress
           Name: mongo
-        - Image: !Sub agoldis/sorry-cypress-director:${SorryCypressVersion}
+        - Image: !Sub ehoglid/sorry-cypress-director:${SorryCypressVersion}
           Essential: true
           PortMappings:
             - ContainerPort: 1234
@@ -832,7 +832,7 @@ Resources:
             - ContainerName: mongo
               Condition: START
           Name: director
-        - Image: !Sub agoldis/sorry-cypress-api:${SorryCypressVersion}
+        - Image: !Sub ehoglid/sorry-cypress-api:${SorryCypressVersion}
           PortMappings:
             - ContainerPort: 4000
           RepositoryCredentials: !If
@@ -854,7 +854,7 @@ Resources:
             - ContainerName: director
               Condition: START
           Name: api
-        - Image: !Sub agoldis/sorry-cypress-dashboard:${SorryCypressVersion}
+        - Image: !Sub ehoglid/sorry-cypress-dashboard:${SorryCypressVersion}
           PortMappings:
             - ContainerPort: 8080
           RepositoryCredentials: !If

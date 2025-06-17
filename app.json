@@ -6,5 +6,5 @@
   "repository": "https://github.com/agoldis/sorry-cypress",
   "logo": "https://s3.amazonaws.com/agoldis.dev/images/sorry-cypress/logo.png",
   "success_url": "/ping",
-  "image": "agoldis/sorry-cypress-director"
+  "image": "ehoglid/sorry-cypress-director"
 }
