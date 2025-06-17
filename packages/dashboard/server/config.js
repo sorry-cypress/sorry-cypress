@@ -6,4 +6,5 @@ exports.GRAPHQL_SCHEMA_URL =
 exports.GRAPHQL_CLIENT_CREDENTIALS =
   process.env.GRAPHQL_CLIENT_CREDENTIALS || '';
 exports.CI_URL = process.env.CI_URL || '';
+exports.RESET_DISABLED = process.env.RESET_DISABLED || 'false';
 exports.BASE_PATH = process.env.BASE_PATH || '/';
