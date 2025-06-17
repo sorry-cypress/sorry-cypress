@@ -26,7 +26,7 @@
     "release": "yarn version --no-git-tag-version"
   },
   "dependencies": {
-    "@azure/identity": "^2.0.5",
+    "@azure/identity": "^3.4.1",
     "@azure/storage-blob": "^12.13.0",
     "@google-cloud/storage": "^6.11.0",
     "@octokit/auth-app": "^4.0.7",
