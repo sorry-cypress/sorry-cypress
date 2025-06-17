@@ -29,7 +29,7 @@
     "@azure/identity": "^2.0.5",
     "@azure/storage-blob": "^12.13.0",
     "@google-cloud/storage": "^6.11.0",
-    "@octokit/auth-app": "^4.0.7",
+    "@octokit/auth-app": "^7.2.1",
     "@octokit/rest": "^19.0.5",
     "@sorry-cypress/common": "1.0.0",
     "@sorry-cypress/logger": "1.0.0",
