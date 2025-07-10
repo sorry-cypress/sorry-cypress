@@ -33,7 +33,7 @@
     "@mui/icons-material": "^5.1.0",
     "@mui/lab": "5.0.0-alpha.54",
     "@mui/material": "^5.1.0",
-    "@mui/styles": "^5.1.0",
+    "@mui/styles": "^5.18.0",
     "@mui/x-data-grid": "^5.10.0",
     "@popperjs/core": "^2.10.2",
     "@sorry-cypress/common": "1.0.0",
