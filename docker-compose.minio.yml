@@ -15,6 +15,7 @@ services:
       - ./data/data-mongo-cypress:/data/db
     ports:
       - 27017:27017
+
   director:
     image: agoldis/sorry-cypress-director:latest
     environment:
@@ -32,7 +33,7 @@ services:
       MINIO_PORT: '9000'
       MINIO_USESSL: 'false'
       MINIO_BUCKET: sorry-cypress
-      PROBE_LOGGER: "false"
+      PROBE_LOGGER: 'false'
     ports:
       - 1234:1234
       - 9000:9000
