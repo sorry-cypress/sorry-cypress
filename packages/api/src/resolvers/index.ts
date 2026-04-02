@@ -170,6 +170,7 @@ export const resolvers = {
       // Process the deletion in batches
       const batchSize = 20;
       const processedRunIds: string[] = [];
+      // eslint-disable-next-line no-constant-condition
       while (true) {
         const getRunsResponse = await dataSources.runsAPI.getRunsInDateRange(
           startDate,

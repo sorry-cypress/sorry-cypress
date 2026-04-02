@@ -18,10 +18,10 @@ import { Commit } from '../commit';
 import { DeleteRunButton } from '../deleteRun/deleteRunButton';
 import { LegacyRunChip } from '../legacyRunChip';
 import { RunDuration } from '../runDuration';
+import { RunMetaVersion } from '../runMetaVersion';
 import { RunningStatus } from '../runningStatus';
 import { RunSpecs } from '../runSpecs';
 import { RunStartTime } from '../runStartTime';
-import { RunMetaVersion } from '../runMetaVersion';
 import { RunSummaryTestResults } from '../runSummaryTestResults';
 import { RunTimeoutChip } from '../runTimeoutChip';
 
@@ -44,7 +44,7 @@ export const RunSummary: RunSummaryComponent = (props) => {
   const hasCompletion = !!run.completion;
   const completed = !!run.completion?.completed;
   const inactivityTimeoutMs = run.completion?.inactivityTimeoutMs;
-  const metaVersions = (run.metaVersions ? run.metaVersions : []);
+  const metaVersions = run.metaVersions ? run.metaVersions : [];
 
   if (!run.progress) {
     return (
@@ -130,15 +130,16 @@ export const RunSummary: RunSummaryComponent = (props) => {
               )}
               {!compact && (
                 <Grid item container spacing={1} mb={1}>
-                    {metaVersions.map((versionItem, index) => (
-                      <Grid item>
-                        <RunMetaVersion 
-                          serviceName={versionItem?.name} 
-                          versionNumber={versionItem?.version} 
-                          index={index} 
-                          type={versionItem?.description || "VERSION"} />
-                      </Grid>
-                    ))}
+                  {metaVersions.map((versionItem, index) => (
+                    <Grid item key={index}>
+                      <RunMetaVersion
+                        serviceName={versionItem?.name}
+                        versionNumber={versionItem?.version}
+                        index={index}
+                        type={versionItem?.description || 'VERSION'}
+                      />
+                    </Grid>
+                  ))}
                 </Grid>
               )}
             </Grid>

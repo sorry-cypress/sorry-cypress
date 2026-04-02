@@ -10,7 +10,7 @@ export const environment: Environment = {
     GRAPHQL_CLIENT_CREDENTIALS: '',
     GRAPHQL_SCHEMA_URL: 'http://localhost:4000',
     CI_URL: '',
-    COLOR_INDEX: 0
+    COLOR_INDEX: 0,
   },
   ...((window.__sorryCypressEnvironment as Environment) || {}),
 };
